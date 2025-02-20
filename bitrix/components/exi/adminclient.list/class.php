@@ -215,7 +215,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		}
 
 
-		$PR_DATA = $taskManager->getData(false,$arrayUserID);
+		$PR_DATA = $taskManager->getData(false,$arrayUserID,['UF_AUTHOR_ID'=>$arrayUserID,'!UF_STATUS'=>[0,9,10]]);
 		foreach($PR_DATA as $task){
 			$this->arResult["TASK_DATA"][$task["UF_AUTHOR_ID"]][] = $task;
 		}

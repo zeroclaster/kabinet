@@ -102,7 +102,7 @@ $this->setFrameMode(true);
                 <form action="/kabinet/admin/performances/" method="post">
                     <input type="hidden" name="clientidsearch" :value="client.ID">
                     <div class="form-group select-status" v-for="(TitleStatus,idStatus) in statusCatalog()">
-                        <div class="form-check">
+                        <div class="form-check" v-if="getExecutionStatusCount(client.ID,idStatus)>0">
                             <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="$id(idStatus)" type="radio" :value="idStatus">
                             <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount(client.ID,idStatus)}}</span></label>
                         </div>
