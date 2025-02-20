@@ -25,7 +25,9 @@ var helperVueComponents = function(){
         },
         viewListFieldTitle(object,field){
             let orgField = field+'_ORIGINAL';
-            return this.findinArrayByID(object[orgField],object[field]).VALUE
+            let finded = this.findinArrayByID(object[orgField],object[field]);
+            if (typeof finded == "undefined") return "";
+            return finded.VALUE
         }
     };
 }
