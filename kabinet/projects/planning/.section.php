@@ -1,0 +1,6 @@
+<?
+$sSectionName = "Планирование";
+$arDirProperties = array(
+
+);
+?>

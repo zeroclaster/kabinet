@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <product type="review" title="Отзывы">
+        <states>
+            <state id="0" name="state1">
+                <title>Запланирован (но не начат)</title>
+                <stylecss>fc-event-warning</stylecss>
+                <description>
+                    Создает объект типа «исполнение» со статусом 0-Запланирован
+                    Резервирование средств на счете клиента.
+                    Сущность ожидает дату автоматического перехода в статус 1-Взят в работу.
+                    Вычисляется дата/время перехода в статус «Взят в работу» = планируемая дата публикации – задержка исполнения.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
+            </state>
+            <state id="1" name="state2">
+                <title>Взят в работу</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
+                    3-Ожидается текст от клиента.
+                    Если поле «согласование» = «нет, материал готовит сервис» или «согласование» = «есть», то на стадию – через 0 часов.
+                    2-Пишется текст;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage2</class>
+            </state>
+            <state id="2" name="state3">
+                <title>Пишется текст</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage3</class>
+            </state>
+            <state id="3" name="state4">
+                <title>Ожидается текст от клиента.</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage4</class>
+            </state>
+            <state id="4" name="state5">
+                <title>В работе у специалиста</title>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage5</class>
+            </state>
+            <state id="5" name="state6">
+                <title>На согласовании (у клиента)</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage6</class>
+            </state>
+            <state id="6" name="state7">
+                <title>Публикация</title>\<stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 96 часов.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage7</class>
+            </state>
+            <state id="7" name="state8">
+                <title>Готовится отчет</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
+            </state>
+            <state id="8" name="state9">
+                <title>Отчет на проверке у клиента;</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Автоматический переход
+                    Если поле отчет = «есть», то через 72 часа, в стадию: 9-Выполнена;
+                    Если поле отчет = «нет», то через 0ч, в стадию: 9-Выполнена;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
+            </state>
+            <state id="9" name="state10">
+                <title>Выполнена</title>
+                <stylecss>fc-event-light</stylecss>
+                <description>
+                    Списание зарезервированных средств со счета клиента
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
+            </state>
+            <state id="10" name="state11">
+                <title>Отменена</title>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
+            </state>
+        </states>
+    </product>
+    <product type="multiple" title="множественное исполнение">
+        <states>
+            <state id="0" name="state1">
+                <title>Запланирован (но не начат)</title>
+                <stylecss>fc-event-warning</stylecss>
+                <description>
+                    Создает объект типа «исполнение» со статусом 0-Запланирован
+                    Резервирование средств на счете клиента.
+                    Сущность ожидает дату автоматического перехода в статус 1-Взят в работу.
+                    Вычисляется дата/время перехода в статус «Взят в работу» = планируемая дата публикации – задержка исполнения.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage1</class>
+            </state>
+            <state id="1" name="state5">
+                <title>В работе у специалиста</title>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage5</class>
+            </state>
+            <state id="6" name="state7">
+                <title>Публикация</title>\<stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 96 часов.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage7</class>
+            </state>
+            <state id="7" name="state8">
+                <title>Готовится отчет</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
+            </state>
+            <state id="8" name="state9">
+                <title>Отчет на проверке у клиента;</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Автоматический переход
+                    Если поле отчет = «есть», то через 72 часа, в стадию: 9-Выполнена;
+                    Если поле отчет = «нет», то через 0ч, в стадию: 9-Выполнена;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
+            </state>
+            <state id="9" name="state10">
+                <title>Выполнена</title>
+                <stylecss>fc-event-light</stylecss>
+                <description>
+                    Списание зарезервированных средств со счета клиента
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
+            </state>
+            <state id="10" name="state11">
+                <title>Отменена</title>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
+            </state>
+        </states>
+    </product>
+    <product type="removal" title="Удаление">
+        <states>
+            <state id="0" name="state1">
+                <title>Запланирован (но не начат)</title>
+                <stylecss>fc-event-warning</stylecss>
+                <description>
+                    Создает объект типа «исполнение» со статусом 0-Запланирован
+                    Резервирование средств на счете клиента.
+                    Сущность ожидает дату автоматического перехода в статус 1-Взят в работу.
+                    Вычисляется дата/время перехода в статус «Взят в работу» = планируемая дата публикации – задержка исполнения.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
+            </state>
+            <state id="1" name="state2">
+                <title>Взят в работу</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
+                    3-Ожидается текст от клиента.
+                    Если поле «согласование» = «нет, материал готовит сервис» или «согласование» = «есть», то на стадию – через 0 часов.
+                    2-Пишется текст;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage2</class>
+            </state>
+            <state id="3" name="state4">
+                <title>Ожидается пополнение баланса.</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage4</class>
+            </state>
+            <state id="4" name="state5">
+                <title>В работе у специалиста</title>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage5</class>
+            </state>
+            <state id="7" name="state8">
+                <title>Готовится отчет</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
+            </state>
+            <state id="8" name="state9">
+                <title>Отчет на проверке у клиента;</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Автоматический переход
+                    Если поле отчет = «есть», то через 72 часа, в стадию: 9-Выполнена;
+                    Если поле отчет = «нет», то через 0ч, в стадию: 9-Выполнена;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
+            </state>
+            <state id="9" name="state10">
+                <title>Выполнена</title>
+                <stylecss>fc-event-light</stylecss>
+                <description>
+                    Списание зарезервированных средств со счета клиента
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
+            </state>
+            <state id="10" name="state11">
+                <title>Отменена</title>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
+            </state>
+        </states>
+    </product>
+    <product type="service" title="Услуга">
+        <states>
+            <state id="0" name="state1">
+                <title>Запланирован (но не начат)</title>
+                <stylecss>fc-event-warning</stylecss>
+                <description>
+                    Создает объект типа «исполнение» со статусом 0-Запланирован
+                    Резервирование средств на счете клиента.
+                    Сущность ожидает дату автоматического перехода в статус 1-Взят в работу.
+                    Вычисляется дата/время перехода в статус «Взят в работу» = планируемая дата публикации – задержка исполнения.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
+            </state>
+            <state id="1" name="state2">
+                <title>Взят в работу</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
+                    3-Ожидается текст от клиента.
+                    Если поле «согласование» = «нет, материал готовит сервис» или «согласование» = «есть», то на стадию – через 0 часов.
+                    2-Пишется текст;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\service\Stage2</class>
+            </state>
+            <state id="3" name="state4">
+                <title>Ожидается уточнения задания от клиента</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\service\Stage4</class>
+            </state>
+            <state id="4" name="state5">
+                <title>В работе у специалиста</title>
+                <description>
+                    Фиксация просрочки — через 72 часа.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage5</class>
+            </state>
+            <state id="8" name="state9">
+                <title>Отчет на проверке у клиента</title>
+                <stylecss>fc-event-success</stylecss>
+                <description>
+                    Автоматический переход
+                    Если поле отчет = «есть», то через 72 часа, в стадию: 9-Выполнена;
+                    Если поле отчет = «нет», то через 0ч, в стадию: 9-Выполнена;
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
+            </state>
+            <state id="9" name="state10">
+                <title>Выполнена</title>
+                <stylecss>fc-event-light</stylecss>
+                <description>
+                    Списание зарезервированных средств со счета клиента
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
+            </state>
+            <state id="10" name="state11">
+                <title>Отменена</title>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
+            </state>
+        </states>
+    </product>
+</catalog>

@@ -1,0 +1,22 @@
+.billing-view .billing-info{
+    border: 1px solid #33b5e0;
+    padding: 20px;
+    height: 101px;
+    font-weight: bold;
+}
+
+
+.billing-view .billing-info .money-total{
+    font-size: 34px;
+    font-weight: bold;
+    color: red;
+}
+
+
+.billing-view .info{
+    font-size: 18px;
+}
+
+.billing-view .info .bold{
+    font-weight: bold;
+}

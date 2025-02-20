@@ -1,0 +1,14 @@
+/*
+.alert.alert123456 {
+  position: relative;
+  padding: $alert-padding-y $alert-padding-x;
+  margin-bottom: $alert-margin-bottom;
+  border: $alert-border-width solid transparent;
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+ */
+
+.page.page-image-bg{
+  background-size: cover;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../images/funny_bg.jpg);
+}

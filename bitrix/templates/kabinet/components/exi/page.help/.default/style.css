@@ -1,0 +1,26 @@
+.help-page-module{
+    position: relative;
+    display: none;
+}
+
+.help-page-module .panel{
+    background-color: #fff9dd;
+}
+
+.help-page-module .close-button{
+    position: absolute;
+    right: 23px;
+    top: 22px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.pagehelp-button{
+    font-size: 30px;
+    color: #3a4049;
+    cursor: pointer;
+}
+
+.pagehelp-button:hover{
+    color: #1fa2cd;
+}

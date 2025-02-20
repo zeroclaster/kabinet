@@ -1,0 +1,176 @@
+.messanger-block{
+	background-color: #f4f4f4;
+	color: #0d0d0d;
+	padding-top: 10px;
+}
+
+.messanger-block .messange-list{
+	height: 170px;
+	overflow: auto;
+}
+
+.messanger-block .datetime-message{
+
+}
+
+.messanger-block .mess{
+	background-color: #FFF;
+	border-radius: 8px;
+	position: relative;
+}
+
+.messanger-block .mess:hover{
+	background-color: #F8FCFF;
+}
+
+.messanger-block .remove-message{
+	position: absolute;
+	top: 0px;
+	right: 5px;
+	cursor:pointer;
+}
+
+.messanger-block .edit-message{
+	position: absolute;
+	bottom: 3px;
+	right: 11px;
+	cursor:pointer;	
+}
+
+.messanger-block .answer-message{
+	position: absolute;
+	bottom: 3px;
+	left: 11px;
+	cursor:pointer;
+}
+
+.messanger-block .cansel-edit{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ddddddb8;
+	color: #000000;
+	display: none;
+	text-align:center;
+	cursor:pointer;
+	/*padding: 7% 0;*/
+	z-index: 10;
+}
+
+.messanger-block .cansel-edit button{
+	position: absolute;
+	top: 33%;
+	left: 44%;
+}
+
+.messanger-block .mess .avatar-block{
+	flex: 0 1 20%;
+}
+
+.messanger-block .mess .text-block-mess{
+	flex: 0 1 76%;
+}
+
+.messanger-block .mess .user-title{
+	font-size: 16px;
+	font-weight: bold;
+	color: #555;
+}
+
+.messanger-block .sender-block{
+	background-color: #FFF;
+	border-radius: 8px;
+}
+
+.messanger-block .sender-block .send-message-button{
+	width: 119px;
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
+.messanger-block .sender-block .upload-file-block{
+	width: 44px;
+	position:relative;
+}
+
+.messanger-block .sender-block .upload-file-block input[type='file'],.messanger-block .sender-block .upload-file-block .butt-upload{
+	width: 44px;
+	height: 53px;
+}
+
+.messanger-block .sender-block .upload-file-block input[type='file']{
+	position:absolute;
+	top:0px;
+	left:0px;
+	opacity: 0;
+	cursor: pointer;
+	z-index:100;
+}
+
+.messanger-block .sender-block .upload-file-block .butt-upload{
+	font-size: 25px;
+}
+
+.messanger-block .sender-block .upload-file-block .butt-upload i{
+	margin: 0 auto;
+}
+
+.messanger-block .sender-block textarea{
+	border-left: 1px solid #e8e8e8;
+	border-right: 1px solid #e8e8e8;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+}
+
+.messanger-block .message-text-block{
+	width: 100%;
+}
+
+.messanger-block .message-text-block .upload-file-list div{
+	font-size: 12px;
+	position: relative;
+}
+
+.messanger-block .message-text-block .upload-file-list div .remove-upload-file{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	cursor: pointer;
+}
+
+
+.messanger-block .messange-list .status-mark{
+	position: absolute;
+	top: -3px;
+	right: 17px;
+	font-size: 23px;
+	color: #0069b2;
+}
+
+.messanger-block .messange-list blockquote {
+	overflow: hidden;
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+	margin-left: 0;
+	font-style: italic;
+	border-left: 5px solid #ccc;
+	color: #b0b0b0;
+}
+
+.ck-content blockquote {
+	color: #b0b0b0!important;
+}
+
+.messanger-block .messange-list .new-message{
+	background-color: #E8E8E8;
+}
+
+.messanger-main-page .col-1{
+	max-width: 4.3333333333%;
+}
+
+.messanger-main-page .message_text_orgn{
+	margin-bottom: 0!important;
+}

@@ -1,0 +1,27 @@
+.personal-photo{
+    position: relative;
+}
+
+.personal-photo img{
+    border-radius: 141px;
+}
+
+.profile-edit-photo{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.profile-edit-photo i {
+    font-size: 36px;
+}
+
+.profile-edit-photo input {
+    position: absolute;
+    width: 30px;
+    height: 36px;
+    left: 0;
+    z-index: 20;
+    opacity: 0;
+    cursor: pointer;
+}

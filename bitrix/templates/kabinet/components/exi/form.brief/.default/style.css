@@ -1,0 +1,62 @@
+.hide-field.row{
+	display:none;
+}
+
+.hide-field.row.markRequire{
+	display:flex;
+}
+
+.markRequire .stretch-input-block, .markRequire input, .markRequire .ck-rounded-corners{
+	border: 1px solid red!important;
+}
+
+.range-gender-input .figure-gender i{
+	position: absolute;
+	top: 0;
+}
+
+.range-gender-input .figure-gender i:before{
+	position: absolute;
+}
+
+.range-gender-input .man-figure{
+	color: #0c63e4;
+}
+
+.range-gender-input .female-figure{
+	color:coral;
+}
+
+.range-gender-input .figure-block{
+	height: 16px;
+}
+
+.brief-field-filter .btn-link{
+	font-size: 18px;
+}
+
+.brief-field-filter .btn-link.disabled{
+	color: #1fa2cd;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.hidden-group{
+	display: none;
+}
+
+
+.form-group .select2-container .select2-selection--multiple .select2-selection__rendered{
+	padding: 0;
+}
+
+.form-group .select2-container--default .select2-selection--multiple .select2-selection__rendered li{
+	margin: 0;
+}
+
+.form-group .select2-container--default .select2-search--inline .select2-search__field{
+	border-radius: 0.375rem;
+	font-size: 0.9375rem;
+	line-height: 1.47;
+	padding: 10px;
+}

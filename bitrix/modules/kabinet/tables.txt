@@ -1,0 +1,16 @@
+b_kabinet_archive_fulfillment
+b_kabinet_archive_lmessanger
+b_kabinet_archive_task
+b_kabinet_billing
+b_kabinet_billinghistory
+b_kabinet_contract
+b_kabinet_fulfillment
+b_kabinet_lmessanger
+b_kabinet_paymentdata
+b_kabinet_projects
+b_kabinet_projects_details
+b_kabinet_projects_info
+b_kabinet_target_audience
+b_kabinet_task
+
+

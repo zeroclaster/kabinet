@@ -1,0 +1,13 @@
+.starrequired{
+    position: relative;
+}
+
+.starrequired:after{
+    content: "*";
+    position: absolute;
+    right: -11px;
+    top: 0px;
+    color: red;
+    font-size: 24px;
+}
+

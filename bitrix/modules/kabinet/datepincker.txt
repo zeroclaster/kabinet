@@ -1,0 +1,837 @@
+5. All default options to customize the date & time picker (Same as Eonasdan's Bootstrap 3 date/time picker widget).
+001
+	// timezone
+002
+	timeZone: '',
+003
+
+004
+	// Date format. See moment.js' docs for valid formats.
+005
+	format: false,
+006
+
+007
+	// Changes the heading of the datepicker when in "days" view.
+008
+	dayViewHeaderFormat: 'MMMM YYYY',
+009
+
+010
+	// Allows for several input formats to be valid.
+011
+	extraFormats: false,
+012
+
+013
+	// Number of minutes the up/down arrow's will move the minutes value in the time picker
+014
+	stepping: 1,
+015
+
+016
+	// Prevents date/time selections before this date
+017
+	minDate: false,
+018
+
+019
+	// Prevents date/time selections after this date
+020
+	maxDate: false,
+021
+
+022
+	// On show, will set the picker to the current date/time
+023
+	useCurrent: true,
+024
+
+025
+	// Using a Bootstraps collapse to switch between date/time pickers.
+026
+	collapse: true,
+027
+
+028
+	// See moment.js for valid locales.
+029
+	locale: moment.locale(),
+030
+
+031
+	// Sets the picker default date/time.
+032
+	defaultDate: false,
+033
+
+034
+	// Disables selection of dates in the array, e.g. holidays
+035
+	disabledDates: false,
+036
+
+037
+	// Disables selection of dates NOT in the array, e.g. holidays
+038
+	enabledDates: false,
+039
+
+040
+	// Change the default icons for the pickers functions.
+041
+	icons: {
+042
+	  time: 'fa fa-clock-o',
+043
+	  date: 'fa fa-calendar',
+044
+	  up: 'fa fa-chevron-up',
+045
+	  down: 'fa fa-chevron-down',
+046
+	  previous: 'fa fa-chevron-left',
+047
+	  next: 'fa fa-chevron-right',
+048
+	  today: 'fa fa-crosshairs',
+049
+	  clear: 'fa fa-trash-o',
+050
+	  close: 'fa fa-times'
+051
+	},
+052
+
+053
+	// custom tooltip text
+054
+	tooltips: {
+055
+	  today: 'Go to today',
+056
+	  clear: 'Clear selection',
+057
+	  close: 'Close the picker',
+058
+	  selectMonth: 'Select Month',
+059
+	  prevMonth: 'Previous Month',
+060
+	  nextMonth: 'Next Month',
+061
+	  selectYear: 'Select Year',
+062
+	  prevYear: 'Previous Year',
+063
+	  nextYear: 'Next Year',
+064
+	  selectDecade: 'Select Decade',
+065
+	  prevDecade: 'Previous Decade',
+066
+	  nextDecade: 'Next Decade',
+067
+	  prevCentury: 'Previous Century',
+068
+	  nextCentury: 'Next Century',
+069
+	  pickHour: 'Pick Hour',
+070
+	  incrementHour: 'Increment Hour',
+071
+	  decrementHour: 'Decrement Hour',
+072
+	  pickMinute: 'Pick Minute',
+073
+	  incrementMinute: 'Increment Minute',
+074
+	  decrementMinute: 'Decrement Minute',
+075
+	  pickSecond: 'Pick Second',
+076
+	  incrementSecond: 'Increment Second',
+077
+	  decrementSecond: 'Decrement Second',
+078
+	  togglePeriod: 'Toggle Period',
+079
+	  selectTime: 'Select Time'
+080
+	},
+081
+
+082
+	// Defines if moment should use scrict date parsing when considering a date to be valid
+083
+	useStrict: false,
+084
+
+085
+	// Shows the picker side by side when using the time and date together
+086
+	sideBySide: false,
+087
+
+088
+	// Disables the section of days of the week, e.g. weekends.
+089
+	daysOfWeekDisabled: [],
+090
+
+091
+	// Shows the week of the year to the left of first day of the week
+092
+	calendarWeeks: false,
+093
+
+094
+	// The default view to display when the picker is shown
+095
+	// Accepts: 'years','months','days'
+096
+	viewMode: 'days',
+097
+
+098
+	// Changes the placement of the icon toolbar
+099
+	toolbarPlacement: 'default',
+100
+
+101
+	// Show the "Today" button in the icon toolbar
+102
+	showTodayButton: false,
+103
+
+104
+	// Show the "Clear" button in the icon toolbar
+105
+	showClear: false,
+106
+
+107
+	// Show the "Close" button in the icon toolbar
+108
+	showClose: false,
+109
+
+110
+	// On picker show, places the widget at the identifier (string) or jQuery object if the element has css position: 'relative'
+111
+	widgetPositioning: {
+112
+	  horizontal: 'auto',
+113
+	  vertical: 'auto'
+114
+	},
+115
+
+116
+	// On picker show, places the widget at the identifier (string) or jQuery object **if** the element has css `position: 'relative'`
+117
+	widgetParent: null,
+118
+
+119
+	// Allow date picker show event to fire even when the associated input element has the `readonly="readonly"`property.
+120
+	ignoreReadonly: false,
+121
+
+122
+	// Will cause the date picker to stay open after selecting a date if no time components are being used
+123
+	keepOpen: false,
+124
+
+125
+	// If `false`, the textbox will not be given focus when the picker is shown.
+126
+	focusOnShow: true,
+127
+
+128
+	// Will display the picker inline without the need of a input field. This will also hide borders and shadows.
+129
+	inline: false,
+130
+
+131
+	// Will cause the date picker to **not** revert or overwrite invalid dates.
+132
+	keepInvalid: false,
+133
+
+134
+	// CSS selector
+135
+	datepickerInput: '.datepickerinput',
+136
+
+137
+	// Debug mode
+138
+	debug: false,
+139
+
+140
+	// If `true`, the picker will show on textbox focus and icon click when used in a button group.
+141
+	allowInputToggle: false,
+142
+
+143
+	// Must be in 24 hour format. Will allow or disallow hour selections (much like `disabledTimeIntervals`) but will affect all days.
+144
+	disabledTimeIntervals: false,
+145
+
+146
+	// Disable/enable hours
+147
+	disabledHours: false,
+148
+	enabledHours: false,
+149
+
+150
+	// This will change the `viewDate` without changing or setting the selected date.
+151
+	viewDate: false
+
+5. API methods (Same as Eonasdan's Bootstrap 3 date/time picker widget).
+001
+	$('#datetimepicker').data("DateTimePicker").functionName()
+002
+
+003
+	// Destroys the widget and removes all attached event listeners
+004
+	destroy()
+005
+
+006
+	// Shows or hides the widget
+007
+	toggle()
+008
+
+009
+	// Shows the widget
+010
+	show()
+011
+
+012
+	// Hides the widget
+013
+	hide()
+014
+
+015
+	// Disables the input element, the component is attached to, by adding a `disabled="true"` attribute to it. If the widget was visible before that call it is hidden.
+016
+	disable()
+017
+
+018
+	// Enables the input element, the component is attached to, by removing `disabled` attribute from it.
+019
+	enable()
+020
+
+021
+	// Clears the datepicker by setting the value to `null`
+022
+	clear()
+023
+
+024
+	// Returns a `moment` variable with the currently set `options.viewDate` option.
+025
+	viewDate()
+026
+
+027
+	// Returns the component's model current date, a moment object or null if not set.
+028
+	date()
+029
+
+030
+	// Returns an array with the currently set disabled dates on the component.
+031
+	disabledDates()
+032
+
+033
+	// Takes an [ string or Date or moment ] of values and disallows the user to select those days. Setting this takes precedence over options.minDate, options.maxDate configuration. Also calling this function removes the configuration of options.enabledDates if such exist.
+034
+	disabledDates(dates)
+035
+
+036
+	// Returns a moment with the options.defaultDate option configuration or false if not set
+037
+	defaultDate()
+038
+
+039
+	// Takes a string, Date, moment, boolean:false. Will set the picker's inital date. If a boolean:false value is passed the options.defaultDate parameter is cleared.
+040
+	defaultDate(defaultDate)
+041
+
+042
+	// Returns a boolean or string with the options.useCurrent option configuration
+043
+	useCurrent()
+044
+
+045
+	// Takes a boolean or string. If a boolean true is passed and the components model moment is not set (either through setDate or through a valid value on the input element the component is attached to) then the first time the user opens the datetimepicker widget the value is initialized to the current moment of the action. If a false boolean is passed then no initialization happens on the input element. You can select the granularity on the initialized moment by passing one of the following strings ('year', 'month', 'day', 'hour', 'minute') in the variable.
+046
+	useCurrent(boolean or string)
+047
+
+048
+	// Returns the currently set moment of the options.minDate or false if not set
+049
+	minDate()
+050
+
+051
+	// Takes a minDate string, Date, moment, boolean:false parameter and disallows the user to select a moment that is before that moment. If a boolean:false value is passed the options.minDate parameter is cleared and there is no restriction to the miminum moment the user can select.
+052
+	minDate(minDate)
+053
+
+054
+	// Returns the currently set moment of the options.maxDate or false if not set
+055
+	maxDate()
+056
+
+057
+	// Takes a maxDate string, Date, moment, boolean:false parameter and disallows the user to select a moment that is after that moment. If a boolean:false value is passed options.maxDate is cleared and there is no restriction to the maximum moment the user can select.
+058
+	maxDate(maxDate)
+059
+
+060
+	// Returns an array with the options.daysOfWeekDisabled configuration setting of the component.
+061
+	daysOfWeekDisabled()
+062
+
+063
+	// Takes an [ Number:0 to 6 ] and disallow the user to select weekdays that exist in this array. This has lower priority over the options.minDate, options.maxDate, options.disabledDates and options.enabledDates configuration settings.
+064
+	daysOfWeekDisabled(daysOfWeek)
+065
+
+066
+	// Returns the components current options object. Note that the changing the values of the returned object does not change the components actual configuration. Use options(options) to set the components options massively or the other methods for setting config options individually.
+067
+	options()
+068
+
+069
+	// Takes an object variable with option key:value properties and configures the component. Use this to update multiple options on the component.
+070
+	options([options])
+071
+
+072
+	// Returns the component's options.format string
+073
+	format()
+074
+
+075
+	// Takes a moment.js format string and sets the components options.format. This is used for displaying and also for parsing input strings either from the input element the component is attached to or the date() function. The parameter can also be a boolean:false in which case the format is set to the locale's L LT.
+076
+	format(format)
+077
+
+078
+	// Returns a boolean or array with the options.extraFormats option configuration
+079
+	extraFormats()
+080
+
+081
+	// Takes an array of valid input moment format options.
+082
+	extraFormats(formats)
+083
+
+084
+	// Returns the currently set locale of the options.locale
+085
+	locale()
+086
+
+087
+	// Takes a string of any valid moment locale e.g. de for German.
+088
+	locale(newLocale)
+089
+
+090
+	// Returns a number with the options.stepping option configuration
+091
+	stepping()
+092
+
+093
+	// Takes a number. This be the amount the up/down arrows move the minute value with a time picker.
+094
+	stepping(number)
+095
+
+096
+	// Returns a boolean of the options.sideBySide.
+097
+	ideBySide()
+098
+
+099
+	// Takes a boolean. If sideBySide is true and the time picker is used, both components will display side by side instead of collapsing.
+100
+	sideBySide(sideBySide)
+101
+
+102
+	// Returns a boolean with the options.collapse option configuration
+103
+	collapse()
+104
+
+105
+	// Takes a boolean. If set to false the picker will display similar to sideBySide except vertical.
+106
+	collapse(collapse)
+107
+
+108
+	// Returns an Ojbect of options.icons
+109
+	icons()
+110
+
+111
+	// Takes an Ojbect of strings.
+112
+	icons(icons)
+113
+
+114
+	// Returns a boolean of the options.useStrict
+115
+	useStrict()
+116
+
+117
+	// Takes a boolean. If useStrict is true, momentjs parsing rules will be stricter when determining if a date is valid or not.
+118
+	useStrict(useStrict)
+119
+
+120
+	// Returns the currently set options.widgetPositioning object containing two keys horizontal and vertical
+121
+	widgetPositioning()
+122
+
+123
+	// Takes an object parameter that can contain two keys vertical and horizontal each having a value of 'auto', 'top', 'bottom' for vertical and 'auto', 'left', 'right' for horizontal which defines where the dropdown with the widget will appear relative to the input element the component is attached to.
+124
+
+125
+	// 'auto' is the default value for both horizontal and vertical keys and it tries to automatically place the dropdown in a position that is visible to the user. Usually you should not override those options unless you have a special need in your layout.
+126
+	widgetPositioning(positioningObject)
+127
+
+128
+	// Returns a string of the options.viewMode.
+129
+	viewMode()
+130
+
+131
+	// Takes a string. Valid values are 'days', 'months', 'years' and 'decades'
+132
+	viewMode(newViewMode)
+133
+
+134
+	// Returns a boolean with the current options.calendarWeeks option configuration
+135
+	calendarWeeks()
+136
+
+137
+	// Takes a boolean variable to set if the week numbers will appear to the left on the days view
+138
+	calendarWeeks(boolean)
+139
+
+140
+	// Returns a boolean variable with the currently set options.showClear option.
+141
+	showClear()
+142
+
+143
+	// Takes a boolean variable to set if the clear date button will appear on the widget
+144
+	showClear(boolean)
+145
+
+146
+	// Returns a boolean variable with the currently set options.showTodayButton option.
+147
+	showTodayButton()
+148
+
+149
+	// Takes a boolean variable to set if the Today button will appear on the widget
+150
+	showTodayButton(boolean)
+151
+
+152
+	// Returns a string variable with the currently set options.toolbarplacement option.
+153
+	toolbarplacement()
+154
+
+155
+	// Takes a string value. Valid values are 'default', 'top' and 'bottom'.
+156
+
+157
+	// Changes the placement of the toolbar where the today, clear, component switch icon are located.
+158
+	toolbarplacement(string)
+159
+
+160
+	// Returns a string variable with the currently set options.dayViewHeaderFormat option.
+161
+	dayViewHeaderFormat()
+162
+
+163
+	// Takes a string value.
+164
+	// Used to customize the header of the day view.
+165
+	dayViewHeaderFormat(string)
+166
+
+167
+	// Returns a string variable with the currently set options.keyBinds option.
+168
+	keyBinds()
+169
+
+170
+	// Takes an object value.
+171
+	// Allows for several keyBinding functions to be specified for ease of access or accessibility. See the options page for defaults.
+172
+	keyBinds(object)
+173
+
+174
+	// Returns a boolean variable with the currently set options.inline option.
+175
+	inline()
+176
+
+177
+	// Takes a boolean value.
+178
+	// Used to customize the header of the day view.
+179
+	inline(boolean)
+180
+
+181
+	// Returns a boolean variable with the currently set options.ignoreReadonly option.
+182
+	ignoreReadonly()
+183
+
+184
+	// Takes a boolean value.
+185
+	// Set this to true to allow the picker to be used even if the input field is readonly. This will not bypass the disabled property
+186
+	ignoreReadonly(boolean)
+187
+
+188
+	// Returns a boolean variable with the currently set options.showClose option.
+189
+	showClose()
+190
+
+191
+	// Takes a boolean value.
+192
+	// If true, an icon will be displayed on the toolbar that will hide the picker
+193
+	showClose(boolean)
+194
+
+195
+	// Returns a string variable with the currently set options.keepInvalid option.
+196
+	keepInvalid()
+197
+
+198
+	// Takes a boolean value.
+199
+	// If true, invalid dates will not be reverted to a previous selection or changed.
+200
+	keepInvalid(boolean)
+201
+
+202
+	// Returns a boolean variable with the currently set options.allowInputToggle option.
+203
+	allowInputToggle()
+204
+
+205
+	// Takes a boolean value.
+206
+	// If true, the picker will show on textbox focus and icon click when used in a button group
+207
+	allowInputToggle(boolean)
+208
+
+209
+	// Returns a boolean variable with the currently set options.focusOnShow option.
+210
+	focusOnShow()
+211
+
+212
+	// Takes a boolean value.
+213
+	// If false, the textbox will not be given focus when the picker is shown
+214
+	focusOnShow(boolean)
+215
+
+216
+	// Returns an array variable with the currently set options.disabledTimeIntervals option.
+217
+	disabledTimeIntervals()
+218
+
+219
+	// Takes a array value.
+220
+	// The array must be in the following format [moment(),moment()]
+221
+	disabledTimeIntervals(array)
+222
+
+223
+	// Returns an array variable with the currently set options.en/disabledHours option.
+224
+	disabledHours()
+225
+
+226
+	// Takes a array value.
+227
+	// Must be in 24 hour format. Will allow or disallow hour selections (much like disabledTimeIntervals) but will affect all days.
+228
+	// Like en/disabledDates, these options are mutually exclusive and will reset one of the options back to false.
+229
+	disabledHours(boolean)
+230
+
+231
+	// Returns a moment variable with the currently set options.viewDate option.
+232
+	viewDate()
+233
+
+234
+	// Takes a string, moment or Date value.
+235
+	// This will change the viewDate without changing or setting the selected date.
+236
+	viewDate(viewDate)
+237
+
+238
+	// Returns a function with the currently set options.parseInputDate
+239
+	parseInputDate()
+240
+
+241
+	// Takes a function
+242
+	// Allows custom input formatting For example: the user can enter 'yesterday' or '30 days ago'.
+243
+	parseInputDate(function)
+244
+
+245
+	// Returns an Ojbect of options.tooltips
+246
+	tooltips()
+247
+
+248
+	// Takes an Ojbect of strings.
+249
+	tooltips(tooltips)
+
+6. Event handlers (Same as Eonasdan's Bootstrap 3 date/time picker widget).
+01
+	$('#example').datetimepicker()
+02
+	.on( "dp.hide", function() {
+03
+	  // Fired when the widget is hidden.
+04
+	})
+05
+	.on( "dp.show", function() {
+06
+	  // Fired when the widget is shown.
+07
+	})
+08
+	.on( "dp.change", function() {
+09
+	  // Fired when the date is changed.
+10
+	})
+11
+	.on( "dp.error", function() {
+12
+	  // Fired when a selected date fails to pass validation.
+13
+	})
+14
+	.on( "dp.update", function() {
+15
+	  // Fired (in most cases) when the viewDate changes. E.g. Next and Previous buttons, selecting a year.
+16
+	})

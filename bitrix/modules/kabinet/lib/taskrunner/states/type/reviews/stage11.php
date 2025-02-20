@@ -1,0 +1,119 @@
+<?php
+namespace Bitrix\Kabinet\taskrunner\states\type\reviews;
+
+use Bitrix\Main\SystemException,
+    Bitrix\Main\Entity,
+    Bitrix\Main\Event;
+
+use \Bitrix\Kabinet\DateTime;
+//use \Bitrix\Main\Type\DateTime;
+
+/*
+ * 10-Отменена;
+ *
+ * Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
+
+
+ *
+ *
+ */
+
+
+class Stage11 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
+    protected $title = '';
+    public $runnerFields = [];
+    public $id = 0;
+    public $status = 1;
+
+    public function __construct($runnerFields)
+    {
+        $this->runnerFields = $runnerFields;
+        $this->id = $runnerFields['ID'];
+    }
+
+    public function setTitle(string $title){
+        $this->title = $title;
+    }
+
+    public function getTitle(){
+        return $this->title;
+    }
+
+    public function getName(){
+        return implode('',array_slice(explode('\\',__CLASS__),-2,2));
+    }
+
+    public function getRoutes(){
+        if(\PHelp::isAdmin()) {
+            return [];
+        }else{
+            return [];
+        }
+    }
+
+    // условия что бы включить этот статус
+    public function conditionsTransition($oldData){
+        $runnerFields = $this->runnerFields;
+
+        if (\PHelp::isAdmin()) {
+            // Для админа
+
+        }else{
+
+        }
+
+        return true;
+    }
+
+    // уходят со статуса
+    public function leaveStage($object){
+        $object->set('UF_HITCH',0);
+    }
+
+    // когда пришли на статус
+    public function cameTo($object){
+
+        $runnerFields = $this->runnerFields;
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $messanger = $sL->get('Kabinet.Messanger');
+        $billing = $sL->get('Kabinet.Billing');
+
+        $task = $this->getTask();
+
+        $billing->cachback($runnerFields['UF_MONEY_RESERVE'],$task['UF_AUTHOR_ID'],$this);
+
+        $object->set('UF_MONEY_RESERVE',0);
+
+        // если статус устанавливает Админ
+        if (\PHelp::isAdmin()) {
+            $QUEUE_ID = $object->get('ID');
+            $TASK_ID = $object->get('UF_TASK_ID');
+            // отправить сообщение в чат
+            $upd_id = $messanger->sendSystemMessage(
+                $messanger->config('zadacha otmenena ispolnitelem'),
+                $QUEUE_ID,
+                $TASK_ID
+            );
+
+        }
+    }
+
+    public function execute(){
+        $event = new Event("kabinet", "OnBeforeStartStage", ['id'=>$this->id,'name'=>$this->getName(),'title'=>$this->getTitle()]);
+        $event->send();
+
+
+
+        $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
+        $Queue->goToEndLine($this->id);
+    }
+
+    public function getStatus(){
+        return $this->status;
+    }
+
+    public function getId(){
+        return $this->id;
+    }
+
+}
