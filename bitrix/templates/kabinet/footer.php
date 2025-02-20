@@ -43,7 +43,10 @@ Dbg::showDebug();
     Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/utilites.js");
 	Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/core.js");
 
+    Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/helper.js");
+
 	if (\PHelp::isAdmin()) Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/admin.application.js");
+
 
     //Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/test.js");
     ?>
@@ -60,7 +63,11 @@ foreach ($addscript as $item) {
 <?if(\PHelp::isAdmin()):?>
 <script>
     BX.ready(function () {
-        BX.ajax.get("/cron/cron1.php", ()=> {});
+        try {
+            BX.ajax.get("/cron/cron1.php", ()=> {});
+        }catch (e){
+
+        }
     });
 </script>
 <?endif;?>

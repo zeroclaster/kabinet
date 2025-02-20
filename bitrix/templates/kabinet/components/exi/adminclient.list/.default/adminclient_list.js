@@ -25,6 +25,7 @@ adminclient_list = (function (){
                     }
                 },
                 methods: {
+                    ...helperVueComponents(),
                     moreload:function (e) {
                         const this_ = this;
                         let formData = new FormData;
@@ -126,7 +127,7 @@ adminclient_list = (function (){
                     },
                     log(vareble){
                         console.log(vareble)
-                    }
+                    },
                 },
                 created(){
                 },

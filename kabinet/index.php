@@ -4,6 +4,8 @@ $APPLICATION->SetTitle("Кабинет");
 ?>
 
 
+
+
 <?
 $user = (\KContainer::getInstance())->get('user');
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();

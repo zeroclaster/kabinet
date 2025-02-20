@@ -88,6 +88,9 @@ $this->setFrameMode(true);
 									<div class="info-blk">Количество: <span>{{task.UF_NUMBER_STARTS}}</span></div>
 									<div class="info-blk">Дата создания: <span>{{task.UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
 									<div class="info-blk">Дата завершения: <span>{{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
+                                    <div class="info-blk">Согласование: <span>{{viewListFieldTitle(task,'UF_COORDINATION')}}</span></div>
+                                    <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(task,'UF_REPORTING')}}</span></div>
+                                    <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(task,'UF_CYCLICALITY')}}</span></div>
 								</div>
 							</div>					
 					</div>

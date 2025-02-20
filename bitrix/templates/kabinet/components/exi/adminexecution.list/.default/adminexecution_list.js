@@ -9,7 +9,7 @@ adminexecution_list = (function (){
                     <div class="form-group select-status" v-for="Status in catalog">
                         <div class="form-check">
                           <input @change="saveStatus" :name="$id('name')" class="form-check-input" :id="$id(Status.ID)" v-model="localModelValue" type="radio" :value="Status.ID">
-                          <label class="form-check-label text-primary" :for="$id(Status.ID)">{{Status.ID}}-{{Status.TITLE}}</label>
+                          <label class="form-check-label text-primary" :for="$id(Status.ID)">{{Status.TITLE}}</label>
                         </div>
                     </div>
                 </div>
