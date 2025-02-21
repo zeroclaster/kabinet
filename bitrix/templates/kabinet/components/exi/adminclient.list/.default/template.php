@@ -33,58 +33,54 @@ $this->setFrameMode(true);
         </div>
 
         <div class="panel-body">
+
+            <table class="table" style="width: 100%;"><tr><td width="10%">Клиент</td><td style="width: 28%;">Проекты</td><td style="width: 44%;">Задачи</td><td style="width: 20%;">Исполнения</td></tr></table>
+
 <table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Клиент</th>
-        <th scope="col">Проекты</th>
-        <th scope="col">Задачи</th>
-        <th scope="col">Исполнения</th>
-    </tr>
-    </thead>
+
     <tbody>
     <tr v-for="(client,clientindex) in dataclient">
-        <td>
+        <td style="border-right: 1px solid #dde3e8;width: 10%;padding: 0;">
             <div>
-				<div class="font-weight-bold">Клиент:</div>
-                <div class="text-primary h4">{{client.NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
+                <div class="h4">{{client.NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
 				<div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
 			</div>
 			<div class="mt-4">
 				<div class="font-weight-bold">Кабинет:</div>
 				<ul class="list-unstyled">
-					<li><a :href="'/kabinet/profile/?usr='+client.ID">Профиль <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-					<li><a :href="'/kabinet/?usr='+client.ID">Дашборд и проекты <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-					<li><a :href="'/kabinet/finance/?usr='+client.ID">Финансы <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+					<li><a :href="'/kabinet/profile/?usr='+client.ID" target="_blank">Профиль <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+					<li><a :href="'/kabinet/?usr='+client.ID" target="_blank">Дашборд и проекты <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+					<li><a :href="'/kabinet/finance/?usr='+client.ID" target="_blank">Финансы <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
 				</ul>
 			</div>
         </td>
-        <td>
+        <td style="padding: 0;">
 
-            <table class="table">
-                <tr v-for="project in dataproject[client.ID]">
-                    <td>
-                        <div>
-                                <div class="font-weight-bold h4">{{project.UF_NAME}}</div>
+            <table class="table table-borderless">
+                <tr v-for="project in dataproject[client.ID]" style="">
+                    <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 32%;padding: 0;">
+                        <div style="padding: 10px;">
+                                <div class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}}</div>
                                 <ul class="list-unstyled">
-                                    <li><a :href="'/kabinet/projects/breif/?id='+project.ID+'&usr='+client.ID">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-                                    <li><a :href="'/kabinet/projects/planning/?p='+project.ID+'&usr='+client.ID">Планирование задач <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                                    <li><a :href="'/kabinet/projects/breif/?id='+project.ID+'&usr='+client.ID" target="_blank">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                                    <li><a :href="'/kabinet/projects/planning/?p='+project.ID+'&usr='+client.ID" target="_blank">Планирование задач <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
                                 </ul>
                         </div>
                     </td>
-                    <td>
+                    <td style="padding: 0;">
                         <div v-if="typeof datatask[client.ID] == 'undefined'">У клиента еще нет задач</div>
 
                         <div v-for="project in dataproject[client.ID]">
                             <div v-for="task in datatask[client.ID]">
-                                <table v-if="project.ID == task.UF_PROJECT_ID">
+                                <table v-if="project.ID == task.UF_PROJECT_ID" style="width: 100%">
                                     <tr>
-                                        <td>
+                                        <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 70%;padding: 0;">
+                                            <div style="padding: 10px;">
                                             {{badTask(task.ID,client.ID,project.UF_ORDER_ID,task.UF_PRODUKT_ID)}}
                                             <div class="d-flex" v-if="typeof dataorder[client.ID][project.UF_ORDER_ID][task.UF_PRODUKT_ID] !='undefined'">
                                                 <div><img :src="dataorder[client.ID][project.UF_ORDER_ID][task.UF_PRODUKT_ID].PREVIEW_PICTURE_SRC"></div>
                                                 <div class="ml-3">
-                                                    <div class="h4" style="margin-top: 0;"><a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID">{{task.UF_NAME}}</a></div>
+                                                    <div class="h4" style="margin-top: 0;" :id="'task'+task.ID"><a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID" target="_blank">{{task.UF_NAME}}</a></div>
                                                     <div class="">Стоимость: <span class="text-danger" style="font-size: 23px;">{{task.FINALE_PRICE}} <span class="text-danger" v-if="task.UF_CYCLICALITY == 2">руб./месяц</span><span class="text-danger" v-if="task.UF_CYCLICALITY != 2">руб.</span></span></div>
                                                     <div class="info-blk">Количество: <span>{{task.UF_NUMBER_STARTS}}</span></div>
                                                     <div class="info-blk">Дата создания: <span>{{task.UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
@@ -94,17 +90,26 @@ $this->setFrameMode(true);
                                                     <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(task,'UF_CYCLICALITY')}}</span></div>
                                                 </div>
                                             </div>
+                                            </div>
                                         </td>
-                                        <td>
+                                        <td style="border-bottom: 1px solid #dde3e8;padding: 0;">
+                                            <div style="padding: 10px;">
                                             <form action="/kabinet/admin/performances/" method="post">
                                                 <input type="hidden" name="clientidsearch" :value="client.ID">
                                                 <div class="form-group select-status" v-for="(TitleStatus,idStatus) in statusCatalog()">
-                                                    <div class="form-check" v-if="getExecutionStatusCount2(task.ID,idStatus)>0">
+                                                    <div class="form-check" v-if="getExecutionStatusCount2(client.ID,task.ID,idStatus)>0">
+
+                                                        <!-- устанавливаем фильтр -->
+                                                        <input type="hidden" name="clientidsearch" :value="client.ID">
+                                                        <input type="hidden" name="projectidsearch" :value="project.ID">
+                                                        <input type="hidden" name="taskidsearch" :value="task.ID">
+
                                                         <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="$id(idStatus)" type="radio" :value="idStatus">
-                                                        <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount(client.ID,idStatus)}}</span></label>
+                                                        <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount2(client.ID,task.ID,idStatus)}}</span></label>
                                                     </div>
                                                 </div>
                                             </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 </table>

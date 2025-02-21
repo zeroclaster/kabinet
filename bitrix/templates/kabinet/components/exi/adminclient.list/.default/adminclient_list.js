@@ -113,24 +113,10 @@ adminclient_list = (function (){
 
                         return ret;
                     },
-                    getClientExecution2(id_client){
+                    getClientExecution2(id_client,taskID){
 
-                        let taskID = [];
-                        if (typeof this.datatask[id_client] == 'undefined') return taskID;
-                        for (index in this.datatask[id_client]){
-                            taskID.push(this.datatask[id_client][index].ID);
-                        }
-
-                        let ret = [];
-                        for(id of taskID){
-                            if (typeof this.datarunner[id_client] == 'undefined') continue;
-                            if (typeof this.datarunner[id_client][id] == 'undefined') continue;
-                            for(exec of this.datarunner[id_client][id]){
-                                ret.push(exec);
-                            }
-                        }
-
-                        return ret;
+                        if (typeof this.datarunner[id_client][taskID] != 'undefined') return this.datarunner[id_client][taskID];
+                        return [];
                     },
                     getExecutionStatusCount(id_client,id_status){
                         let count = 0;
@@ -142,9 +128,10 @@ adminclient_list = (function (){
 
                         return count;
                     },
-                    getExecutionStatusCount2(id_client,id_status){
+                    getExecutionStatusCount2(id_client,taskID,id_status){
+
                         let count = 0;
-                        let data = this.getClientExecution2(id_client);
+                        let data = this.getClientExecution2(id_client,taskID);
 
                         for (index in data){
                             if (data[index].UF_STATUS == id_status) count = count + 1;

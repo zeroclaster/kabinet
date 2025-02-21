@@ -62,7 +62,7 @@ $this->setFrameMode(true);
     </div>
     <div class="row justify-content-md-center">
         <div class="col-md-8 text-center">
-            <button type="submit" class="btn btn-primary mr-5">Показать</button> Показать: <a href="#" id="clearfilter">Все</a>
+            <button type="submit" class="btn btn-primary mr-5"><i class="fa fa-filter" aria-hidden="true"></i> Показать</button> Показать: <a href="#" id="clearfilter">Все</a>
         </div>
     </div>
 </form>
