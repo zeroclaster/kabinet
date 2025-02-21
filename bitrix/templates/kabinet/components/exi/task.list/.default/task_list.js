@@ -288,7 +288,7 @@ const myInputFileComponent = BX.Vue3.BitrixVue.mutableComponent('myInputFileComp
 	},
 	template:`<div class="preview-img-block-1 addbutton d-flex justify-content-center align-items-center">
 <div class="text-center">
-<span class="add-images-marker-1">+</span>
+<span class="add-images-marker-1"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
 <div style="position: absolute;bottom: 0;left: 27%;font-size: 12px;">{{statcount}}</div>
 <!--
 <div>({{statsize}})</div>

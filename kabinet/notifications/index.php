@@ -15,7 +15,7 @@ $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
             "SITE_ID" => "s1"
         )
     );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="NOTIFICATION" style="margin-right: 15px;"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Помощь</div>
+    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="NOTIFICATION" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
 </div>
 
 <section class="section-xs">

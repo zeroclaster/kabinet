@@ -331,15 +331,16 @@ $p = $request->get('p');
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
                                 <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)">Сохранить</button>
-								<button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled">Начать выполнение</button>
-                                <?/*
+								<button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
+                                    <button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
+                                    <?/*
                                     Возможность допланировать
 
                                     если не 33 Одно исполнение
                                     если не 34 Ежемесячная услуга
                                 */?>
-                                <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY!=33 && task.UF_CYCLICALITY!=34 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled">Продлить задачу до {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
-                                    <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled">Применить с {{dateStartNextMounth().format('DD.MM.YYYY')}}</button>
+                                <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY!=33 && task.UF_CYCLICALITY!=34 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Продлить задачу до {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
+                                    <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить с {{dateStartNextMounth().format('DD.MM.YYYY')}}</button>
                                 </div>
                             </div>
 						</div>							
@@ -351,8 +352,8 @@ $p = $request->get('p');
 					<ul class="list-unstyled">
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
-						<li v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>"><button class="btn btn-link btn-link-site" type="button" @click="stoptask(taskindex)" style="padding: 0;">Остановить</button></li>
-						<li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;">Удалить в архив</button></li>
+						<li v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>"><button class="btn btn-link btn-link-site" type="button" @click="stoptask(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+						<li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить в архив</button></li>
                     </ul>
 				</div>
             </div>

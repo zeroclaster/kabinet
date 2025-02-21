@@ -49,7 +49,7 @@ CUtil::InitJSCore(array('window'));
                         <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                     <div class="col-lg-3 thumbnail thumbnail-right" v-else>
-                        <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
 
                     <?/* –	Убрать кнопку «подробнее», ведущую на страницу проекта 2025-01-18
@@ -87,7 +87,7 @@ CUtil::InitJSCore(array('window'));
                         </div>
                     </div>
                     <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-primary mdi-menu-right icon-button-right" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])">планирование</a>
+                        <a class="btn btn-primary mdi-menu-right icon-button-right" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;планирование</a>
                     </div>
                 </div>
 
@@ -136,7 +136,7 @@ CUtil::InitJSCore(array('window'));
                     </div>
                     <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
                         <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button" href="/kabinet/finance/">пополнить</a>
-                        <a v-else class="btn btn-primary" href="/kabinet/finance/">пополнить</a>
+                        <a v-else class="btn btn-primary" href="/kabinet/finance/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;пополнить</a>
                     </div>
                 </div>
 

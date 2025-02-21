@@ -57,7 +57,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                 <div><a href="/kabinet/finance/">История операций</a></div>
             </div>
             <div class="col-md-5">
-                <a class="btn btn-primary mdi-plus icon-button" href="/kabinet/finance/deposit/">Пополнить баланс</a>
+                <a class="btn btn-primary" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;Пополнить баланс</a>
             </div>
         </div>
 

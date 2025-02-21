@@ -25,7 +25,7 @@ if (!$project) LocalRedirect("/404.php", "404 Not Found");
             "SITE_ID" => "s1"
         )
     );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Помощь</div>
+    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
 
 </div>
 

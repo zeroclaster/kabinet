@@ -7,7 +7,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
         <div class="row row-30">
             <div class="col-md-12">
                 <h1>Пополнение баланса</h1>
-                <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Помощь</div>
+                <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
             </div>
 
             <div class="col-md-12">

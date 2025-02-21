@@ -18,7 +18,7 @@ $projects = $projectManager->getData();
             <div class="col-md-12">
                 <h1>Добро пожаловать, <?=$user->printName()?></h1>
 
-                <div class="d-flex justify-content-end"><div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DASHBOARD"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Помощь</div></div>
+                <div class="d-flex justify-content-end"><div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DASHBOARD"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div></div>
             </div>
         </div>
     </div>
