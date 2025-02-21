@@ -17,7 +17,7 @@ foreach($saveData as $item){
 		);	
 }
 $aMenuLinksExt[] = Array(
-		"Создать", 
+		"Новый проект",
 		"/kabinet/projects/breif/",
 		Array(), 
 		Array("ICON"=>"mdi-plus"),

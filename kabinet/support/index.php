@@ -22,7 +22,7 @@ $APPLICATION->SetTitle("Поддержка");
     </div>
 </section>
 
-<section class="section-xs"><div class="container-fluid"><h1>Поддержка</h1></div></section>
+<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-question-circle" aria-hidden="true"></i> Поддержка</h1></div></section>
 
 <?
 // если нужно показывать только прочитанные

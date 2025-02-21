@@ -23,7 +23,7 @@ $APPLICATION->SetTitle("Профиль");
     </div>
 </section>
 
-<section class="section-xs"><div class="container-fluid"><h1>Профиль пользователя</h1></div></section>
+<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-user" aria-hidden="true"></i> Профиль пользователя</h1></div></section>
 
 
 <section class="section-md">

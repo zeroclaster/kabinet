@@ -21,7 +21,7 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
     </div>
 </section>
 
-<section class="section-xs"><div class="container-fluid"><h1>Договор и закрывающие документы</h1></div></section>
+<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-book" aria-hidden="true"></i> Договор и закрывающие документы</h1></div></section>
 
 <?$APPLICATION->IncludeComponent("exi:form.contract", "", Array(
         "GROUPS" =>[

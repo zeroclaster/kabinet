@@ -26,7 +26,7 @@ $APPLICATION->SetTitle("Финансы");
     <div class="container-fluid">
         <div class="row row-30">
             <div class="col-md-12">
-                <h1>Финансы</h1>
+                <h1><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Финансы</h1>
             </div>
 
                 <?$APPLICATION->IncludeComponent("exi:billing.view", "", Array(

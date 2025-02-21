@@ -4,24 +4,24 @@ if (\PHelp::isAdmin()) {
 }else
 $aMenuLinks = Array(
 	Array(
-		"Заказы", 
+		"Проекты",
 		"/kabinet/", 
 		Array(), 
-		Array("ICON"=>"mdi-file-outline"), 
+		Array("ICON"=>"fa fa-tachometer"),
 		"" 
 	),
 	Array(
 		"Финансы", 
 		"/kabinet/finance/", 
 		Array(), 
-		Array("ICON"=>"mdi-border-all"), 
+		Array("ICON"=>"fa fa-credit-card-alt"),
 		"" 
 	),
 	Array(
-		"Проекты", 
+		"Планирование",
 		"/kabinet/projects/", 
 		Array(), 
-		Array("ICON"=>"mdi-calendar-text","NOLINK"=>"Y"),
+		Array("ICON"=>"fa fa-calendar","NOLINK"=>"Y"),
 		"" 
 	),
 );

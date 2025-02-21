@@ -27,7 +27,7 @@ $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
     </div>
 </section>
 
-<section class="section-xs"><div class="container-fluid"><h1>Уведомления</h1></div></section>
+<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-bell" aria-hidden="true"></i> Уведомления</h1></div></section>
 
 
 <?
