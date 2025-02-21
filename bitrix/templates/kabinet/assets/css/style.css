@@ -820,3 +820,15 @@ h6, .h6 {
 i.fa{
 	font-style: normal;
 }
+
+.task-list-block1 .col-md-1{
+	max-width: 9.333%;
+	flex: 0 0 9.333%;
+	padding-right: 0px;
+}
+
+.task-list-block1 .col-md-2{
+	max-width: 9.333%;
+	flex: 0 0 9.333%;
+
+}
