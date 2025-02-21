@@ -34,7 +34,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             <label for="typepay-1">
                             <div class="method-additions">
                                 <div>
-                                <div class="title">Онлайн-платеж</div>
+                                <div class="title"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Онлайн-платеж</div>
                                 <div>Мир, Visa (кроме иностранных карт), Mastercard, Unionpay</div>
                                 <div>Сервисный сбор 7%</div>
                                 </div>
@@ -47,7 +47,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             <label for="typepay-2">
                             <div class="method-additions">
                             <div>
-                                <div class="title">QR-код</div>
+                                <div class="title"><i class="fa fa-qrcode" aria-hidden="true"></i> QR-код</div>
                                 <div>Для частных лиц, банки РФ, простая оплата по QR-коду.</div>
                                 <div style="margin-top: 34px;">Сервисный сбор 7%</div>
                             </div>
@@ -60,7 +60,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             <label for="typepay-3">
                                 <div class="method-additions">
                                     <div>
-                                        <div class="title">Банковский перевод</div>
+                                        <div class="title"><i class="fa fa-university" aria-hidden="true"></i> Банковский перевод</div>
                                         <div>Оплата по счету, для юридических лиц и ИП.</div>
                                         <div style="margin-top: 34px;">Сервисный сбор 3%</div>
                                     </div>
@@ -132,11 +132,11 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                                 <div class="info-help"></div>
                                             </div>
 											<div class="col-md-6">
-												<img v-if="fields.qrsumm==1000" src="/kabinet/finance/deposit/images/QR1070_qrcode.png">
-												<img v-if="fields.qrsumm==3000" src="/kabinet/finance/deposit/images/QR3210_qrcode.png">
-												<img v-if="fields.qrsumm==5000" src="/kabinet/finance/deposit/images/QR5350_qrcode.png">
-												<img v-if="fields.qrsumm==10000" src="/kabinet/finance/deposit/images/QR10700_qrcode.png">
-												<img v-if="fields.qrsumm==20000" src="/kabinet/finance/deposit/images/QR21400_qrcode.png">
+												<img v-if="fields.qrsumm==1000" src="/kabinet/finance/deposit/images/kupi-otziv.ru_QR1075_qrcode.png">
+												<img v-if="fields.qrsumm==3000" src="/kabinet/finance/deposit/images/kupi-otziv.ru_QR3225.81_qrcode.png">
+												<img v-if="fields.qrsumm==5000" src="/kabinet/finance/deposit/images/kupi-otziv.ru_QR5376_qrcode.png">
+												<img v-if="fields.qrsumm==10000" src="/kabinet/finance/deposit/images/kupi-otziv.ru_QR10752_qrcode.png">
+												<img v-if="fields.qrsumm==20000" src="/kabinet/finance/deposit/images/kupi-otziv.ru_QR21505_qrcode.png">
 											</div>
                                         </div>
                                         <?/*

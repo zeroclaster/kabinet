@@ -615,7 +615,7 @@ h6, .h6 {
 }
 
 .deposit-block-1  .to-pay-block .info-help{
-	color: red;
+	color: #afafaf;
 }
 
 .deposit-block-1 .butt-gotopay{
@@ -634,11 +634,11 @@ h6, .h6 {
 }
 
 .type-pay-list input[type='radio']:checked ~ label > div{
-	border: 1px solid red;
+	border: 1px solid #33b5e0;
 }
 
 .deposit-block-1 .type-pay-list input[type='radio']:checked ~ label > div > div{
-	border: 10px solid #ffe6e6;
+	border: 10px solid #33b5e0;
 }	
 
 .deposit-block-1 .error-field{

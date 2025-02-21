@@ -37,6 +37,7 @@ class Result extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
         $out_summ = $_REQUEST["OutSum"];
         $inv_id = $this->getTansId();
 
+        // Транзакция создается в bitrix/modules/kabinet/lib/controller/bilingevents.php
         $trans = $this->getTransaction($inv_id);
 
         if (!$trans) {
@@ -54,6 +55,26 @@ class Result extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
 
         // включить транзакцию
         return $this->involveTransaction($trans['ID'],$out_summ);
+    }
+
+    protected function involveTransaction($id,$sum){
+        $trans = $this->getTransaction($id);
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $billing = $sL->get('Kabinet.Billing');
+
+        $calc_sum =  round($trans['SUM'] *0.93,2);
+
+        try {
+            $billing->addMoney($calc_sum, $trans['USER_ID'], $this);
+        }catch (SystemException $exception){
+            $this->setError($exception->getMessage());
+            return false;
+        }
+
+        // Завершаем транзакцию
+        $this->endTransaction($id);
+
+        return true;
     }
 
     public function makeCRC(){
