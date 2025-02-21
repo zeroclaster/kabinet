@@ -91,6 +91,9 @@ adminclient_list = (function (){
                     gotocearchstatus(event){
                         event.target.form.submit();
                     },
+                    getTaskByProject(project){
+
+                    },
                     getClientExecution(id_client){
                         
                         let taskID = [];
@@ -110,9 +113,38 @@ adminclient_list = (function (){
 
                         return ret;
                     },
+                    getClientExecution2(id_client){
+
+                        let taskID = [];
+                        if (typeof this.datatask[id_client] == 'undefined') return taskID;
+                        for (index in this.datatask[id_client]){
+                            taskID.push(this.datatask[id_client][index].ID);
+                        }
+
+                        let ret = [];
+                        for(id of taskID){
+                            if (typeof this.datarunner[id_client] == 'undefined') continue;
+                            if (typeof this.datarunner[id_client][id] == 'undefined') continue;
+                            for(exec of this.datarunner[id_client][id]){
+                                ret.push(exec);
+                            }
+                        }
+
+                        return ret;
+                    },
                     getExecutionStatusCount(id_client,id_status){
                         let count = 0;
                         let data = this.getClientExecution(id_client);
+
+                        for (index in data){
+                            if (data[index].UF_STATUS == id_status) count = count + 1;
+                        }
+
+                        return count;
+                    },
+                    getExecutionStatusCount2(id_client,id_status){
+                        let count = 0;
+                        let data = this.getClientExecution2(id_client);
 
                         for (index in data){
                             if (data[index].UF_STATUS == id_status) count = count + 1;
