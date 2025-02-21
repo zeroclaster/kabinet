@@ -15,6 +15,8 @@ deposit_form = (function (){
                         },
                         errorField:{},
                         pecent: [0,7,7,3],
+                        // 2025-02-17 по ТЗ меняем  на такой расет
+                        pecent2: [0,0.93,0.93,0.97],
                     }
                 },
                 computed: {
@@ -25,7 +27,7 @@ deposit_form = (function (){
 						const typepay = this.fields.typepay;
 						
 						
-                        const pecent = this.pecent[typepay];
+                        const pecent2 = this.pecent2[typepay];
 						
 						var summapopolneniya = 0;
 						
@@ -34,7 +36,7 @@ deposit_form = (function (){
 
 									
                         summapopolneniya = parseFloat(summapopolneniya);
-                        return parseFloat(summapopolneniya + summapopolneniya * (pecent / 100)).toFixed(2);
+                        return parseFloat(summapopolneniya / pecent2).toFixed(2);
                     },					
                     isError(){
                         for(fieldName in this.errorField){
