@@ -51,23 +51,11 @@ CUtil::InitJSCore(array('window'));
                     <div class="col-lg-3 thumbnail thumbnail-right" v-else>
                         <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
-
-                    <?/* –	Убрать кнопку «подробнее», ведущую на страницу проекта 2025-01-18
-                    <div class="col-lg-3 thumbnail thumbnail-right"><a class="btn btn-primary mdi-menu-right icon-button-right" :href="'/kabinet/projects/?id='+value.ID">подробнее</a></div>
-                    */?>
                 </div>
 
                 <div class="row">
                     <div class="col-9 status-project" v-html="projectStatus(value)"></div>
                 </div>
-
-                <?/*
-                <div class="row">
-                    <div class="col-9 no-money-alert">
-                        Ожидает оплаты Запустится автоматически после пополнения баланса.
-                    </div>
-                </div>
-                */?>
 
                 <div class="row task-project table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
@@ -90,30 +78,6 @@ CUtil::InitJSCore(array('window'));
                         <a class="btn btn-primary mdi-menu-right icon-button-right" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;планирование</a>
                     </div>
                 </div>
-
-              <?/*
-                14.02.2025 –	Упрощаем карточку проекта
-                */?>
-              <?/*
-                <div class="row table-row-equal" v-if="getRequireFields(value.ID).length > 0">
-                    <div class="col-lg-9 thumbnail thumbnail-left">
-                        <div class="h4">Информация о проекте, компании, товарах и услугах</div>
-                        <div>Заполните Бриф на основе которого мы будем создавать описания компании в справочниках и каталогах сайтов-отзовиков. Информация о товарах и услугах компании, фотографии - для подробных и убедительных отзывов.
-                        </div>
-                    </div>
-                    <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
-                    </div>
-                </div>
-              <div class="row table-row-equal" v-else>
-                  <div class="col-lg-9 thumbnail thumbnail-left">
-                      <div class="h4">Информация о проекте, компании, товарах и услугах</div>
-                  </div>
-                  <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
-                      <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
-                  </div>
-              </div>
-              */?>
 
                 <div class="row table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
