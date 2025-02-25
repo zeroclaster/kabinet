@@ -38,7 +38,7 @@ class Autorun{
         $runnerManager = $sL->get('Kabinet.Runner');
 
         $list = $HLBClassTask::getlist([
-            'select'=>['*'],
+            'select'=>['ID'],
             'filter'=>[
                 'UF_ACTIVE'=>1,
                 'UF_CYCLICALITY' =>[2,34],
@@ -75,8 +75,10 @@ class Autorun{
             ])->fetchAll();
 
             // если нет, то планируем
-            if (!$isExists)
+            if (!$isExists) {
+                $task = $TaskManager->getData(false,[],['ID'=>$task['ID']]);
                 $runnerManager->startTask($task);
+            }
 
             $this->goToEndLine($task['ID']);
         }

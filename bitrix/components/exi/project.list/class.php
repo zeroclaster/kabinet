@@ -31,6 +31,10 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
     {
         $request =$this->request;
 
+        if(\PHelp::isAdmin() && empty($request['usr'])) {
+            $this->errorCollection[] = new Error('Ошибка в адресе запроса!',self::ERROR_TEXT);
+        }
+
         return $params;
     }
 

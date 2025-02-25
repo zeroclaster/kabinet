@@ -60,7 +60,7 @@ $this->setFrameMode(true);
                 <tr v-for="project in dataproject[client.ID]" style="">
                     <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 32%;padding: 0;">
                         <div style="padding: 10px;">
-                                <div class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}}</div>
+                                <div :id="'project-title-id-'+project.ID" class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}}</div>
                                 <ul class="list-unstyled">
                                     <li><a :href="'/kabinet/projects/breif/?id='+project.ID+'&usr='+client.ID" target="_blank">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
                                     <li><a :href="'/kabinet/projects/planning/?p='+project.ID+'&usr='+client.ID" target="_blank">Планирование задач <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
@@ -68,11 +68,14 @@ $this->setFrameMode(true);
                         </div>
                     </td>
                     <td style="padding: 0;">
+                        <?/*
+                                '!UF_STATUS'=>[0,9,10]
+                        */?>
                         <div v-if="typeof datatask[client.ID] == 'undefined'">У клиента еще нет задач</div>
-
-                        <div v-for="project in dataproject[client.ID]">
+                            {{(count_task=0,null)}}
                             <div v-for="task in datatask[client.ID]">
                                 <table v-if="project.ID == task.UF_PROJECT_ID" style="width: 100%">
+                                    {{(count_task=count_task+1,null)}}
                                     <tr>
                                         <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 70%;padding: 0;">
                                             <div style="padding: 10px;">
@@ -114,7 +117,14 @@ $this->setFrameMode(true);
                                     </tr>
                                 </table>
                             </div>
-                        </div>
+
+                        <table v-if="count_task == 0" style="width: 100%;height: 200px">
+                            <tr>
+                                <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 100%;padding: 0;">
+                                    &nbsp;
+                                </td>
+                        </table>
+
                     </td>
                 </tr>
             </table>

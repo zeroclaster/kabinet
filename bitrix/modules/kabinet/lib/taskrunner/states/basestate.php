@@ -16,7 +16,7 @@ class Basestate{
 	}
 
     // условия что бы включить этот статус
-    public function conditionsTransition(){
+    public function conditionsTransition($oldData){
 
     }
 
@@ -65,7 +65,7 @@ class Basestate{
         $runnerFields = $this->runnerFields;
         \utilCron1::addlog("Автоматический переход на следующую стадию");
 
-        $runnerFields[UF_STATUS] = $id;
+        $runnerFields['UF_STATUS'] = $id;
         $upd_id = $RunnerManager->update($runnerFields);
     }
 

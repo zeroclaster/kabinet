@@ -209,7 +209,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
 		$arrayUserID = array_column($this->arResult["CLIENT_DATA"],'ID');
 
-		$PR_DATA = $projectManager->getData(false,$arrayUserID);
+        $PR_DATA = $projectManager->getData(false,[],['UF_AUTHOR_ID'=>$arrayUserID]);
 		foreach($PR_DATA as $project){
 			$this->arResult["PROJECT_DATA"][$project["UF_AUTHOR_ID"]][] = $project;
 		}
