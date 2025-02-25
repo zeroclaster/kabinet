@@ -97,11 +97,11 @@ $this->setFrameMode(true);
                                         </td>
                                         <td style="border-bottom: 1px solid #dde3e8;padding: 0;">
                                             <div style="padding: 10px;">
-                                            <form action="/kabinet/admin/performances/" method="post">
+
                                                 <input type="hidden" name="clientidsearch" :value="client.ID">
                                                 <div class="form-group select-status" v-for="(TitleStatus,idStatus) in statusCatalog()">
                                                     <div class="form-check" v-if="getExecutionStatusCount2(client.ID,task.ID,idStatus)>0">
-
+                                                        <form action="/kabinet/admin/performances/" method="post">
                                                         <!-- устанавливаем фильтр -->
                                                         <input type="hidden" name="clientidsearch" :value="client.ID">
                                                         <input type="hidden" name="projectidsearch" :value="project.ID">
@@ -109,9 +109,10 @@ $this->setFrameMode(true);
 
                                                         <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="$id(idStatus)" type="radio" :value="idStatus">
                                                         <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount2(client.ID,task.ID,idStatus)}}</span></label>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            </form>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -123,6 +124,7 @@ $this->setFrameMode(true);
                                 <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 100%;padding: 0;">
                                     &nbsp;
                                 </td>
+                            </tr>
                         </table>
 
                     </td>

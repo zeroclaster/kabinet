@@ -150,7 +150,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         <div class="mt-4 p-3 report-link-block" v-if="isShowReportLink(runnerindex)">
                             <div class="blk-title">Отчет:</div>
                             <div v-if="runner.UF_REPORT_LINK_ORIGINAL">Ссылка: <a :href="runner.UF_REPORT_LINK_ORIGINAL" target="_blank" rel="nofollow">Открыть</a></div>
-                            <div v-if="runner.UF_REPORT_LINK_ORIGINAL">Скриншот: <a :href="runner.UF_REPORT_LINK_ORIGINAL" target="_blank" rel="nofollow">Смотреть</a></div>
+                            <div v-if="runner.UF_REPORT_SCREEN_ORIGINAL">Скриншот: <a :href="runner.UF_REPORT_SCREEN_ORIGINAL" target="_blank" rel="nofollow">Смотреть</a></div>
                             <div v-if="runner.UF_REPORT_FILE_ORIGINAL">Файл: <a :href="runner.UF_REPORT_FILE_ORIGINAL" target="_blank" rel="nofollow">Скачать</a></div>
                             <div v-if="runner.UF_REPORT_TEXT_ORIGINAL">{{runner.UF_REPORT_TEXT_ORIGINAL}}</div>
                         </div>

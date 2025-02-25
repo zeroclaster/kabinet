@@ -112,6 +112,11 @@ $this->setFrameMode(true);
                 <div class="mb-3">
                     <div>Задача:</div>
                     <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}}</div>
+                    <div style="font-size: 11px;">
+                        <div class="info-blk">Согласование: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_COORDINATION')}}</span></div>
+                        <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_REPORTING')}}</span></div>
+                        <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_CYCLICALITY')}}</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -199,40 +204,24 @@ $this->setFrameMode(true);
             <accountfield :tindex="runnerindex" v-model="runner.UF_SITE_SETUP"/>
 
             <div class="p-3 report-block" v-if="isViewReport(runner.UF_STATUS)">
-                <div class="h4">Отчет по исполнению</div>
-                <div class="row form-group">
-                    <div class="col-sm-3 text-sm-right">
-                        <label class="col-form-label" for="contract_type">Ссылка:</label>
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" v-model="runner.UF_REPORT_LINK" @input="inpsave(runnerindex)">
-                    </div>
+                <div class="h4" style="margin-top: 0;">Отчет по исполнению</div>
+                <div class="form-group">
+                        <label class="col-form-label" for="contract_type" style="padding-bottom: 0;">Ссылка:</label>
+                        <input type="text" class="form-control" v-model="runner.UF_REPORT_LINK" @change="inpsave(runnerindex)">
                 </div>
-                <div class="row form-group">
-                    <div class="col-sm-3 text-sm-right">
-                        <label class="col-form-label" for="contract_type">Скриншот отчета:</label>
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" v-model="runner.UF_REPORT_SCREEN" @input="inpsave(runnerindex)">
-                    </div>
+                <div class="form-group">
+                        <label class="col-form-label" for="contract_type" style="padding-bottom: 0;">Скриншот отчета:</label>
+                        <input type="text" class="form-control" v-model="runner.UF_REPORT_SCREEN" @change="inpsave(runnerindex)">
                 </div>
 
-                <div class="row form-group">
-                    <div class="col-sm-3 text-sm-right">
-                        <label class="col-form-label" for="contract_type">Файл отчета:</label>
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" v-model="runner.UF_REPORT_FILE" @input="inpsave(runnerindex)">
-                    </div>
+                <div class="form-group">
+                        <label class="col-form-label" for="contract_type" style="padding-bottom: 0;">Файл отчета:</label>
+                        <input type="text" class="form-control" v-model="runner.UF_REPORT_FILE" @change="inpsave(runnerindex)">
                 </div>
 
-                <div class="row form-group">
-                    <div class="col-sm-3 text-sm-right">
-                        <label class="col-form-label" for="contract_type">Текст отчета:</label>
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" v-model="runner.UF_REPORT_TEXT" @input="inpsave(runnerindex)">
-                    </div>
+                <div class="form-group">
+                        <label class="col-form-label" for="contract_type" style="padding-bottom: 0;">Текст отчета:</label>
+                        <textarea class="form-control" v-model="runner.UF_REPORT_TEXT" @change="inpsave(runnerindex)"></textarea>
                 </div>
             </div>
 

@@ -159,6 +159,7 @@ adminexecution_list = (function (){
                     },
                 },
                 methods: {
+                    ...helperVueComponents(),
                     showhidehistory(e){
                         const node = BX.findChild(e.target.parentNode,{class:'history-list'},true,false);
                         if (e.target.checked) BX.show(node);
