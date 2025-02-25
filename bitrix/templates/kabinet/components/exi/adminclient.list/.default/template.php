@@ -46,7 +46,7 @@ $this->setFrameMode(true);
 				<div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
 			</div>
 			<div class="mt-4">
-				<div class="font-weight-bold">Кабинет:</div>
+				<div class="font-weight-bold">Кабинет клиента:</div>
 				<ul class="list-unstyled">
 					<li><a :href="'/kabinet/profile/?usr='+client.ID" target="_blank">Профиль <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
 					<li><a :href="'/kabinet/?usr='+client.ID" target="_blank">Дашборд и проекты <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
@@ -61,10 +61,16 @@ $this->setFrameMode(true);
                     <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 32%;padding: 0;">
                         <div style="padding: 10px;">
                                 <div :id="'project-title-id-'+project.ID" class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}}</div>
+                                <div class="font-weight-bold">Кабинет клиента:</div>
                                 <ul class="list-unstyled">
                                     <li><a :href="'/kabinet/projects/breif/?id='+project.ID+'&usr='+client.ID" target="_blank">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
                                     <li><a :href="'/kabinet/projects/planning/?p='+project.ID+'&usr='+client.ID" target="_blank">Планирование задач <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
                                 </ul>
+                                <div v-for="task in datatask[client.ID]">
+                                    <div v-if="project.ID == task.UF_PROJECT_ID">
+                                        <a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID" target="_blank">Согласование и отчеты {{task.UF_NAME}} <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
                         </div>
                     </td>
                     <td style="padding: 0;">
@@ -83,7 +89,15 @@ $this->setFrameMode(true);
                                             <div class="d-flex" v-if="typeof dataorder[client.ID][project.UF_ORDER_ID][task.UF_PRODUKT_ID] !='undefined'">
                                                 <div><img :src="dataorder[client.ID][project.UF_ORDER_ID][task.UF_PRODUKT_ID].PREVIEW_PICTURE_SRC"></div>
                                                 <div class="ml-3">
-                                                    <div class="h4" style="margin-top: 0;" :id="'task'+task.ID"><a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID" target="_blank">{{task.UF_NAME}}</a></div>
+                                                    <form action="/kabinet/admin/performances/" method="post" target="_blank">
+                                                        <!-- устанавливаем фильтр -->
+                                                        <input type="hidden" name="clientidsearch" :value="client.ID">
+                                                        <input type="hidden" name="projectidsearch" :value="project.ID">
+                                                        <input type="hidden" name="taskidsearch" :value="task.ID">
+                                                        <button :id="'task'+task.ID" class="project-go-1" type="submit">{{task.UF_NAME}}</button>
+                                                    </form>
+
+
                                                     <div class="">Стоимость: <span class="text-danger" style="font-size: 23px;">{{task.FINALE_PRICE}} <span class="text-danger" v-if="task.UF_CYCLICALITY == 2">руб./месяц</span><span class="text-danger" v-if="task.UF_CYCLICALITY != 2">руб.</span></span></div>
                                                     <div class="info-blk">Количество: <span>{{task.UF_NUMBER_STARTS}}</span></div>
                                                     <div class="info-blk">Дата создания: <span>{{task.UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
@@ -101,7 +115,7 @@ $this->setFrameMode(true);
                                                 <input type="hidden" name="clientidsearch" :value="client.ID">
                                                 <div class="form-group select-status" v-for="(TitleStatus,idStatus) in statusCatalog()">
                                                     <div class="form-check" v-if="getExecutionStatusCount2(client.ID,task.ID,idStatus)>0">
-                                                        <form action="/kabinet/admin/performances/" method="post">
+                                                        <form action="/kabinet/admin/performances/" method="post" target="_blank">
                                                         <!-- устанавливаем фильтр -->
                                                         <input type="hidden" name="clientidsearch" :value="client.ID">
                                                         <input type="hidden" name="projectidsearch" :value="project.ID">

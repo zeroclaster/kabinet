@@ -832,3 +832,10 @@ i.fa{
 	flex: 0 0 9.333%;
 
 }
+
+.project-go-1{
+	border: none;
+	background: none;
+	color: rgb(31, 162, 205);
+	font-size: 22px;
+}
