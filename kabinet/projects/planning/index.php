@@ -26,7 +26,7 @@ $APPLICATION->AddChainItem("Планирование задач", "");
     <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
 </div>
 
-    <section class="section-xs">
+    <section class="">
         <div class="container-fluid">
             <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
                     'CODE' => 'PLANNING',
@@ -47,7 +47,7 @@ $APPLICATION->AddChainItem("Планирование задач", "");
 </section>
 
 
-    <section class="section-xs">
+    <section class="">
         <div class="container-fluid">
             <div class="row row-30">
                 <div class="col-md-12">

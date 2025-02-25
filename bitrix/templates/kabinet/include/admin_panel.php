@@ -5,7 +5,7 @@ $user = (\KContainer::getInstance())->get('user');
 <div class="rd-navbar-panel-cell" id="admincontent">
     <div class="h4">Профиль администратора</div>
     <?if($user->get('ID')):?>
-    <div>Вы находитесь под пользователем <?=$user->printName()?> (#id: <?=$user->get('ID')?>)</div>
+    <div>Вы находитесь в кабинете пользователя: <?=$user->printName()?> (#id: <?=$user->get('ID')?>)</div>
     <?endif;?>
 </div>
 <div class="rd-navbar-panel-cell">

@@ -18,7 +18,7 @@ $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
     <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="NOTIFICATION" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
 </div>
 
-<section class="section-xs">
+<section class="">
     <div class="container-fluid">
         <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
                 'CODE' => 'NOTIFICATION',

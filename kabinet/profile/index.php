@@ -14,7 +14,7 @@ $APPLICATION->SetTitle("Профиль");
 
 </div>
 
-<section class="section-xs">
+<section class="">
     <div class="container-fluid">
         <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
                 'CODE' => 'PROFILE',
