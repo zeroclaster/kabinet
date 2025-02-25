@@ -62,15 +62,13 @@ CUtil::InitJSCore(array('window'));
                         <div class="h4">Задачи проекта:</div>
                         <div>Задачи и работы в рамках проекта:</div>
                         <div class="d-flex flex-wrap">
-                            <div v-for="PRODUKT in data2[value.UF_ORDER_ID]" class="order-item-block">
-                                <div style="display: none;">
-                                product id: {{PRODUKT.ID}}
-                                    order id: {{value.UF_ORDER_ID}}
-                                </div>
-                                <a :href="'/kabinet/projects/reports/?t='+getTaskID(value.ID,PRODUKT.ID)">
-                                <img class="img-thumbnail mt-0" :src="PRODUKT['PREVIEW_PICTURE_SRC']" :alt="PRODUKT['NAME']">
+                            <div v-for="task in datatask" class="order-item-block">
+                                {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
+                                <a v-if="task.UF_PROJECT_ID == value.ID" :href="'/kabinet/projects/reports/?t='+task.ID">
+                                <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']">
                                 </a>
-                                <div class="alert-counter iphone-style-1">{{showAlertCounter(getTaskID(value.ID,PRODUKT.ID))}}</div>
+
+                                <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(getTaskID(value.ID,order.ID))}}</div>
                             </div>
                         </div>
                     </div>
