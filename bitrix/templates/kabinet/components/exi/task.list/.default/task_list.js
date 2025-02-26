@@ -1,4 +1,4 @@
-var task_list = document.adminclient_list || {};
+var task_list = document.task_list || {};
 task_list = (function (){
     return {
         start(PHPPARAMS){
@@ -8,6 +8,10 @@ task_list = (function (){
 
 
 // https://getdatepicker.com/4/
+// Set datepicker's value to initial date
+//const newDate = moment(this.original, "DD.MM.YYYY");
+//$(this.$refs.input).data('DateTimePicker').date(newDate);
+
 //https://momentjs.com/docs/#/displaying/
 /*
 moment().day(-7); // last Sunday (0 - 7)
@@ -28,7 +32,13 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 			id_input:'#inpid'+kabinet.uniqueId()
         }
     },
-    props: ['modelValue','tindex','mindd','maxd','original'],
+    props: [
+        'modelValue',   // значение даты из базы
+        'tindex',
+        'mindd',        // минимальная дата
+        'maxd',         // максимальная дата
+        'original'      // значение из базы в формате FORMAT1
+    ],
     computed: {
         localModelValue: {
             /* liveHack
@@ -41,39 +51,7 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
              */
             get() {
                 if (typeof this.modelValue != "undefined" &&  this.modelValue != "") {
-                    let mindate = moment.unix(this.modelValue);
-					
-					const originalDate = moment(this.original, "DD.MM.YYYY");
-					
-					/*
-					if (typeof $(this.$refs.input).data('DateTimePicker') != "undefined" && 
-					
-					
-					){
-						this.$root.datechenge.destroy();
-					
-							//console.log($(this.$refs.input));
-					
-							$(this.$refs.input).datetimepicker({
-								locale: moment.locale('ru'),
-								format: 'DD.MM.YYYY',
-								minDate: mindate     //new Date()
-							})
-								.on('dp.change', (event) => {	
-									
-									const originalDate = moment(this.original, "DD.MM.YYYY");
-									
-									if (originalDate.format("dd") != event.date.format("dd"))
-											this.updateValue(event.date);
-									//console.log(event.date);
-								});
-
-							this.$root.datechenge = $(this.$refs.input).data('DateTimePicker');					
-					}
-					*/
-					
-
-                    return mindate.format("DD.MM.YYYY");
+                    return moment.unix(this.modelValue).format("DD.MM.YYYY");
                 }else
                     return '';
             },
@@ -86,46 +64,13 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 	watch:{
         mindd: {
             handler(mind, oldVal) {
-                    let dateDEsable = false;
-
 					if (mind) {
-                                let mindateObj = moment.unix(mind);
-                                dateDEsable = mindateObj;
-                                mindate = mindateObj.toDate();
-
-                                let maxdateObj = moment.unix(this.maxd);
-                                let maxdate = maxdateObj.toDate();
-
-                            if (mindateObj.format("dd") != moment.unix(oldVal).format("dd")){
-                            this.$root.datechenge.destroy();
-
-                                    $(this.$refs.input).datetimepicker({
-                                        locale: moment.locale('ru'),
-                                        format: 'DD.MM.YYYY',
-                                        minDate: mindate,     //new Date()
-                                        maxDate: maxdate,
-                                        disabledDates: [dateDEsable]
-                                    })
-                                    /*
-                                        .on('dp.change', (event) => {
-
-                                            const originalDate = moment(this.original, "DD.MM.YYYY");
-
-                                            if (originalDate.format("dd") != event.date.format("dd"))
-                                                    this.updateValue(event.date);
-                                            //console.log(event.date);
-                                        });
-                                        */
-
-                                    this.$root.datechenge = $(this.$refs.input).data('DateTimePicker');
-
-
-
-                            //this.$root.datechenge.options({minDate: mindate});
-                            }
+                                this.datechenge.options({
+                                    minDate: moment.unix(mind).toDate(),     //new Date()
+                                    maxDate: moment.unix(this.maxd).toDate(),
+                                    disabledDates: [moment.unix(mind)]
+                                });
 					}
-					
-				
             },
             deep: true
         },
@@ -140,8 +85,8 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 
 		if (mind) {
             let mindateObj = moment.unix(mind);
-            // глюк с датой, нельзя выбрать минимальную дату7
-            // запрещаем это день для выбора
+            // Если в календаре выставиться из базы минимальная дата, то переключившись на другую дату, потом нельзя выбрать обратно
+            //минимальну дату, но она висит активной, добавляем ее в исключения dateDEsable
             dateDEsable = mindateObj;
             mindate = mindateObj.toDate();
         }
@@ -154,9 +99,8 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
         $(this.$refs.input).datetimepicker({
             locale: moment.locale('ru'),
             format: 'DD.MM.YYYY',
-            minDate: mindate,     //new Date()
-            maxDate: maxdate,
-            disabledDates: [dateDEsable]
+           // minDate: mindate,     //new Date()
+            maxDate: maxdate
         })
             .on('dp.show',(event) => {
                 //debugger
@@ -165,20 +109,15 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 
 				const originalDate = moment(this.original, "DD.MM.YYYY");
 
-				if (originalDate.format("dd") != event.date.format("dd"))
+				if (originalDate.format("X") != event.date.format("X"))
 						this.updateValue(event.date);
-                //console.log(event.date);
             });
-        // Set datepicker's value to initial date
 
-        //YYYY-MM-DD[T]HH:mm:ssZ
-
-        //const newDate = moment(this.original, "DD.MM.YYYY");
-
-        //$(this.$refs.input).data('DateTimePicker').date(newDate);
-		//$(this.$refs.input).data('DateTimePicker').date(newDate);
-
-        this.$root.datechenge = $(this.$refs.input).data('DateTimePicker');
+        $(this.$refs.input).data('DateTimePicker').options({
+            minDate: mindate,
+            disabledDates: [dateDEsable]
+        });
+        this.datechenge = $(this.$refs.input).data('DateTimePicker');
 
     },
     methods: {

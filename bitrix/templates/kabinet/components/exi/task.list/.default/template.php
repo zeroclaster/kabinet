@@ -267,8 +267,6 @@ $p = $request->get('p');
                                     </div>
                                     <div style="position: relative">
                                         <div class="input-group">
-                                            {{task.ID}}
-                                            {{task.UF_DATE_COMPLETION}}
                                             <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
                                         </div>
                                     </div>
