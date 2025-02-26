@@ -267,6 +267,8 @@ $p = $request->get('p');
                                     </div>
                                     <div style="position: relative">
                                         <div class="input-group">
+                                            {{task.ID}}
+                                            {{task.UF_DATE_COMPLETION}}
                                             <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
                                         </div>
                                     </div>
@@ -348,7 +350,7 @@ $p = $request->get('p');
 					</div>
 					
                 </div>
-                <div class="col-md-2">
+                <div class="col">
 					<ul class="list-unstyled">
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>

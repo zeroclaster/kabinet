@@ -72,7 +72,7 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 					}
 					*/
 					
-					
+
                     return mindate.format("DD.MM.YYYY");
                 }else
                     return '';
@@ -162,9 +162,9 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
                 //debugger
             })
             .on('dp.change', (event) => {
-				
+
 				const originalDate = moment(this.original, "DD.MM.YYYY");
-				
+
 				if (originalDate.format("dd") != event.date.format("dd"))
 						this.updateValue(event.date);
                 //console.log(event.date);
@@ -182,7 +182,7 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
 
     },
     methods: {
-        updateValue (value) {							
+        updateValue (value) {
             this.$emit('update:modelValue', parseInt(value.format('X'))+10800);
             // отключаем изменение даты на каждую выбранную дату
             //this.$root.savetask(this.tindex);
