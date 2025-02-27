@@ -282,6 +282,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
         //throw new SystemException("Временно не доступно! В разработке!");
 
+        $this->taskFileds = $task;
         $this->checkTask($task);
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();

@@ -67,7 +67,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
         if ($initiator instanceof \Bitrix\Kabinet\taskrunner\Runnermanager){
             $task = $initiator->taskFileds;
             $fields['UF_TASK_ID'] = $task['ID'];
-            $peration = $peration. ' '.$task['UF_NAME'];
+            //$peration = $peration. ' '.$task['UF_NAME'];
             $fields['UF_PROJECT_ID'] = $task['UF_PROJECT_ID'];
             $project = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([
                 'select'=>['*'],

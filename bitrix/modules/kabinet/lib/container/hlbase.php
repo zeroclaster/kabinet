@@ -235,10 +235,6 @@ class Hlbase extends Base {
             return array_merge($saveData, $original);
     }
 
-    public function getData($clear=false){
-        throw new SystemException("function getData");
-    }
-
     public function getEmptyData(){
         $project = [];
 
