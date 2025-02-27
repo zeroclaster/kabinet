@@ -88,6 +88,8 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         $TaskManager = $sL->get('Kabinet.Task');
         $RunnerManager = $sL->get('Kabinet.Runner');
         $projectManager = $sL->get('Kabinet.Project');
+        $BillingManager = $sL->get('Kabinet.Billing');
+
 
 		if (empty($post['ID'])){
 			$this->addError(new Error("Нет ID задачи!", 1));
@@ -119,12 +121,14 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         $taskData = $TaskManager->getData();
         $orderData = $projectManager->orderData();
         $Queue = $sL->get('Kabinet.Runner')->getData(array_column($taskData, 'ID'));
+        $dataArray = $BillingManager->getData();
 
         return [
             'id'=> $upd_id,
 			'task'=>$taskData,
             'data2' =>$orderData,
             'queue' => $Queue,
+            'billing' => $dataArray,
             'message'=>'Задача успешно запланирована! Ждет выполнения.'
         ];		
 	}

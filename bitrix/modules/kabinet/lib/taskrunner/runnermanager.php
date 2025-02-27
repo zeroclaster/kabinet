@@ -345,7 +345,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                     'UF_ELEMENT_TYPE' => $type,
                     'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
                     'UF_PLANNE_DATE' => $PlannedDate[$i],
-                    'UF_MONEY_RESERVE' => $FINALE_PRICE,
+                    'UF_MONEY_RESERVE' => $onePrice,
                 ]);
                 if (!$obResult->isSuccess()) {
                     $err = $obResult->getErrors();

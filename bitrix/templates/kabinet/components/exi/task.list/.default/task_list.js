@@ -256,6 +256,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...BX.Vue3.Pinia.mapState(cataloglistStore, ['data3','message']),
         ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
         ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
+        ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
         fullName: {
             // геттер:
             get: function () {
@@ -451,6 +452,11 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                         orderStore.data2 = data.data2;
                     }
 
+                    // обновляем биллинг если он пришел от сервера
+                    if (typeof data.billing != "undefined") {
+                        const billing = billingStore();
+                        billing.databilling = data.billing;
+                    }
 
                     //console.log(response)
                     kabinet.loading(false);
