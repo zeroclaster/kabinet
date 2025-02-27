@@ -121,8 +121,8 @@ $this->setFrameMode(true);
                                                         <input type="hidden" name="projectidsearch" :value="project.ID">
                                                         <input type="hidden" name="taskidsearch" :value="task.ID">
 
-                                                        <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="$id(idStatus)" type="radio" :value="idStatus">
-                                                        <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount2(client.ID,task.ID,idStatus)}}</span></label>
+                                                        <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="'project'+project.ID+'tast'+task.ID+$id(idStatus)" type="radio" :value="idStatus">
+                                                        <label class="form-check-label text-primary" :for="'project'+project.ID+'tast'+task.ID+$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount2(client.ID,task.ID,idStatus)}}</span></label>
                                                         </form>
                                                     </div>
                                                 </div>
