@@ -250,7 +250,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $dateList = [];
         $dateList[] = $mouthStart;
         $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
-        if ($task['UF_CYCLICALITY'] == 2) {
+        if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
             // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
             $step = floor(30 / $task['UF_NUMBER_STARTS']);
         }else{
@@ -336,7 +336,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             $FINALE_PRICE = $onePrice*count($PlannedDate);
 
             $isGetMoney = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
-            if (!$isGetMoney) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
+            if ($isGetMoney === false) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
 
             for ($i = 0; $i < count($PlannedDate); $i++) {
                 $obResult = $HLBClass::add([

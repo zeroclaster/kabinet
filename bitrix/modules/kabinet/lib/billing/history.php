@@ -146,7 +146,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
             $dataSQL = \Bitrix\Kabinet\billing\datamanager\BillinghistoryTable::getListActive([
                 'select'=>['*'],
                 'filter'=>$filter,
-                'order'=>["UF_PUBLISH_DATE"=>'ASC'],
+                'order'=>["UF_PUBLISH_DATE"=>'DESC'],
 				'limit'=>$limit,
 				'offset'=>$offset
             ])->fetchAll();
@@ -155,7 +155,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
             //echo \Bitrix\Main\Entity\Query::getLastQuery();
             //echo "</pre>";
 			
-			$dataSQL = array_reverse($dataSQL);
+			//$dataSQL = array_reverse($dataSQL);
 
 			$listdata = [];
 			foreach ($dataSQL as $data) {
