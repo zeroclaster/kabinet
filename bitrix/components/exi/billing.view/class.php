@@ -107,6 +107,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 		$arResult['RESERVED'] = 0;
         $arResult['ACTUAL_MONTH_EXPENSES'] = 0;
         $arResult['ACTUAL_MONTH_BUDGET'] = 0;
+        $arResult['RECOMMEND_UP_BALANCE'] = 0;
 
         $user = (\KContainer::getInstance())->get('user');
         $user_id = $user->get('ID');
@@ -135,9 +136,14 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         // Расходы на ближайший месяц
         $arResult['EXPENSES_NEXT_MONTH'] = $billing->nextMonthExpenses();
 
+        //'UF_STATUS'=>9, // Выполненые
         $arResult['ACTUAL_MONTH_EXPENSES'] = $billing->actualMonthExpenses();
+
+        // все без статусов
         $arResult['ACTUAL_MONTH_BUDGET'] = $billing->actualMonthBudget();
 
+        // Рекомендуем пополнить баланс на
+        $arResult['RECOMMEND_UP_BALANCE'] = $arResult['ACTUAL_MONTH_BUDGET'] - $arResult["BILLING_DATA"]['UF_VALUE'];
 
         if ($arResult["BILLING_DATA"]['UF_VALUE']>0) {
 
@@ -165,7 +171,8 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 					$arResult['FUTURE_SPENDING'],
 					$arResult['RESERVED'],
                     $arResult['ACTUAL_MONTH_EXPENSES'],
-                    $arResult['ACTUAL_MONTH_BUDGET']
+                    $arResult['ACTUAL_MONTH_BUDGET'],
+                    $arResult['RECOMMEND_UP_BALANCE']
 					));
         }
         else
@@ -176,6 +183,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 			$arResult['RESERVED'] = $vars[2];
             $arResult['ACTUAL_MONTH_EXPENSES'] = $vars[3];
             $arResult['ACTUAL_MONTH_BUDGET'] = $vars[4];
+            $arResult['RECOMMEND_UP_BALANCE'] = $vars[5];
         }		
 		
     }

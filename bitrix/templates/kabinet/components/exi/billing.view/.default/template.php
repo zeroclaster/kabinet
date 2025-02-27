@@ -46,6 +46,9 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                 <div class="d-flex"><div class="mr-3">Расход в текущем месяце:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_EXPENSES']?> рублей.</div></div>
                 <div class="d-flex"><div class="mr-3">Бюджет на текущий месяц:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_BUDGET']?> рублей.</div></div>
                 <div class="d-flex"><div class="mr-3">Бюджет на следующий месяц с <?=$nextMouthStart->format("d.m.Y")?> по <?=$nextMouthEnd->format("d.m.Y")?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> рублей.</div></div>
+                <?if($arResult['RECOMMEND_UP_BALANCE']>0):?>
+                    <div class="d-flex"><div class="mr-3">Рекомендуем пополнить баланс на:</div> <div class="bold"><?=$arResult['RECOMMEND_UP_BALANCE']?> рублей.</div></div>
+                <?endif;?>
 
                 <?/*
                 <div class="d-flex"><div class="mr-3">Запланированные расходы на следующий месяц, <?=\PHelp::monthName($nextmouth->format("n"))?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> рублей.</div></div>

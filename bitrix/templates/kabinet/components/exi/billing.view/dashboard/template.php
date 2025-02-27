@@ -41,14 +41,15 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
             </div>
             <div class="col-md-5 info">
 
-                <?/*
-                <div class="d-flex"><div class="mr-3">Запланированные расходы на следующий месяц, <?=\PHelp::monthName($nextmouth->format("n"))?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> рублей.</div></div>
-                */?>
+                <?if($arResult['RESERVED']):?><div class="d-flex info"><div class="mr-3">Всего запланировано задач на сумму:</div> <div class="bold"><?=$arResult['RESERVED']?> руб.</div></div><?endif;?>
+
 
                 <div class="d-flex"><div class="mr-3">Расход в текущем месяце:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_EXPENSES']?> рублей.</div></div>
                 <div class="d-flex"><div class="mr-3">Бюджет на текущий месяц:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_BUDGET']?> рублей.</div></div>
                 <div class="d-flex"><div class="mr-3">Бюджет на следующий месяц с <?=$nextMouthStart->format("d.m.Y")?> по <?=$nextMouthEnd->format("d.m.Y")?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> рублей.</div></div>
-
+                <?if($arResult['RECOMMEND_UP_BALANCE']>0):?>
+                <div class="d-flex"><div class="mr-3">Рекомендуем пополнить баланс на:</div> <div class="bold"><?=$arResult['RECOMMEND_UP_BALANCE']?> рублей.</div></div>
+                <?endif;?>
 
                 <?/*
                 <?if($arResult['FUTURE_SPENDING']):?><div class="d-flex" v-if="databilling.UF_VALUE_ORIGINAL>0"><div class="mr-3">Средств хватит до </div> <div class="bold"><?=$arResult['FUTURE_SPENDING']?></div></div><?endif;?>
