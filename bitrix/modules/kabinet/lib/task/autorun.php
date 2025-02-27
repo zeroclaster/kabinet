@@ -77,7 +77,7 @@ class Autorun{
             // если нет, то планируем
             if (!$isExists) {
                 $task = $TaskManager->getData(false,[],['ID'=>$task['ID']]);
-                $runnerManager->startTask($task);
+                $runnerManager->startTask($task[0]);
             }
 
             $this->goToEndLine($task['ID']);
