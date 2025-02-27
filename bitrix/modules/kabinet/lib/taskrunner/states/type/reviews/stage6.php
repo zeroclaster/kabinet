@@ -63,7 +63,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [2,4,6];
+            return [1,2,3,4,5,6,7,8,9,10];
         }else{
             return [4,6];
         }

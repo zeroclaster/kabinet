@@ -65,7 +65,7 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             $TaskData = $TaskData[0];
 
             if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
-                return [7,9];
+                return [1,2,3,4,5,6,7,8,9,10];
             else
                 return [9];
         }else{
