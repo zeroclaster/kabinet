@@ -296,10 +296,10 @@ abstract class Base{
                                 $newField[$k2][$key] = $one;
                             }
 					    }else{
-                            if ($v)
+                            //if ($v)
                             $newField[0][$key] = $v;
-                            else
-                                $newField = [];
+                            //else
+                                //$newField = [];
                         }
 					}
 

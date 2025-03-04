@@ -182,10 +182,12 @@ class Hlbase extends Base {
 							$f['MIME'] = $file->getContentType();	
                             return $f;
                         },$value);				
-                    }else{
+                    }elseif ($value){
                         $fd = $fd2= \CFile::GetFileArray($value);
                         unset($fd2['ID'],$fd2['SRC'],$fd2['FILE_SIZE']);
                         $value = array_diff_key($fd,$fd2);
+                    }else{
+                        $value = [];
                     }
                 }
 

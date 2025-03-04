@@ -309,20 +309,10 @@ AddEventHandler('form', 'onAfterResultAdd', 'onAfterResultAddUpdate');
 AddEventHandler("main", "OnBeforeEventAdd", array("Changemail", "OnBeforeEventAddHandler"));
 class Changemail
 {
-    function OnBeforeEventAddHandler(&$event, &$lid, &$arFields)
+    static public function OnBeforeEventAddHandler(&$event, &$lid, &$arFields)
     {
     	global $APPLICATION;
-
-    	$email = $APPLICATION->GetPageProperty("email");
-    	
-    	AddMessage2Log("OnBeforeEventAdd Changemail MMMMMMM", "my_module_id");
-    	
-
-    	if (!empty($email)){
-    		$arFields['SEND_EMAIL_RAW'] = $email; 
-    	}
-
-    	AddMessage2Log(print_r($arFields,true), "my_module_id");
+    	if (!empty($email)) $arFields['SEND_EMAIL_RAW'] = $APPLICATION->GetPageProperty("email");
     }
 }
 

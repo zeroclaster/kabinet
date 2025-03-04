@@ -61,7 +61,7 @@ CUtil::InitJSCore(array('window'));
                     <div class="col-lg-9 thumbnail thumbnail-left">
                         <div class="h4">Задачи проекта:</div>
                         <div>Задачи и работы в рамках проекта:</div>
-                        <div class="d-flex flex-wrap">
+                        <div class="d-flex flex-wrap" v-if="value.UF_ORDER_ID">
                             <div v-for="task in datatask" class="order-item-block">
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
                                 <a v-if="task.UF_PROJECT_ID == value.ID" :href="'/kabinet/projects/reports/?t='+task.ID">
