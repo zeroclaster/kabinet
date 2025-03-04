@@ -42,6 +42,8 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             </label>
                         </div>
 
+                        <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
+                        <?if(0):?>
                         <div class="col-md-4">
                             <input id="typepay-2" type="radio" name="typepay" value="2" v-model="fields.typepay" @change="onChange">
                             <label for="typepay-2">
@@ -54,6 +56,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             </div>
                             </label>
                         </div>
+                        <?endif;?>
 
                         <div class="col-md-4">
                             <input id="typepay-3" type="radio" name="typepay" value="3" v-model="fields.typepay" @change="onChange">
@@ -109,6 +112,8 @@ $APPLICATION->SetTitle("Пополнение баланса");
                         </div>
                     </div>
 
+                        <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
+                        <?if(0):?>
                         <!-- QR-код -->
                         <div class="row" v-if="fields.typepay==2">
                             <div class="col-md-12">
@@ -166,6 +171,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                 </div>
                             </div>
                         </div>
+                        <?endif;?>
 
                         <!-- Банковский перевод -->
                         <div class="row" v-if="fields.typepay==3">

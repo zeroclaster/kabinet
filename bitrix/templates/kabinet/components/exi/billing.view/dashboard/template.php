@@ -38,17 +38,20 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                     <div>Текущий баланс, руб:</div>
                     <div class="money-total">{{databilling.UF_VALUE_ORIGINAL}}</div>
                 </div>
+                <div class="mt-4 text-center">
+                    <a class="btn btn-primary" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;Пополнить баланс</a>
+                </div>
             </div>
             <div class="col-md-5 info">
 
-                <?if($arResult['RESERVED']):?><div class="d-flex info"><div class="mr-3">Всего запланировано задач на сумму:</div> <div class="bold"><?=$arResult['RESERVED']?> руб.</div></div><?endif;?>
+                <?if($arResult['RESERVED']):?><div class="d-flex info"><div class="mr-3">Всего запланировано задач на:</div> <div class="bold"><?=$arResult['RESERVED']?> руб.</div></div><?endif;?>
 
+                <div class="d-flex"><div class="mr-3">Расход в текущем месяце:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_EXPENSES']?> руб.</div></div>
+                <div class="d-flex"><div class="mr-3">Бюджет на текущий месяц:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_BUDGET']?> руб.</div></div>
+                <div class="d-flex"><div class="mr-3">Бюджет на следующий месяц с <?=$nextMouthStart->format("d.m.Y")?> по <?=$nextMouthEnd->format("d.m.Y")?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> руб.</div></div>
 
-                <div class="d-flex"><div class="mr-3">Расход в текущем месяце:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_EXPENSES']?> рублей.</div></div>
-                <div class="d-flex"><div class="mr-3">Бюджет на текущий месяц:</div> <div class="bold"><?=$arResult['ACTUAL_MONTH_BUDGET']?> рублей.</div></div>
-                <div class="d-flex"><div class="mr-3">Бюджет на следующий месяц с <?=$nextMouthStart->format("d.m.Y")?> по <?=$nextMouthEnd->format("d.m.Y")?>:</div> <div class="bold"><?=$arResult['EXPENSES_NEXT_MONTH']?> рублей.</div></div>
                 <?if($arResult['RECOMMEND_UP_BALANCE']>0):?>
-                <div class="d-flex"><div class="mr-3">Рекомендуем пополнить баланс на:</div> <div class="bold"><?=$arResult['RECOMMEND_UP_BALANCE']?> рублей.</div></div>
+                <div class="d-flex mt-3"><div class="mr-3">Рекомендуем пополнить на:</div> <div class="bold"><?=$arResult['RECOMMEND_UP_BALANCE']?> руб.</div></div>
                 <?endif;?>
 
                 <?/*
@@ -56,9 +59,6 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                 */?>
 
                 <div><a href="/kabinet/finance/">История операций</a></div>
-            </div>
-            <div class="col-md-5">
-                <a class="btn btn-primary" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;Пополнить баланс</a>
             </div>
         </div>
 
