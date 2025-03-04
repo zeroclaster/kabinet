@@ -27,7 +27,7 @@ $user = (\KContainer::getInstance())->get('user');
                         </div>
                     </div>
                     <div class="panel-body">
-                        <?$APPLICATION->IncludeComponent("exi:admin.filterexecution", "", Array(
+                        <?$APPLICATION->IncludeComponent("exi:admin.filterexecution", "finance_correct", Array(
                                 'FILTER_NAME' => 'clientfilter1',
                             )
                         );?>
@@ -37,7 +37,7 @@ $user = (\KContainer::getInstance())->get('user');
                         ?>
                     </div>
                 </div>
-                <?$APPLICATION->IncludeComponent("exi:adminexecution.list", "", Array(
+                <?$APPLICATION->IncludeComponent("exi:admincorrectfinance.list", "", Array(
                         'FILTER_NAME' => 'clientfilter1',
                         'COUNT' => $_REQUEST['viewcount'],
                         'MESSAGE_COUNT' => 5,

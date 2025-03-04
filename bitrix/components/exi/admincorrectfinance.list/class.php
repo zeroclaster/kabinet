@@ -10,7 +10,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
 Loc::loadMessages(__FILE__);
 
-class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine\Contract\Controllerable, \Bitrix\Main\Errorable
+class admincorrectfinanceListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine\Contract\Controllerable, \Bitrix\Main\Errorable
 {
     const ERROR_TEXT = 1;
     const ERROR_404 = 2;
