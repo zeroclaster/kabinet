@@ -181,7 +181,7 @@ $p = $request->get('p');
 
 												<div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
                                         <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
-                                            <button class="btn btn-secondary show-all-butt" type="button" @click="showall(task)">...еще {{task.UF_PHOTO_ORIGINAL.length}}</button>
+                                            <button class="btn btn-secondary show-all-butt" type="button" @click="showall(task)">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
                                         </div>
                                         <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
 									</div>

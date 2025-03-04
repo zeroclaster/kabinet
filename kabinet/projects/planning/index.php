@@ -37,11 +37,7 @@ $APPLICATION->AddChainItem("Планирование задач", "");
 
 <section class="section-xs">
     <div class="container-fluid">
-        <div class="d-flex">
-            <h4>Проект: </h4>
-            <h1 style="margin-top: 12px;"><?=$project['UF_NAME']?></h1>
-        </div>
-
+       <h4>Проект: <?=$project['UF_NAME']?></h4>
         <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Планирование задач</div>
     </div>
 </section>

@@ -72,7 +72,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         $history = $sL->get('Kabinet.BilligHistory');
 
         $this->update(['ID'=>$userMoney['ID'],'UF_VALUE'=>$calc]);
-        $history->addHistory('Возврат средств. Отмена выполнения задачи.',$initiator,$value);
+        $history->addHistory('Возврат средств. Отмена исполнения по задаче: ',$initiator,$value);
     }
 
     public function addMoney($value,$user_id = 0,$initiator){
@@ -139,7 +139,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         }
 
 		$history = $sL->get('Kabinet.BilligHistory');
-		$history->addHistory('Израсходованно средств на исполнение задачи проекта.',$initiator,$value);
+		$history->addHistory('Списание по задаче: ',$initiator,$value);
 
         return $value;
     }
