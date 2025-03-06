@@ -247,7 +247,8 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             modaldata: {title:'Добавить услугу',order:0,project:0},
             modal2data: {title:'Удалить услугу',message:'',question:'Вы действительно хотите удалить?',basketitem:0,order_id:0},
             myModal:{},
-            myModal2:{}
+            myModal2:{},
+            listprd: []
         }
     },
     computed: {
@@ -272,9 +273,10 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             for (p of this.data){
                 if (p.ID == this.project_id) return p;
             }
-        },
+        }
     },
     methods: {
+        ...searchProduct(),
         //addbuttorder
         // bitrix/templates/kabinet/assets/js/kabinet/vue-componets/extension/task.js
         ...taskMethods(),
@@ -601,7 +603,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         },
         dateEndNextMounth(){
             return moment().add(1, 'months').endOf('month');
-        },
+        }
     },
     created(){
         this.$root.defaultdatatask = [];
@@ -610,6 +612,10 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         this.updatecalendare([],this.project_id);
         this.$root.defaultdatatask = JSON.parse(JSON.stringify(this.datatask));
         if (window.location.hash) document.querySelector(window.location.hash).scrollIntoView({behavior: 'smooth'});
+
+        for(index in this.data3) {
+            this.listprd.push(this.data3[index]);
+        }
     },
 	components: {
 			myInputFileComponent,

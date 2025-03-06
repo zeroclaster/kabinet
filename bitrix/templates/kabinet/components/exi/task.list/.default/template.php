@@ -34,7 +34,7 @@ $request = $context->getRequest();
 $p = $request->get('p');
 ?>
 
-<div id="kabinetcontent" class="form-group" data-datetimepicker="" data-modalload="" data-ckeditor=""  data-usertasklist=""></div>
+<div id="kabinetcontent" class="form-group" data-datetimepicker="" data-modalload="" data-ckeditor=""  data-usertasklist="" data-tasklist=""></div>
 
 <script type="text/html" id="kabinet-content">
 
@@ -67,8 +67,17 @@ $p = $request->get('p');
                     <h3 class="modal-title fs-5" id="exampleModalLabel">{{modaldata.title}}</h3>
                 </div>
                 <div class="modal-body">
+
+                    <div class="row mb-4">
+                        <div class="col-auto" style="width: 50%">
+                        <input ref="inputclearsearch" class="form-control" type="text" placeholder="начните вводить название услуги..." @input="searchfilter1">
+                        </div>
+                        <div class="col-auto">
+                            <button ref="buttonclearsearch" type="button" class="btn btn-primary" style="display: none;" @click="clearsearchinput">Очистить</button>
+                        </div>
+                    </div>
                     <div style="overflow:visible;height: 400px;">
-                        <div v-for="product in data3" class="d-flex justify-content-between mb-3">
+                        <div v-for="product in listprd" class="d-flex justify-content-between mb-3">
                             <div><a :href="product.LINK" target="_blank"><img class="img-thumbnail" :src="product['PREVIEW_PICTURE_SRC']" :alt="product['NAME']" style="width: 65px;"></a></div>
                             <div class="align-self-center" style="width: 50%;"><a :href="product.LINK" target="_blank">{{product.NAME}}</a></div>
                             <div class="align-self-center">{{product.PRICE}}</div>
@@ -374,6 +383,15 @@ Asset::getInstance()->addJs($templateFolder."/task_list.js");
 ?>
 
 <script>
+    components.tasklist22 = {
+        selector: '[data-tasklist]',
+        script: [
+            '../../kabinet/components/exi/task.list/.default/scrt.js',
+        ],
+        init:null
+    }
+
+
     var questiona_ctivity_component = null;
     window.addEventListener("components:ready", function(event) {
 
