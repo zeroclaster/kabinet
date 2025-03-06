@@ -162,7 +162,10 @@ $this->setFrameMode(true);
 
             <div>Текст отзыва</div>
             <div class="richtext-height-200_">
-                <richtext :tindex="runnerindex" autosave="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT"/>
+                <?/*
+                  параметр autosave="y" включает автосохранение
+                */?>
+                <richtext :tindex="runnerindex" showsavebutton="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT"/>
             </div>
 
             <messangerperformances :projectID="UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :targetUserID="UF_AUTHOR_ID" :queue_id="runner.ID"/>
