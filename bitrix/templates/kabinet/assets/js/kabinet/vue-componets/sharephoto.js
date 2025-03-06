@@ -9,6 +9,10 @@ const sharephoto = BX.Vue3.BitrixVue.mutableComponent('share-photo', {
     },
     props: ['modelValue','tindex','catalog'],
     computed: {
+        notload(){
+            if (this.selectedPhohto.length > 0 ) return false;
+            return true;
+        }
     },
     mounted () {
         // Add event handler
@@ -72,6 +76,6 @@ const sharephoto = BX.Vue3.BitrixVue.mutableComponent('share-photo', {
                 this.$root.savetask(this.tindex);
                 this.$.myModal.hide();
             }
-        },
+        }
     }
 });

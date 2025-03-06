@@ -264,7 +264,7 @@ h6, .h6 {
 }
 
 .custom-loadphoto,.custom-loadphoto .btn,.custom-loadphoto input{
-	width: 247px;
+	width: 273px;
 	height: 60px;
 }
 
@@ -846,4 +846,9 @@ i.fa{
 	text-align: left;
 	text-transform: inherit;
 	font-size: 0.9375rem;
+}
+
+.back-img-share{
+	background-position: center;
+	background-size: contain;
 }

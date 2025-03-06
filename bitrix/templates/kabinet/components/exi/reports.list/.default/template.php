@@ -42,8 +42,8 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         <div class="">Выбрать фото из задачи:</div>
                         <div class="gallery-modal-1"  style="position: relative;">
                             <div id="previewrunnerfileimages" class="d-flex flex-wrap">
-                                <div class="preview-img-block-2" v-for="photo in catalog" @click="selphoto(photo.ID)">
-                                    <img :src="photo.SRC" alt="" style="width: 150px;">
+                                <div class="preview-img-block-2 back-img-share" v-for="photo in catalog" @click="selphoto(photo.ID)" :style="'background-image: url('+photo.SRC+');'">
+
                                     <div class="selected-image" v-if="isSelectedPhohto(photo.ID)"><i class="fa fa-check" aria-hidden="true"></i></div>
                                 </div>
                                 <div class="preview-img-block-2" v-if="catalog.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
@@ -53,14 +53,14 @@ $runnerManager = $sL->get('Kabinet.Runner');
 
                     <div class="mb-3" v-if="selectedPhohto.length==0">
                         <div class="custom-loadphoto">
-                            <button class="btn btn-primary" type="button">Или загрузить с устройства</button>
+                            <button class="btn btn-primary" type="button"><i class="fa fa-cloud-download" aria-hidden="true"></i> Или загрузить с устройства</button>
                             <input type="file" @change="onChangeFile" name="file"  multiple/>
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="addphoto">Добавить</button>
+                    <button type="button" class="btn btn-primary" @click="addphoto" :disabled="notload">Добавить</button>
                     <button type="button" class="btn btn-secondary" @click="closemodal">Закрыть</button>
                 </div>
             </div>
