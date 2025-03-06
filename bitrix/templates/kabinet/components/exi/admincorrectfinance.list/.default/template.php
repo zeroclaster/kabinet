@@ -36,10 +36,14 @@ $this->setFrameMode(true);
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Планирование</th>
-        <th scope="col">Исполнение</th>
-        <th scope="col">Сумма</th>
-        <th scope="col">действия</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Проект</th>
+        <th scope="col">Задача</th>
+        <th scope="col">Клиент, проект, задача</th>
+        <th scope="col">Статус</th>
+        <th scope="col">Плановая дата</th>
+        <th scope="col">Цена</th>
+        <th scope="col">Корректировка цены исполнения</th>
     </tr>
     </thead>
     <tbody>
@@ -47,19 +51,33 @@ $this->setFrameMode(true);
         {{(UF_AUTHOR_ID=datatask[runner.UF_TASK_ID].UF_AUTHOR_ID,null)}}
         {{(UF_PROJECT_ID=datatask[runner.UF_TASK_ID].UF_PROJECT_ID,null)}}
         <td style="width: 20%">
+            <div class="mb-3">
+                <div class="text-primary"><a :href="'/kabinet/finance/?usr='+dataclient[UF_AUTHOR_ID].ID" target="_blank">{{dataclient[UF_AUTHOR_ID].PRINT_NAME}} (#{{dataclient[UF_AUTHOR_ID].ID}})</a></div>
+                <div><a href="mailto:{{dataclient[UF_AUTHOR_ID].EMAIL}}"></a></div>
+            </div>
+        </td>
+        <td style="width: 20%">
+            <div class="mb-3">
+                <form action="/kabinet/admin/performances/" method="post" target="_blank">
+                    <!-- устанавливаем фильтр -->
+                    <input type="hidden" name="clientidsearch" :value="UF_AUTHOR_ID">
+                    <input type="hidden" name="projectidsearch" :value="UF_PROJECT_ID">
+                    <button type="submit" class="btn btn-link btn-link-light">{{dataproject[UF_PROJECT_ID].UF_NAME}} (#{{dataproject[UF_PROJECT_ID].ID}})</button>
+                </form>
+
+            </div>
+        </td>
+        <td style="width: 20%">
             <div>
                 <div class="mb-3">
-                    <div>Клиент:</div>
-                    <div class="text-primary">{{dataclient[UF_AUTHOR_ID].PRINT_NAME}} (#{{dataclient[UF_AUTHOR_ID].ID}})</div>
-                    <div><a href="mailto:{{dataclient[UF_AUTHOR_ID].EMAIL}}"></a></div>
-                </div>
-                <div class="mb-3">
-                    <div>Проект:</div>
-                    <div class="text-primary">{{dataproject[UF_PROJECT_ID].UF_NAME}}</div>
-                </div>
-                <div class="mb-3">
-                    <div>Задача:</div>
-                    <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}}</div>
+                    <form action="/kabinet/admin/performances/" method="post" target="_blank">
+                        <!-- устанавливаем фильтр -->
+                        <input type="hidden" name="clientidsearch" :value="UF_AUTHOR_ID">
+                        <input type="hidden" name="projectidsearch" :value="UF_PROJECT_ID">
+                        <input type="hidden" name="taskidsearch" :value="runner.UF_TASK_ID">
+                        <button type="submit" class="btn btn-link btn-link-light">{{datatask[runner.UF_TASK_ID].UF_NAME}} (#{{datatask[runner.UF_TASK_ID].ID}})</button>
+                    </form>
+
                     <div style="font-size: 11px;">
                         <div class="info-blk">Согласование: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_COORDINATION')}}</span></div>
                         <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_REPORTING')}}</span></div>
@@ -71,17 +89,13 @@ $this->setFrameMode(true);
         </td>
 
         <td width="20%">
-            <div>Исполнение #{{runner.ID}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
-
-            <div class="mb-3" v-if="runner.UF_ELEMENT_TYPE == 'multiple'">
-                Количество запланированных исполнений: {{datatask[runner.UF_TASK_ID].UF_NUMBER_STARTS}}
-            </div>
-            
-            <div class="mb-3" v-if="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">
-                <div class="">{{dataorder[UF_AUTHOR_ID][dataproject[UF_PROJECT_ID].UF_ORDER_ID][datatask[runner.UF_TASK_ID].UF_PRODUKT_ID].JUST_FILED.VALUE}}:</div>
-                <input class="form-control" type="text" :value="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">
-            </div>
-
+            <div>Исполнение (#{{runner.ID}})<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
+        </td>
+        <td>
+            {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}
+        </td>
+        <td>
+            {{runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1}}
         </td>
         <td style="">
             {{runner.UF_MONEY_RESERVE}} руб.

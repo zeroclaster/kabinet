@@ -45,6 +45,75 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
 
     }
 
+    public function correctmoneyAction(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $files = $request->getFileList()->toArray();
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $RunnerManager = $sL->get('Kabinet.Runner');
+        $billing = $sL->get('Kabinet.Billing');
+        $TaskManager = $sL->get('Kabinet.Task');
+
+        $odlData = $RunnerManager->getData([],false,$post['ID']);
+        $odlData = $odlData[0];
+
+        try {
+            $upd_id = $RunnerManager->update(array_merge($post,$files));
+        }catch (SystemException $exception){
+
+            if ($exception->getCode() == self::END_WITH_SCRIPT){
+                $Data = $RunnerManager->getData([],false,$post['ID']);
+                foreach($Data as $current){
+                    if ($current['ID'] == $post['ID']) break;
+                }
+                return [
+                    'id'=> 0,
+                    'runner'=>[],
+                    'message'=>$exception->getMessage()
+                ];
+            }elseif($exception->getCode() == 200){
+
+            }
+            else{
+                $this->addError(new Error($exception->getMessage(), 1));
+                return null;
+            }
+
+        }
+
+        $Data = $RunnerManager->getData([],false,$upd_id);
+        foreach($Data as $current){
+            if ($current['ID'] == $upd_id) break;
+        }
+
+
+        $TaskData = $TaskManager->getData(true,[],['ID'=>$current['UF_TASK_ID']]);
+        $TaskData = $TaskData[0];
+        if (!$TaskData) {
+            $this->addError(new Error("Задачи с ID ".$current['UF_TASK_ID']. ' не найдена!', 1));
+            return null;
+        }
+
+        $sum = $current['UF_MONEY_RESERVE'] - $odlData['UF_MONEY_RESERVE'];
+        $RunnerManager->taskFileds = $TaskData;
+        if ($sum>0) {
+            $billing->addMoney($sum, $TaskData['UF_AUTHOR_ID'], $RunnerManager);
+            $billing->getMoney($sum, $TaskData['UF_AUTHOR_ID'], $RunnerManager);
+        }else{
+            $billing->cachback2($sum*-1,$TaskData['UF_AUTHOR_ID'],$RunnerManager);
+        }
+
+        //$this->addError(new Error(print_r($sum,true), 1));
+       // return null;
+
+        return [
+            'id'=> $upd_id,
+            'runner'=>$current,
+            'message'=>'Данные успешно обновлены!'
+        ];
+    }
+
     public function editeAction(){
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();

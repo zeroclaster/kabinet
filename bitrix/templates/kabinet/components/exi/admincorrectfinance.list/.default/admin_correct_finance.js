@@ -10,7 +10,7 @@ admin_correct_finance = (function (){
                                 <input type="text" class="form-control" placeholder="0" v-model="changevalue">
                             </div>
                             <div class=" ml-2"> руб.</div>
-                            <button ref="plus" class="btn btn-primary ml-2" @click="plus">Увеличит</button>
+                            <button ref="plus" class="btn btn-primary ml-2" @click="plus">Увеличить</button>
                             <button ref="minus" class="btn btn-warning ml-2" @click="minus">Уменьшить</button>
                         </div>
                 `,
@@ -45,7 +45,7 @@ admin_correct_finance = (function (){
                     },
                     saveRunner(){
                         if (typeof this.inpSaveTimer != 'undefined') clearTimeout(this.inpSaveTimer);
-                        this.inpSaveTimer = setTimeout(()=>{this.$root.savetask(this.tindex);},1000);
+                        this.inpSaveTimer = setTimeout(()=>{this.$root.correctMoney(this.tindex);},1000);
                     }
                 },
                 mounted () {
@@ -166,6 +166,57 @@ admin_correct_finance = (function (){
 
                         if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
                         this.$root.inpSaveTimer = setTimeout(()=>{this.savetask(index);},1000);
+                    },
+                    correctMoney: function (index){
+                        var cur = this;
+                        var runner;
+
+                        kabinet.loading();
+                        runner = this.datarunner[index];
+
+                        var form_data = new FormData();
+                        for ( var key in runner ) {
+                            if (key=="UF_PIC_REVIEW"){
+                                //if(runner["UF_PIC_REVIEW"].length==0) form_data.append(key + '[]', 0);
+                                for (const file of runner["UF_PIC_REVIEW"]) form_data.append(key + '[]', file);
+                            }else{
+                                if (Array.isArray(runner[key]))
+                                    runner[key].forEach(function (item,index) {
+                                        form_data.append(key + '[]', item.VALUE);
+                                    });
+
+                                else form_data.append(key, runner[key]);
+                            }
+                        }
+
+                        const kabinetStore = usekabinetStore();
+                        BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.correctmoney', {
+                            data : form_data,
+                            // usr_id_const нужен для админа, задается в footer.php
+                            getParameters: {usr : usr_id_const},
+                            //processData: false,
+                            //preparePost: false
+                        })
+                            .then(function(response) {
+                                //console.log(response)
+                                const data = response.data;
+                                kabinetStore.NotifyOk = '';
+                                kabinetStore.NotifyOk = data.message;
+
+                                cur.datarunner[index] = data.runner;
+                                kabinet.loading(false);
+                            }, function (response) {
+                                //console.log(response);
+                                kabinet.loading(false);
+                                response.errors.forEach((error) => {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = error.message;
+                                });
+
+                                // сбрасываем данные до сохранения
+                                setTimeout(()=>cur.resetSave(index),500);
+
+                            });
                     },
                     savetask: function (index){
                         var cur = this;

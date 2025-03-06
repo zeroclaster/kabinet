@@ -839,3 +839,11 @@ i.fa{
 	color: rgb(31, 162, 205);
 	font-size: 22px;
 }
+
+.btn-link.btn-link-light{
+	padding: 0;
+	display: inherit;
+	text-align: left;
+	text-transform: inherit;
+	font-size: 0.9375rem;
+}

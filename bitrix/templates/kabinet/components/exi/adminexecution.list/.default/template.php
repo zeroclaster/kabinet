@@ -289,7 +289,7 @@ $filter1 = CUtil::PhpToJSObject($arParams["FILTER"], false, true);
                     'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
                 ], false, true)?>);
 
-				admin_correct_finance.start(<?=CUtil::PhpToJSObject([
+            adminexecution_list.start(<?=CUtil::PhpToJSObject([
 						"viewcount"=>$arParams["COUNT"],
 					"total"=>$arResult["TOTAL"],
 				], false, true)?>);

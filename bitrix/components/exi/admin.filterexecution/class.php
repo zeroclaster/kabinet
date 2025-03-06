@@ -192,7 +192,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
             ]));
 
             $output[] = [
-                "value"=>$userName .' '. $item['EMAIL'],
+                "value"=>$userName .' '. $item['EMAIL']. ' (#'.$item['ID'].')',
                 id=>$item['ID']
             ];
         }
@@ -221,7 +221,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         foreach ($data as $item){
             $output[] = [
-                "value"=>$item['UF_NAME'],
+                "value"=>$item['UF_NAME']. ' (#'.$item['ID'].')',
                 id=>$item['ID']
             ];
         }
@@ -248,7 +248,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         foreach ($data as $item){
             $output[] = [
-                "value"=>$item['UF_NAME'],
+                "value"=>$item['UF_NAME']. ' (#'.$item['ID'].')',
                 id=>$item['ID']
             ];
         }

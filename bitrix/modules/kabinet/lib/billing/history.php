@@ -91,7 +91,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
             $fields['UF_USER_EDIT'] = $user->printName().' '.'(email:'.$user['EMAIL'].')';
             $fields['UF_AUTHOR_ID'] = $user->get('ID');
         }
-        
+
         $billing = $sL->get('Kabinet.Billing');
         $userBilling = $billing->getData(true,['UF_AUTHOR_ID'=>$fields['UF_AUTHOR_ID']]);
         $fields = array_merge($fields,[

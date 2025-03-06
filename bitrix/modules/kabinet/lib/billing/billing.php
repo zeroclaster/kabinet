@@ -75,6 +75,22 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         $history->addHistory('Возврат средств. Отмена исполнения по задаче: ',$initiator,$value);
     }
 
+    public function cachback2($value,$user_id = 0,$initiator){
+        if ($user_id)
+            $filter = ['UF_AUTHOR_ID'=>$user_id];
+        else
+            $filter = [];
+        $userMoney = $this->getData(true,$filter);
+
+        $calc = $userMoney['UF_VALUE'] + $value;
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $history = $sL->get('Kabinet.BilligHistory');
+
+        $this->update(['ID'=>$userMoney['ID'],'UF_VALUE'=>$calc]);
+        $history->addHistory('Возврат средств. По задаче: ',$initiator,$value);
+    }
+
     public function addMoney($value,$user_id = 0,$initiator){
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         if ($user_id)
@@ -207,7 +223,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             }
        
             $listdata = $this->convertData($billingSQL, $this->getUserFields());
-         
+
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
             $cache->EndDataCache(array($listdata));
