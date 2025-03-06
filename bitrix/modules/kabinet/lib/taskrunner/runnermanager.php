@@ -68,6 +68,15 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             throw new SystemException("У Вас недостаточно средств для создания исполнений");
         }
         */
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $taskManager = $sL->get('Kabinet.Task');
+        $TaskData = $taskManager->getData(true,[],['ID'=>$fields['UF_TASK_ID']]);
+        $TaskData = $TaskData[0];
+        if  (count($TaskData['UF_TARGET_SITE']) == 1) {
+            $site_link = $TaskData['UF_TARGET_SITE'][0]['VALUE'];
+            $object->set('UF_LINK', $site_link);
+        }
+
     }
 
     public function ifChangeStatus($id,$primary,$fields,$object,$oldData){
