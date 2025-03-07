@@ -205,7 +205,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             //echo "</pre>";
 
             // если у пользователя еще не создан биллинг, создаем его
-            if (!$billingSQL && isset($filter['UF_AUTHOR_ID'])){
+            if (!$billingSQL && isset($filter['UF_AUTHOR_ID']) && $user_id>0){
                 $upd_id = $this->add([
                    'UF_AUTHOR_ID' =>$user_id,
                    'UF_VALUE' => $this->config('START_BILLING'),
@@ -220,6 +220,8 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
                     'filter'=>['ID'=>$upd_id],
                     'limit'=>1
                 ])->fetch();
+            }else{
+                return [];
             }
        
             $listdata = $this->convertData($billingSQL, $this->getUserFields());
