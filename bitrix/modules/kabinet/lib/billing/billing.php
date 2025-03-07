@@ -206,20 +206,23 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 
             // если у пользователя еще не создан биллинг, создаем его
             if (!$billingSQL && isset($filter['UF_AUTHOR_ID'])){
-                $upd_id = $this->add([
-                   'UF_AUTHOR_ID' =>$user_id,
-                   'UF_VALUE' => $this->config('START_BILLING'),
-                ]);
+                if ($user_id>0) {
+                    $upd_id = $this->add([
+                        'UF_AUTHOR_ID' => $user_id,
+                        'UF_VALUE' => $this->config('START_BILLING'),
+                    ]);
 
-                $history = $sL->get('Kabinet.BilligHistory');
-                $initiator = $this;
-                $history->addHistory('Зачислено на баланс '.$this->config('START_BILLING').' рублей.',$initiator,$this->config('START_BILLING'));
+                    $history = $sL->get('Kabinet.BilligHistory');
+                    $initiator = $this;
+                    $history->addHistory('Зачислено на баланс ' . $this->config('START_BILLING') . ' рублей.', $initiator, $this->config('START_BILLING'));
 
-                $billingSQL = datamanager\BillingTable::getListActive([
-                    'select'=>['*'],
-                    'filter'=>['ID'=>$upd_id],
-                    'limit'=>1
-                ])->fetch();
+                    $billingSQL = datamanager\BillingTable::getListActive([
+                        'select' => ['*'],
+                        'filter' => ['ID' => $upd_id],
+                        'limit' => 1
+                    ])->fetch();
+                }
+                else return [];
             }
        
             $listdata = $this->convertData($billingSQL, $this->getUserFields());
