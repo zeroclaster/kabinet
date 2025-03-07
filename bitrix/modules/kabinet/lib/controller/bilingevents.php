@@ -90,4 +90,28 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
 			'link'=>$link,
         ];
 	}
+
+    public function depositmoneyAction(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $billinkdata = $sL->get('Kabinet.Billing')->getData();
+        $user = (\KContainer::getInstance())->get('user');
+        $user_id = $user->get('ID');
+
+        if (!\PHelp::isAdmin()){
+            $this->addError(new Error("Недостаточно прав для совершения операции.", 1));
+            return null;
+        }
+
+
+        $billing = $sL->get('Kabinet.Billing');
+        $billing->addMoney($post['summapopolneniya'], $user_id, $billing);
+
+        $billinkdata = $billing->getData();
+
+        return [
+            'billinkdata'=>$billinkdata,
+        ];
+    }
 }

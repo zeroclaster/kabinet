@@ -36,7 +36,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                     <div class="money-total">{{databilling.UF_VALUE_ORIGINAL}}</div>
                 </div>
 
-                <div class="mt-4 text-center"><a class="btn btn-primary" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Пополнить баланс</a></div>
+                <div class="mt-4 text-center"><a class="btn btn-primary" :href="'/kabinet/finance/deposit/'+usr_id_const"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Пополнить баланс</a></div>
 
             </div>
             <div class="col-md-5 info">

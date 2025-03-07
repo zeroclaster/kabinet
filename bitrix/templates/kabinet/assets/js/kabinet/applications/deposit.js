@@ -8,7 +8,8 @@ deposit_form = (function (){
                     return {
                         fields :{
                             summapopolneniya:0,	
-							summapopolneniya2:0,	
+							summapopolneniya2:0,
+                            percentpopolneniya:0,
                             promocode:'',
                             typepay:PHPPARAMS.TYPEPAY,
                             qrsumm:PHPPARAMS.QRSUMM,
@@ -17,6 +18,7 @@ deposit_form = (function (){
                         pecent: [0,7,7,3],
                         // 2025-02-17 по ТЗ меняем  на такой расет
                         pecent2: [0,0.93,0.93,0.97],
+                        sumpopolnenia:0,
                     }
                 },
                 computed: {
@@ -59,6 +61,14 @@ deposit_form = (function (){
                     },
                     onInput(){
                         this.clearError();
+                    },
+                    onInput2(){
+                        this.clearError();
+
+                        let summapopolneniya = parseInt(this.fields.summapopolneniya);
+                        let percentpopolneniya = parseInt(this.fields.percentpopolneniya);
+
+                        this.sumpopolnenia = summapopolneniya*percentpopolneniya/100;
                     },
                     onChange(){
                         this.clearError();
@@ -157,6 +167,42 @@ deposit_form = (function (){
 
                         //e.preventDefault();
                        // e.stopPropagation();
+                        //return false;
+                    },
+                    ondepositMoney(e){
+
+                        const form = document.querySelector("form[name='depositform1']");
+                        kabinet.loading();
+                        var formData = new FormData(form);
+                        const kabinetStore = usekabinetStore();
+                        BX.ajax.runAction('bitrix:kabinet.evn.bilingevents.depositmoney', {
+                            data : formData,
+                            // usr_id_const нужен для админа, задается в footer.php
+                            getParameters: {usr : usr_id_const}
+                            //processData: false,
+                            //preparePost: false
+                        })
+                            .then(function(response) {
+                                const data = response.data;
+                                kabinet.loading(false);
+
+                                // Update user new billink
+                                const billing = billingStore();
+                                billing.databilling = data.billinkdata;
+
+                                //console.log(data)
+                            }, function (response) {
+                                //console.log(response);
+                                response.errors.forEach((error) => {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = error.message;
+                                    kabinet.loading(false);
+                                });
+
+                            });
+
+                        //e.preventDefault();
+                        // e.stopPropagation();
                         //return false;
                     },
                 },

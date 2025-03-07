@@ -29,6 +29,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                     Выберите способ пополнения баланса:             
                     <div class="row type-pay-list">
 
+                        <?if(!\PHelp::isAdmin()):?>
                         <div class="col-md-4">
                             <input id="typepay-1" type="radio" name="typepay" value="1" v-model="fields.typepay" @change="onChange">
                             <label for="typepay-1">
@@ -41,7 +42,9 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             </div>
                             </label>
                         </div>
+                        <?endif;?>
 
+                        <?if(!\PHelp::isAdmin()):?>
                         <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
                         <?if(0):?>
                         <div class="col-md-4">
@@ -57,7 +60,9 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             </label>
                         </div>
                         <?endif;?>
+                        <?endif;?>
 
+                        <?if(!\PHelp::isAdmin()):?>
                         <div class="col-md-4">
                             <input id="typepay-3" type="radio" name="typepay" value="3" v-model="fields.typepay" @change="onChange">
                             <label for="typepay-3">
@@ -70,10 +75,27 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                 </div>
                             </label>
                         </div>
+                        <?endif;?>
+
+                        <?if(\PHelp::isAdmin()):?>
+                        <div class="col-md-4">
+                            <input id="typepay-4" type="radio" name="typepay" value="4" v-model="fields.typepay" @change="onChange">
+                            <label for="typepay-4">
+                                <div class="method-additions">
+                                    <div>
+                                        <div class="title"><i class="fa fa-university" aria-hidden="true"></i> Прямое пополнение</div>
+                                        <div>ДОСТУПНО ТОЛЬКО АДМИНИСТРАТОРАМ САЙТА</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <?endif;?>
 
                     </div>
 
+                    <?/* $typepay = $request->getPost('typepay'); */?>
                     <!-- Онлайн-платеж -->
+                        <?if(!\PHelp::isAdmin()):?>
                     <div class="row" v-if="fields.typepay==1">
                         <div class="col-md-12">
                             <div class="to-pay-block">
@@ -111,9 +133,12 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             </div>
                         </div>
                     </div>
+                        <?endif;?>
 
+                        <?/* $typepay = $request->getPost('typepay'); */?>
                         <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
                         <?if(0):?>
+                        <?if(!\PHelp::isAdmin()):?>
                         <!-- QR-код -->
                         <div class="row" v-if="fields.typepay==2">
                             <div class="col-md-12">
@@ -171,9 +196,12 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                 </div>
                             </div>
                         </div>
+                            <?endif;?>
                         <?endif;?>
 
+                        <?/* $typepay = $request->getPost('typepay'); */?>
                         <!-- Банковский перевод -->
+                        <?if(!\PHelp::isAdmin()):?>
                         <div class="row" v-if="fields.typepay==3">
                             <div class="col-md-12">
                                 <div class="to-pay-block">
@@ -236,6 +264,41 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                 </div>
                             </div>
                         </div>
+                        <?endif;?>
+
+                        <?/* $typepay = $request->getPost('typepay'); */?>
+                        <?if(\PHelp::isAdmin()):?>
+                        <div class="row typepay-4" v-if="fields.typepay==4">
+                            <div class="col-md-12">
+                                <div class="to-pay-block">
+
+                                    <div>Текущий баланс</div>
+                                    <div class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</div>
+                                    <div class="form-block mt-5">
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label for="summa-popolneniya">Сумма пополнения, руб.</label>
+                                                <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
+                                                <div class="d-flex align-items-center mb-3">
+                                                        <div>
+                                                        <input id="summa-popolneniya" name="summapopolneniya" class="form-control" style="text-align: right" type="text" v-model="fields.summapopolneniya" @input="onInput2">
+                                                        </div>
+                                                    <div class="ml-3">
+                                                        сумма удержания: {{sumpopolnenia}} руб.
+                                                    </div>
+                                                </div>
+                                                <label for="percent-popolneniya">Процент удержания</label>
+                                                <input id="percent-popolneniya" name="percentpopolneniya" class="form-control" style="text-align: right;width: 200px;" type="text" v-model="fields.percentpopolneniya" @input="onInput2">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-center"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
+                                        <div class="gotopay"><button class="btn btn-primary" type="button" @click="ondepositMoney">Пополнить</button></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <?endif;?>
 
                     </form>
                    </script>

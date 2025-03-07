@@ -10,6 +10,7 @@ billing_view = (function (){
                         countview:PHPPARAMS['viewcount'],
                         total: PHPPARAMS['total'],
                         showloadmore:true,
+                        usr_id_const: '?usr='+usr_id_const,
                     }
                 },
                 computed: {
