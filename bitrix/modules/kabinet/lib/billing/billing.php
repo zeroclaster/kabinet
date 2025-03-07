@@ -29,6 +29,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         parent::__construct($id, $HLBCClass);
 
         AddEventHandler("", "\Billing::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
+        AddEventHandler("", "\Billing::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
         AddEventHandler("", "\Billing::OnBeforeUpdate", [$this,"OnBeforeUpdateHandler"]);
         AddEventHandler("", "\Billing::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
 
@@ -128,7 +129,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         return true;
     }
 
-    public function getMoney($value,$user_id = 0,$initiator){
+    public function getMoney($value,$user_id = 0,$initiator,$why='Списание по задаче: '){
 		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 		if ($user_id)
             $filter = ['UF_AUTHOR_ID'=>$user_id];
@@ -155,7 +156,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         }
 
 		$history = $sL->get('Kabinet.BilligHistory');
-		$history->addHistory('Списание по задаче: ',$initiator,$value);
+		$history->addHistory($why,$initiator,$value);
 
         return $value;
     }
@@ -200,6 +201,8 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 				'limit'=>1
             ])->fetch();
 
+            $aaaa = \Bitrix\Main\Entity\Query::getLastQuery();
+
             //echo "<pre>";
             //echo \Bitrix\Main\Entity\Query::getLastQuery();
             //echo "</pre>";
@@ -211,10 +214,6 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
                         'UF_AUTHOR_ID' => $user_id,
                         'UF_VALUE' => $this->config('START_BILLING'),
                     ]);
-
-                    $history = $sL->get('Kabinet.BilligHistory');
-                    $initiator = $this;
-                    $history->addHistory('Зачислено на баланс ' . $this->config('START_BILLING') . ' рублей.', $initiator, $this->config('START_BILLING'));
 
                     $billingSQL = datamanager\BillingTable::getListActive([
                         'select' => ['*'],

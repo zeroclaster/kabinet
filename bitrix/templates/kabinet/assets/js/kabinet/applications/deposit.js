@@ -174,6 +174,7 @@ deposit_form = (function (){
                         const form = document.querySelector("form[name='depositform1']");
                         kabinet.loading();
                         var formData = new FormData(form);
+                        formData.append('sumpopolnenia',this.sumpopolnenia);
                         const kabinetStore = usekabinetStore();
                         BX.ajax.runAction('bitrix:kabinet.evn.bilingevents.depositmoney', {
                             data : formData,
@@ -185,6 +186,9 @@ deposit_form = (function (){
                             .then(function(response) {
                                 const data = response.data;
                                 kabinet.loading(false);
+
+                                kabinetStore.NotifyOk = '';
+                                kabinetStore.NotifyOk = data.message;
 
                                 // Update user new billink
                                 const billing = billingStore();

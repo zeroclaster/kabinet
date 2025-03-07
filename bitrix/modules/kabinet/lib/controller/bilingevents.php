@@ -104,14 +104,14 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-
         $billing = $sL->get('Kabinet.Billing');
-        $billing->addMoney($post['summapopolneniya'], $user_id, $billing);
+        $billing->addMoney($post['summapopolneniya'], 0, $billing);
+        if ($post['percentpopolneniya']>0) $billing->getMoney($post['sumpopolnenia'], 0, $billing, 'Комиссионный сбор');
 
-        $billinkdata = $billing->getData();
 
         return [
-            'billinkdata'=>$billinkdata,
+            'billinkdata'=>$billing->getData(),
+            'message'=>'Данные успешно обновлены!',
         ];
     }
 }

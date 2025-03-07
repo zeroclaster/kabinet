@@ -17,9 +17,34 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 
         parent::__construct($id, $HLBCClass);
 
+
+        AddEventHandler("", "\Billing::OnAfterAdd", [$this,"OnAfterAddHandler"]);
+
         AddEventHandler("", "\Billinghistory::OnBeforeAdd", [$this,"OnBeforeAdd"]);
         //AddEventHandler("", "\Billinghistory::OnBeforeUpdate", [$this,"OnBeforeUpdate"]);
         //AddEventHandler("", "\Billinghistory::OnBeforeDelete", [$this,"OnBeforeDelete"]);
+    }
+
+    public function OnAfterAddHandler($id,$primary,$fields,$object)
+    {
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $user = (\KContainer::getInstance())->get('siteuser');
+
+        \Bitrix\Kabinet\billing\datamanager\BillinghistoryTable::add([
+            'UF_ACTIVE'=>1,
+            'UF_AUTHOR_ID'=> $fields['UF_AUTHOR_ID'],
+            'UF_PUBLISH_DATE'=> new \Bitrix\Main\Type\DateTime(),
+            'UF_BILLING_ID'=> $id,
+            'UF_USER_EDIT_ID'=> $user->get('ID'),
+            'UF_EXT_KEY'=>'',
+            'UF_OPERATION'=> 'Зачислено на баланс ' . $fields['UF_VALUE'] . ' рублей.',
+            'UF_PROJECT_ID'=>0,
+            'UF_TASK_ID' =>0,
+            'UF_QUEUE_ID'=>0,
+            'UF_VALUE'=>$fields['UF_VALUE'],
+            'UF_PROJECT'=>'',
+            'UF_USER_EDIT'=>$user->printName().' '.'(email:'.$user['EMAIL'].')',
+        ]);
     }
 
     public function OnBeforeAdd($fields,$object)
@@ -41,9 +66,11 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 		global $USER;
 		
 		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $user = (\KContainer::getInstance())->get('siteuser');
+        $user = (\KContainer::getInstance())->get('user');
+        $siteuser = (\KContainer::getInstance())->get('siteuser');
 
         $fields = [];
+        $fields['UF_USER_EDIT'] = $siteuser->printName().' '.'(email:'.$siteuser['EMAIL'].')';
 
         if ($initiator instanceof \Bitrix\Kabinet\taskrunner\states\Basestate){
             $runnerFields = $initiator->runnerFields;
@@ -57,9 +84,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 				'filter'=>['ID'=>$task['UF_PROJECT_ID']],
 				'limit' => 1,
 			])->fetch();
-			
 
-			$fields['UF_USER_EDIT'] = $user->printName().' '.'(email:'.$user['EMAIL'].')';
 			$fields['UF_PROJECT'] = $project['UF_NAME'];
             $fields['UF_AUTHOR_ID'] = $task['UF_AUTHOR_ID'];
         }
@@ -75,20 +100,16 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
                 'limit' => 1,
             ])->fetch();
 
-
-            $fields['UF_USER_EDIT'] = $user->printName().' '.'(email:'.$user['EMAIL'].')';
             $fields['UF_PROJECT'] = $project['UF_NAME'];
             $fields['UF_AUTHOR_ID'] = $task['UF_AUTHOR_ID'];
         }
 
         if ($initiator instanceof \Bitrix\Kabinet\billing\paysystem\Baseresult){
             $peration = $peration. ' '.$initiator->getDescription();
-            $fields['UF_USER_EDIT'] = $user->printName().' '.'(email:'.$user['EMAIL'].')';
             $fields['UF_AUTHOR_ID'] = $user->get('ID');
         }
 
         if ($initiator instanceof \Bitrix\Kabinet\container\Hlbase && get_class($initiator) == 'Bitrix\Kabinet\billing\Billing'){
-            $fields['UF_USER_EDIT'] = $user->printName().' '.'(email:'.$user['EMAIL'].')';
             $fields['UF_AUTHOR_ID'] = $user->get('ID');
         }
 
