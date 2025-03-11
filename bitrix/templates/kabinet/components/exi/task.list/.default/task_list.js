@@ -251,6 +251,16 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             listprd: []
         }
     },
+    setup(){
+
+        const {countQueu,taskStatus_m} = task_status();
+        const tasklistS = tasklistStore();
+        const {canBeSaved_} = canbesaved__(tasklistS.datatask);
+        const getmomment = ()=>moment();
+        const datataskCopy = JSON.parse(JSON.stringify(tasklistS.datatask))
+
+        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy};
+    },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
         ...BX.Vue3.Pinia.mapState(orderlistStore, ['data2']),
@@ -258,16 +268,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
         ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
         ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
-        fullName: {
-            // геттер:
-            get: function () {
-                console.log(this.a);
-            },
-            // сеттер:
-            set: function (newValue) {
-                console.log(newValue);
-            }
-        },
         project(){
             if (!PHPPARAMS.PROJECT_ID) return [];
             for (p of this.data){
@@ -489,44 +489,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             return '';
         },
-        taskStatus(index){
-            if (this.countQueu(index) == 0) return '<div class="status-task-1 text-warning">Не выполняется</div>';
-            const task = this.datatask[index];
-
-            let isRuned = 0;
-
-            isRuned = 0;
-            for(queue of this.datacalendarQueue){
-                if (
-                    queue.UF_TASK_ID == task.ID &&
-                    (
-                        queue.UF_STATUS == 10 ||
-                        queue.UF_STATUS == 9
-                    )
-                ) {
-                    isRuned++;
-                }
-            }
-
-            if (isRuned == this.countQueu(index)) return '<div class="status-task-1 text-secondary">Остановлена</div>';
-
-            isRuned = 0;
-            for(queue of this.datacalendarQueue){
-                if (
-                    queue.UF_TASK_ID == task.ID &&
-                    (
-                        queue.UF_STATUS == 0
-                    )
-                ) {
-                    isRuned++;
-                }
-            }
-
-            if (isRuned > 0) return '<div class="status-task-1 text-warning">Запланирована</div><div class="ml-4">Завершится: '+task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1+'</div>';
-
-
-            return '<div class="status-task-1 text-success">Выполняется</div><div class="ml-4">Завершится: '+task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1+'</div>';
-        },
         viewTask(PRODUKT_ID){
             const block = document.querySelector('#produkt'+PRODUKT_ID);
             if (block) document.querySelector('#produkt'+PRODUKT_ID).scrollIntoView({behavior: 'smooth'});
@@ -546,49 +508,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             node = document.querySelectorAll("#taskbutton1"+this.datatask[taskindex].ID);
             if (node.length>0) node[0].removeAttribute("disabled");
-        },
-        canBeSaved(taskindex){
-
-            //debugger
-            if (this.datatask[taskindex].ID > 0) var a = 1;
-
-            const regex = new RegExp('_ORIGINAL');
-
-            if (this.$root.defaultdatatask.length > 0)
-            for (key in this.datatask){
-                for (field in this.datatask[key]){
-
-                    if (regex.test(field)) continue;
-
-                    if (typeof this.datatask[key][field] == 'string') {
-                        if (this.datatask[key][field] != this.$root.defaultdatatask[key][field])
-                            return false;
-                        /*
-                            console.log([
-                            this.datatask[key][field],
-                            this.$root.defaultdatatask[key][field]
-                        ]);
-                        */
-                    }
-                    if (typeof this.$root.defaultdatatask[key][field] == 'object' && this.$root.defaultdatatask[key][field].length>0) {
-                        for (k in this.$root.defaultdatatask[key][field]){
-                            if (this.$root.defaultdatatask[key][field][k].VALUE) {
-                                if (this.datatask[key][field][k].VALUE != this.$root.defaultdatatask[key][field][k].VALUE)
-                                    return false;
-                                /*
-                                    console.log([
-                                    field,
-                                    this.datatask[key][field][k].VALUE,
-                                    this.$root.defaultdatatask[key][field][k].VALUE
-                                ]);
-                                 */
-                            }
-                        }
-
-                    }
-                }
-            }
-            return true;
         },
         // убираем пустой элемент из селекта
         clearFirstItem(list){
@@ -610,7 +529,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     },
     mounted() {
         this.updatecalendare([],this.project_id);
-        this.$root.defaultdatatask = JSON.parse(JSON.stringify(this.datatask));
         if (window.location.hash) document.querySelector(window.location.hash).scrollIntoView({behavior: 'smooth'});
 
         for(index in this.data3) {

@@ -35,3 +35,8 @@ this.$root.defaultdatatask = JSON.parse(JSON.stringify(this.datatask));
 ----------------------------------------------------------------------------------
 
 if (window.location.hash) document.querySelector(window.location.hash).scrollIntoView({behavior: 'smooth'});
+
+------------------------------------------------------------------------------------
+
+Reactive clone of a ref. By default, it use JSON.parse(JSON.stringify()) to do the clone.
+

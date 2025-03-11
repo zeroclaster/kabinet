@@ -20,17 +20,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(briefFormStore, ['fields']),
-        ...BX.Vue3.Pinia.mapState(usekabinetStore, ['Notify','NotifyOk']),
-        fullName: {
-            // геттер:
-            get: function () {
-                console.log('1111');
-            },
-            // сеттер:
-            set: function (newValue) {
-                console.log(newValue);
-            }
-        }
+        ...BX.Vue3.Pinia.mapState(usekabinetStore, ['Notify','NotifyOk'])
     },
     methods: {
         submit:function (form){

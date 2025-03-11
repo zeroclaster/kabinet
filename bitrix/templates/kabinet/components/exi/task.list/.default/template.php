@@ -120,7 +120,7 @@ $p = $request->get('p');
         </div>
     </div>
 
-    <div v-for="(task,taskindex) in datatask">
+    <template v-for="(task,taskindex) in datatask">
     <div :id="'produkt'+task.ID" class="panel task-list-block1 mb-5" v-if="task.UF_PROJECT_ID == project_id">
         <div class="panel-body">
             <div class="row">
@@ -134,7 +134,8 @@ $p = $request->get('p');
 					for debug
                     {{PRODUCT}}
 					*/?>
-					<div class="d-flex task-status-print" v-html="taskStatus(taskindex)"></div>
+
+					<div class="d-flex task-status-print" v-html="taskStatus_m(taskindex)"></div>
                     <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0">Цена за ед.: <span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
                     <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1==0">Цена за ед.: <span>по запросу</span></div>
 
@@ -145,12 +146,138 @@ $p = $request->get('p');
 
                     <div v-if="task.UF_CYCLICALITY == 2 && task.UF_STATUS>0">
                         {{(NEXTMOUTHSTART=2+2,null)}}
-                        Задача выполняется. Вы можете изменить ежемесячное количество и другие параметры задачи. Изменения вступят в силу с 1 числа следующего месяца — с {{dateStartNextMounth().format('DD.MM.YYYY')}}.
+                        Задача выполняется. Вы можете изменить ежемесячное количество и другие параметры задачи. Изменения вступят в силу с 1 числа следующего месяца — с {{getmomment().add(1, 'months').startOf('month').format('DD.MM.YYYY')}}.
                     </div>
 
 
 					<div class="">
-							<?/*
+
+                        <div class="row form-group" v-if="(task.UF_CYCLICALITY == 1 || task.UF_CYCLICALITY == 2) && task.UF_STATUS==0">
+                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
+                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Количество:</label>
+                            </div>
+
+                            <div class="col-sm-10" style="position: relative;">
+                                <div class="d-flex">
+                                    <div>
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
+                                    </div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
+                                    <div class="mr-3">
+                                        <select class="form-control" name="" id="" v-model="task.UF_CYCLICALITY">
+                                            <option v-for="option in task.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
+                                                {{ option.VALUE }}
+                                            </option>
+                                        </select>
+
+                                        <div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
+
+                                    </div>
+                                    <div style="position: relative" v-if="task.UF_CYCLICALITY == 1 && task.UF_DATE_COMPLETION">
+                                        <div class="input-group">
+                                            <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 1 && task.UF_STATUS>0">
+                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
+                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Количество:</label>
+                            </div>
+
+                            <div class="col-sm-10" style="position: relative;">
+                                <div class="d-flex">
+                                    <div>
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
+                                    </div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
+                                    <div class="mr-3">
+                                        <div style="padding: 14px;padding-left: 0px;">{{ showOne1(task.UF_CYCLICALITY_ORIGINAL) }}</div>
+                                        <div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
+                                    </div>
+                                    <div style="position: relative">
+                                        <div class="input-group">
+                                            <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ID 2 Ежемесечная задача -->
+                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 2 && task.UF_STATUS>0">
+                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
+                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Изменить количество со следующего месяца:</label>
+                            </div>
+
+                            <div class="col-sm-10" style="position: relative;">
+                                <div class="d-flex">
+                                    <div>
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
+                                    </div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед./в месяц</div>
+                                </div>
+                                <div>Новое количество применится с {{dateStartNextMounth().format('DD.MM.YYYY')}} Примерная периодичность: 2-3 ед. в день.</div>
+                            </div>
+                        </div>
+
+                        <!-- ID 33 Одно исполнение -->
+                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 33">
+                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"><label class="col-form-label" style="padding-top: 0px;">Срок исполнения до:</label></div>
+                            <div class="col-sm-10" style="position: relative;">{{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
+                        </div>
+
+                        <!-- ID 34 Ежемесячная услуга -->
+                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 34">
+                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"></div>
+                            <div class="col-sm-10" style="position: relative;">
+                                <div>Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{task.RUN_DATE}}</div>
+                                <div v-if="task.UF_STATUS == 15" style="word-wrap: unset;"><button class="btn btn-link btn-link-site" type="button" style="padding: 0" @click="stoptask(taskindex)">Остановить с {{task.RUN_DATE}}</button></div>
+                            </div>
+                        </div>
+
+
+                        <?/*
+                            СТОИМОСТЬ
+                        */?>
+                        <div class="row form-group" v-if="task.FINALE_PRICE>0">
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                            <div class="col-sm-6" style="position: relative;">
+                                <div class="task-text-vertical-aling task-price-total">
+                                    <span>{{task.FINALE_PRICE}}</span>
+                                    <span v-if="task.UF_CYCLICALITY==1 || task.UF_CYCLICALITY==33"> руб.</span>
+                                    <span v-if="task.UF_CYCLICALITY==2 || task.UF_CYCLICALITY==34"> руб. (/мес.)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group" v-if="task.FINALE_PRICE==0">
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                            <div class="col-sm-6" style="position: relative;">
+                                <div class="task-text-vertical-aling task-price-total">по запросу</div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-sm-10 offset-sm-2" style="position: relative;">
+                                <div class="d-flex">
+                                    <button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
+                                    <button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
+                                    <?/*
+                                    Возможность допланировать
+
+                                    если не 33 Одно исполнение
+                                    если не 34 Ежемесячная услуга
+                                */?>
+                                    <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY!=33 && task.UF_CYCLICALITY!=34 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Продлить задачу до {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
+                                    <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить с {{dateStartNextMounth().format('DD.MM.YYYY')}}</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <?/*
                             14.02.2025 сохранение поля Ссылка было на событии @change="savetask(taskindex)"
                             14.02.2025 добавили кнопку сохранить
                             */?>
@@ -228,131 +355,16 @@ $p = $request->get('p');
                             </div>
                         </div>
 
-
-                        <div class="row form-group" v-if="(task.UF_CYCLICALITY == 1 || task.UF_CYCLICALITY == 2) && task.UF_STATUS==0">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Количество:</label>
-                            </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
-                                        <div>
-                                            <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
-                                        </div>
-                                        <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
-                                        <div class="mr-3">                                                  
-                                            <select class="form-control" name="" id="" v-model="task.UF_CYCLICALITY">
-												<option v-for="option in task.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
-														{{ option.VALUE }}
-												</option>
-                                            </select>
-											
-											<div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-        
-                                        </div>
-                                        <div style="position: relative" v-if="task.UF_CYCLICALITY == 1 && task.UF_DATE_COMPLETION">
-                                            <div class="input-group">
-                                                <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
-                                            </div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 1 && task.UF_STATUS>0">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Количество:</label>
-                            </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
-                                    <div>
-                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
-                                    </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
-                                    <div class="mr-3">
-                                        <div style="padding: 14px;padding-left: 0px;">{{ showOne1(task.UF_CYCLICALITY_ORIGINAL) }}</div>
-                                        <div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-                                    </div>
-                                    <div style="position: relative">
-                                        <div class="input-group">
-                                            <mydatepicker :tindex="taskindex" :original="task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="task.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="task.UF_DATE_COMPLETION"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ID 2 Ежемесечная задача -->
-                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 2 && task.UF_STATUS>0">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" for="kolichestvo" style="padding-top: 0px;">Изменить количество со следующего месяца:</label>
-                            </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
-                                    <div>
-                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="task.UF_NUMBER_STARTS">
-                                    </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед./в месяц</div>
-                                </div>
-                                <div>Новое количество применится с {{dateStartNextMounth().format('DD.MM.YYYY')}} Примерная периодичность: 2-3 ед. в день.</div>
-                            </div>
-                        </div>
-
-                        <!-- ID 33 Одно исполнение -->
-                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 33">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"><label class="col-form-label" style="padding-top: 0px;">Срок исполнения до:</label></div>
-                            <div class="col-sm-10" style="position: relative;">{{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
-                        </div>
-
-                        <!-- ID 34 Ежемесячная услуга -->
-                        <div class="row form-group" v-if="task.UF_CYCLICALITY == 34">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"></div>
-                            <div class="col-sm-10" style="position: relative;">
-                                <div>Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{task.RUN_DATE}}</div>
-                                <div v-if="task.UF_STATUS == 15" style="word-wrap: unset;"><button class="btn btn-link btn-link-site" type="button" style="padding: 0" @click="stoptask(taskindex)">Остановить с {{task.RUN_DATE}}</button></div>
-                            </div>
-                        </div>
-
-
-                        <?/*
-                            СТОИМОСТЬ
-                        */?>
-                        <div class="row form-group" v-if="task.FINALE_PRICE>0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
-                            <div class="col-sm-6" style="position: relative;">
-                                <div class="task-text-vertical-aling task-price-total">
-                                    <span>{{task.FINALE_PRICE}}</span>
-									<span v-if="task.UF_CYCLICALITY==1 || task.UF_CYCLICALITY==33"> руб.</span>
-									<span v-if="task.UF_CYCLICALITY==2 || task.UF_CYCLICALITY==34"> руб. (/мес.)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row form-group" v-if="task.FINALE_PRICE==0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
-                            <div class="col-sm-6" style="position: relative;">
-                                <div class="task-text-vertical-aling task-price-total">по запросу</div>
-                            </div>
-                        </div>
-                        
-						<div class="row form-group">
+                        <div class="row form-group">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
-                                <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)">Сохранить</button>
-								<button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
-                                    <button :id="'taskbutton1'+task.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
-                                    <?/*
-                                    Возможность допланировать
-
-                                    если не 33 Одно исполнение
-                                    если не 34 Ежемесячная услуга
-                                */?>
-                                <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY!=33 && task.UF_CYCLICALITY!=34 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Продлить задачу до {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
-                                    <button :id="'taskbutton2'+task.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)" disabled="disabled"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить с {{dateStartNextMounth().format('DD.MM.YYYY')}}</button>
+                                    <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)" :disabled="canBeSaved_(taskindex)">Сохранить</button>
                                 </div>
                             </div>
-						</div>							
+                        </div>
+
+
+
 							
 					</div>
 					
@@ -368,7 +380,7 @@ $p = $request->get('p');
             </div>
         </div>
     </div>
-    </div>
+    </template>
 
     <questiona_ctivity_component question="Вы действительно хотите остановить все исполнения задачи?" ref="modalqueststop"/>
     <questiona_ctivity_component question="Вы действительно хотите удалить все исполнения задачи в архив?" ref="modalquestremove"/>
@@ -387,6 +399,8 @@ Asset::getInstance()->addJs($templateFolder."/task_list.js");
         selector: '[data-tasklist]',
         script: [
             '../../kabinet/components/exi/task.list/.default/scrt.js',
+            '../../kabinet/components/exi/task.list/.default/task_status.js',
+            '../../kabinet/components/exi/task.list/.default/canbesaved.js'
         ],
         init:null
     }
