@@ -257,9 +257,21 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         const tasklistS = tasklistStore();
         const {canBeSaved_} = canbesaved__(tasklistS.datatask);
         const getmomment = ()=>moment();
+        const getCopyTask = function (task) {
+            const id = task['ID'];
+            var finded = null;
+            for(index in datataskCopy){
+                if (datataskCopy[index].ID == id){
+                    finded = datataskCopy[index];
+                    break;
+                }
+            }
+
+            return finded;
+        }
         const datataskCopy = JSON.parse(JSON.stringify(tasklistS.datatask))
 
-        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy};
+        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask};
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
@@ -346,6 +358,18 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 taskStory.datatask = data.task;
             });
         },
+        savetaskCopy:function(index){
+            var cur = this;
+
+            var form_data = this.dataToFormData(this.CopyTask[index]);
+
+            this.saveData('bitrix:kabinet.evn.taskevents.edittaskcopy',form_data,function(data){
+
+                console.log(data);
+                //const taskStory = tasklistStore();
+                //taskStory.datatask = data.task;
+            });
+        },
         addmoreinput: function (task) {
             const kabinetStore = usekabinetStore();
             if (task.UF_TARGET_SITE.length > 4){
@@ -375,6 +399,11 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
             this.$root.inpSaveTimer = setTimeout(()=>{this.savetask(task_index);},5000);
+        },
+        inpsaveCopy: function (task_index){
+
+            if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
+            this.$root.inpSaveTimer = setTimeout(()=>{this.savetaskCopy(task_index);},5000);
         },
         test: function (task){
             console.log(task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1);

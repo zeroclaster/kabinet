@@ -47,6 +47,23 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
 
     }
 
+    public function edittaskcopyAction(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $files = $request->getFileList()->toArray();
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $TaskManager = $sL->get('Kabinet.Task');
+
+
+        $taskData = $TaskManager->getData();
+
+        return [
+            'task'=>$taskData,
+            'message'=>'Данные успешно обновлены!'
+        ];
+    }
+
     public function edittaskAction(){
 		$request = $this->getRequest();
         $post = $request->getPostList()->toArray();
