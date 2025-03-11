@@ -122,7 +122,7 @@ $p = $request->get('p');
 
     <template v-for="(task,taskindex) in datatask">
         {{(CopyTask = getCopyTask(task),null)}}
-    <div :id="'produkt'+task.ID" class="panel task-list-block1 mb-5" v-if="task.UF_PROJECT_ID == project_id">
+    <div :id="'produkt'+task.ID" :data-cyclicality="task.UF_CYCLICALITY" :data-status="task.UF_STATUS" class="panel task-list-block1 mb-5" v-if="task.UF_PROJECT_ID == project_id">
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-1">
@@ -130,25 +130,55 @@ $p = $request->get('p');
                     <img class="img-thumbnail mt-0" :src="PRODUCT['PREVIEW_PICTURE_SRC']" :alt="PRODUCT['NAME']">
                 </div>
                 <div class="col-md-9">
-                    <div class="h3 task-title-view" :id="'task'+CopyTask.ID">{{CopyTask.UF_NAME}}</div>
-					<?/*
-					for debug
-                    {{PRODUCT}}
-					*/?>
 
+                    <div class="h3 task-title-view" :id="'task'+task.ID">{{task.UF_NAME}}</div>
 					<div class="d-flex task-status-print" v-html="taskStatus_m(taskindex)"></div>
-                    <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0">Цена за ед.: <span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
-                    <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1==0">Цена за ед.: <span>по запросу</span></div>
+                    <div v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2) && CopyTask.UF_STATUS==0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
+                    <div v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
+                    <div v-if="CopyTask.UF_CYCLICALITY == 2 && CopyTask.UF_STATUS>0">Примерная периодичность: 2-3 ед. в день.</div>
+                    <div v-if="task.UF_STATUS>0">Завершится: {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
 
 
-                    <div v-if="task.UF_CYCLICALITY == 1 && task.UF_STATUS>0">
-                        Задача выполняется и будет завершена {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}. Вы можете продлить выполнение задачи после {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}, указав новую дату завершения и заказав новые исполнения.
+                    <?/* Однократное выполнение */?>
+                    <template v-if="task.UF_CYCLICALITY == 33">
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS==0">
+                        Заданное количество будет равномерно выполнено до заданной даты. Вы всегда сможете дозаказать ещё нужное количество.
                     </div>
-
-                    <div v-if="task.UF_CYCLICALITY == 2 && task.UF_STATUS>0">
-                        {{(NEXTMOUTHSTART=2+2,null)}}
-                        Задача выполняется. Вы можете изменить ежемесячное количество и другие параметры задачи. Изменения вступят в силу с 1 числа следующего месяца — с {{getmomment().add(1, 'months').startOf('month').format('DD.MM.YYYY')}}.
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS>0">
+                        Вы можете заказать ещё «{{task.UF_NAME}}», указав нужное количество и продлить выполнение задачи до выбранной даты.
                     </div>
+                    </template>
+
+
+                    <?/* Одно исполнение */?>
+                    <template v-if="task.UF_CYCLICALITY == 1">
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS==0">
+                        Заданное количество будет равномерно выполнено до заданной даты. Вы всегда сможете дозаказать ещё нужное количество.
+                    </div>
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS>0">
+                        Вы можете заказать ещё «{{task.UF_NAME}}», указав нужное количество и продлить выполнение задачи до выбранной даты.
+                    </div>
+                    </template>
+
+                    <?/* Повторяется ежемесячно */?>
+                    <template v-if="task.UF_CYCLICALITY == 2">
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS==0">
+                        Запустится ежемесячное выполнение задачи с заданным количеством. Средства с баланса зарезервируются при запуске, а далее ежемесячно 1 числа. Вы сможете изменить количество или остановить выполнение в любой момент с 1 числа следующего месяца.
+                    </div>
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS>0">
+                        Вы можете изменить ежемесячное количество. Изменение вступит в силу с {{getmomment().add(1, 'months').startOf('month').format('DD.MM.YYYY')}}.
+                    </div>
+                    </template>
+
+                    <?/* Ежемесячная услуга */?>
+                    <template v-if="task.UF_CYCLICALITY == 34">
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS==0">
+                        Запустится ежемесячное выполнение задачи. Средства с баланса зарезервируются при запуске, а далее ежемесячно 1 числа. Пополняйте баланс заблаговременно до 1 числа ежемесячно.
+                    </div>
+                    <div class="mt-3 mb-3" v-if="task.UF_STATUS>0">
+                        Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{CopyTask.RUN_DATE}}. <span v-if="CopyTask.UF_STATUS == 15" style="word-wrap: unset;"><button class="btn btn-link btn-link-site" type="button" style="padding: 0" @click="stoptask(taskindex)">Остановить с {{CopyTask.RUN_DATE}}</button></span>
+                    </div>
+                    </template>
 
 
 					<div class="">
@@ -160,7 +190,7 @@ $p = $request->get('p');
                             <div class="col-sm-10" style="position: relative;">
                                 <div class="d-flex">
                                     <div>
-                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="CopyTask.UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
                                     <div class="mr-3">
@@ -169,13 +199,10 @@ $p = $request->get('p');
                                                 {{ option.VALUE }}
                                             </option>
                                         </select>
-
-                                        <div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-
                                     </div>
                                     <div style="position: relative" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">
                                         <div class="input-group">
-                                            <mydatepicker :tindex="taskindex" :original="CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="CopyTask.UF_DATE_COMPLETION"/>
+                                            <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
                                         </div>
                                     </div>
                                 </div>
@@ -190,16 +217,15 @@ $p = $request->get('p');
                             <div class="col-sm-10" style="position: relative;">
                                 <div class="d-flex">
                                     <div>
-                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="CopyTask.UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
                                     <div class="mr-3">
                                         <div style="padding: 14px;padding-left: 0px;">{{ showOne1(CopyTask.UF_CYCLICALITY_ORIGINAL) }}</div>
-                                        <div>Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
                                     </div>
                                     <div style="position: relative">
                                         <div class="input-group">
-                                            <mydatepicker :tindex="taskindex" :original="CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="CopyTask.UF_DATE_COMPLETION"/>
+                                            <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
                                         </div>
                                     </div>
                                 </div>
@@ -215,11 +241,11 @@ $p = $request->get('p');
                             <div class="col-sm-10" style="position: relative;">
                                 <div class="d-flex">
                                     <div>
-                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="CopyTask.UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                        <input id="kolichestvo" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> ед./в месяц</div>
                                 </div>
-                                <div>Новое количество применится с {{dateStartNextMounth().format('DD.MM.YYYY')}} Примерная периодичность: 2-3 ед. в день.</div>
+                                <div>Новое количество применится с {{dateStartNextMounth().format('DD.MM.YYYY')}}</div>
                             </div>
                         </div>
 
@@ -229,49 +255,59 @@ $p = $request->get('p');
                             <div class="col-sm-10" style="position: relative;">{{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
                         </div>
 
-                        <!-- ID 34 Ежемесячная услуга -->
-                        <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 34">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"></div>
-                            <div class="col-sm-10" style="position: relative;">
-                                <div>Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{CopyTask.RUN_DATE}}</div>
-                                <div v-if="CopyTask.UF_STATUS == 15" style="word-wrap: unset;"><button class="btn btn-link btn-link-site" type="button" style="padding: 0" @click="stoptask(taskindex)">Остановить с {{CopyTask.RUN_DATE}}</button></div>
-                            </div>
-                        </div>
-
 
                         <?/*
                             СТОИМОСТЬ
                         */?>
                         <div class="row form-group" v-if="CopyTask.FINALE_PRICE>0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
-                            <div class="col-sm-6" style="position: relative;">
-                                <div class="task-text-vertical-aling task-price-total">
-                                    <span>{{task.FINALE_PRICE}}</span>
-                                    <span v-if="CopyTask.UF_CYCLICALITY==1 || CopyTask.UF_CYCLICALITY==33"> руб.</span>
-                                    <span v-if="CopyTask.UF_CYCLICALITY==2 || CopyTask.UF_CYCLICALITY==34"> руб. (/мес.)</span>
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Цена за ед.: </label></div>
+                            <div class="col-sm-3" style="position: relative;">
+                                <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0"><span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
+                            </div>
+                            <div class="col-sm-3" style="position: relative;">
+                                <div class="d-flex">
+                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                                    <div class="task-price-total">
+                                        <span>{{CopyTask.FINALE_PRICE}}</span>
+                                        <span v-if="CopyTask.UF_CYCLICALITY==1 || CopyTask.UF_CYCLICALITY==33"> руб.</span>
+                                        <span v-if="CopyTask.UF_CYCLICALITY==2 || CopyTask.UF_CYCLICALITY==34"> руб. (/мес.)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row form-group" v-if="CopyTask.FINALE_PRICE==0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
-                            <div class="col-sm-6" style="position: relative;">
-                                <div class="task-text-vertical-aling task-price-total">по запросу</div>
+
+
+                        <div class="row form-group" v-if="PRODUCT.CATALOG_PRICE_1==0">
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" for="linkInput2">Цена за ед.: </label></div>
+                            <div class="col-sm-3" style="position: relative;">
+                                <div class="price-product"><span>по запросу</span></div>
+                            </div>
+                            <div class="col-sm-3" style="position: relative;">
+                                <div class="d-flex">
+                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                                    <div class="task-text-vertical-aling task-price-total">по запросу</div>
+                                </div>
                             </div>
                         </div>
+
 
                         <div class="row form-group">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Начать выполнение</button>
-                                    <?/*
-                                    Возможность допланировать
+                                    <?/* 33 Одно исполнение */?>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{CopyTask.UF_NAME}}»</button>
 
-                                    если не 33 Одно исполнение
-                                    если не 34 Ежемесячная услуга
-                                */?>
-                                    <button :id="'taskbutton2'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY!=33 && CopyTask.UF_CYCLICALITY!=34 && CopyTask.UF_CYCLICALITY!=2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Продлить задачу до {{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
-                                    <button :id="'taskbutton2'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить с {{dateStartNextMounth().format('DD.MM.YYYY')}}</button>
+                                    <?/* 1 Однократное выполнение */?>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{CopyTask.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{CopyTask.UF_NAME}}»</button>
+
+                                    <?/* 2 Повторяется ежемесячно */?>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать 15 {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{CopyTask.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{CopyTask.UF_NAME}}» с {{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
+
+                                    <?/* 34 Ежемесячная услуга */?>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{CopyTask.UF_NAME}}»</button>
+
                                 </div>
                             </div>
                         </div>

@@ -260,16 +260,16 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         const getCopyTask = function (task) {
             const id = task['ID'];
             var finded = null;
-            for(index in datataskCopy){
-                if (datataskCopy[index].ID == id){
-                    finded = datataskCopy[index];
+            for(index in this.datataskCopy){
+                if (this.datataskCopy[index].ID == id){
+                    finded = this.datataskCopy[index];
                     break;
                 }
             }
 
             return finded;
         }
-        const datataskCopy = JSON.parse(JSON.stringify(tasklistS.datatask))
+        const datataskCopy = BX.Vue3.ref(JSON.parse(JSON.stringify(tasklistS.datatask)));
 
         return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask};
     },
@@ -294,19 +294,62 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...taskMethods(),
         ...addNewMethods(),
         ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare']),
+        savetaskCopy(index){
+            var cur = this;
+            console.log(this.datataskCopy);
+            var form_data = this.dataToFormData(this.datataskCopy[index]);
+            this.saveData('bitrix:kabinet.evn.taskevents.edittaskcopy',form_data,function(data){
+
+                for (index in data.task){
+                    cur.datataskCopy[index] = data.task[index];
+                }
+
+                //const taskStory = tasklistStore();
+                //taskStory.datatask = data.task;
+            });
+        },
+        starttask(index){
+            var cur = this;
+            console.log(this.datataskCopy);
+            var form_data = this.dataToFormData(this.datataskCopy[index]);
+            this.saveData('bitrix:kabinet.evn.taskevents.starttaskcopy',form_data,function(data){
+
+                for (index in data.task){
+                    cur.datataskCopy[index] = data.task[index];
+                }
+
+                // Обновляем календарь
+                const QueueStore = calendarStore()
+                QueueStore.datacalendarQueue = data.queue;
+                cur.updatecalendare([],cur.project_id);
+
+                const taskStory = tasklistStore();
+                taskStory.datatask = data.task;
+
+                if (typeof data.data2 != "undefined") {
+                    const orderStore = orderlistStore();
+                    orderStore.data2 = data.data2;
+                }
+
+                // обновляем биллинг если он пришел от сервера
+                if (typeof data.billing != "undefined") {
+                    const billing = billingStore();
+                    billing.databilling = data.billing;
+                }
+
+            });
+        },
+        starttask_(taskindex){
+           this.runCommand(this.datataskCopy[taskindex],'start');
+        },
         /*
         Остановить
         */
-        starttask(taskindex){
-
-           this.runCommand(taskindex,'start');
-
-        },
         stoptask(taskindex){
 
             const component = this.$refs.modalqueststop;
             component.showmodale(taskindex,function(taskindex){
-                this.runCommand(taskindex,'stoptask');
+                this.runCommand(this.datatask[taskindex],'stoptask');
             });
         },
         /*
@@ -320,7 +363,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 				component.addAlert("Задачу сначало необходимо остановить!");
 			}
             component.showmodale(taskindex,function(taskindex){                	
-				this.runCommand(taskindex,'removetask');
+				this.runCommand(this.datatask[taskindex],'removetask');
 				
             });
         },
@@ -356,16 +399,21 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
                 const taskStory = tasklistStore();
                 taskStory.datatask = data.task;
+
+                for (index in data.task) cur.datataskCopy[index] = data.task[index];
+
             });
         },
         savetaskCopy:function(index){
             var cur = this;
-
-            var form_data = this.dataToFormData(this.CopyTask[index]);
-
+            console.log(this.datataskCopy);
+            var form_data = this.dataToFormData(this.datataskCopy[index]);
             this.saveData('bitrix:kabinet.evn.taskevents.edittaskcopy',form_data,function(data){
 
-                console.log(data);
+                for (index in data.task){
+                    cur.datataskCopy[index] = data.task[index];
+                }
+
                 //const taskStory = tasklistStore();
                 //taskStory.datatask = data.task;
             });
@@ -403,7 +451,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         inpsaveCopy: function (task_index){
 
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
-            this.$root.inpSaveTimer = setTimeout(()=>{this.savetaskCopy(task_index);},5000);
+            this.$root.inpSaveTimer = setTimeout(()=>{this.savetaskCopy(task_index);},2000);
         },
         test: function (task){
             console.log(task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1);
@@ -445,13 +493,10 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 					
 			return $ret;
 		},
-        runCommand:function(index,action){
+        runCommand:function(task,action){
             var cur = this;
-            var task;
 
             kabinet.loading();
-
-            task = this.datatask[index];
 
             var form_data = new FormData();
             form_data.append('ID', task['ID']);

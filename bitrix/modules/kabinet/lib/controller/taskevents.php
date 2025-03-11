@@ -54,13 +54,41 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');
+        $HLBClass = $TaskManager->getHLBClass();
+        $user = (\KContainer::getInstance())->get('user');
+        $user_id = $user->get('ID');
+        $upd_id = $post['ID'];
+
+        try {
+            $BDfield = $TaskManager->preparationUpdate(array_merge($post,$files));
+        }catch (SystemException $exception){
+            $this->addError(new Error($exception->getMessage(), 1));
+            return null;
+        }
+
+        foreach ($BDfield as $key => $item)
+            if (is_array($item)) $BDfield[$key] = serialize($item);
 
 
-        $taskData = $TaskManager->getData();
+        $dataSQL = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
+            'select'=>['*'],
+            'filter'=>['UF_AUTHOR_ID'=>$user_id],
+            'order'=>["ID"=>'ASC']
+        ])->fetchAll();
+
+
+        $key = array_search($upd_id, array_column($dataSQL, 'ID'));
+        if ($key === false) {
+            $this->addError(new Error("Объект с ID ".$upd_id." не найден в базе", 1));
+            return null;
+        }
+        $dataSQL[$key] = array_merge($dataSQL[$key],$BDfield);
+
+        $taskData = $TaskManager->remakeData($dataSQL);
 
         return [
+            'id'=> $upd_id,
             'task'=>$taskData,
-            'message'=>'Данные успешно обновлены!'
         ];
     }
 
@@ -96,7 +124,67 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             'message'=>'Данные успешно обновлены!'
         ];
 	}
-	
+
+    public function starttaskcopyAction(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $files = $request->getFileList()->toArray();
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $TaskManager = $sL->get('Kabinet.Task');
+        $RunnerManager = $sL->get('Kabinet.Runner');
+        $projectManager = $sL->get('Kabinet.Project');
+        $BillingManager = $sL->get('Kabinet.Billing');
+
+
+        if (empty($post['ID'])){
+            $this->addError(new Error("Нет ID задачи!", 1));
+            return null;
+        }
+
+        try {
+            $upd_id = $TaskManager->update(array_merge($post,$files));
+        }catch (SystemException $exception){
+            $this->addError(new Error($exception->getMessage(), 1));
+            return null;
+        }
+
+        $task = $TaskManager->getTaskById($post['ID']);
+        if (!$task) {
+            $this->addError(new Error("Задачи с ID ".$post['ID']. ' не найдена!', 1));
+            return null;
+        }
+
+        $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
+
+        try {
+            $RunnerManager->startTask($task);
+            $ClassHLB::update($task['ID'],['UF_STATUS'=>\Bitrix\Kabinet\task\Taskmanager::WORKED]);
+        }catch (SystemException $exception){
+            $this->addError(new Error($exception->getMessage(), 1));
+            return null;
+        }
+
+        // исполнения созданы, для Только однократная и запущеной задачи стереть дату завершения
+        if ($task['UF_CYCLICALITY'] == 1 && $task['UF_STATUS'] == \Bitrix\Kabinet\task\Taskmanager::WORKED)
+            $ClassHLB::update($task['ID'],['UF_DATE_COMPLETION'=>null]);
+
+        $upd_id = $post['ID'];
+        $taskData = $TaskManager->getData();
+        $orderData = $projectManager->orderData();
+        $Queue = $sL->get('Kabinet.Runner')->getData(array_column($taskData, 'ID'));
+        $dataArray = $BillingManager->getData();
+
+        return [
+            'id'=> $upd_id,
+            'task'=>$taskData,
+            'data2' =>$orderData,
+            'queue' => $Queue,
+            'billing' => $dataArray,
+            'message'=>'Задача успешно запланирована! Ждет выполнения.'
+        ];
+    }
+
 	public function startAction(){
 		$request = $this->getRequest();
         $post = $request->getPostList()->toArray();

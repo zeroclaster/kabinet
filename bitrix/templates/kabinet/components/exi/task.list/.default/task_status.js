@@ -51,10 +51,10 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned > 0) return '<div class="status-task-1 text-warning">Запланирована</div><div class="ml-4">Завершится: '+task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1+'</div>';
+            if (isRuned > 0) return '<div class="status-task-1 text-warning">Запланирована</div>';
 
 
-            return '<div class="status-task-1 text-success">Выполняется</div><div class="ml-4">Завершится: '+task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1+'</div>';
+            return '<div class="status-task-1 text-success">Выполняется</div>';
         }
 
     return {countQueu,taskStatus_m};

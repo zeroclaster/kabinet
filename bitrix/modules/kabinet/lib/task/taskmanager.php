@@ -187,6 +187,102 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     {
     }
 
+    public function remakeData(array $source){
+        $listdata = [];
+        foreach ($source as $data) {
+
+            // TODO AKULA глюки с сохранением даты
+            if (!$data['UF_DATE_COMPLETION']) {
+                $DATE_COMPLETION = $this->theorDateEnd($data);
+                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
+            }
+
+            // Одно исполнение и задача еще не выполняется
+            if ($data['UF_CYCLICALITY'] == 33 && $data['UF_STATUS']==0) {
+                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+            }
+
+            $dataconvert = $this->convertData($data, $this->getUserFields());
+
+            $DATE_COMPLETION = $this->theorDateEnd($dataconvert);
+            //$d = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
+            //$d->add("1 day");
+            //$dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = (new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:00"),"d.m.Y H:i:s"))->getTimestamp();
+            $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $DATE_COMPLETION;
+            $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();;
+            $listdata[] = $dataconvert;
+        }
+
+        foreach ($listdata as $index => $task2) {
+            $PRODUCT = $this->getProductByTask($task2);
+            if (!$PRODUCT){
+                unset($listdata[$index]);
+                continue;
+            }
+
+            if (empty($listdata[$index]['UF_NUMBER_STARTS']))
+                $listdata[$index]['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
+
+            $listdata[$index]['FINALE_PRICE'] = $listdata[$index]['UF_NUMBER_STARTS'] * $PRODUCT['CATALOG_PRICE_1'];
+
+            $listdata[$index]['QUEUE_STATIST'] = $this->getQueueStatistics($task2['ID']);
+            //$listdata[$index]['QUEUE_STATIST'] = [];
+
+
+            // Цикличность задачи
+            if ($PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']){
+                $possible_options = $this->TASK_CONTINUITY[$PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']];
+                foreach ($task2['UF_CYCLICALITY_ORIGINAL'] as $k1223 => $v1234){
+                    if (!in_array($v1234['ID'],$possible_options)) unset($task2['UF_CYCLICALITY_ORIGINAL'][$k1223]);
+                }
+            }
+
+            // 1 - Однократное выполнение
+            // 2 - Повторяется ежемесячно
+            foreach($task2['UF_CYCLICALITY_ORIGINAL'] as $k1223 => $v1234){
+                if  ($v1234['VALUE'] == '') continue;
+
+                // 1 - Однократное выполнение
+                if ($v1234['ID'] == 1) {
+                    $d = $this->dateStartOne(array_merge($task2,['UF_CYCLICALITY'=>1]));
+                    $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
+
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . $date1->format("d.m.Y") . ' до заданной даты';
+                }
+
+                // 2 - Повторяется ежемесячно
+                if ($v1234['ID'] == 2) {
+                    $d = $this->dateStartCicle(array_merge($task2,['UF_CYCLICALITY'=>2]));
+                    $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
+
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . $date1->format("d.m.Y");
+                }
+
+                // Одно исполнение
+                if ($v1234['ID'] == 33) {
+
+                }
+            }
+
+
+            $listdata[$index]['UF_CYCLICALITY_ORIGINAL'] = $task2['UF_CYCLICALITY_ORIGINAL'];
+
+            // Ежемесячная услуга
+            if ($task2['UF_CYCLICALITY'] == 34) {
+                $d = $this->dateStartCicle($task2);
+                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
+            }
+
+
+            if ($task2['UF_CYCLICALITY'] == 2) {
+                $d = $this->dateStartCicle($task2);
+                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->add("1 month")->format("d.m.Y");
+            }
+        }
+
+        return $listdata;
+    }
+
     public function getData($clear=false,$user_id = [],$filter=[]){
         global $CACHE_MANAGER;
 
@@ -229,98 +325,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             //echo \Bitrix\Main\Entity\Query::getLastQuery();
 
-            $listdata = [];
-            foreach ($dataSQL as $data) {
-
-                // TODO AKULA глюки с сохранением даты
-                if (!$data['UF_DATE_COMPLETION']) {
-                    $DATE_COMPLETION = $this->theorDateEnd($data);
-                    $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
-                }
-
-                // Одно исполнение и задача еще не выполняется
-                if ($data['UF_CYCLICALITY'] == 33 && $data['UF_STATUS']==0) {
-                    $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
-                }
-
-                $dataconvert = $this->convertData($data, $this->getUserFields());
-
-                $DATE_COMPLETION = $this->theorDateEnd($dataconvert);
-                //$d = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
-                //$d->add("1 day");
-                //$dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = (new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:00"),"d.m.Y H:i:s"))->getTimestamp();
-                $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $DATE_COMPLETION;
-                $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();;
-                $listdata[] = $dataconvert;
-            }
-
-            foreach ($listdata as $index => $task2) {
-                $PRODUCT = $this->getProductByTask($task2);
-                if (!$PRODUCT){
-                    unset($listdata[$index]);
-                    continue;
-                }
-
-                if (empty($listdata[$index]['UF_NUMBER_STARTS']))
-                    $listdata[$index]['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
-
-                $listdata[$index]['FINALE_PRICE'] = $listdata[$index]['UF_NUMBER_STARTS'] * $PRODUCT['CATALOG_PRICE_1'];
-
-                $listdata[$index]['QUEUE_STATIST'] = $this->getQueueStatistics($task2['ID']);
-                //$listdata[$index]['QUEUE_STATIST'] = [];
-
-
-                // Цикличность задачи
-                if ($PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']){
-                    $possible_options = $this->TASK_CONTINUITY[$PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']];
-                    foreach ($task2['UF_CYCLICALITY_ORIGINAL'] as $k1223 => $v1234){
-                        if (!in_array($v1234['ID'],$possible_options)) unset($task2['UF_CYCLICALITY_ORIGINAL'][$k1223]);
-                    }
-                }
-
-                // 1 - Однократное выполнение
-                // 2 - Повторяется ежемесячно
-                foreach($task2['UF_CYCLICALITY_ORIGINAL'] as $k1223 => $v1234){
-                    if  ($v1234['VALUE'] == '') continue;
-
-                    // 1 - Однократное выполнение
-                    if ($v1234['ID'] == 1) {
-                        $d = $this->dateStartOne(array_merge($task2,['UF_CYCLICALITY'=>1]));
-                        $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
-
-                        $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . $date1->format("d.m.Y") . ' до заданной даты';
-                    }
-
-                    // 2 - Повторяется ежемесячно
-                    if ($v1234['ID'] == 2) {
-                        $d = $this->dateStartCicle(array_merge($task2,['UF_CYCLICALITY'=>2]));
-                        $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
-
-                        $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . $date1->format("d.m.Y");
-                    }
-
-                    // Одно исполнение
-                    if ($v1234['ID'] == 33) {
-
-                    }
-                }
-
-
-                $listdata[$index]['UF_CYCLICALITY_ORIGINAL'] = $task2['UF_CYCLICALITY_ORIGINAL'];
-
-                // Ежемесячная услуга
-                if ($task2['UF_CYCLICALITY'] == 34) {
-                    $d = $this->dateStartCicle($task2);
-                    $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
-                }
-
-
-                if ($task2['UF_CYCLICALITY'] == 2) {
-                    $d = $this->dateStartCicle($task2);
-                    $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->add("1 month")->format("d.m.Y");
-                }
-            }
-
+            $listdata = $this->remakeData($dataSQL);
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
             $cache->EndDataCache(array($listdata));

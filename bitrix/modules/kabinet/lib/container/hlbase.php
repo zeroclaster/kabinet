@@ -46,7 +46,7 @@ class Hlbase extends Base {
         return $ID;
     }
 
-    public function update($fields){
+    public function preparationUpdate(array $fields){
         $HLBClass = $this->getHLBClass();
 
         if (empty($fields['ID'])) throw new SystemException("You can't edit an object without ID");
@@ -72,10 +72,22 @@ class Hlbase extends Base {
         }
 
         if(!empty($oldFileds['UF_AUTHOR_ID']))
-                if($this->isnotUserElement($id)) throw new SystemException("Объект не принадлежит пользователю");
+            if($this->isnotUserElement($id)) throw new SystemException("Объект не принадлежит пользователю");
 
         //AddMessage2Log([$fullFields], "my_module_id");
 
+        return $fullFields;
+    }
+
+    public function update(array $fields){
+        $HLBClass = $this->getHLBClass();
+
+        if (empty($fields['ID'])) throw new SystemException("You can't edit an object without ID");
+        $id = $fields['ID'];
+
+        $fullFields = $this->preparationUpdate($fields);
+
+        //AddMessage2Log([$fullFields], "my_module_id");
         $obResult = $HLBClass::update($id, $fullFields);
         if (!$obResult->isSuccess()){
             $err = $obResult->getErrors();
@@ -84,13 +96,7 @@ class Hlbase extends Base {
         }
 
         $this->clearCache();
-
-
-		$ID = $obResult->getID();
-
-        //AddMessage2Log([$fullFields], "my_module_id");
-
-		return $ID;
+		return $obResult->getID();
     }
 
     public function delete(int $id){
