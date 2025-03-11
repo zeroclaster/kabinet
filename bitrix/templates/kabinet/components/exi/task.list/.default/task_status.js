@@ -57,5 +57,29 @@ var task_status = function (){
             return '<div class="status-task-1 text-success">Выполняется</div>';
         }
 
-    return {countQueu,taskStatus_m};
+
+    const taskStatus_v = function (index){
+        if (countQueu(index) == 0) return '<div class="status-task-1 text-warning">Не выполняется</div>';
+        const task = datatask_.datatask[index];
+
+        let stopwark = 0;
+        let work = 0;
+        let endwork = 0;
+
+        for(queue of calendarStore_.datacalendarQueue){
+            if (queue.UF_TASK_ID != task.ID) continue;
+            if (queue.UF_STATUS == 9) {
+                endwork++;
+            }
+            else if(queue.UF_STATUS == 0){
+                stopwark++;
+            }
+            else if(queue.UF_STATUS != 10)
+                work++
+        }
+
+        return {'stopwark':stopwark,'work':work,'endwork':endwork};
+    }
+
+    return {countQueu,taskStatus_m,taskStatus_v};
 }

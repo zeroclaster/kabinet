@@ -253,7 +253,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     },
     setup(){
 
-        const {countQueu,taskStatus_m} = task_status();
+        const {countQueu,taskStatus_m,taskStatus_v} = task_status();
         const tasklistS = tasklistStore();
         const {canBeSaved_} = canbesaved__(tasklistS.datatask);
         const getmomment = ()=>moment();
@@ -271,7 +271,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         }
         const datataskCopy = BX.Vue3.ref(JSON.parse(JSON.stringify(tasklistS.datatask)));
 
-        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask};
+        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v};
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),

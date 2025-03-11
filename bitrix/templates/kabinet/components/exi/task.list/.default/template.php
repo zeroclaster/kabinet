@@ -133,6 +133,14 @@ $p = $request->get('p');
 
                     <div class="h3 task-title-view" :id="'task'+task.ID">{{task.UF_NAME}}</div>
 					<div class="d-flex task-status-print" v-html="taskStatus_m(taskindex)"></div>
+
+                    <div class="d-flex" v-if="task.UF_STATUS>0">
+                        <div>Запланированы: {{taskStatus_v(taskindex)['stopwark']}}</div>
+                        <div class="ml-3">Выполняются: {{taskStatus_v(taskindex)['work']}}</div>
+                        <div class="ml-3">Выполнено: {{taskStatus_v(taskindex)['endwork']}}</div>
+                    </div>
+
+
                     <div v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2) && CopyTask.UF_STATUS==0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
                     <div v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
                     <div v-if="CopyTask.UF_CYCLICALITY == 2 && CopyTask.UF_STATUS>0">Примерная периодичность: 2-3 ед. в день.</div>
