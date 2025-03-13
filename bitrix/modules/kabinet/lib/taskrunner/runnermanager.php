@@ -484,7 +484,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                             // 4 - В работе у специалиста
                             if ($item['ID'] == 4 && $c['UF_STATUS'] != 3) $item['TITLE'] = 'Отклонить с комментарием';
                             // 4 - Публикация
-                            if ($item['ID'] == 6) $item['TITLE'] = 'Согласовано, опубликовать';
+                            if ($item['ID'] == 6) $item['TITLE'] = '<i class="fa fa-rocket" aria-hidden="true"></i>Отправить на публикацию';
                             // 9 - Выполнена
                             if ($item['ID'] == 9) $item['TITLE'] = 'Отчет принят';
                         },$c);

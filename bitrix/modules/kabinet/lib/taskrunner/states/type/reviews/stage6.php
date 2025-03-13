@@ -69,6 +69,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         }
     }
 
+    // условия что бы включить этот статус
     public function conditionsTransition($oldData){
         $runnerFields = $this->runnerFields;
 
@@ -81,6 +82,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         return true;
     }
 
+    // уходят со статуса
     public function leaveStage($object){
         $object->set('UF_HITCH',0);
     }

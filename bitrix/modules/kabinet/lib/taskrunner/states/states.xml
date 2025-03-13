@@ -2,8 +2,14 @@
 <catalog>
     <product type="review" title="Отзывы">
         <states>
-            <state id="0" name="state1">
-                <title>Запланирован (но не начат)</title>
+            <state id="0" name="state1" icon="fa-clock-o">
+                <title>Запланирован</title>
+                <user>
+                    <button>Запланирован</button>
+                </user>
+                <admin>
+                    <button>Запланирован</button>
+                </admin>
                 <stylecss>fc-event-warning</stylecss>
                 <description>
                     Создает объект типа «исполнение» со статусом 0-Запланирован
@@ -13,8 +19,14 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
             </state>
-            <state id="1" name="state2">
+            <state id="1" name="state2" icon="fa-hourglass-start">
                 <title>Взят в работу</title>
+                <user>
+                    <button>Взят в работу</button>
+                </user>
+                <admin>
+                    <button>Взят в работу</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
@@ -24,54 +36,97 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage2</class>
             </state>
-            <state id="2" name="state3">
+            <state id="2" name="state3" icon="fa-hourglass-start">
                 <title>Пишется текст</title>
+                <user>
+                    <button>Пишется текст</button>
+                </user>
+                <admin>
+                    <button>Пишется текст</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage3</class>
             </state>
-            <state id="3" name="state4">
+            <state id="3" name="state4" icon="fa-eye">
                 <title>Ожидается текст от клиента.</title>
+                <user>
+                    <button>Ожидается текст от клиента.</button>
+                </user>
+                <admin>
+                    <button>Ожидается текст от клиента.</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage4</class>
             </state>
-            <state id="4" name="state5">
+            <state id="4" name="state5" icon="fa-hourglass-half">
                 <title>В работе у специалиста</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-undo" aria-hidden="true"></i> Отклонить с комментарием]]></button>
+                </user>
+                <admin>
+                    <button>В работе у специалиста</button>
+                </admin>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage5</class>
             </state>
-            <state id="5" name="state6">
+            <state id="5" name="state6" icon="fa-eye">
                 <title>На согласовании (у клиента)</title>
+                <user>
+                    <button>На согласовании (у клиента)</button>
+                </user>
+                <admin>
+                    <button>На согласовании (у клиента)</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage6</class>
             </state>
-            <state id="6" name="state7">
-                <title>Публикация</title>\<stylecss>fc-event-success</stylecss>
+            <state id="6" name="state7" icon="fa-hourglass-half">
+                <title>Публикация</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-rocket" aria-hidden="true"></i> Отправить на публикацию]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-rocket" aria-hidden="true"></i> Отправить на публикацию]]></button>
+                </admin>
+                <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 96 часов.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage7</class>
             </state>
-            <state id="7" name="state8">
+            <state id="7" name="state8" icon="fa-hourglass-end">
                 <title>Готовится отчет</title>
+                <user>
+                    <button>Готовится отчет</button>
+                </user>
+                <admin>
+                    <button>Готовится отчет</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
             </state>
-            <state id="8" name="state9">
-                <title>Отчет на проверке у клиента;</title>
+            <state id="8" name="state9" icon="fa-eye">
+                <title>Отчет на проверке у клиента</title>
+                <user>
+                    <button>Отчет на проверке у клиента</button>
+                </user>
+                <admin>
+                    <button>Отчет на проверке у клиента</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Автоматический переход
@@ -80,16 +135,28 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
             </state>
-            <state id="9" name="state10">
+            <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Отчет принят]]></button>
+                </user>
+                <admin>
+                    <button>Выполнена</button>
+                </admin>
                 <stylecss>fc-event-light</stylecss>
                 <description>
                     Списание зарезервированных средств со счета клиента
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
             </state>
-            <state id="10" name="state11">
+            <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
                     Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
@@ -100,8 +167,14 @@
     </product>
     <product type="multiple" title="множественное исполнение">
         <states>
-            <state id="0" name="state1">
-                <title>Запланирован (но не начат)</title>
+            <state id="0" name="state1" icon="fa-clock-o">
+                <title>Запланирован</title>
+                <user>
+                    <button>Запланирован</button>
+                </user>
+                <admin>
+                    <button>Запланирован</button>
+                </admin>
                 <stylecss>fc-event-warning</stylecss>
                 <description>
                     Создает объект типа «исполнение» со статусом 0-Запланирован
@@ -111,30 +184,55 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage1</class>
             </state>
-            <state id="1" name="state5">
+            <state id="1" name="state5" icon="fa-hourglass-start">
                 <title>В работе у специалиста</title>
+                <user>
+                    <button>В работе у специалиста</button>
+                </user>
+                <admin>
+                    <button>В работе у специалиста</button>
+                </admin>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage5</class>
             </state>
-            <state id="6" name="state7">
-                <title>Публикация</title>\<stylecss>fc-event-success</stylecss>
+            <state id="6" name="state7" icon="fa-hourglass-half">
+                <title>Публикация</title>
+                <user>
+                    <button>Публикация</button>
+                </user>
+                <admin>
+                    <button>Публикация</button>
+                </admin>
+                <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 96 часов.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage7</class>
             </state>
-            <state id="7" name="state8">
+            <state id="7" name="state8" icon="fa-hourglass-end">
                 <title>Готовится отчет</title>
+                <user>
+                    <button>Готовится отчет</button>
+                </user>
+                <admin>
+                    <button>Готовится отчет</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
             </state>
-            <state id="8" name="state9">
-                <title>Отчет на проверке у клиента;</title>
+            <state id="8" name="state9" icon="fa-eye">
+                <title>Отчет на проверке у клиента</title>
+                <user>
+                    <button>Отчет на проверке у клиента</button>
+                </user>
+                <admin>
+                    <button>Отчет на проверке у клиента</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Автоматический переход
@@ -143,16 +241,28 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
             </state>
-            <state id="9" name="state10">
+            <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>
+                <user>
+                    <button>Выполнена</button>
+                </user>
+                <admin>
+                    <button>Выполнена</button>
+                </admin>
                 <stylecss>fc-event-light</stylecss>
                 <description>
                     Списание зарезервированных средств со счета клиента
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
             </state>
-            <state id="10" name="state11">
+            <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
                     Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
@@ -163,8 +273,14 @@
     </product>
     <product type="removal" title="Удаление">
         <states>
-            <state id="0" name="state1">
-                <title>Запланирован (но не начат)</title>
+            <state id="0" name="state1" icon="fa-clock-o">
+                <title>Запланирован</title>
+                <user>
+                    <button>Запланирован</button>
+                </user>
+                <admin>
+                    <button>Запланирован</button>
+                </admin>
                 <stylecss>fc-event-warning</stylecss>
                 <description>
                     Создает объект типа «исполнение» со статусом 0-Запланирован
@@ -174,8 +290,14 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
             </state>
-            <state id="1" name="state2">
+            <state id="1" name="state2" icon="fa-hourglass-start">
                 <title>Взят в работу</title>
+                <user>
+                    <button>Взят в работу</button>
+                </user>
+                <admin>
+                    <button>Взят в работу</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
@@ -185,31 +307,56 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage2</class>
             </state>
-            <state id="3" name="state4">
-                <title>Ожидается пополнение баланса.</title>
+            <state id="3" name="state4" icon="fa-eye">
+                <title>Ожидается пополнение баланса</title>
+                <user>
+                    <button>Ожидается пополнение баланса</button>
+                </user>
+                <admin>
+                    <button>Ожидается пополнение баланса</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage4</class>
             </state>
-            <state id="4" name="state5">
+            <state id="4" name="state5" icon="fa-hourglass-half">
                 <title>В работе у специалиста</title>
+                <user>
+                    <button>Ожидается пополнение баланса</button>
+                </user>
+                <admin>
+                    <button>Ожидается пополнение баланса</button>
+                </admin>
+                <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage5</class>
             </state>
-            <state id="7" name="state8">
+            <state id="7" name="state8" icon="fa-hourglass-end">
                 <title>Готовится отчет</title>
+                <user>
+                    <button>Готовится отчет</button>
+                </user>
+                <admin>
+                    <button>Готовится отчет</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
             </state>
-            <state id="8" name="state9">
-                <title>Отчет на проверке у клиента;</title>
+            <state id="8" name="state9" icon="fa-eye">
+                <title>Отчет на проверке у клиента</title>
+                <user>
+                    <button>Отчет на проверке у клиента</button>
+                </user>
+                <admin>
+                    <button>Отчет на проверке у клиента</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Автоматический переход
@@ -218,16 +365,28 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
             </state>
-            <state id="9" name="state10">
+            <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>
+                <user>
+                    <button>Выполнена</button>
+                </user>
+                <admin>
+                    <button>Выполнена</button>
+                </admin>
                 <stylecss>fc-event-light</stylecss>
                 <description>
                     Списание зарезервированных средств со счета клиента
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
             </state>
-            <state id="10" name="state11">
+            <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
+                <user>
+                    <button><i class="fa fa-times" aria-hidden="true"></i> Отменить</button>
+                </user>
+                <admin>
+                    <button><i class="fa fa-times" aria-hidden="true"></i> Отменить</button>
+                </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
                     Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
@@ -238,8 +397,14 @@
     </product>
     <product type="service" title="Услуга">
         <states>
-            <state id="0" name="state1">
-                <title>Запланирован (но не начат)</title>
+            <state id="0" name="state1" icon="fa-clock-o">
+                <title>Запланирован</title>
+                <user>
+                    <button>Запланирован</button>
+                </user>
+                <admin>
+                    <button>Запланирован</button>
+                </admin>
                 <stylecss>fc-event-warning</stylecss>
                 <description>
                     Создает объект типа «исполнение» со статусом 0-Запланирован
@@ -249,8 +414,14 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
             </state>
-            <state id="1" name="state2">
+            <state id="1" name="state2" icon="fa-hourglass-start">
                 <title>Взят в работу</title>
+                <user>
+                    <button>Взят в работу</button>
+                </user>
+                <admin>
+                    <button>Взят в работу</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Если поле «согласование» = «нет, текст пишет клиент», на стадию – через 0 часов
@@ -260,23 +431,41 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\service\Stage2</class>
             </state>
-            <state id="3" name="state4">
+            <state id="3" name="state4" icon="fa-eye">
                 <title>Ожидается уточнения задания от клиента</title>
+                <user>
+                    <button>Ожидается уточнения задания от клиента</button>
+                </user>
+                <admin>
+                    <button>Ожидается уточнения задания от клиента</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\service\Stage4</class>
             </state>
-            <state id="4" name="state5">
+            <state id="4" name="state5" icon="fa-hourglass-half">
                 <title>В работе у специалиста</title>
+                <user>
+                    <button>В работе у специалиста</button>
+                </user>
+                <admin>
+                    <button>В работе у специалиста</button>
+                </admin>
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage5</class>
             </state>
-            <state id="8" name="state9">
+            <state id="8" name="state9" icon="fa-eye">
                 <title>Отчет на проверке у клиента</title>
+                <user>
+                    <button>Отчет на проверке у клиента</button>
+                </user>
+                <admin>
+                    <button>Отчет на проверке у клиента</button>
+                </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
                     Автоматический переход
@@ -285,16 +474,28 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
             </state>
-            <state id="9" name="state10">
+            <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>
+                <user>
+                    <button>Выполнена</button>
+                </user>
+                <admin>
+                    <button>Выполнена</button>
+                </admin>
                 <stylecss>fc-event-light</stylecss>
                 <description>
                     Списание зарезервированных средств со счета клиента
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
             </state>
-            <state id="10" name="state11">
+            <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
                     Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.

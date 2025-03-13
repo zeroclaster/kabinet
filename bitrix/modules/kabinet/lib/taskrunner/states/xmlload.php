@@ -54,10 +54,20 @@ class Xmlload{
             $attributes = $state->attributes();
             $id = $attributes->{'id'}->__toString();
             $name = $attributes->{'name'}->__toString();
+            $icon = $attributes->{'icon'}->__toString();
+
+            $USER_BUTTON = '';
+            $ADMIN_BUTTON = '';
+            if ($button = $state->user->button) $USER_BUTTON = $button->__toString();
+            if ($button = $state->admin->button) $ADMIN_BUTTON = $button->__toString();
+
             $ret[] = [
                 'ID' => $id,
                 'TITLE' => $state->title->__toString(),
                 'NAME' => $name,
+                'ICON' => $icon,
+                'USER_BUTTON' => $USER_BUTTON,
+                'ADMIN_BUTTON' => $ADMIN_BUTTON,
             ];
         }
 

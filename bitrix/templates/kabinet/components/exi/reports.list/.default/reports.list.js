@@ -158,7 +158,7 @@ reports_list = (function (){
                     <div class="form-group select-status" v-for="Status in catalog">
                         <div class="form-check">
                           <input @change="saveStatus" :name="$id('name')" class="form-check-input" :id="$id(Status.ID)" v-model="localModelValue" type="radio" :value="Status.ID">
-                          <label style="color: #FFF !important;" class="form-check-label text-primary btn btn-primary" :for="$id(Status.ID)">{{Status.TITLE}}</label>
+                          <label style="color: #FFF !important;" class="form-check-label text-primary btn btn-primary" :for="$id(Status.ID)" v-html="Status.USER_BUTTON"></label>
                         </div>
                     </div>
                 </div>
@@ -433,10 +433,21 @@ reports_list = (function (){
                         return false;
                     },
                     alertStyle(status){
-                        if ([0].indexOf(parseInt(status)) != -1) return 'alert-warning';
-                        if ([1,2,3,4,5,6,7,8].indexOf(parseInt(status)) != -1) return 'alert-success';
-                        if ([9].indexOf(parseInt(status)) != -1) return 'alert-dark';
-                        if ([10].indexOf(parseInt(status)) != -1) return 'alert-danger';
+
+                        //Серая – запланировано.
+                        if ([0].indexOf(parseInt(status)) != -1) return 'alert-planned';
+
+                        //все стадии, когда ведутся работы на стороне сервиса
+                        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
+
+                        //все стадии, когда требуется внимание клиента – желтые+серый текст.
+                        if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-user-attention';
+
+                        //Красные – отмена..
+                        if ([9].indexOf(parseInt(status)) != -1) return 'alert-cancel';
+
+                        //темно-серые – выполнено
+                        if ([10].indexOf(parseInt(status)) != -1) return 'alert-done';
                     },
                 },
                 created(){

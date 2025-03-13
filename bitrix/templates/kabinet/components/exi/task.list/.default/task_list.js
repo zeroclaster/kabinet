@@ -612,7 +612,8 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 	components: {
 			myInputFileComponent,
             mydatepicker,
-            questiona_ctivity_component
+            questiona_ctivity_component,
+            textInfoTask
 	},
         // language=Vue
     template: '#kabinet-content'

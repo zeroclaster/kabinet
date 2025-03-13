@@ -73,6 +73,7 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         }
     }
 
+    // условия что бы включить этот статус
     public function conditionsTransition($oldData){
         $runnerFields = $this->runnerFields;
 
@@ -80,7 +81,11 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             // Для админа
             if (!$runnerFields['UF_REVIEW_TEXT']) throw new SystemException("Вы не ввели текст отзыва");
         }else{
-
+            if (
+                !$runnerFields['UF_COMMENT'] &&
+                $oldData['UF_STATUS'] != 3
+            )
+                throw new SystemException("EmptyUF_COMMENT", \Bitrix\kabinet\Controller\Runnerevents::END_WITH_SCRIPT);
         }
 
         return true;

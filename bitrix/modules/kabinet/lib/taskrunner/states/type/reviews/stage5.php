@@ -57,6 +57,7 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         }
     }
 
+    // условия что бы включить этот статус
     public function conditionsTransition($oldData){
         $runnerFields = $this->runnerFields;
 
@@ -65,15 +66,15 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         }else{
             if (
                 !$runnerFields['UF_COMMENT'] &&
-                $oldData['UF_STATUS'] != 3
+                $oldData['UF_STATUS'] != 5
             )
                 throw new SystemException("EmptyUF_COMMENT", \Bitrix\kabinet\Controller\Runnerevents::END_WITH_SCRIPT);
-
         }
 
         return true;
     }
 
+    // уходят со статуса
     public function leaveStage($object){
         $object->set('UF_COMMENT','');
     }

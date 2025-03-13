@@ -287,6 +287,12 @@ h6, .h6 {
 	margin-left: -19px;
 }
 
+.select-status label i{
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+
 .select-status label:hover{
 	color:rgb(84, 193, 229);
 
@@ -851,4 +857,31 @@ i.fa{
 .back-img-share{
 	background-position: center;
 	background-size: contain;
+}
+
+
+.alert-planned {
+	color: #fff;
+	background-color: #c8c8c8;
+	border-color: rgba(200, 200, 200, 0.2);
+}
+.alert-worked {
+	color: #fff;
+	background-color: #48c8af;
+	border-color: rgba(72, 200, 175, 0.2);
+}
+.alert-user-attention {
+	color: #fff;
+	background-color: #fee25f;
+	border-color: rgba(254, 226, 95, 0.2);
+}
+.alert-cancel {
+	color: #fff;
+	background-color: #ff5f68;
+	border-color: rgba(255, 95, 104, 0.2);
+}
+.alert-done {
+	color: #fff;
+	background-color: #3a4049;
+	border-color: rgba(58, 64, 73, 0.2);
 }
