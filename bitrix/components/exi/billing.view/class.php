@@ -87,7 +87,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $history = $sL->get('Kabinet.BilligHistory');
         $taskManager = $sL->get('Kabinet.Task');
 
-        $total = $history->getData(
+        $total = $history->getData(false,
             $filter = $arParams["FILTER"],
             $offset=0,
             $limit=5000000
@@ -95,7 +95,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 
         $arResult["TOTAL"] = count($total);
 
-        $arResult["HISTORY_DATA"] = $history->getData(
+        $arResult["HISTORY_DATA"] = $history->getData(false,
             $filter = $arParams["FILTER"],
             $offset=$arParams["OFFSET"],
             $limit=$arParams["COUNT"]

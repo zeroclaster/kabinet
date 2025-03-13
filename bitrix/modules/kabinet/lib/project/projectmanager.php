@@ -68,9 +68,13 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         $ttl = 14400;
 		
         // hack: $ttl = 0 то не кешировать
+        // $ttl = 0 отменяем чтение из кеша
+        // function initCache $ttl <= 0 return false;
         if ($filter) $ttl = 0;
         if (!$filter) $filter = ['UF_AUTHOR_ID'=>$user_id];
 
+        // Кеш завязан только на пользователе
+        // любой update вызывает clearCache() $this->getData($clear=true);
         $cacheId = '';
         $cacheId = SITE_ID."|".$cacheId;
         $cacheId .= "|".serialize(intval($user_id));

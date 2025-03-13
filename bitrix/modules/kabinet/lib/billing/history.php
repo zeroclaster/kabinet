@@ -114,7 +114,10 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
         }
 
         $billing = $sL->get('Kabinet.Billing');
-        $userBilling = $billing->getData(true,['UF_AUTHOR_ID'=>$fields['UF_AUTHOR_ID']]);
+        $userBilling = $billing->getData(
+            $clear=true,
+            ['UF_AUTHOR_ID'=>$fields['UF_AUTHOR_ID']]
+        );
         $fields = array_merge($fields,[
             'UF_BILLING_ID'=>$userBilling['ID'],
             'UF_OPERATION'=>$peration,
@@ -123,21 +126,28 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 
         $ID = $this->add($fields);
 
+        /*
         $row = $this->getData(['ID'=>$ID]);
         $row = $row[0];
-
         $row['UF_AUTHOR_ID'] = $fields['UF_AUTHOR_ID'];
-
         unset($row['ID']);
+        */
+
         \Bitrix\Kabinet\billing\datamanager\BillinghistoryTable::update($ID,['UF_AUTHOR_ID'=>$fields['UF_AUTHOR_ID']]);
+
+        $this->getData(true);
     }
 
-    public function getData($filter = [],$offset=0,$limit=5,$clear=false){
+    public function getData($clear=false,$filter = [],$offset=0,$limit=5){
         global $CACHE_MANAGER;
 
         $user = (\KContainer::getInstance())->get('user');
         $user_id = $user->get('ID');
-		
+
+        // сколько времени кешировать
+        $ttl = 14400;
+        if ($filter) $ttl = 0;
+
 		// make filter....
 		if (!$filter){
 			$filter = ['UF_AUTHOR_ID'=>$user_id];
@@ -152,11 +162,9 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
         if ($clear) $cache->clean($cacheId, "kabinet/billinghistory");
         //$CACHE_MANAGER->ClearByTag("billinghistory_data");
 
-        $cache->clean($cacheId, "kabinet/billinghistory");
+        $ttl = 0;
 
-        $cache = new \CPHPCache;
-
-        if ($cache->StartDataCache(14400, $cacheId, "kabinet/billinghistory"))
+        if ($cache->StartDataCache($ttl, $cacheId, "kabinet/billinghistory"))
         {
             if (defined("BX_COMP_MANAGED_CACHE"))
             {

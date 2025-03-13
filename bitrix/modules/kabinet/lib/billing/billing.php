@@ -57,8 +57,10 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     {
     }
 
+
     public function clearCache(){
     }
+
 
     public function cachback($value,$user_id = 0,$initiator){
         if ($user_id)
@@ -174,6 +176,10 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 			$filter = ['UF_AUTHOR_ID'=>$user_id];
 		}
 
+        // сколько времени кешировать
+        $ttl = 14400;
+        if ($filter) $ttl = 0;
+
         $requestURL = $user_id;
         $cacheSalt = md5($requestURL);
         $cacheId = $requestURL."|".SITE_ID."|".$cacheSalt;
@@ -183,11 +189,9 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         if ($clear) $cache->clean($cacheId, "kabinet/billingdata");
         //$CACHE_MANAGER->ClearByTag("billing_data");
 
-        $cache->clean($cacheId, "kabinet/billingdata");
+        $ttl = 0;
 
-        $cache = new \CPHPCache;
-
-        if ($cache->StartDataCache(14400, $cacheId, "kabinet/billingdata"))
+        if ($cache->StartDataCache($ttl, $cacheId, "kabinet/billingdata"))
         {
             if (defined("BX_COMP_MANAGED_CACHE"))
             {

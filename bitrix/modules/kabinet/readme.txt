@@ -40,3 +40,8 @@ if (window.location.hash) document.querySelector(window.location.hash).scrollInt
 
 Reactive clone of a ref. By default, it use JSON.parse(JSON.stringify()) to do the clone.
 
+
+--------------------------------------------------------------------------------------
+    $cache = new \CPHPCache();
+    $cache->CleanDir('portal/bannerblock');
+
