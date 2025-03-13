@@ -311,7 +311,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         // function initCache $ttl <= 0 return false;
         if ($filter) $ttl = 0;
         if (!$filter) $filter = ['UF_AUTHOR_ID'=>$user_id];
-        //$ttl = 0;
+        $ttl = 0;
 
         $cache = new \CPHPCache;
 

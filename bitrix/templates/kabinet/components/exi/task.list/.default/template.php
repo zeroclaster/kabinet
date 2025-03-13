@@ -64,30 +64,28 @@ $p = $request->get('p');
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title fs-5" id="exampleModalLabel">{{modaldata.title}}</h3>
-                </div>
-                <div class="modal-body">
-
-                    <div class="row mb-4">
-                        <div class="col-auto" style="width: 50%">
-                        <input ref="inputclearsearch" class="form-control" type="text" placeholder="начните вводить название услуги..." @input="searchfilter1">
-                        </div>
-                        <div class="col-auto">
-                            <button ref="buttonclearsearch" type="button" class="btn btn-primary" style="display: none;" @click="clearsearchinput">Очистить</button>
+                    <div class="d-flex">
+                        <h3 class="modal-title fs-5" id="exampleModalLabel">{{modaldata.title}}</h3>
+                        <div class="row ml-5">
+                            <div class="col-auto">
+                                <input ref="inputclearsearch" class="form-control" type="text" placeholder="начните вводить название услуги..." @input="searchfilter1">
+                            </div>
+                            <div class="col-auto">
+                                <button ref="buttonclearsearch" type="button" class="btn btn-primary" style="display: none;" @click="clearsearchinput">Очистить</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-body">
                     <div style="overflow:visible;height: 400px;">
                         <div v-for="product in listprd" class="d-flex justify-content-between mb-3">
-                            <div><a :href="product.LINK" target="_blank"><img class="img-thumbnail" :src="product['PREVIEW_PICTURE_SRC']" :alt="product['NAME']" style="width: 65px;"></a></div>
-                            <div class="align-self-center" style="width: 50%;"><a :href="product.LINK" target="_blank">{{product.NAME}}</a></div>
+                            <div><img class="img-thumbnail" :src="product['PREVIEW_PICTURE_SRC']" :alt="product['NAME']" style="width: 65px;cursor: pointer;" @click="chooseadd(product)"></div>
+                            <div class="align-self-center" style="width: 50%;"><a class="text-primary" @click="chooseadd(product)" style="cursor: pointer;">{{product.NAME}}</a> <a :href="product.LINK" target="_blank"><i class="fa fa-window-restore" aria-hidden="true"></i></a></div>
                             <div class="align-self-center">{{product.PRICE}}</div>
 
                             <?/*
                             <div class="align-self-center count-button-change"><button class="btn btn-warning plus-btn" type="button" @click="increment(product)">+</button><input type="text" class="count-product-input" v-model="product.COUNT"><button class="btn btn-warning minus-btn" type="button" @click="decrease(product)">-</button></div>
                             */?>
-
-
-
                             <div class="align-self-center">
                                 <button class="btn btn-block btn-sm btn-info" type="button" @click="chooseadd(product)">ДОБАВИТЬ</button>
                             </div>
