@@ -290,7 +290,7 @@ class Briefevents extends \Bitrix\Main\Engine\Controller
         }
 
         try {
-            $taskManager->add([
+            $newTaskID = $taskManager->add([
                 'UF_PROJECT_ID' => $project_id['ID'],
                 'UF_PRODUKT_ID' => $fields['id'],
             ]);
@@ -304,6 +304,7 @@ class Briefevents extends \Bitrix\Main\Engine\Controller
         $taskData = $taskManager->getData();
 
         return [
+            'id' => $newTaskID,
             'data'=>$projectData,
             'data2'=>$orderData,
             'datatask'=>$taskData,

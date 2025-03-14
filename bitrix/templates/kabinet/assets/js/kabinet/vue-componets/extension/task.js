@@ -79,6 +79,15 @@ var taskMethods = function(){
             });
 
             this.saveData('bitrix:kabinet.evn.briefevents.addproduct',form_data,function(data){
+
+                let taskID = data.id;
+
+                for (index in data.datatask){
+                    cur.datataskCopy[index] = data.datatask[index];
+                }
+
+                cur.makeData(cur.datataskCopy);
+
                 const briefStore = brieflistStore();
                 const orderStore = orderlistStore();
                 const taskStore = tasklistStore();
@@ -91,11 +100,11 @@ var taskMethods = function(){
 
                 if (typeof cur.viewTask != "undefined")
                     setTimeout(function () {
-                        cur.viewTask(ID);
-                    },500);
+                        cur.viewTask(taskID);
+                    },1500);
                 else
                     //window.open('https://kupi-otziv.ru/kabinet/projects/planning/?p='+PROJECT_ID+'#produkt'+ID, '_blank');
-                    window.document.location.href = 'https://kupi-otziv.ru/kabinet/projects/planning/?p='+PROJECT_ID+'#produkt'+ID;
+                    window.document.location.href = 'https://kupi-otziv.ru/kabinet/projects/planning/?p='+PROJECT_ID+'#produkt'+taskID;
 
             });
         },

@@ -255,7 +255,8 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
         const {countQueu,taskStatus_m,taskStatus_v} = task_status();
         const tasklistS = tasklistStore();
-        const {canBeSaved_} = canbesaved__(tasklistS.datatask);
+        const {makeData,canBeSaved_} = canbesaved__();
+        makeData(tasklistS.datatask);
         const getmomment = ()=>moment();
         const getCopyTask = function (task) {
             const id = task['ID'];
@@ -271,7 +272,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         }
         const datataskCopy = BX.Vue3.ref(JSON.parse(JSON.stringify(tasklistS.datatask)));
 
-        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v};
+        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v,makeData};
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
@@ -563,9 +564,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             return '';
         },
-        viewTask(PRODUKT_ID){
-            const block = document.querySelector('#produkt'+PRODUKT_ID);
-            if (block) document.querySelector('#produkt'+PRODUKT_ID).scrollIntoView({behavior: 'smooth'});
+        viewTask(TASK_ID){
+            const block = document.querySelector('#produkt'+TASK_ID);
+            if (block) document.querySelector('#produkt'+TASK_ID).scrollIntoView({behavior: 'smooth'});
         },
         showOne1(CYCLICALITY){
             for(index in CYCLICALITY){

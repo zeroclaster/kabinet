@@ -3,10 +3,15 @@
  * Suharkov Sergey (sexiterra@mail.ru)
  */
 
-var canbesaved__ = function (data_store){
+var canbesaved__ = function (){
 
-    const data_s = data_store;
-    var defaultdata = JSON.parse(JSON.stringify(data_s));
+    var data_s;
+    var defaultdata;
+
+    const makeData = function (data_store){
+        data_s = data_store;
+        defaultdata = JSON.parse(JSON.stringify(data_s));
+    }
 
     const canBeSaved_ = function (taskindex){
         //debugger
@@ -52,6 +57,6 @@ var canbesaved__ = function (data_store){
     }
 
 
-    return {canBeSaved_};
+    return {makeData,canBeSaved_};
 
 }
