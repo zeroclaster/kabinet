@@ -4,9 +4,9 @@
  */
 
 var canbesaved__ = function (){
-
     var data_s;
     var defaultdata;
+    const regex = new RegExp('_ORIGINAL');
 
     const makeData = function (data_store){
         data_s = data_store;
@@ -14,49 +14,28 @@ var canbesaved__ = function (){
     }
 
     const canBeSaved_ = function (taskindex){
-        //debugger
-        if (data_s[taskindex].ID > 0) var a = 1;
+        if (defaultdata.length == 0) return true;
+        for (key in data_s){
+            if (key != taskindex) continue;
 
-        const regex = new RegExp('_ORIGINAL');
+            for (field in data_s[key]){
+                // пропускаем поля _ORIGINAL
+                if (regex.test(field)) continue;
 
-        if (defaultdata.length > 0)
-            for (key in data_s){
-                for (field in data_s[key]){
-
-                    if (regex.test(field)) continue;
-
-                    if (typeof data_s[key][field] == 'string') {
-                        if (data_s[key][field] != defaultdata[key][field])
-                            return false;
-                        /*
-                            console.log([
-                            this.datatask[key][field],
-                            this.$root.defaultdatatask[key][field]
-                        ]);
-                        */
-                    }
-                    if (typeof defaultdata[key][field] == 'object' && defaultdata[key][field].length>0) {
-                        for (k in defaultdata[key][field]){
-                            if (defaultdata[key][field][k].VALUE) {
-                                if (data_s[key][field][k].VALUE != defaultdata[key][field][k].VALUE)
-                                    return false;
-                                /*
-                                    console.log([
-                                    field,
-                                    this.datatask[key][field][k].VALUE,
-                                    this.$root.defaultdatatask[key][field][k].VALUE
-                                ]);
-                                 */
-                            }
-                        }
-
-                    }
+                if (typeof data_s[key][field] == 'string') {
+                    if (data_s[key][field] != defaultdata[key][field])
+                        return false;
                 }
+                if (typeof defaultdata[key][field] == 'object' && defaultdata[key][field].length>0)
+                    for (k in defaultdata[key][field])
+                        if (typeof defaultdata[key][field][k].VALUE != "undefined") {
+                            if (data_s[key][field][k].VALUE != defaultdata[key][field][k].VALUE)
+                                return false;
+                        }
             }
+        }
         return true;
     }
 
-
     return {makeData,canBeSaved_};
-
 }

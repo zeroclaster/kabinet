@@ -74,6 +74,9 @@ $Queue_state = CUtil::PhpToJSObject($sL->get('Kabinet.Runner')->getData($all_id_
                     });
 
                     let fullCalendar = $("#calendar1");
+                    console.log(fullCalendar.fullCalendar);
+
+
                     fullCalendar.fullCalendar('removeEvents');
                     fullCalendar.fullCalendar('removeEventSources');
 

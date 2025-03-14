@@ -18,8 +18,8 @@ Loc::loadMessages(__FILE__);
 
 ?>
 <script type="text/html" id="kabinet-content">
-<h2>{{fields.UF_NAME_ORIGINAL}}</h2>
-<h2>Бриф проекта</h2>
+<h4 v-if="fields.UF_NAME_ORIGINAL != ''">Проект: {{fields.UF_NAME_ORIGINAL}}</h4>
+<div class="h1"><i class="fa fa-list" aria-hidden="true"></i> Бриф проекта</div>
 
 
 <div class="panel">
@@ -66,6 +66,9 @@ Loc::loadMessages(__FILE__);
         </div>
         <div class="col-sm-6">
             <button  class="btn btn-block btn-primary" type="button" @click="saveentity">Сохранить</button>
+        </div>
+        <div class="col-sm-3">
+            <a  class="btn btn-block btn-primary" href="/kabinet/projects/planning/?p=<?=$arParams["ID"]?>">Перейти к проекту</a>
         </div>
     </div>
 </form>

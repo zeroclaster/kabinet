@@ -55,7 +55,7 @@ const messangerTemplate2 =  `
          	 		  
     </div> 
     		<div class="mess p-2 mb-2" v-if="datamessage[projectID].length==0">
-			У Вас нет сообщений
+			Нет комментариев
          </div>	
 	<div class="p-2">
     <div ref="senderblock" class="sender-block">

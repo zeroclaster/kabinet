@@ -17,7 +17,7 @@ $user = (\KContainer::getInstance())->get('user');
 
 </div>
 
-<section class="section-xs">
+<section class="">
     <div class="container-fluid">
             <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
                     'CODE' => 'BRIEF',
@@ -27,10 +27,7 @@ $user = (\KContainer::getInstance())->get('user');
 </section>
 
 <section class="section-xs" style="position: relative">
-    <div class="container-fluid"><div class="d-flex justify-content-end"><div class="pagehelp-button text-primary" data-component="pagehelp" data-code="BRIEF"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Помощь</div></div></div>
-    <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr">
-
-    </div>
+    <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr"></div>
 </section>
 
 

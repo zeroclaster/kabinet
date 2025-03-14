@@ -37,7 +37,7 @@ const messangerTemplate =  `
 		
 		<!--
 		<div class="mess p-2 mb-2" v-if="datamessage[queue_id].length==0">
-			У Вас нет сообщений
+			Нет комментариев
          </div>
 		-->
 		 

@@ -603,6 +603,79 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         this.$root.defaultdatatask = [];
     },
     mounted() {
+        $('.external-events .fc-event').each(function() {
+            $(this).data('event', {
+                title: $.trim($(this).text()),
+                stick: true,
+                className: 'fc-event-' + $(this).attr('data-event')
+            });
+
+            $(this).draggable({
+                zIndex: 999,
+                revert: true,
+                revertDuration: 0
+            });
+        });
+
+        var node = BX("calendar1");
+        $(node).fullCalendar({
+            themeSystem: 'bootstrap4',
+            locale: 'ru',
+            height: 650,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month',	//'yearview,quarter,month',
+                ...parseJSON( node.getAttribute( 'data-fullcalendar-header' ) )
+            },
+            views: {
+                quarter: {
+                    type: 'timeline',
+                    buttonText: 'Квартал',
+                    dateIncrement: { years: 1 },
+                    slotDuration: { months: 3 },
+                    visibleRange: function (currentDate) {
+                        return {
+                            start: currentDate.clone().startOf('year'),
+                            end: currentDate.clone().endOf("year")+1
+
+                        };
+                    }
+                },
+                yearview: {
+                    type: 'timeline',
+                    buttonText: 'Год',
+                    dateIncrement: { years: 1 },
+                    slotDuration: { months: 1 },
+                    visibleRange: function (currentDate) {
+                        return {
+                            start: currentDate.clone().startOf('year'),
+                            end: currentDate.clone().endOf("year")+1
+
+                        };
+                    }
+                }
+            },
+            editable: false,
+            droppable: false,
+            drop: function() {
+                // is the "remove after drop" checkbox checked?
+                if (!$(this).hasClass('event-recurring')) {
+                    $(this).remove();
+                }
+            },
+            eventRender: function(event, element) {
+                // кнопка закрыть на календаре
+                //$(element).append( "<span class='event-close fa-times'></span>" );
+                $(element).find('.event-close').click(function() {
+                    $( node ).fullCalendar('removeEvents',event._id);
+                });
+            },
+            weekNumbers: false,
+            weekNumbersWithinDays : true,
+            eventLimit: true
+        });
+
         this.updatecalendare([],this.project_id);
         if (window.location.hash) document.querySelector(window.location.hash).scrollIntoView({behavior: 'smooth'});
 

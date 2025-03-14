@@ -148,6 +148,30 @@ components.tasklist = {
     init:null
 }
 
+components.fullcalendar2 = {
+    selector: '[data-fullcalendar2]',
+    styles: [
+        './components/fullcalendar/fullcalendar.css',
+        './components/fullcalendar/scheduler.min.css',
+        './components/button/button.css',
+        './components/table/table.css',
+        './components/alert/alert.css',
+        './components/card/card.css',
+        './components/tooltip/tooltip.css',
+        './components/font-awesome/font-awesome.css'
+    ],
+    script: [
+        './components/base/jquery-3.4.1.min.js',
+        './components/base/jquery-ui.min.js',
+        './components/base/moment.min.js',
+        './components/fullcalendar/fullcalendar.min.js',
+        './components/fullcalendar/locale-all.js',
+        //'./components/fullcalendar/scheduler.min.js',
+
+    ]
+}
+
+
 function initComponent_( component ) {
     let
         stylesPromises = [],

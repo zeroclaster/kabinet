@@ -43,49 +43,18 @@ $APPLICATION->AddChainItem("Планирование задач", "");
 </section>
 
 
-    <section class="">
-        <div class="container-fluid">
-            <div class="row row-30">
-                <div class="col-md-12">
-
-				<h4>Календарь задач проекта</h4>
-				<div class="panel">
-                <div class="panel-body">
-					<div class="row justify-content-md-center">	
-								<div class="col-sm-8">
-                                    <?
-                                    //   bitrix/templates/kabinet/components/exi/task.list/.default/queue.data.php
-                                    ?>
-
-									<div id="calendar1" class="fullcalendar"></div>
-
-
-                                    <?/*
-                                    СТАТИСТИКА
-                                    bitrix/templates/kabinet/components/exi/task.list/.default/queue.data.php
-                                    запускается bitrix/templates/kabinet/components/exi/task.list/.default/task_list.js
-                                    mounted()
-                                    this.updatecalendare([],this.project_id);
-                                    */?>
-                                      <div class="d-flex">
-                                          <div class="d-flex mr-5 align-items-center"><div id="done_calendar_counter" class="fc-event-light mr-2 p-2"></div> Выполнено</div>
-                                          <div class="d-flex mr-5 align-items-center"><div id="inprogress_calendar_counter" class="fc-event-success mr-2 p-2"></div> Выполняются</div>
-                                          <div class="d-flex mr-5 align-items-center"><div id="planned_calendar_counter" class="fc-event-warning mr-2 p-2"></div> Запланированы</div>
-                                      </div>
-								</div>	  
-					</div>				  
-                </div>
-                </div>
-
-                    <?$APPLICATION->IncludeComponent("exi:task.list", "", Array(
-                            'PROJECT' => $project['ID']
-                        )
-                    );?>
-
-                </div>
+<section class="">
+    <div class="container-fluid">
+        <div class="row row-30">
+            <div class="col-md-12">
+                <?$APPLICATION->IncludeComponent("exi:task.list", "", Array(
+                        'PROJECT' => $project['ID']
+                    )
+                );?>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 	  
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

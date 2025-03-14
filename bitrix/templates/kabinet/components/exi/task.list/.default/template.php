@@ -34,7 +34,7 @@ $request = $context->getRequest();
 $p = $request->get('p');
 ?>
 
-<div id="kabinetcontent" class="form-group" data-datetimepicker="" data-modalload="" data-ckeditor=""  data-usertasklist="" data-tasklist=""></div>
+<div id="kabinetcontent" class="form-group" data-datetimepicker="" data-modalload="" data-ckeditor=""  data-usertasklist="" data-tasklist="" data-fullcalendar2=""></div>
 
 <script type="text/html" id="kabinet-content">
 
@@ -55,6 +55,36 @@ $p = $request->get('p');
                 </div>
 
                 <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <h4>Календарь задач проекта</h4>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row justify-content-md-center">
+                <div class="col-sm-8">
+                    <?
+                    //   bitrix/templates/kabinet/components/exi/task.list/.default/queue.data.php
+                    ?>
+
+                    <div id="calendar1" class="fullcalendar"></div>
+
+
+                    <?/*
+                                    СТАТИСТИКА
+                                    bitrix/templates/kabinet/components/exi/task.list/.default/queue.data.php
+                                    запускается bitrix/templates/kabinet/components/exi/task.list/.default/task_list.js
+                                    mounted()
+                                    this.updatecalendare([],this.project_id);
+                                    */?>
+                    <div class="d-flex">
+                        <div class="d-flex mr-5 align-items-center"><div id="done_calendar_counter" class="fc-event-light mr-2 p-2"></div> Выполнено</div>
+                        <div class="d-flex mr-5 align-items-center"><div id="inprogress_calendar_counter" class="fc-event-success mr-2 p-2"></div> Выполняются</div>
+                        <div class="d-flex mr-5 align-items-center"><div id="planned_calendar_counter" class="fc-event-warning mr-2 p-2"></div> Запланированы</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
