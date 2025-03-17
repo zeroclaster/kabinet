@@ -3,6 +3,7 @@ billing_view = (function (){
     return {
         start(PHPPARAMS){
 
+            const EXPENSES_NEXT_MONTH = PHPPARAMS['EXPENSES_NEXT_MONTH'];
 
             const billingViewApplication = BX.Vue3.BitrixVue.createApp({
                 data() {
@@ -26,6 +27,10 @@ billing_view = (function (){
                     viewedcount(){
                         return this.historybillingdata.length;
                     },
+                    isAlertFinance(){
+                        if (parseInt(this.databilling.UF_VALUE_ORIGINAL) < parseInt(EXPENSES_NEXT_MONTH)) return 'btn-danger';
+                        return '';
+                    }
                 },
                 methods: {
                     project(history){

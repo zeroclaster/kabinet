@@ -36,7 +36,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                     <div class="money-total">{{databilling.UF_VALUE_ORIGINAL}}</div>
                 </div>
 
-                <div class="mt-4 text-center"><a class="btn btn-primary" :href="'/kabinet/finance/deposit/'+usr_id_const"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Пополнить баланс</a></div>
+                <div class="mt-4 text-center"><a :class="'btn btn-primary icon-i-button '+isAlertFinance" :href="'/kabinet/finance/deposit/'+usr_id_const"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Пополнить баланс</a></div>
 
             </div>
             <div class="col-md-5 info">
@@ -75,9 +75,9 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
             <thead>
             <tr>
                 <th scope="col" style="width: 10%">Дата</th>
+                <th scope="col">Проект</th>
                 <th scope="col">Операция</th>
                 <th scope="col">id</th>
-                <th scope="col">Проект</th>
                 <th scope="col" style="width: 5%">Сумма, руб.</th>
             </tr>
             </thead>
@@ -85,15 +85,15 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
             <tr v-for="history of historybillingdata">
                 <th scope="row">{{history.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</th>
                 <td>
+                    <div v-if="project(history)">
+                        <a :href="'/kabinet/projects/reports/?t='+task(history).ID" target="_blank">{{project(history).UF_NAME}}</a>
+                    </div>
+                </td>
+                <td>
                     {{history.UF_OPERATION_ORIGINAL}}
                     {{task(history).UF_NAME}}
                 </td>
                 <td>{{history.ID}}</td>
-                <td>
-                    <div v-if="project(history)">
-                        <a :href="'/kabinet/projects/?id='+project(history).ID" target="_blank">{{project(history).UF_NAME}}</a>
-                    </div>
-                </td>
                 <td>{{history.UF_VALUE_ORIGINAL}}</td>
             </tr>
             </tbody>
@@ -130,6 +130,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
 
     window.addEventListener("components:ready", function(event) {
         billing_view.start(<?=CUtil::PhpToJSObject([
+            'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
             'FILTER' => $arParams["FILTER"],
             'CONTAINER' => '#billing-detalie',
             'TEMPLATE' => '#kabinet-content',

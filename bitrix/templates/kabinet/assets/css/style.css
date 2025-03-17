@@ -359,10 +359,14 @@ h6, .h6 {
 	position: relative;
 }
 
+.icon-i-button i.fa{
+	font-size: 22px;
+}
+
 .icon-button-right:before{
 	font-size: 27px;
 	position: absolute;
-	top: 4px;
+	top: 12px;
 	right: 7px;
 }
 

@@ -132,7 +132,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
 		},		
         moreitems(field){
             const kabinetStore = usekabinetStore();
-            if (field.length > 4){
+            if (field.length > 19){
                 kabinetStore.Notify = '';
                 kabinetStore.Notify = "Привышен лимит добавления";
                 return;

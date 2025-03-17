@@ -39,7 +39,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                     <div class="money-total">{{databilling.UF_VALUE_ORIGINAL}}</div>
                 </div>
                 <div class="mt-4 text-center">
-                    <a class="btn btn-primary" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;Пополнить баланс</a>
+                    <a :class="'btn btn-primary icon-i-button '+isAlertFinance" href="/kabinet/finance/deposit/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;Пополнить баланс</a>
                 </div>
             </div>
             <div class="col-md-5 info">
@@ -81,6 +81,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
 
     window.addEventListener("components:ready", function(event) {
         billing_view.start(<?=CUtil::PhpToJSObject([
+            'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
             'FILTER' => $arParams["FILTER"],
             'CONTAINER' => '#billing-detalie',
             'TEMPLATE' => '#billing-view-template',
