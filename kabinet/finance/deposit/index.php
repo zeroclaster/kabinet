@@ -2,20 +2,34 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Пополнение баланса");
 ?>
-    <section class="section-xs">
+
+<div class="d-flex justify-content-between">
+    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
+            "START_FROM" => "0",
+            "PATH" => "",
+            "SITE_ID" => "s1"
+        )
+    );?>
+    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+</div>
+
+<section class="">
+    <div class="container-fluid">
+        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+                'CODE' => 'FINANCE',
+            )
+        );?>
+    </div>
+</section>
+
+<section class="">
     <div class="container-fluid">
         <div class="row row-30">
             <div class="col-md-12">
                 <h1>Пополнение баланса</h1>
-                <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
             </div>
 
             <div class="col-md-12">
-            <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                    'CODE' => 'FINANCE',
-                )
-            );?>
-
             <div class="panel deposit-block-1">
                 <div class="panel-body">
 
@@ -36,8 +50,9 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             <div class="method-additions">
                                 <div>
                                 <div class="title"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> Онлайн-платеж</div>
-                                <div>Мир, Visa (кроме иностранных карт), Mastercard, Unionpay</div>
-                                <div>Сервисный сбор 7%</div>
+                                <div>Картой Мир, Visa (кроме иностранных), Mastercard, СБП, Сбер Pay, Т-pay, Я-Пэй</div>
+                                <div>Мгновенное пополнение баланса.</div>
+                                <div>Компенсация за платежные операции 7%</div>
                                 </div>
                             </div>
                             </label>
@@ -54,7 +69,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                             <div>
                                 <div class="title"><i class="fa fa-qrcode" aria-hidden="true"></i> QR-код</div>
                                 <div>Для частных лиц, банки РФ, простая оплата по QR-коду.</div>
-                                <div style="margin-top: 34px;">Сервисный сбор 7%</div>
+                                <div style="margin-top: 34px;">Компенсация за платежные операции 7%</div>
                             </div>
                             </div>
                             </label>
@@ -70,7 +85,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                     <div>
                                         <div class="title"><i class="fa fa-university" aria-hidden="true"></i> Банковский перевод</div>
                                         <div>Оплата по счету, для юридических лиц и ИП.</div>
-                                        <div style="margin-top: 34px;">Сервисный сбор 3%</div>
+                                        <div>Компенсация за платежные операции 3%</div>
                                     </div>
                                 </div>
                             </label>
@@ -124,7 +139,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                             </div>
 											*/?>
 
-                                            <div class="total-sum mt-3 mb-5">Общая сумма пополнения с сервисным сбором <span>{{totalsum}} руб.</span></div>
+                                            <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
 
                                             <div class="d-flex justify-content-center"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
                                             <div class="gotopay"><button class="btn btn-primary" type="button" @click="onSubmit">Перейти к оплате</button></div>
@@ -181,7 +196,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                             </div>
 											*/?>
 
-                                        <div class="total-sum mt-3 mb-5">Общая сумма пополнения с сервисным сбором <span>{{totalsum}} руб.</span></div>
+                                        <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
 
                                         <div class="d-flex justify-content-end"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
                                         <div class="gotopay">
@@ -230,7 +245,7 @@ $APPLICATION->SetTitle("Пополнение баланса");
                                             </div>
 											*/?>
 
-                                        <div class="total-sum mt-3 mb-5">Общая сумма пополнения с сервисным сбором <span>{{totalsum}} руб.</span></div>
+                                        <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
                                         <div>Для формирования счета, заполните данные в разделе <a href="/kabinet/closing-documents/">"Договор и документы"</a>.</div>
 
                                         <div class="d-flex justify-content-center"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
@@ -321,10 +336,8 @@ $user = (\KContainer::getInstance())->get('user');
 $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID'));
 
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-$contractManager = $sL->get('Kabinet.Contract');
-$bankManager = $sL->get('Kabinet.Bankdata');
-$contractDATA = $contractManager->getData();
-$bankDATA = $bankManager->getData();
+$contractDATA = $sL->get('Kabinet.Contract')->getData();
+$bankDATA = $sL->get('Kabinet.Bankdata')->getData();
 
 $typepay = $request->getPost('typepay');
 $qrsumm = $request->getPost('qrsumm');

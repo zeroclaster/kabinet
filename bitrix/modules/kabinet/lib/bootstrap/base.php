@@ -127,12 +127,30 @@ abstract class Base{
         ->make(function($this_){
             $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
             $projectManager = $sL->get('Kabinet.Project');
+            $infoManager = $sL->get('Kabinet.infoProject');
+            $detailsManager = $sL->get('Kabinet.detailsProject');
+            $targetManager = $sL->get('Kabinet.targetProject');
+
+            $data = $projectManager->getData();
+            $info_state = [];
+            $details_state = [];
+            $target_state = [];
+            if ($data) {
+                foreach ($data as $project) {
+                    $info_state = array_merge($info_state, $infoManager->getData($project['ID']));
+                    $details_state = array_merge($details_state, $detailsManager->getData($project['ID']));
+                    $target_state = array_merge($target_state, $targetManager->getData($project['ID']));
+                }
+            }
 
             // Bug.Fix.14.02.2025
             //$size = strlen(serialize($projectManager->getData()));
             $size = crc32(serialize($projectManager->getData()));
+            $size2 = crc32(serialize($info_state));
+            $size3 = crc32(serialize($details_state));
+            $size4 = crc32(serialize($target_state));
 
-            $this_->addJS(SITE_TEMPLATE_PATH."/components/exi/project.list/.default/brief_data.php?usr={$_GET['usr']}&c={$size}");
+            $this_->addJS(SITE_TEMPLATE_PATH."/components/exi/project.list/.default/brief_data.php?usr={$_GET['usr']}&c={$size}_{$size2}_{$size3}_{$size4}");
             return 'briefStore';
         },'briefStore')
 
