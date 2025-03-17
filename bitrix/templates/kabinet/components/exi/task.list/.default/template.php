@@ -309,7 +309,7 @@ $p = $request->get('p');
                             </div>
                         </div>
 
-                        <div class="h3">Дополните задачу данными:</div>
+                        <div class="h4">Дополните задачу данными:</div>
 
                         <?/*
                             14.02.2025 сохранение поля Ссылка было на событии @change="savetask(taskindex)"
@@ -322,7 +322,7 @@ $p = $request->get('p');
 
 								<div class="col-sm-6" style="position: relative;">
 									<div class="mt-3" v-for="inplist in task.UF_TARGET_SITE">
-                                    <input class="form-control" id="linkInput1" type="text" placeholder="https://site.ru" v-model="inplist.VALUE">
+                                    <input :class="'form-control '+is_required_field(task,'UF_TARGET_SITE')" id="linkInput1" type="text" placeholder="https://site.ru" v-model="inplist.VALUE">
                                     </div>
                                     <div class="" style="position: relative;">
                                         <button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button>

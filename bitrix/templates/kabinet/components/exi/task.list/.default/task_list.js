@@ -270,9 +270,31 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             return finded;
         }
+
+        var t = JSON.parse(JSON.stringify(tasklistS.datatask));
+        console.log(t);
+
+        const allowable = ["ID", "FINALE_PRICE", "RUN_DATE", "UF_CYCLICALITY", "UF_CYCLICALITY_ORIGINAL", "UF_NUMBER_STARTS", "UF_NUMBER_STARTS_ORIGINAL", "UF_RUN_DATE", "UF_RUN_DATE_ORIGINAL"]
+
         const datataskCopy = BX.Vue3.ref(JSON.parse(JSON.stringify(tasklistS.datatask)));
 
-        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v,makeData};
+        const is_required_field = function (task,field_name){
+
+            if (typeof task[field_name] == 'string') {
+                if (task[field_name] == '')
+                    return 'it-required_field';
+            }
+            if (typeof task[field_name] == 'object' && task[field_name].length>0)
+                for (k in task[field_name])
+                    if (typeof task[field_name][k].VALUE != "undefined") {
+                        if (task[field_name][k].VALUE == '')
+                            return 'it-required_field';
+                    }
+
+            return '';
+        }
+
+        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v,makeData,is_required_field};
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
@@ -392,6 +414,14 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             var form_data = this.dataToFormData(this.datatask[index]);
 
+            form_data.delete("UF_DATE_COMPLETION");
+            form_data.delete("UF_NUMBER_STARTS");
+            form_data.delete("UF_DATE_COMPLETION_ORIGINAL");
+            form_data.delete("UF_NUMBER_STARTS_ORIGINAL");
+            form_data.delete("UF_CYCLICALITY");
+            form_data.delete("UF_CYCLICALITY_ORIGINAL");
+
+
             this.saveData('bitrix:kabinet.evn.taskevents.edittask',form_data,function(data){
                 // Обновляем календарь
                 const QueueStore = calendarStore()
@@ -401,8 +431,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 const taskStory = tasklistStore();
                 taskStory.datatask = data.task;
 
-                for (index in data.task) cur.datataskCopy[index] = data.task[index];
-
+                //for (index in data.task) cur.datataskCopy[index] = data.task[index];
             });
         },
         savetaskCopy:function(index){

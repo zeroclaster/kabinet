@@ -889,3 +889,7 @@ i.fa{
 	background-color: #3a4049;
 	border-color: rgba(58, 64, 73, 0.2);
 }
+
+.form-control.it-required_field{
+	border: 1px solid red;
+}
