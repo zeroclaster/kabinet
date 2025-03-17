@@ -162,6 +162,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
                 const targerStore = targerFormStore();
                 targerStore.fields4 = data.fields4;
 
+                //if (cur.PROJECT_ID>0) setTimeout(()=>window.location.href = '/kabinet/projects/planning/?p='+projectStore.fields.ID,1000);
             });
         },
         isShowfield: function (type_view){

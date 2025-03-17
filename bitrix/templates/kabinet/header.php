@@ -25,6 +25,9 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/base/base.css");
 
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/style.css");
+    if (\PHelp::isAdmin()) {
+        Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/admin_style.css");
+    }
     ?>
   </head>
   <body>
@@ -46,8 +49,12 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
             </div>
             <div class="rd-navbar-sidebar-wrap">
               <div class="rd-navbar-sidebar-panel">
-                <div class="rd-navbar-logo"><a class="logo-link" href="/kabinet/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/><img class="logo-compact" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/></a></div>
-                <button class="navbar-toggle-sidebar mdi-pin" data-navigation-switch="data-navigation-switch"></button>
+                  <?if(\PHelp::isAdmin()):?>
+                    <div class="rd-navbar-logo"><a class="logo-link" href="/kabinet/admin/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/><img class="logo-compact" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/></a></div>
+                <?else:?>
+                      <div class="rd-navbar-logo"><a class="logo-link" href="/kabinet/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/><img class="logo-compact" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"/></a></div>
+                  <?endif;?>
+                  <button class="navbar-toggle-sidebar mdi-pin" data-navigation-switch="data-navigation-switch"></button>
               </div>
               <div class="rd-navbar-sidebar scroller scroller-vertical">
 

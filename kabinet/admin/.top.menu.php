@@ -15,13 +15,6 @@ $aMenuLinks = Array(
         ""
     ),
     Array(
-        "Каталог услуг",
-        "/zakaz/",
-        Array(),
-        Array("ICON"=>"mdi-cart-outline"),
-        ""
-    ),
-    Array(
         "Финансы",
         "/kabinet/admin/finance/",
         Array(),
