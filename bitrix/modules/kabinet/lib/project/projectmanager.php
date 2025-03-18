@@ -297,7 +297,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             foreach($data as &$itm){
 				
-				//Минимальное количество в месяц
+				//Минимальное количество для заказа
 				$MINIMUM_QUANTITY_MONTH = 1;
 				$db_props = \CIBlockElement::GetProperty($IBLOCK_ID = 1, $itm['ID'], array("sort" => "asc"), Array("CODE"=>"MINIMUM_QUANTITY_MONTH"));
 				$ar_props = $db_props->Fetch();

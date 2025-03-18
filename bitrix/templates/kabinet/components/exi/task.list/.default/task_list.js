@@ -273,6 +273,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     },
     setup(){
 
+        const {projectOrder, projectTask} = data_helper();
         const {countQueu,taskStatus_m,taskStatus_v} = task_status();
         const tasklistS = tasklistStore();
         const {makeData,canBeSaved_} = canbesaved__();
@@ -326,7 +327,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             taskStatus_v,
             makeData,
             is_required_field,
-            makedatataskCopy
+            makedatataskCopy,
+            projectOrder,
+            projectTask
         };
     },
     computed: {
@@ -408,25 +411,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 				this.runCommand(this.datatask[taskindex],'removetask');
 				
             });
-        },
-        projectOrder:function (id){
-            //console.log(id);
-            var findOrder = 0;
-            this.data.forEach(function(element){
-                if (!findOrder && element.ID == id){
-                    findOrder = element.UF_ORDER_ID;
-                }
-            });
-
-            return findOrder;
-        },
-        projectTask(project_id){
-            let task = [];
-            for(index in  this.datatask){
-                if (this.datatask[index]['UF_PROJECT_ID'] == project_id) task.push(this.datatask[index]);
-            }
-
-            return task;
         },
         savetask:function(index){
             var cur = this;

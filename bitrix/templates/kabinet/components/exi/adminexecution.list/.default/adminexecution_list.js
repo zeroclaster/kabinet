@@ -140,7 +140,7 @@ adminexecution_list = (function (){
                         countview:PHPPARAMS['viewcount'],
                         total: PHPPARAMS['total'],
                         showloadmore:true,
-                        limitpics:5,
+                        limitpics:5
                     }
                 },
                 computed: {

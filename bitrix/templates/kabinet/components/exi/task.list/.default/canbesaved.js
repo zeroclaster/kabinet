@@ -30,7 +30,6 @@ var canbesaved__ = function (){
                 if (typeof defaultdata[key][field] == 'object' && defaultdata[key][field].length>0)
                     for (k in defaultdata[key][field])
                         if (typeof defaultdata[key][field][k].VALUE != "undefined") {
-                            debugger;
                             if (data_s[key][field][k].VALUE != defaultdata[key][field][k].VALUE)
                                 return false;
                         }

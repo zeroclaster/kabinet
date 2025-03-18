@@ -190,11 +190,11 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             $task['UF_NUMBER_STARTS']>$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']
         ) throw new SystemException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." шт. в месяц");
 
-        // минимальное количество в месяц
+        // Минимальное количество для заказа
         if (
             $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']<$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']
-        ) throw new SystemException("Минимальное количество в месяц ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' шт.');
+        ) throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' шт.');
 
 
 		/*
@@ -323,6 +323,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
                 'UF_PLANNE_DATE' => $PlannedDate[0],
                 'UF_MONEY_RESERVE' => $FINALE_PRICE,
+                'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
+                'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
             ]);
             if (!$obResult->isSuccess()) {
                 $err = $obResult->getErrors();
@@ -355,6 +357,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                     'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
                     'UF_PLANNE_DATE' => $PlannedDate[$i],
                     'UF_MONEY_RESERVE' => $onePrice,
+                    'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
+                    'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
                 ]);
                 if (!$obResult->isSuccess()) {
                     $err = $obResult->getErrors();

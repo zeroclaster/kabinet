@@ -113,6 +113,8 @@ $this->setFrameMode(true);
                     <div>Задача:</div>
                     <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}}</div>
                     <div style="font-size: 11px;">
+                        <div class="info-blk">Дата создания: <span>{{datatask[runner.UF_TASK_ID].UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
+                        <div class="info-blk">Дата завершения: <span>{{runner.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
                         <div class="info-blk">Согласование: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_COORDINATION')}}</span></div>
                         <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_REPORTING')}}</span></div>
                         <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_CYCLICALITY')}}</span></div>
@@ -126,8 +128,8 @@ $this->setFrameMode(true);
             <div>Исполнение #{{runner.ID}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
             <mytypeahead :tindex="runnerindex" :catalog="datatask[runner.UF_TASK_ID].UF_TARGET_SITE" v-model="runner.UF_LINK"/>
 
-            <div class="mb-3" v-if="runner.UF_ELEMENT_TYPE == 'multiple'">
-                Количество запланированных исполнений: {{datatask[runner.UF_TASK_ID].UF_NUMBER_STARTS}}
+            <div class="mb-3" _v-if="runner.UF_ELEMENT_TYPE == 'multiple'">
+                Количество запланированных исполнений: {{runner.UF_NUMBER_STARTS}}
             </div>
             
             <div class="mb-3" v-if="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">
@@ -135,7 +137,7 @@ $this->setFrameMode(true);
                 <input class="form-control" type="text" :value="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3"  v-if="dataorder[UF_AUTHOR_ID][dataproject[UF_PROJECT_ID].UF_ORDER_ID][datatask[runner.UF_TASK_ID].UF_PRODUKT_ID].PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
                 <div class="">Фото:</div>
                 <div class=""  style="position: relative;">
                     <div id="previewrunnerfileimages" class="d-flex flex-wrap">
@@ -160,6 +162,7 @@ $this->setFrameMode(true);
             </div>
 			-->
 
+            <template v-if="dataorder[UF_AUTHOR_ID][dataproject[UF_PROJECT_ID].UF_ORDER_ID][datatask[runner.UF_TASK_ID].UF_PRODUKT_ID].VIEW_UF_REVIEW_TEXT.VALUE_XML_ID == '529f3954e3cce751af50dbf5a8f84712'">
             <div>Текст отзыва</div>
             <div class="richtext-height-200_">
                 <?/*
@@ -167,6 +170,7 @@ $this->setFrameMode(true);
                 */?>
                 <richtext :tindex="runnerindex" showsavebutton="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT"/>
             </div>
+            </template>
 
             <messangerperformances :projectID="UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :targetUserID="UF_AUTHOR_ID" :queue_id="runner.ID"/>
 
@@ -294,7 +298,7 @@ $filter1 = CUtil::PhpToJSObject($arParams["FILTER"], false, true);
 
             adminexecution_list.start(<?=CUtil::PhpToJSObject([
 						"viewcount"=>$arParams["COUNT"],
-					"total"=>$arResult["TOTAL"],
+					    "total"=>$arResult["TOTAL"]
 				], false, true)?>);
         });
     </script>

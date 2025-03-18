@@ -41,6 +41,8 @@ Loc::loadMessages(__FILE__);
  * <li> UF_RUN_DATE datetime optional
  * <li> UF_MONEY_RESERVE double optional
  * <li> UF_HITCH int optional
+ * <li> UF_NUMBER_STARTS int optional
+ * <li> UF_DATE_COMPLETION datetime optional
  * </ul>
  *
  * @package Bitrix\Kabinet
@@ -219,6 +221,18 @@ class FulfillmentTable extends DataManager
                 'UF_HITCH',
                 [
                     'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_HITCH_FIELD')
+                ]
+            ),
+            new IntegerField(
+                'UF_NUMBER_STARTS',
+                [
+                    'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_NUMBER_STARTS_FIELD')
+                ]
+            ),
+            new DatetimeField(
+                'UF_DATE_COMPLETION',
+                [
+                    'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_DATE_COMPLETION_FIELD')
                 ]
             ),
         ];

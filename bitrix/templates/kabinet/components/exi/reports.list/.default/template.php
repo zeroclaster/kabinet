@@ -94,7 +94,6 @@ $runnerManager = $sL->get('Kabinet.Runner');
                 </thead>
                 <tbody>
                 <tr v-for="(runner,runnerindex) in datarunner">
-
                     <td style="width: 5%">
                         <div class="text-primary plane-date">
                         <i class="fa fa-calendar" aria-hidden="true"></i> {{runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1}}
@@ -107,7 +106,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         <!-- ссылка -->
                         <mytypeahead :tindex="runnerindex" :catalog="TaskByIdKey[runner.UF_TASK_ID].UF_TARGET_SITE" v-model="runner.UF_LINK"/>
 
-                        <div class="mb-3">
+                        <div class="mb-3" v-if="PRODUCT.PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
                             <div class="">Фото:</div>
                             <div class=""  style="position: relative;">
                                 <div id="previewrunnerfileimages" class="d-flex flex-wrap">
@@ -126,6 +125,8 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         </div>
 
 
+
+                        <template v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
                         <div class="form-group">
                             <div>Текст:</div>
                             <div class="richtext-height-200_">
@@ -135,6 +136,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
                                 <richtext :tindex="runnerindex" showsavebutton="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT"/>
                             </div>
                         </div>
+                        </template>
 
                         <messangerperformances :projectID="TaskByIdKey[runner.UF_TASK_ID].UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :queue_id="runner.ID" :targetUserID="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID"/>
 
@@ -196,6 +198,15 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 <script>
     var shownote = null;
 
+    components.userreports = {
+        selector: '[data-userreports]',
+        script: [
+            '../../kabinet/assets/js/kabinet/vue-componets/show.note.js',
+            '../../kabinet/components/exi/task.list/.default/data_helper.js'
+        ],
+        init:null
+    }
+
         window.addEventListener("components:ready", function(event) {
 
         shownote = showmessage_vuecomponent.start(<?=CUtil::PhpToJSObject([
@@ -211,7 +222,7 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
             "FILTER"=>$arParams["FILTER"],
             "viewcount"=>$arParams["COUNT"],
             "total"=>$arResult["TOTAL"],
-            "statuslistdata" => $runnerManager->getStatusList(),
+            "statuslistdata" => $runnerManager->getStatusList()
         ], false, true)?>,'<?= $this->getComponent()->getSignedParameters() ?>');
     });
 </script>

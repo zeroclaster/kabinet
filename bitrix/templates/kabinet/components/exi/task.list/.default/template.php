@@ -429,7 +429,8 @@ Asset::getInstance()->addJs($templateFolder."/task_list.js");
             '../../kabinet/components/exi/task.list/.default/scrt.js',
             '../../kabinet/components/exi/task.list/.default/task_status.js',
             '../../kabinet/components/exi/task.list/.default/canbesaved.js',
-            '../../kabinet/components/exi/task.list/.default/text_info.js'
+            '../../kabinet/components/exi/task.list/.default/text_info.js',
+            '../../kabinet/components/exi/task.list/.default/data_helper.js'
         ],
         init:null
     }

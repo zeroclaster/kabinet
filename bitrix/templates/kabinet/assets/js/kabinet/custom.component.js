@@ -131,15 +131,6 @@ components.vuerichtext = {
     init:null
 }
 
-components.userreports = {
-    selector: '[data-userreports]',
-    script: [
-        './js/kabinet/vue-componets/show.note.js',
-    ],
-    init:null
-}
-
-
 components.tasklist = {
     selector: '[data-usertasklist]',
     script: [

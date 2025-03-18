@@ -13,7 +13,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
     const NO_APPROVAL_REQUIRED = 9;
     const LINK_SCREENHOT = 10;
-    const IS_SOGLACOVANIE = 'cd3e95f3415f08e2ff1d8e9cb16e9d1d';
+    const IS_SOGLACOVANIE = 'cd3e95f3415f08e2ff1d8e9cb16e9d1d'; // да
 
     // из свойств инфоблока поле PHOTO_AVAILABILITY
     const PHOTO_NO_NEEDED = '07e891d703f65d59109cc89571177b39';
@@ -93,7 +93,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                     $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
 
                 if($new['UF_NUMBER_STARTS'] < $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'])
-                    throw new SystemException("Минимальное количество в месяц ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']);
+                    throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']);
 
                 // 14.02.2025
                 // было до этого, дата всегда менялась если сменить количество

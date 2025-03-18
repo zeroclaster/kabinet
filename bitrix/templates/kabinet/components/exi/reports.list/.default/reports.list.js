@@ -208,10 +208,11 @@ reports_list = (function (){
             const reportsListApplication = BX.Vue3.BitrixVue.createApp({
                 data() {
                     return {
+                        task_id:PHPPARAMS['TASK_ID'],
                         countview:PHPPARAMS['viewcount'],
                         total: PHPPARAMS['total'],
                         showloadmore:true,
-                        limitpics:5,
+                        limitpics:5
                     }
                 },
                 /*
@@ -224,6 +225,14 @@ reports_list = (function (){
                     },
                 },
                  */
+                setup(){
+                    const {projectOrder, projectTask} = data_helper();
+
+                    return {
+                        projectOrder,
+                        projectTask
+                    };
+                },
                 computed: {
                     ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['data2']),
@@ -246,6 +255,12 @@ reports_list = (function (){
                         }
 
                         return ret;
+                    },
+                    PRODUCT(){
+                        const order_id = this.projectOrder(this.TaskByIdKey[this.task_id].UF_PROJECT_ID);
+                        const product_id = this.TaskByIdKey[this.task_id].UF_PRODUKT_ID;
+                        let PRODUCT = this.data2[order_id][product_id];
+                        return PRODUCT;
                     }
                 },
                 methods: {
