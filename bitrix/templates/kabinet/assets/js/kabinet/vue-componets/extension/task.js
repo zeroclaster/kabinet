@@ -82,7 +82,7 @@ var taskMethods = function(){
 
                 let taskID = data.id;
 
-                for (index in data.datatask){
+                for (index in cur.makedatataskCopy(data.datatask)){
                     cur.datataskCopy[index] = data.datatask[index];
                 }
 

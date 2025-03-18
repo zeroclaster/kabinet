@@ -14,6 +14,7 @@ var canbesaved__ = function (){
     }
 
     const canBeSaved_ = function (taskindex){
+
         if (defaultdata.length == 0) return true;
         for (key in data_s){
             if (key != taskindex) continue;
@@ -29,6 +30,7 @@ var canbesaved__ = function (){
                 if (typeof defaultdata[key][field] == 'object' && defaultdata[key][field].length>0)
                     for (k in defaultdata[key][field])
                         if (typeof defaultdata[key][field][k].VALUE != "undefined") {
+                            debugger;
                             if (data_s[key][field][k].VALUE != defaultdata[key][field][k].VALUE)
                                 return false;
                         }

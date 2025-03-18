@@ -3,6 +3,26 @@ task_list = (function (){
     return {
         start(PHPPARAMS){
 
+            const allowable = [
+                "ID",
+                "UF_DATE_COMPLETION",
+                "UF_DATE_COMPLETION_ORIGINAL",
+                "FINALE_PRICE",
+                "RUN_DATE",
+                "UF_CYCLICALITY",
+                "UF_CYCLICALITY_ORIGINAL",
+                "UF_NUMBER_STARTS",
+                "UF_NUMBER_STARTS_ORIGINAL",
+                "UF_RUN_DATE",
+                "UF_RUN_DATE_ORIGINAL",
+                "UF_STATUS",
+                "UF_STATUS_ORIGINAL",
+                "UF_PROJECT_ID",
+                "UF_PROJECT_ID_ORIGINAL",
+                "UF_PRODUKT_ID",
+                "UF_PRODUKT_ID_ORIGINAL"
+            ];
+
             if (typeof PHPPARAMS.PROJECT_ID === "undefined" || PHPPARAMS.PROJECT_ID == '')
                 throw "Field PROJECT_ID not found!";
 
@@ -258,6 +278,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         const {makeData,canBeSaved_} = canbesaved__();
         makeData(tasklistS.datatask);
         const getmomment = ()=>moment();
+
         const getCopyTask = function (task) {
             const id = task['ID'];
             var finded = null;
@@ -271,12 +292,14 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             return finded;
         }
 
-        var t = JSON.parse(JSON.stringify(tasklistS.datatask));
-        console.log(t);
+        const makedatataskCopy = function (data){
+            var t = JSON.parse(JSON.stringify(data));
+            for (item of t) for (f in item) if (allowable.indexOf(f) == -1) delete item[f];
 
-        const allowable = ["ID", "FINALE_PRICE", "RUN_DATE", "UF_CYCLICALITY", "UF_CYCLICALITY_ORIGINAL", "UF_NUMBER_STARTS", "UF_NUMBER_STARTS_ORIGINAL", "UF_RUN_DATE", "UF_RUN_DATE_ORIGINAL"]
+            return t;
+        }
 
-        const datataskCopy = BX.Vue3.ref(JSON.parse(JSON.stringify(tasklistS.datatask)));
+        const datataskCopy = BX.Vue3.ref(makedatataskCopy(tasklistS.datatask));
 
         const is_required_field = function (task,field_name){
 
@@ -294,7 +317,17 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             return '';
         }
 
-        return {taskStatus_m,canBeSaved_,getmomment,datataskCopy,getCopyTask,taskStatus_v,makeData,is_required_field};
+        return {
+            taskStatus_m,
+            canBeSaved_,
+            getmomment,
+            datataskCopy,
+            getCopyTask,
+            taskStatus_v,
+            makeData,
+            is_required_field,
+            makedatataskCopy
+        };
     },
     computed: {
         ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
@@ -317,20 +350,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...taskMethods(),
         ...addNewMethods(),
         ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare']),
-        savetaskCopy(index){
-            var cur = this;
-            console.log(this.datataskCopy);
-            var form_data = this.dataToFormData(this.datataskCopy[index]);
-            this.saveData('bitrix:kabinet.evn.taskevents.edittaskcopy',form_data,function(data){
-
-                for (index in data.task){
-                    cur.datataskCopy[index] = data.task[index];
-                }
-
-                //const taskStory = tasklistStore();
-                //taskStory.datatask = data.task;
-            });
-        },
         starttask(index){
             var cur = this;
             console.log(this.datataskCopy);
@@ -431,15 +450,17 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 const taskStory = tasklistStore();
                 taskStory.datatask = data.task;
 
+                cur.makeData(cur.datatask);
+
                 //for (index in data.task) cur.datataskCopy[index] = data.task[index];
             });
         },
         savetaskCopy:function(index){
             var cur = this;
-            console.log(this.datataskCopy);
             var form_data = this.dataToFormData(this.datataskCopy[index]);
             this.saveData('bitrix:kabinet.evn.taskevents.edittaskcopy',form_data,function(data){
 
+                for (item of data.task) for (fld in item) if (allowable.indexOf(fld) == -1) delete item[fld];
                 for (index in data.task){
                     cur.datataskCopy[index] = data.task[index];
                 }
@@ -629,7 +650,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         }
     },
     created(){
-        this.$root.defaultdatatask = [];
     },
     mounted() {
         $('.external-events .fc-event').each(function() {
