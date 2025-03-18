@@ -15,6 +15,16 @@ project_list = (function (){
                         myModal2:{}
                     }
                 },
+                setup(){
+                    const {countQueu,taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+
+                    return {
+                        countQueu,
+                        taskStatus_m,
+                        taskStatus_v,
+                        taskStatus_b
+                    };
+                },
                 computed: {
                     ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['data2']),
@@ -35,6 +45,7 @@ project_list = (function (){
 
                 },
                 methods: {
+                    ...helperVueComponents(),
                     ...BX.Vue3.Pinia.mapActions(brieflistStore, ['getRequireFields']),
 					getTaskID(PROJECT_ID,PRODUKT_ID){					
 						for(task of this.datatask){						

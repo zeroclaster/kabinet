@@ -744,6 +744,42 @@ h6, .h6 {
 	color: #FFF;
 }
 
+.task-project .alert-status:empty{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	opacity: 0;
+}
+
+.task-project .alert-status{
+	position: absolute;
+	top: 4px;
+	left: 4px;
+}
+
+.task-project .alert-status{
+	padding: 3px 6px 0px 5px;
+	width: 37px;
+	height: 35px;
+}
+
+.task-project .alert-status{
+	font-size: 18px;
+	white-space: nowrap;
+}
+
+.task-project .alert-status.iphone-style-1{
+	border: 2px solid #FFF;
+	border-radius: 17px;
+	text-align: center;
+	background-color: #e8e7e7;
+	font-weight: bold;
+	color: #294AFF;
+}
+
 .badge-iphone-style{
 	color: #fff;
 	background-color: #ff000e;

@@ -274,7 +274,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     setup(){
 
         const {projectOrder, projectTask} = data_helper();
-        const {countQueu,taskStatus_m,taskStatus_v} = task_status();
+        const {countQueu,taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
         const tasklistS = tasklistStore();
         const {makeData,canBeSaved_} = canbesaved__();
         makeData(tasklistS.datatask);

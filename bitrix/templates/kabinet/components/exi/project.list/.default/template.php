@@ -32,7 +32,7 @@ $this->setFrameMode(true);
 CUtil::InitJSCore(array('window'));
 ?>
 <h2>Ваши проекты</h2>
-<div id="kabinetcontent" data-modalload="" data-usermessangerr="projectmainpage"></div>
+<div id="kabinetcontent" data-modalload="" data-usermessangerr="projectmainpage" data-dashboardprojectlist=""></div>
 
 <script type="text/html" id="kabinet-content">
 <div class="panel project-block">
@@ -68,6 +68,7 @@ CUtil::InitJSCore(array('window'));
                                 <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']">
                                 </a>
 
+                                <div v-if="task.UF_PROJECT_ID == value.ID" class="alert-status iphone-style-1" v-html="taskStatus_b(task.ID)"></div>
                                 <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(getTaskID(value.ID,order.ID))}}</div>
                             </div>
                         </div>
@@ -175,6 +176,15 @@ CUtil::InitJSCore(array('window'));
 $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 ?>
 <script>
+    components.projectlist22 = {
+        selector: '[data-dashboardprojectlist]',
+        script: [
+            '../../kabinet/components/exi/task.list/.default/task_status.js',
+        ],
+        init:null
+    }
+
+
     const alert_project_count = <?=CUtil::PhpToJSObject($arResult['ALERT_PROJECT_COUNT'], false, true)?>;
     const task_alert = <?=CUtil::PhpToJSObject($arResult['TASK_ALERT'], false, true)?>;
 
@@ -183,7 +193,6 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
     });
 
     window.addEventListener("components:ready", function(event) {
-
         var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT'],], false, true)?>;
         m.TEMPLATE = messangerTemplate2;
         m.messageStore = messageStore2;
