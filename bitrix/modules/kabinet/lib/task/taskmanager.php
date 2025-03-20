@@ -496,54 +496,76 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
         $status = 0;
         $Queue = $HLBClass::getlist([
-            'select'=>[new Entity\ExpressionField('CNT', 'COUNT(*)')],
+            'select'=>['ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS'],
             'filter'=>[
                 '=UF_TASK_ID'=>$id,
                 'UF_STATUS'=>$status
             ]
-        ])->fetch();
+        ])->fetchAll();
+
 
         $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) $st['COUNT'] = $Queue['CNT'];
+        if ($Queue) {
+            foreach ($Queue as $one) {
+                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
+                else $st['COUNT']++;
+            }
+        }
         $ret[] = $st;
 
         $status = [1,2,3,4,5,6,7,8];
         $Queue = $HLBClass::getlist([
-            'select'=>[new Entity\ExpressionField('CNT', 'COUNT(*)')],
+            'select'=>['ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS'],
             'filter'=>[
                 '=UF_TASK_ID'=>$id,
                 'UF_STATUS'=>$status
             ]
-        ])->fetch();
+        ])->fetchAll();
 
         $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) $st['COUNT'] = $Queue['CNT'];
+        if ($Queue) {
+            foreach ($Queue as $one) {
+                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
+                else $st['COUNT']++;
+            }
+        }
+
         $ret[] = $st;
 
         $status = 9;
         $Queue = $HLBClass::getlist([
-            'select'=>[new Entity\ExpressionField('CNT', 'COUNT(*)')],
+            'select'=>['ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS'],
             'filter'=>[
                 '=UF_TASK_ID'=>$id,
                 'UF_STATUS'=>$status
             ]
-        ])->fetch();
+        ])->fetchAll();
 
         $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) $st['COUNT'] = $Queue['CNT'];
+        if ($Queue) {
+            foreach ($Queue as $one) {
+                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
+                else $st['COUNT']++;
+            }
+        }
         $ret[] = $st;
 
         $status = 10;
         $Queue = $HLBClass::getlist([
-            'select'=>[new Entity\ExpressionField('CNT', 'COUNT(*)')],
+            'select'=>['ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS'],
             'filter'=>[
                 '=UF_TASK_ID'=>$id,
                 'UF_STATUS'=>$status
             ]
-        ])->fetch();
+        ])->fetchAll();
 
         $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) $st['COUNT'] = $Queue['CNT'];
+        if ($Queue) {
+            foreach ($Queue as $one) {
+                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
+                else $st['COUNT']++;
+            }
+        }
         $ret[] = $st;
 
         return $ret;

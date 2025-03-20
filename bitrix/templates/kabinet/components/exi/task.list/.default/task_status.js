@@ -124,12 +124,18 @@ var task_status = function (){
         for(queue of calendarStore_.datacalendarQueue){
             if (queue.UF_TASK_ID != task.ID) continue;
             if (queue.UF_STATUS == 9) {
+                if (queue.UF_ELEMENT_TYPE == 'multiple') endwork = endwork + parseInt(queue.UF_NUMBER_STARTS);
+                else
                 endwork++;
             }
             else if(queue.UF_STATUS == 0){
+                if (queue.UF_ELEMENT_TYPE == 'multiple') stopwark = stopwark + parseInt(queue.UF_NUMBER_STARTS);
+                else
                 stopwark++;
             }
             else if(queue.UF_STATUS != 10)
+                if (queue.UF_ELEMENT_TYPE == 'multiple') work = work + parseInt(queue.UF_NUMBER_STARTS);
+                else
                 work++
         }
 

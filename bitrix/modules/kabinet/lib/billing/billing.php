@@ -1,7 +1,8 @@
 <?php
 namespace Bitrix\Kabinet\billing;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\billing\datamanager\TransactionTable;
 
 class Billing extends \Bitrix\Kabinet\container\Hlbase {
     // поля которые выводятся при выборе в селекте
@@ -551,7 +552,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             'limit'=>1
         ])->fetch();
 
-        $obResult = \Bitrix\Kabinet\billing\datamanager\TransactionTable::add([
+        $obResult = TransactionTable::add([
             'SUM'=>$sum,
             'DATE_OPERATION'=> new \Bitrix\Main\Type\DateTime(),
             'USER_ID' => $user_id,

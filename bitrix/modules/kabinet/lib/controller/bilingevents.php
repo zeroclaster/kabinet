@@ -83,8 +83,8 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $result = new \Bitrix\Kabinet\billing\paysystem\robokassa\Result($inv_id);
-        $link = $result->generatePayLink($post['totalsum'],'');
+        $link = (new \Bitrix\Kabinet\billing\paysystem\robokassa\Result($inv_id))
+            ->generatePayLink($post['totalsum'],'');
 
         return [
 			'link'=>$link,

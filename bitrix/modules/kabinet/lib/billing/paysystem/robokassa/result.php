@@ -62,10 +62,10 @@ class Result extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $billing = $sL->get('Kabinet.Billing');
 
-        $calc_sum =  round($trans['SUM'] *0.93,2);
-
         try {
-            $billing->addMoney($calc_sum, $trans['USER_ID'], $this);
+            $billing->addMoney($trans['SUM'], $trans['USER_ID'], $this);
+            $calc_sum =  round($trans['SUM'] *0.07,2);
+            $billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
         }catch (SystemException $exception){
             $this->setError($exception->getMessage());
             return false;

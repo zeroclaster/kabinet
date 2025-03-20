@@ -98,8 +98,7 @@ $this->setFrameMode(true);
                                                     </form>
 
 
-                                                    <div class="">Стоимость: <span class="text-danger" style="font-size: 23px;">{{task.FINALE_PRICE}} <span class="text-danger" v-if="task.UF_CYCLICALITY == 2">руб./месяц</span><span class="text-danger" v-if="task.UF_CYCLICALITY != 2">руб.</span></span></div>
-                                                    <div class="info-blk">Количество: <span>{{task.UF_NUMBER_STARTS}}</span></div>
+                                                    <div class="">Стоимость: <span style="font-size: 23px;">{{task.FINALE_PRICE}} <span v-if="task.UF_CYCLICALITY == 2">руб./месяц</span><span v-if="task.UF_CYCLICALITY != 2">руб.</span></span></div>
                                                     <div class="info-blk">Дата создания: <span>{{task.UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
                                                     <div class="info-blk">Дата завершения: <span>{{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
                                                     <div class="info-blk">Согласование: <span>{{viewListFieldTitle(task,'UF_COORDINATION')}}</span></div>
