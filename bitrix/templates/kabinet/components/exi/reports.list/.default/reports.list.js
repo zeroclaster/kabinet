@@ -227,10 +227,13 @@ reports_list = (function (){
                  */
                 setup(){
                     const {projectOrder, projectTask} = data_helper();
+                    
+                    const hiddenCommentBlock = hiddenCommentBlock_();
 
                     return {
                         projectOrder,
-                        projectTask
+                        projectTask,
+                        hiddenCommentBlock
                     };
                 },
                 computed: {

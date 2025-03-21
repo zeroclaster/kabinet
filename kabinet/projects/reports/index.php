@@ -127,14 +127,14 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 
 
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-5">
                                     <div class="d-flex">
                                         <div class="d-flex mr-3 align-items-center">Запланированы - <div class="fc-event-light ml-2 mr-2 p-2"><?=$QueueStatistics[0]['COUNT']?></div></div>
                                         <div class="d-flex mr-3 align-items-center">Выполняются - <div class="fc-event-success ml-2 mr-2 p-2"><?=$QueueStatistics[1]['COUNT']?></div></div>
                                         <div class="d-flex mr-3 align-items-center">Выполнено - <div class="fc-event-warning ml-2 mr-2 p-2"><?=$QueueStatistics[2]['COUNT']?></div></div>
                                     </div>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-7">
                                     <div class="p-2">Завершится: <?=$taskdata['UF_DATE_COMPLETION_ORIGINAL']['FORMAT1']?></div>
 
                                 </div>

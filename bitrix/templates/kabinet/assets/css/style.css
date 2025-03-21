@@ -926,6 +926,46 @@ i.fa{
 	border-color: rgba(58, 64, 73, 0.2);
 }
 
+.alert-only-text.alert-planned{
+	background: none;
+	border: none;
+	color: #c8c8c8;
+}
+.alert-only-text.alert-worked{
+	background: none;
+	border: none;
+	color: #48c8af;
+}
+.alert-only-text.alert-user-attention{
+	background: none;
+	border: none;
+	color: #fee25f;
+}
+.alert-only-text.alert-cancel{
+	background: none;
+	border: none;
+	color: #ff5f68;
+}
+.alert-only-text.alert-done{
+	background: none;
+	border: none;
+	color: #3a4049;
+}
+
+
 .form-control.it-required_field{
 	border: 1px solid red;
+}
+
+.fc-view{
+	overflow: inherit!important;
+}
+
+.fullcalendar.fc{
+	overflow: inherit!important;
+}
+
+.plug-block-writecomment{
+	color: #54c1e5 !important;
+	cursor: pointer;
 }

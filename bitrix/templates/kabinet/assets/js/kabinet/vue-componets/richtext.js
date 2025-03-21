@@ -1,7 +1,7 @@
 const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
     template: `
 <textarea ref="textares" cols="20" rows="10" :id="$id('richtext')" class="fields string form-control" v-model="localModelValue"></textarea>
-<div class="text-right" v-if="showsavebutton"><button class="btn btn-primary" type="button" @click="gotosave">сохранить</button></div>
+<div class="text-right" v-if="showsavebutton"><button class="btn btn-link" type="button" @click="gotosave">записать в черновик</button></div>
 `,	data(){
         return{
             notSave: false,

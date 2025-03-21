@@ -138,12 +138,15 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         </div>
                         </template>
 
+                        <div class="plug-block-writecomment"  v-if="!hiddenCommentBlock.isShow(runner)" @click="hiddenCommentBlock.mclick(runner)"><i class="fa fa-chevron-down" aria-hidden="true"></i> Написать комментарий...</div>
+                        <div v-if="hiddenCommentBlock.isShow(runner)">
                         <messangerperformances :projectID="TaskByIdKey[runner.UF_TASK_ID].UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :queue_id="runner.ID" :targetUserID="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID"/>
-
+                        </div>
+                        
                     </td>
 
                     <td style="width: 20%">
-                        <div :class="'alert '+alertStyle(runner.UF_STATUS)"><i :class="'fa '+runner.UF_STATUS_ORIGINAL.ICON" aria-hidden="true"></i> {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}</div>
+                        <div :class="'alert alert-only-text '+alertStyle(runner.UF_STATUS)"><i :class="'fa '+runner.UF_STATUS_ORIGINAL.ICON" aria-hidden="true"></i> {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}</div>
 
                         <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
                         <commentWrite :tindex="runnerindex" ref="modaleCommnetWrite" v-model="runner.UF_COMMENT"/>
@@ -202,7 +205,8 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
         selector: '[data-userreports]',
         script: [
             '../../kabinet/assets/js/kabinet/vue-componets/show.note.js',
-            '../../kabinet/components/exi/task.list/.default/data_helper.js'
+            '../../kabinet/components/exi/task.list/.default/data_helper.js',
+            '../../kabinet/components/exi/reports.list/.default/js/hiddenCommentBlock.js',
         ],
         init:null
     }
