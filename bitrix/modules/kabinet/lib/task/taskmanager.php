@@ -13,6 +13,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
     const NO_APPROVAL_REQUIRED = 9;
     const LINK_SCREENHOT = 10;
+    // из свойств инфоблока поле COORDINATION
     const IS_SOGLACOVANIE = 'cd3e95f3415f08e2ff1d8e9cb16e9d1d'; // да
 
     // из свойств инфоблока поле PHOTO_AVAILABILITY

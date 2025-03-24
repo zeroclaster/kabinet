@@ -239,21 +239,21 @@ abstract class Base{
     public function transformField($oldFileds,$fields){
         $UFields = $this->getUserFields();
 
+        // для полей тип файл
+        // поле НАЗВАНИЕ_ПОЛЯ_DELETE отправляется со значениями а само поле не отправляетмся
+        // потому что оно заполняется только когда отправляется файл
         foreach ($fields as $name=>$value){
             if (strpos($name,'_DELETE') !== false){
-                $clear = str_replace(['_DELETE','_DOUBLE'],'',$name);
-                if (!isset($fields[$clear])) $fields[$clear] = [];
+                $findFieldName = str_replace(['_DELETE','_DOUBLE'],'',$name);
+                if (!isset($fields[$findFieldName])) $fields[$findFieldName] = [];
             }
             if (strpos($name,'_DOUBLE') !== false){
-                $clear = str_replace(['_DELETE','_DOUBLE'],'',$name);
-                if (!isset($fields[$clear])) $fields[$clear] = [];
+                $findFieldName = str_replace(['_DELETE','_DOUBLE'],'',$name);
+                if (!isset($fields[$findFieldName])) $fields[$findFieldName] = [];
             }
         }
 
         foreach ($fields as $name=>&$value){
-
-            //$name = str_replace(['_DELETE','_DOUBLE'],'',$name);
-
             if (!isset($UFields[$name])) continue;
 
             $HL_FIELD_DATA = $UFields[$name];
@@ -261,10 +261,7 @@ abstract class Base{
                 $value = \Bitrix\Main\Type\DateTime::createFromTimestamp($value);
             }
 			if ($HL_FIELD_DATA["USER_TYPE_ID"] == 'file') {
-
-
 			    if (is_array($value) && $value[0]===0) $value = [];
-
 
 			    // если была комманда удалить файлы
 			    if(!empty($fields[$name.'_DELETE'])){
@@ -288,26 +285,32 @@ abstract class Base{
                  * ..................
                  * ]
                  */
+                // если поле не мульти, то оно сразу отправляется в базу без какой либо трпнсформации
 				if($HL_FIELD_DATA["MULTIPLE"] == 'Y'){
 					$newField = [];
 					foreach($value as $key=>$v){
+					    // $key = 'url'
+                        // $key = 'name'
+                        // $key = 'type'
+                        // $key = 'tmp_name'
 					    if (is_array($v)){
+                            // или $v - это [0 => /tmp/sdfsdfs.jpg,1 => /tmp/sdfsdfs.jpg]
                             foreach($v as $k2 => $one){
                                 $newField[$k2][$key] = $one;
                             }
 					    }else{
-                            //if ($v)
+                            // решаем $v - это /tmp/sdfsdfs.jpg
                             $newField[0][$key] = $v;
-                            //else
-                                //$newField = [];
                         }
 					}
 
+					// если это уже существует update
 					if ($oldFileds) {
                         // добаляем $oldFileds[$name] что бы удалить отмечанные old_id
                         $value = array_merge($newField, $oldFileds[$name]);
                     }else{
-                        $value = $newField;
+                        // есди это новый add
+					    $value = $newField;
                     }
 				}
 
@@ -332,19 +335,7 @@ abstract class Base{
             if (isset($fields[$name.'_DOUBLE'])) unset($fields[$name.'_DOUBLE']);
         }
 
-        /*
-        foreach ($fields as $name=>$v){
-            if (strpos($name, '_DELETE') !== false) {
-                $new_name = str_replace('_DELETE', '', $name);
-                $fields[$new_name] = $v;
-                unset($fields[$name]);
-            }
-        }
-        */
-
-
         //throw new SystemException(print_r($fields,true));
-
         return $fields;
     }
 

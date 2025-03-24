@@ -1,14 +1,15 @@
-var messanger_vuecomponent = document.messanger_vuecomponent || {};
-messanger_vuecomponent = (function (){
+var messanger_vuecomponent2 = document.messanger_vuecomponent || {};
+messanger_vuecomponent2 = (function (){
     return {
         start(PHPPARAMS){
           if (typeof PHPPARAMS.NEW_RESET == "undefined")  PHPPARAMS.NEW_RESET = 'y';
           if (typeof PHPPARAMS.TEMPLATE == "undefined")  PHPPARAMS.TEMPLATE = messangerTemplate;
-          if (typeof PHPPARAMS.messageStore == "undefined")  PHPPARAMS.messageStore = messageStore;
+          if (typeof PHPPARAMS.messageStore == "undefined")  PHPPARAMS.messageStore = messageStore2;
        /*
        messangerTemplate задается в bitrix/templates/kabinet/assets/js/kabinet/custom.component.js
        определяется атребутом data-usermessanger
         */
+
 return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
     template: PHPPARAMS.TEMPLATE,
     data(){
@@ -302,10 +303,10 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
                     kabinetStore.NotifyOk = '';
                     kabinetStore.NotifyOk = data.message;
 
-                    const Store = messageStore();
+                    const Store = messageStore2();
                     // если на странице согласования и отчеты, то чат в пределах задачи
-                    if (this_.queue_id) {
-                        Store.datamessage[this_.queue_id] = data.datamessage;
+                    if (this_.projectID) {
+                        Store.datamessage[this_.projectID] = data.datamessage;
                     }else{
                         Store.datamessage = data.datamessage;
                     }

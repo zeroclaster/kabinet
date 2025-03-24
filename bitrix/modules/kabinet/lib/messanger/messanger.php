@@ -148,6 +148,7 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
         $ClientManager = $sL->get('Kabinet.ClientMessanger');
         $user = (\KContainer::getInstance())->get('user');
         $user_id = $user->get('ID');
+        $isAdmin = !($user_id && 1);
 
         // сколько времени кешировать
         $ttl = 14400;
@@ -157,7 +158,9 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
         if ($filter)  $ttl = 0;
 		//if (!$filter) $filter = ['UF_AUTHOR_ID'=>$user_id];
 
-		if ($user_id > 0) $filter = array_merge(['UF_AUTHOR_ID'=>$user_id],$filter);
+        if ($isAdmin) {
+        }
+		else $filter = array_merge(['LOGIC' => 'AND',['LOGIC' => 'OR','UF_AUTHOR_ID'=>$user_id,'UF_TARGET_USER_ID'=>$user_id]],$filter);
 
 		$filter_default = $this->config('FILTER_DEFAULT');
         $filter = array_merge($filter_default,$filter);
@@ -192,9 +195,7 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
 				'offset'=>$offset
             ])->fetchAll();
 
-            //echo "<pre>";
-            //echo \Bitrix\Main\Entity\Query::getLastQuery();
-            //echo "</pre>";
+            //\Dbg::print_r(\Bitrix\Main\Entity\Query::getLastQuery());
 
             $messageList = array_reverse($messageList);
           

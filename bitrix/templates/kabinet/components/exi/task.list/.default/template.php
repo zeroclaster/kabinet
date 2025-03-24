@@ -292,18 +292,18 @@ $p = $request->get('p');
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
                                     <?/* 33 Одно исполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{CopyTask.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                     <?/* 1 Однократное выполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{CopyTask.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{CopyTask.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
 
                                     <?/* 2 Повторяется ежемесячно */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать 15 {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{CopyTask.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{CopyTask.UF_NAME}}» с {{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать 15 {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{task.UF_NAME}}» с {{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</button>
 
                                     <?/* 34 Ежемесячная услуга */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{CopyTask.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                 </div>
                             </div>

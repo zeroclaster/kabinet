@@ -180,6 +180,7 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
         selector: '[data-dashboardprojectlist]',
         script: [
             '../../kabinet/components/exi/task.list/.default/task_status.js',
+            '../../kabinet/assets/js/kabinet/vue-componets/messanger/messanger2.js',
         ],
         init:null
     }
@@ -195,10 +196,10 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
     window.addEventListener("components:ready", function(event) {
         var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT'],], false, true)?>;
         m.TEMPLATE = messangerTemplate2;
-        m.messageStore = messageStore2;
+        //m.messageStore = messageStore2;
 
-        messangerperformances___ = messanger_vuecomponent.start(m);
 
+        messangerperformances___ = messanger_vuecomponent2.start(m);
 
         project_list.start(<?=CUtil::PhpToJSObject([
             'PROJECT_ID'=>0,

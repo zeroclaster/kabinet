@@ -181,10 +181,7 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $arResult['MESSAGE_DATA'] = [];
         foreach ($saveData as $key => $item) {
             $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(
-                $filter = [
-                    'UF_PROJECT_ID' => $item['ID'], 
-					['LOGIC' => 'OR','UF_AUTHOR_ID'=>$user_id,'UF_TARGET_USER_ID'=>$user_id],
-                ],
+                $filter = ['UF_PROJECT_ID' => $item['ID']],
                 $offset = 0,
                 $limit = 5000,
                 $clear = false,

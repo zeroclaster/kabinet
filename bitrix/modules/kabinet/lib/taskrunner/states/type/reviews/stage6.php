@@ -72,9 +72,13 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     // условия что бы включить этот статус
     public function conditionsTransition($oldData){
         $runnerFields = $this->runnerFields;
+        $PRODUCT = $this->getProduct();
 
         if (\PHelp::isAdmin()) {
-            if (!$runnerFields['UF_REVIEW_TEXT']) throw new SystemException("Вы не ввели текст отзыва");
+            if (
+                ($PRODUCT['VIEW_UF_REVIEW_TEXT']['VALUE_XML_ID'] == '529f3954e3cce751af50dbf5a8f84712') &&
+                !$runnerFields['UF_REVIEW_TEXT']
+            ) throw new SystemException("Вы не ввели текст отзыва");
         }else{
 
         }

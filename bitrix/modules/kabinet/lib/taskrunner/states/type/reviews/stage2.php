@@ -71,6 +71,7 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         return true;
     }
 
+    // уходят со статуса
     public function leaveStage($object){
         $object->set('UF_COMMENT','');
         $object->set('UF_HITCH',0);
@@ -78,17 +79,7 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     // когда пришли на статус
     public function cameTo($object){
-        $UF_TASK_ID = $object->get('UF_TASK_ID');
-        $HLBClass = (\KContainer::getInstance())->get('TASK_HL');
 
-        $siteuser = (\KContainer::getInstance())->get('siteuser');
-
-        $obResult = $HLBClass::update($UF_TASK_ID,['UF_MANAGER_ID'=>$siteuser->get('ID')]);
-        if (!$obResult->isSuccess()){
-            $err = $obResult->getErrors();
-            $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
-        }
     }
 
     public function execute(){

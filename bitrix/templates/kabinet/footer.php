@@ -43,6 +43,7 @@ Dbg::showDebug();
     Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/utilites.js");
 	Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/core.js");
 
+    Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/addnewmethods.js");
     Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/helper.js");
 
 	if (\PHelp::isAdmin()) Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/admin.application.js");

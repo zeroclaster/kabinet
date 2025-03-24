@@ -45,10 +45,7 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
 			}
 		}
 
-		$params["FILTER"] = array_merge($arrFilter,[
-            ['LOGIC' => 'OR',
-            'UF_AUTHOR_ID'=>$user->get('ID'),'UF_TARGET_USER_ID'=>$user->get('ID')]
-        ]);
+		$params["FILTER"] = $arrFilter;
 		
 		if (empty($params['COUNT'])) $params['COUNT'] = 5;
         $params['OFFSET'] = 0;
