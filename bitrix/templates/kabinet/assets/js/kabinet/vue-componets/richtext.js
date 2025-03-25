@@ -1,13 +1,13 @@
 const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
     template: `
 <textarea ref="textares" cols="20" rows="10" :id="$id('richtext')" class="fields string form-control" v-model="localModelValue"></textarea>
-<div class="text-right" v-if="showsavebutton"><button class="btn btn-link" type="button" @click="gotosave">записать в черновик</button></div>
+<div class="text-right" v-if="showsavebutton"><button class="btn btn-link" type="button" @click="gotosave">Сохранить черновик</button></div>
 `,	data(){
         return{
             notSave: false,
         }
     },
-    props: ['modelValue','original','autosave','tindex','showsavebutton'],
+    props: ['modelValue','original','autosave','tindex','showsavebutton','placeholder'],
     computed: {
         localModelValue: {
             /* liveHack
@@ -39,8 +39,11 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
         const this_ = this;
 
         let node = this.$refs.textares;
+        let ckSetup = this.ckSetup();
 
-        CKEDITOR.ClassicEditor.create( node, this.ckSetup() ).then(  ( editor )=> {
+        if (typeof this.placeholder != "undefined") ckSetup.placeholder = this.placeholder;
+
+        CKEDITOR.ClassicEditor.create( node, ckSetup ).then(  ( editor )=> {
             this.$.ckEditor = editor;
             editor.model.document.on('change:data', (evt, data) => {
                 //console.log(editor.getData());
@@ -78,7 +81,7 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
                 //toolbar: [ "heading", 'bold', 'italic', 'link',"imageUpload"],
                 toolbar: [  ],
                 minHeight: '600px',
-                placeholder: 'Написать комментарий...',
+                placeholder: 'Комментарий к исполнению...',
                 heading: {
                     options: [
                         { model: 'paragraph', title: 'Заголовок', class: 'ck-heading_paragraph' },

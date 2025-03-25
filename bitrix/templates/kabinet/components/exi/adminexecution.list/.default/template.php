@@ -93,7 +93,7 @@ $this->setFrameMode(true);
         {{(UF_PROJECT_ID=datatask[runner.UF_TASK_ID].UF_PROJECT_ID,null)}}
         <td style="width: 20%">
             <div class="mb-3 form-group datepicker-input">
-                <div><label class="" for="planedate-execution">Плановая дата публикации</label></div>
+                <div><label class="" for="planedate-execution">Плановая дата выполнения</label></div>
                 <div class="d-flex">
                     <mydatepicker :tindex="runnerindex" :original="runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1" :mindd="runner.UF_PLANNE_DATE_ORIGINAL.MINDATE" v-model="runner.UF_PLANNE_DATE"/>
                 </div>
@@ -163,7 +163,7 @@ $this->setFrameMode(true);
 			-->
 
             <template v-if="dataorder[UF_AUTHOR_ID][dataproject[UF_PROJECT_ID].UF_ORDER_ID][datatask[runner.UF_TASK_ID].UF_PRODUKT_ID].VIEW_UF_REVIEW_TEXT.VALUE_XML_ID == '529f3954e3cce751af50dbf5a8f84712'">
-            <div>Текст отзыва</div>
+            <div>Текст</div>
             <div class="richtext-height-200_">
                 <?/*
                   параметр autosave="y" включает автосохранение
