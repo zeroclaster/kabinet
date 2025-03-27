@@ -41,6 +41,6 @@ class Providertask{
 
 		if ($GLOBALS['task_test'] == 'y') return new Taskmanagertest(TASK,$HLBClass);
 
-        return new Taskmanager(TASK,$HLBClass);
+        return new Taskmanagercache(TASK,$HLBClass);
     }
 }

@@ -409,6 +409,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 'order'=>['UF_PLANNE_DATE'=>'desc'],
                 'limit'=>1
             ])->fetch();
+
             if ($find_last_queue) {
                 if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
                     $now = $find_last_queue['UF_PLANNE_DATE'];

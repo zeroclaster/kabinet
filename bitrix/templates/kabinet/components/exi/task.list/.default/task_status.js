@@ -74,7 +74,7 @@ var task_status = function (){
     }
 
         const taskStatus_m = function (index){
-            if (countQueu(index) == 0) return '<div class="status-task-1 text-warning">Не выполняется</div>';
+            if (countQueu(index) == 0) return '<div class="alert-only-text alert-done">Не выполняется</div>';
             const task = datatask_.datatask[index];
 
             let isRuned = 0;
@@ -92,7 +92,7 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned == countQueu(index)) return '<div class="status-task-1 text-secondary">Остановлена</div>';
+            if (isRuned == countQueu(index)) return '<div class="alert-only-text alert-cancel">Остановлена</div>';
 
             isRuned = 0;
             for(queue of calendarStore_.datacalendarQueue){
@@ -106,15 +106,15 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned > 0) return '<div class="status-task-1 text-warning">Запланирована</div>';
+            if (isRuned > 0) return '<div class="alert-only-text alert-planned">Запланирована</div>';
 
 
-            return '<div class="status-task-1 text-success">Выполняется</div>';
+            return '<div class="alert-only-text alert-worked">Выполняется</div>';
         }
 
 
     const taskStatus_v = function (index){
-        if (countQueu(index) == 0) return '<div class="status-task-1 text-warning">Не выполняется</div>';
+        if (countQueu(index) == 0) return '<div class="alert-only-text alert-done">Не выполняется</div>';
         const task = datatask_.datatask[index];
 
         let stopwark = 0;

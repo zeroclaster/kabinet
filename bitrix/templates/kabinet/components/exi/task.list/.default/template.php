@@ -79,7 +79,7 @@ $p = $request->get('p');
                                     mounted()
                                     this.updatecalendare([],this.project_id);
                                     */?>
-                    <div class="d-flex">
+                    <div class="d-flex statict-calendar-info">
                         <div class="d-flex mr-5 align-items-center"><div id="done_calendar_counter" class="fc-event-light mr-2 p-2"></div> Выполнено</div>
                         <div class="d-flex mr-5 align-items-center"><div id="inprogress_calendar_counter" class="fc-event-success mr-2 p-2"></div> Выполняются</div>
                         <div class="d-flex mr-5 align-items-center"><div id="planned_calendar_counter" class="fc-event-warning mr-2 p-2"></div> Запланированы</div>
@@ -398,7 +398,7 @@ $p = $request->get('p');
 					
                 </div>
                 <div class="col">
-					<ul class="list-unstyled">
+					<ul class="list-unstyled task-aciont-list-1">
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
 						<li v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>"><button class="btn btn-link btn-link-site" type="button" @click="stoptask(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
