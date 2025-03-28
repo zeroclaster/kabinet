@@ -2,17 +2,15 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Поддержка");
 ?>
+<section class="section-xs">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <h1><i class="fa fa-question-circle" aria-hidden="true"></i> Поддержка</h1>
+            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="SUPPORT" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+        </div>
 
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="SUPPORT" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-</div>
-
+    </div>
+</section>
 <section class="">
     <div class="container-fluid">
         <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
@@ -21,9 +19,6 @@ $APPLICATION->SetTitle("Поддержка");
         );?>
     </div>
 </section>
-
-<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-question-circle" aria-hidden="true"></i> Поддержка</h1></div></section>
-
 <?
 // если нужно показывать только прочитанные
 //$GLOBALS['message_filter'] = ['UF_STATUS'=>\Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE];

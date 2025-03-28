@@ -44,17 +44,18 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 
 //\Dbg::print_r($taskdata);
 ?>
-
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="REPORTS" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-
-</div>
+<section class="">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h4 style="margin: 0;">Проект</h4>
+                <div><h1><?=$project['UF_NAME']?></h1></div>
+                <h4>Задача</h4>
+            </div>
+            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="REPORTS" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+        </div>
+    </div>
+</section>
 
 <section class="">
     <div class="container-fluid">
@@ -62,14 +63,6 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 'CODE' => 'REPORTS',
             )
         );?>
-    </div>
-</section>
-
-<section class="">
-    <div class="container-fluid">
-                <h4>Проект</h4>
-                <div><h1><?=$project['UF_NAME']?></h1></div>
-                <h4>Задача</h4>
     </div>
 </section>
 

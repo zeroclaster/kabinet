@@ -16,32 +16,29 @@ $APPLICATION->AddChainItem("Проект", "/kabinet/projects/?id=".$p);
 $APPLICATION->AddChainItem("Планирование задач", "");
 ?>
 
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-</div>
 
-    <section class="">
-        <div class="container-fluid">
-            <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                    'CODE' => 'PLANNING',
-                )
-            );?>
-        </div>
-    </section>
+
 
 <section class="section-xs">
     <div class="container-fluid">
-       <h4>Проект: <?=$project['UF_NAME']?></h4>
-        <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Планирование задач</div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <h4 style="margin: 0;">Проект: <?=$project['UF_NAME']?></h4>
+                <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Планирование задач</div>
+            </div>
+            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+        </div>
     </div>
 </section>
 
+<section class="">
+    <div class="container-fluid">
+        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+                'CODE' => 'PLANNING',
+            )
+        );?>
+    </div>
+</section>
 
 <section class="">
     <div class="container-fluid">

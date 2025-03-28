@@ -826,9 +826,9 @@ h6, .h6 {
 	appearance: none;
 	border: 1px solid #333333;
 	border-radius: 9999px;
-	background: linear-gradient(90deg, #e17f50 50%, #0c63e4 50%);
+	background: linear-gradient(90deg, #0c63e4 50%, #e17f50 50%);
 	cursor: pointer;
-	height: inherit;
+	height: 8px;
 	padding: 0;
 }
 
@@ -838,7 +838,7 @@ h6, .h6 {
 	appearance: none;
 	border: 2px solid #333333;
 	border-radius: 9999px;
-	background: #3cd507;
+	background: #d5d5d5;
 	box-shadow: none;
 }
 
@@ -846,7 +846,7 @@ h6, .h6 {
 .range-gender-input input[type='range']::-moz-range-thumb {
 	border: 2px solid #333333;
 	border-radius: 9999px;
-	background: #3cd507;
+	background: #d5d5d5;
 	box-shadow: none;
 }
 

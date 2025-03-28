@@ -18,9 +18,17 @@ Loc::loadMessages(__FILE__);
 
 ?>
 <script type="text/html" id="kabinet-content">
-<h4 v-if="fields.UF_NAME_ORIGINAL != ''">Проект: {{fields.UF_NAME_ORIGINAL}}</h4>
-<div class="h1"><i class="fa fa-list" aria-hidden="true"></i> Бриф проекта</div>
 
+    <section class="">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4 v-if="fields.UF_NAME_ORIGINAL != ''">Проект: {{fields.UF_NAME_ORIGINAL}}</h4>
+                    <div class="h1"><i class="fa fa-list" aria-hidden="true"></i> Бриф проекта</div>
+                </div>
+             </div>
+        </div>
+    </section>
 
 <div class="panel">
     <div class="panel-header">

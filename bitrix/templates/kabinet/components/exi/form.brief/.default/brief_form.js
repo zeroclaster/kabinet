@@ -186,7 +186,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
             }
             return fieldName.length + '/'+ settings.MAX_LENGTH;
         },
-        sizeMan(){
+        sizeFemale(){
 
 		    let size = 22;
             let genders = this.fields4.UF_RATIO_GENDERS;
@@ -194,7 +194,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
 
             return 'font-size:'+size+'px';
         },
-        sizeFemale(){
+        sizeMan(){
 
             let size = 22;
             let genders = this.fields4.UF_RATIO_GENDERS;
@@ -207,9 +207,9 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
             let genders = parseInt(this.fields4.UF_RATIO_GENDERS);
             percent += genders;
             percent = (percent*100)/20;
-            return 'background: linear-gradient(90deg, #e17f50 '+percent+'%, #0c63e4 '+percent+'%);';
+            return 'background: linear-gradient(90deg, #0c63e4 '+percent+'%, #e17f50 '+percent+'%);';
         },
-        percentMan(){
+        percentFemale(){
             let percent = 10;
             let genders = 0;
             if (this.fields4.UF_RATIO_GENDERS !='') genders = parseInt(this.fields4.UF_RATIO_GENDERS);
@@ -218,7 +218,7 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
             percent = 100 - percent;
             return percent+'%';
         },
-        percentFemale(){
+        percentMan(){
             let percent = 10;
             let genders = 0;
             if (this.fields4.UF_RATIO_GENDERS !='') genders = parseInt(this.fields4.UF_RATIO_GENDERS);

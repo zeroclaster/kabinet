@@ -263,7 +263,7 @@ $p = $request->get('p');
                             </div>
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="d-flex">
-                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:&nbsp;</label></div>
                                     <div class="task-price-total">
                                         <span>{{CopyTask.FINALE_PRICE}}</span>
                                         <span v-if="CopyTask.UF_CYCLICALITY==1 || CopyTask.UF_CYCLICALITY==33"> руб.</span>
@@ -281,7 +281,7 @@ $p = $request->get('p');
                             </div>
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="d-flex">
-                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:</label></div>
+                                    <div class="text-sm-right"><label class="col-form-label" for="linkInput2">Стоимость:&nbsp;</label></div>
                                     <div class="task-text-vertical-aling task-price-total">по запросу</div>
                                 </div>
                             </div>

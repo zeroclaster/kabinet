@@ -19,18 +19,25 @@ $vueFieldRESTRICTION = $arResult["additionalParameters"]["VMODEFIELD"].'.'.$arRe
 		?>
         {{(manval = percentMan(),null)}}
         {{(femaleval = percentFemale(),null)}}
-        <div class="d-flex justify-content-between figure-block">
-                <div class="figure-gender man-figure" :style="sizeMan()"><i class="fa fa-male" aria-hidden="true"></i></div>
-                <div class="figure-gender female-figure" :style="sizeFemale()"><i class="fa fa-female" aria-hidden="true"></i></div>
-            </div>
 		<span class='fields integer field-item'>
 			<input :style="split_percent()"
 				<?= $component->getHtmlBuilder()->buildTagAttributes($value['attrList']) ?>
 			>
 		</span>
         <div class="d-flex justify-content-between">
-            <div>{{manval}}</div><div>{{femaleval}}</div>
+            <div>
+                <div>{{manval}}</div>
+                <div>Мужские</div>
+            </div>
+            <div>
+                <div>{{femaleval}}</div>
+                <div>Женские</div>
+            </div>
         </div>
+        <div class="d-flex justify-content-between figure-block">
+                <div class="figure-gender man-figure" :style="sizeMan()"><i style="left: -1px;" class="fa fa-male" aria-hidden="true"></i></div>
+                <div class="figure-gender female-figure" :style="sizeFemale()"><i class="fa fa-female" aria-hidden="true"></i></div>
+            </div>
 		<?php
 	}
 	if(

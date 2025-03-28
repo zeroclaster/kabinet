@@ -6,25 +6,22 @@ $APPLICATION->SetTitle("Бриф проекта");
 $user = (\KContainer::getInstance())->get('user');
 ?>
 
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="BRIEF" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+    <section class="">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between">
+                <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="BRIEF" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+            </div>
+        </div>
+    </section>
 
-</div>
-
-<section class="">
-    <div class="container-fluid">
+    <section class="">
+        <div class="container-fluid">
             <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
                     'CODE' => 'BRIEF',
                 )
             );?>
-    </div>
-</section>
+        </div>
+    </section>
 
 <section class="section-xs" style="position: relative">
     <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr"></div>

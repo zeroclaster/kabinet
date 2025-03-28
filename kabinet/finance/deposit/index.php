@@ -3,15 +3,16 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Пополнение баланса");
 ?>
 
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-</div>
+
+
+    <section class="section-xs">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between">
+                <h1>Пополнение баланса</h1>
+                <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="FINANCE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+            </div>
+        </div>
+    </section>
 
 <section class="">
     <div class="container-fluid">
@@ -25,10 +26,6 @@ $APPLICATION->SetTitle("Пополнение баланса");
 <section class="">
     <div class="container-fluid">
         <div class="row row-30">
-            <div class="col-md-12">
-                <h1>Пополнение баланса</h1>
-            </div>
-
             <div class="col-md-12">
             <div class="panel deposit-block-1">
                 <div class="panel-body">

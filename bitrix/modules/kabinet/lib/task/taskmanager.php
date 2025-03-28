@@ -151,21 +151,30 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         if ($PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']) {
             // доступные варианты для задачи
             $possible_options = $this->TASK_CONTINUITY[$PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']];
-            if (count($possible_options)==1) {
-
+            $isOneRun = count($possible_options)==1;
+            if ($isOneRun) {
                 // для сохранения в базу
                 $object->set('UF_CYCLICALITY', $possible_options[0]);
+                //Одно исполнение
                 if ($possible_options[0] == 33) $object->set('UF_NUMBER_STARTS', 1);
+                //Ежемесячная услуга
                 if ($possible_options[0] == 34) $object->set('UF_NUMBER_STARTS', 1);
 
                 // делаем массив задачи что бы его отправить на расчет даты завершения
                 $fields_ = $fields;
                 $fields_['UF_CYCLICALITY'] = $possible_options[0];
+                //Одно исполнение
                 if ($possible_options[0] == 33) $fields_['UF_NUMBER_STARTS'] = 1;
+                //Ежемесячная услуга
                 if ($possible_options[0] == 34) $fields_['UF_NUMBER_STARTS'] = 1;
-                $DATE_COMPLETION = $this->theorDateEnd($fields_);
-                $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
+            }else{
+                $object->set('UF_NUMBER_STARTS', $PRODUCT['QUANTITY']);
+                $fields_ = $fields;
+                $fields_['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
             }
+
+            $DATE_COMPLETION = $this->theorDateEnd($fields_);
+            $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
         }
 
     }
@@ -404,16 +413,23 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
             // ищем последнее исполнение
             $find_last_queue = $HLBClass::getlist([
-                'select'=>['ID','UF_PLANNE_DATE'],
+                'select'=>['ID','UF_PLANNE_DATE','UF_DATE_COMPLETION'],
                 'filter'=>['UF_TASK_ID'=>$task['ID']],
                 'order'=>['UF_PLANNE_DATE'=>'desc'],
                 'limit'=>1
             ])->fetch();
 
             if ($find_last_queue) {
-                if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                    $now = $find_last_queue['UF_PLANNE_DATE'];
 
+                if ($find_last_queue['UF_DATE_COMPLETION']){
+                    if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
+                        $now = $find_last_queue['UF_DATE_COMPLETION'];
+                }else {
+                    if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
+                        $now = $find_last_queue['UF_PLANNE_DATE'];
+                }
+
+                // + $PRODUCT['MINIMUM_INTERVAL']['VALUE']
                 if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'])
                     $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
             }else

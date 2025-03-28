@@ -2,16 +2,14 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Договор и закрывающие документы");
 ?>
-<div class="d-flex justify-content-between">
-    <?$APPLICATION->IncludeComponent("bitrix:breadcrumb","",Array(
-            "START_FROM" => "0",
-            "PATH" => "",
-            "SITE_ID" => "s1"
-        )
-    );?>
-    <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DOGOVOR" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-</div>
-
+<section class="section-xs">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <h1><i class="fa fa-book" aria-hidden="true"></i> Договор и закрывающие документы</h1>
+            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DOGOVOR" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+        </div>
+    </div>
+</section>
 <section class="">
     <div class="container-fluid">
         <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
@@ -20,9 +18,6 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
         );?>
     </div>
 </section>
-
-<section class="section-xs"><div class="container-fluid"><h1><i class="fa fa-book" aria-hidden="true"></i> Договор и закрывающие документы</h1></div></section>
-
 <?$APPLICATION->IncludeComponent("exi:form.contract", "", Array(
         "GROUPS" =>[
             0=>"Договор",
