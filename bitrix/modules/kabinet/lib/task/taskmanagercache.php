@@ -19,7 +19,7 @@ class Taskmanagercache extends Taskmanager {
 
         if (!$this->FulfiCacheArray) {
             $this->FulfiCacheArray = $HLBClass::getlist([
-                'select' => ['ID', 'UF_PLANNE_DATE','REF_TASK.ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS','UF_STATUS'],
+                'select' => ['ID', 'UF_PLANNE_DATE','REF_TASK.ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS','UF_STATUS','UF_DATE_COMPLETION'],
                 'runtime' => [
                     'REF_TASK' => [
                         'data_type' => \Task::class,
@@ -57,8 +57,13 @@ class Taskmanagercache extends Taskmanager {
             if ($db_array) $find_last_queue = $db_array[0];
 
             if ($find_last_queue) {
-                if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                    $now = $find_last_queue['UF_PLANNE_DATE'];
+                if ($find_last_queue['UF_DATE_COMPLETION']){
+                    if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
+                        $now = $find_last_queue['UF_DATE_COMPLETION'];
+                }else {
+                    if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
+                        $now = $find_last_queue['UF_PLANNE_DATE'];
+                }
 
                 if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'])
                     $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
