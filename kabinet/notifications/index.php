@@ -1,6 +1,6 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Уведомления");
+$APPLICATION->SetTitle("Все комментарии к исполнениям");
 ?>
 
 <?
@@ -11,7 +11,7 @@ $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 <section class="section-xs">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
-            <h1><i class="fa fa-bell" aria-hidden="true"></i> Уведомления</h1>
+            <h1><i class="fa fa-bell" aria-hidden="true"></i> Все комментарии к исполнениям</h1>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="NOTIFICATION" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
         </div>
     </div>

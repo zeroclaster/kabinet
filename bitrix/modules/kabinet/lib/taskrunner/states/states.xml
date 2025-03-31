@@ -239,7 +239,7 @@
                     Если поле отчет = «есть», то через 72 часа, в стадию: 9-Выполнена;
                     Если поле отчет = «нет», то через 0ч, в стадию: 9-Выполнена;
                 </description>
-                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage9</class>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage9</class>
             </state>
             <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>

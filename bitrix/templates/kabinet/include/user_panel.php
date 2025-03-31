@@ -43,11 +43,11 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
           <div class="media align-items-center">
             <div class="pr-2"><span class="fa-bell"></span></div>
             <div class="media-body">
-             <div class="user-menu">Уведомления</div>
+             <div class="user-menu">Все комментарии</div>
             </div>
           </div></a>
 		  
-		  <a class="list-group-item rounded-0" href="/kabinet/support/">
+		  <a class="list-group-item rounded-0" href="https://t.me/kupiotziv_bot" target="_blank">
           <div class="media align-items-center">
             <div class="pr-2"><span class="fa-question-circle"></span></div>
             <div class="media-body">
