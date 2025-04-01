@@ -51,12 +51,12 @@
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage3</class>
             </state>
             <state id="3" name="state4" icon="fa-eye">
-                <title>Ожидается текст от клиента.</title>
+                <title>Ожидается текст от клиента</title>
                 <user>
-                    <button>Ожидается текст от клиента.</button>
+                    <button>Ожидается текст от клиента</button>
                 </user>
                 <admin>
-                    <button>Ожидается текст от клиента.</button>
+                    <button>Ожидается текст от клиента</button>
                 </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>

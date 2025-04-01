@@ -410,7 +410,7 @@ $p = $request->get('p');
     </div>
     </template>
 
-    <questiona_ctivity_component question="Вы действительно хотите остановить все исполнения задачи?" ref="modalqueststop"/>
+    <questiona_ctivity_component question="Задача не может быть остановлена сейчас, так как есть исполнения, взятые в работу. Задача завершится автоматически, когда будет выполнена. Если вы желаете остановить задачу и прервать исполнения – напишите в чат поддержки." ref="modalqueststop"/>
     <questiona_ctivity_component question="Вы действительно хотите удалить все исполнения задачи в архив?" ref="modalquestremove"/>
 </script>
 

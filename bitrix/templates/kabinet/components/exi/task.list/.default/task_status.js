@@ -53,7 +53,7 @@ var task_status = function (){
             }
         }
 
-        if (isRuned == countQueu2(task)) return '<i class="fa fa-times" aria-hidden="true"></i>';
+        if (isRuned == countQueu2(task)) return '<div class="alert-status iphone-style-1 task-stoped"><i class="fa fa-times" aria-hidden="true"></i></div>';
 
         isRuned = 0;
         for(queue of calendarStore_.datacalendarQueue){
@@ -67,16 +67,17 @@ var task_status = function (){
             }
         }
 
-        if (isRuned > 0) return '<i class="fa fa-clock-o" aria-hidden="true"></i>';
+        if (isRuned > 0) return '<div class="alert-status iphone-style-1 task-wait"><i class="fa fa-clock-o" aria-hidden="true"></i></div>';
 
 
-        return '<i class="fa fa-hourglass-start" aria-hidden="true"></i>';
+        return '<div class="alert-status iphone-style-1 task-start"><i class="fa fa-hourglass-start" aria-hidden="true"></i></div>';
     }
+
 
         const taskStatus_m = function (id_task){
             const task = this.findinArrayByID(datatask_.datatask,id_task);
 
-            if (countQueu2(task) == 0) return '<div class="alert-only-text alert-done">Не выполняется</div>';
+            if (countQueu2(task) == 0) return '<div class="alert-only-text alert-done font-bold">Оформите заказ</div>';
 
 
             let isRuned = 0;
@@ -94,7 +95,7 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned == countQueu2(task)) return '<div class="alert-only-text alert-cancel"><i class="fa fa-times" aria-hidden="true"></i> Остановлена</div>';
+            if (isRuned == countQueu2(task)) return '<div class="alert-only-text alert-cancel font-bold"><i class="fa fa-times" aria-hidden="true"></i> Остановлена</div>';
 
             isRuned = 0;
             for(queue of calendarStore_.datacalendarQueue){
@@ -108,10 +109,10 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned > 0) return '<div class="alert-only-text alert-planned"><i class="fa fa-clock-o" aria-hidden="true"></i> Запланирована</div>';
+            if (isRuned > 0) return '<div class="alert-only-text alert-planned font-bold"><i class="fa fa-clock-o" aria-hidden="true"></i> Запланирована</div>';
 
 
-            return '<div class="alert-only-text alert-worked"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Выполняется</div>';
+            return '<div class="alert-only-text alert-worked font-bold"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Выполняется</div>';
         }
 
 

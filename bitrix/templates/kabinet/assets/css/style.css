@@ -1,5 +1,3 @@
-
-
 h1, .h1 {
 	font-size: 38px;
 	line-height: 1.2;
@@ -47,13 +45,11 @@ h6, .h6 {
 	margin-bottom: 10px;
 }
 
-
+.font-bold{
+	font-weight: bold;
+}
 
 @media (min-width: 1200px) {
-
-
-
-
 }
 
 .user-menu {
@@ -912,8 +908,8 @@ i.fa{
 }
 .alert-user-attention {
 	color: #fff;
-	background-color: #fee25f;
-	border-color: rgba(254, 226, 95, 0.2);
+	background-color: #ecc000;
+	border-color: rgba(236, 192, 0, 0.2);
 }
 .alert-cancel {
 	color: #fff;
@@ -939,7 +935,7 @@ i.fa{
 .alert-only-text.alert-user-attention{
 	background: none;
 	border: none;
-	color: #fee25f;
+	color: #ecc000;
 }
 .alert-only-text.alert-cancel{
 	background: none;
@@ -1006,4 +1002,49 @@ i.fa{
 #calendar1 .fc-event-light,.statict-calendar-info .fc-event-light{
 	background: #3a4049;
 	border-color: #3a4049;
+}
+
+.task-project .alert-status.task-wait{
+	background: #c8c8c8;
+}
+
+.task-project .alert-status.task-stoped{
+	background: #3a4049;
+}
+
+.task-project .alert-status.task-start{
+	background: #48c8af;
+}
+
+.badge-secondary.admin-execution-color-status-0{
+	background-color: #c8c8c8;
+}
+
+.badge-secondary.admin-execution-color-status-3,
+.badge-secondary.admin-execution-color-status-5,
+.badge-secondary.admin-execution-color-status-8{
+	background-color: #ecc000;
+}
+
+.badge-secondary.admin-execution-color-status-1,
+.badge-secondary.admin-execution-color-status-2,
+.badge-secondary.admin-execution-color-status-4,
+.badge-secondary.admin-execution-color-status-6,
+.badge-secondary.admin-execution-color-status-7,
+.badge-secondary.admin-execution-color-status-9{
+	background-color: #48c8af;
+}
+
+.badge-secondary.admin-execution-color-status-9{
+	background: #3a4049;
+}
+
+.badge-secondary.admin-execution-color-status-10{
+	background-color: #ff5f68;
+}
+
+.alert-success-user {
+	color: #fff;
+	background-color: #ecc000;
+	border-color: rgba(236, 192, 0, 0.2);
 }

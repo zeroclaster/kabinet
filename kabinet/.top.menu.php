@@ -11,18 +11,18 @@ $aMenuLinks = Array(
 		"" 
 	),
 	Array(
-		"Финансы", 
-		"/kabinet/finance/", 
-		Array(), 
-		Array("ICON"=>"fa fa-credit-card-alt"),
-		"" 
-	),
-	Array(
 		"Планирование",
 		"/kabinet/projects/", 
 		Array(), 
 		Array("ICON"=>"fa fa-calendar","NOLINK"=>"Y"),
 		"" 
 	),
+    Array(
+        "Финансы",
+        "/kabinet/finance/",
+        Array(),
+        Array("ICON"=>"fa fa-credit-card-alt"),
+        ""
+    ),
 );
 ?>

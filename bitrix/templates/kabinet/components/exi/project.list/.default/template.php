@@ -68,7 +68,7 @@ CUtil::InitJSCore(array('window'));
                                 <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']">
                                 </a>
 
-                                <div v-if="task.UF_PROJECT_ID == value.ID" class="alert-status iphone-style-1" v-html="taskStatus_b(task.ID)"></div>
+                                <template v-if="task.UF_PROJECT_ID == value.ID"><div v-html="taskStatus_b(task.ID)"></div></template>
                                 <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(getTaskID(value.ID,order.ID))}}</div>
                             </div>
                         </div>

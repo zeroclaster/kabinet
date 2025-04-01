@@ -364,7 +364,8 @@ adminexecution_list = (function (){
                     },
                     alertStyle(status){
                         if ([0].indexOf(parseInt(status)) != -1) return 'alert-warning';
-                        if ([1,2,3,4,5,6,7,8].indexOf(parseInt(status)) != -1) return 'alert-success';
+                        if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-success-user';
+                        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-success';
                         if ([9].indexOf(parseInt(status)) != -1) return 'alert-dark';
                         if ([10].indexOf(parseInt(status)) != -1) return 'alert-danger';
                     },

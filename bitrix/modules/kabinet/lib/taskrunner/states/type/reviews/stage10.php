@@ -43,7 +43,7 @@ class Stage10 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [];
+            return [1,2,3,4,5,6,7,8,10];
         }else{
             return [];
         }
