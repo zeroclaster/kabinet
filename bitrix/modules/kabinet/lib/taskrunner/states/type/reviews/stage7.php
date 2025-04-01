@@ -88,7 +88,8 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             if (
                 $PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE &&
                 !$runnerFields['UF_COMMENT'] &&
-                $oldData['UF_STATUS'] != 3
+                $oldData['UF_STATUS'] != 3 &&
+                $oldData['UF_STATUS'] != 5
             )
                 throw new SystemException("EmptyUF_COMMENT", \Bitrix\kabinet\Controller\Runnerevents::END_WITH_SCRIPT);
         }

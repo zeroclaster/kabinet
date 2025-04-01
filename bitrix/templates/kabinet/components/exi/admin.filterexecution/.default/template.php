@@ -86,7 +86,7 @@ $this->setFrameMode(true);
                     <select value="<?=$SEARCH_RESULT['statusexecutionsearch']?>" name="statusexecutionsearch" id="search-statusexecution" class="form-control form-control-sm">
                         <option value=""></option>
                         <?foreach ($runnerManager->getStatusList() as $idstatus => $titlestatus):?>
-                            <option value="<?=$idstatus?>" <?if($SEARCH_RESULT['statusexecutionsearch'] && $SEARCH_RESULT['statusexecutionsearch'] == $idstatus):?>selected<?endif;?>><?=$titlestatus?></option>
+                            <option value="<?=$idstatus?>" <?if(isset($SEARCH_RESULT['statusexecutionsearch']) && $SEARCH_RESULT['statusexecutionsearch'] == $idstatus):?>selected<?endif;?>><?=$titlestatus?></option>
                         <?endforeach;?>
                     </select>
                 </div>

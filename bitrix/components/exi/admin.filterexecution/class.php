@@ -53,14 +53,10 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         $this->arResult['SEARCH_RESULT'] = [];
         $SEARCH_RESULT = &$this->arResult['SEARCH_RESULT'];
-        if($post['clientidsearch']){
-            $SEARCH_RESULT['clientidsearch'] = $post['clientidsearch'];
-            ${$FILTER_NAME}['clientidsearch'] = $post['clientidsearch'];
-        }
-        if($post['projectidsearch']){
-            $SEARCH_RESULT['projectidsearch'] = $post['projectidsearch'];
-            ${$FILTER_NAME}['projectidsearch'] = $post['projectidsearch'];
+        if($post['clientidsearch']) $SEARCH_RESULT['clientidsearch'] = ${$FILTER_NAME}['clientidsearch'] = $post['clientidsearch'];
 
+        if($post['projectidsearch']){
+            $SEARCH_RESULT['projectidsearch'] = ${$FILTER_NAME}['projectidsearch'] = $post['projectidsearch'];
             if (!$post['clientidsearch']){
                 $data = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([
                     'select'=>['ID','UF_AUTHOR_ID'],
@@ -68,17 +64,12 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
                     'order'=>['UF_NAME'=>'ASC']
                 ])->fetch();
 
-                if ($data) {
-                    $SEARCH_RESULT['clientidsearch'] = $data['UF_AUTHOR_ID'];
-                    ${$FILTER_NAME}['clientidsearch'] = $data['UF_AUTHOR_ID'];
-                }
-
+                if ($data) $SEARCH_RESULT['clientidsearch'] = ${$FILTER_NAME}['clientidsearch'] = $data['UF_AUTHOR_ID'];
             }
-
         }
+
         if($post['taskidsearch']){
-            $SEARCH_RESULT['taskidsearch'] = $post['taskidsearch'];
-            ${$FILTER_NAME}['taskidsearch'] = $post['taskidsearch'];
+            $SEARCH_RESULT['taskidsearch'] = ${$FILTER_NAME}['taskidsearch'] = $post['taskidsearch'];
 
             $data = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
                 'select'=>['ID','UF_AUTHOR_ID','UF_PROJECT_ID'],
@@ -86,82 +77,57 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
                 'order'=>['UF_NAME'=>'ASC']
             ])->fetch();
 
-            if ($data && !$post['clientidsearch']) {
-                $SEARCH_RESULT['clientidsearch'] = $data['UF_AUTHOR_ID'];
-                ${$FILTER_NAME}['clientidsearch'] = $data['UF_AUTHOR_ID'];
-            }
+            if ($data && !$post['clientidsearch'])
+                $SEARCH_RESULT['clientidsearch'] = ${$FILTER_NAME}['clientidsearch'] = $data['UF_AUTHOR_ID'];
 
-            if ($data && !$post['projectidsearch']) {
-                $SEARCH_RESULT['projectidsearch'] = $data['UF_PROJECT_ID'];
-                ${$FILTER_NAME}['projectidsearch'] = $data['UF_PROJECT_ID'];
-            }
+            if ($data && !$post['projectidsearch'])
+                $SEARCH_RESULT['projectidsearch'] = ${$FILTER_NAME}['projectidsearch'] = $data['UF_PROJECT_ID'];
         }
 
-        if($post['clienttextsearch'] && !$post['clientidsearch']) {
-            ${$FILTER_NAME}['clienttextsearch'] = $post['clienttextsearch'];
-            $SEARCH_RESULT['clienttextsearch'] = $post['clienttextsearch'];
-        }
-        if($post['projecttextsearch'] && !$post['projectidsearch']) {
-            ${$FILTER_NAME}['projecttextsearch'] = $post['projecttextsearch'];
-            $SEARCH_RESULT['projecttextsearch'] = $post['projecttextsearch'];
-        }
-        if($post['tasktextsearch'] && !$post['taskidsearch']) {
-            ${$FILTER_NAME}['tasktextsearch'] = $post['tasktextsearch'];
-            $SEARCH_RESULT['tasktextsearch'] = $post['tasktextsearch'];
-        }
+        if($post['clienttextsearch'] && !$post['clientidsearch'])
+            ${$FILTER_NAME}['clienttextsearch'] = $SEARCH_RESULT['clienttextsearch'] = $post['clienttextsearch'];
 
+        if($post['projecttextsearch'] && !$post['projectidsearch'])
+            ${$FILTER_NAME}['projecttextsearch'] = $SEARCH_RESULT['projecttextsearch'] = $post['projecttextsearch'];
 
-        if($post['executionidsearch']) {
-            ${$FILTER_NAME}['executionidsearch'] = $post['executionidsearch'];
-            $SEARCH_RESULT['executionidsearch'] = $post['executionidsearch'];
-        }
-        if($post['statusexecutionsearch']) {
-            ${$FILTER_NAME}['statusexecutionsearch'] = $post['statusexecutionsearch'];
-            $SEARCH_RESULT['statusexecutionsearch'] = $post['statusexecutionsearch'];
-        }
-        if($post['planedaterangesearchfrom']) {
-            ${$FILTER_NAME}['planedaterangesearchfrom'] = $post['planedaterangesearchfrom'];
-            $SEARCH_RESULT['planedaterangesearchfrom'] = $post['planedaterangesearchfrom'];
-        }
-        if($post['planedaterangesearchto']) {
-            ${$FILTER_NAME}['planedaterangesearchto'] = $post['planedaterangesearchto'];
-            $SEARCH_RESULT['planedaterangesearchto'] = $post['planedaterangesearchto'];
-        }
-        if($post['publicdatefromsearch']) {
-            ${$FILTER_NAME}['publicdatefromsearch'] = $post['publicdatefromsearch'];
-            $SEARCH_RESULT['publicdatefromsearch'] = $post['publicdatefromsearch'];
-        }
-        if($post['publicdatetosearch']) {
-            ${$FILTER_NAME}['publicdatetosearch'] = $post['publicdatetosearch'];
-            $SEARCH_RESULT['publicdatetosearch'] = $post['publicdatetosearch'];
-        }
-        if($post['accountsearch']) {
-            ${$FILTER_NAME}['accountsearch'] = $post['accountsearch'];
-            $SEARCH_RESULT['accountsearch'] = $post['accountsearch'];
-        }
-        if($post['loginsearch']) {
-            ${$FILTER_NAME}['loginsearch'] = $post['loginsearch'];
-            $SEARCH_RESULT['loginsearch'] = $post['loginsearch'];
-        }
-        if($post['ipsearch']) {
-            ${$FILTER_NAME}['ipsearch'] = $post['ipsearch'];
-            $SEARCH_RESULT['ipsearch'] = $post['ipsearch'];
-        }
+        if($post['tasktextsearch'] && !$post['taskidsearch'])
+            ${$FILTER_NAME}['tasktextsearch'] = $SEARCH_RESULT['tasktextsearch'] = $post['tasktextsearch'];
+
+        if($post['executionidsearch'])
+            ${$FILTER_NAME}['executionidsearch'] = $SEARCH_RESULT['executionidsearch'] = $post['executionidsearch'];
+
+        if(isset($post['statusexecutionsearch']))
+            ${$FILTER_NAME}['statusexecutionsearch'] = $SEARCH_RESULT['statusexecutionsearch'] =  $post['statusexecutionsearch'];
+
+        if($post['planedaterangesearchfrom'])
+            ${$FILTER_NAME}['planedaterangesearchfrom'] = $SEARCH_RESULT['planedaterangesearchfrom'] = $post['planedaterangesearchfrom'];
+
+        if($post['planedaterangesearchto'])
+            ${$FILTER_NAME}['planedaterangesearchto'] = $SEARCH_RESULT['planedaterangesearchto'] = $post['planedaterangesearchto'];
+
+        if($post['publicdatefromsearch'])
+            ${$FILTER_NAME}['publicdatefromsearch'] = $SEARCH_RESULT['publicdatefromsearch'] = $post['publicdatefromsearch'];
+
+        if($post['publicdatetosearch'])
+            ${$FILTER_NAME}['publicdatetosearch'] = $SEARCH_RESULT['publicdatetosearch'] = $post['publicdatetosearch'];
+
+        if($post['accountsearch'])
+            ${$FILTER_NAME}['accountsearch'] = $SEARCH_RESULT['accountsearch'] = $post['accountsearch'];
+
+        if($post['loginsearch'])
+            ${$FILTER_NAME}['loginsearch'] = $SEARCH_RESULT['loginsearch'] = $post['loginsearch'];
+
+        if($post['ipsearch'])
+            ${$FILTER_NAME}['ipsearch'] = $SEARCH_RESULT['ipsearch'] = $post['ipsearch'];
 
         // Требует внимания
-        if($post['attention']) {
-            ${$FILTER_NAME}['attention'] = $post['attention'];
-            $SEARCH_RESULT['attention'] = $post['attention'];
-        }
-
+        if($post['attention']) ${$FILTER_NAME}['attention'] = $SEARCH_RESULT['attention'] = $post['attention'];
 
         $this->includeComponentTemplate($this->template);
-
         return true;
     }
 
     public function prepareData(){
-
     }
 
     public function getclientsAction()
