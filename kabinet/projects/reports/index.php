@@ -137,41 +137,6 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
     </div>
 </script>
 
-<?/*
-                *
-                *       К А Л Е Н Д А Р Ь
-                */?>
-<?/*
-<section class="section-xs">
-    <div class="container-fluid">
-    <div class="row row-30">
-    <div class="col-md-12">
-
-        <h4>Календарь задачи</h4>
-    <div class="panel">
-        <div class="panel-body">
-            <div class="row justify-content-md-center">
-                <div class="col-sm-8">
-                    <div id="calendar1" class="fullcalendar"></div>
-                    <div class="d-flex" id="calendar1vue">
-                        <div class="d-flex mr-5 align-items-center"><div id="done_calendar_counter" class="fc-event-light mr-2 p-2">
-                                0</div> Выполнено</div>
-                        <div class="d-flex mr-5 align-items-center"><div id="inprogress_calendar_counter" class="fc-event-success mr-2 p-2">
-                                0</div> Выполняются</div>
-                        <div class="d-flex mr-5 align-items-center"><div id="planned_calendar_counter" class="fc-event-warning mr-2 p-2">
-                                0</div> Запланированы</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>
-    </div>
-    </div>
-</section>
-*/?>
-
 
 <?if(!$runner):?>
     <div class="alert alert-danger" role="alert">
