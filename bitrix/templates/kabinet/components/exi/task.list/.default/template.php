@@ -160,7 +160,7 @@ $p = $request->get('p');
                 <div class="col-md-9">
 
                     <div class="h3 task-title-view" :id="'task'+task.ID">{{task.UF_NAME}}</div>
-					<div class="d-flex task-status-print h4" v-html="taskStatus_m(taskindex)"></div>
+					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
 
                     <div class="d-flex" v-if="task.UF_STATUS>0">
                         <div>Запланированы: {{taskStatus_v(taskindex)['stopwark']}}</div>

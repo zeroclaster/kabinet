@@ -347,6 +347,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         }
     },
     methods: {
+        ...helperVueComponents(),
         ...searchProduct(),
         //addbuttorder
         // bitrix/templates/kabinet/assets/js/kabinet/vue-componets/extension/task.js
