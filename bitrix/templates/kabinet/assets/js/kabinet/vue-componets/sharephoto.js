@@ -76,6 +76,10 @@ const sharephoto = BX.Vue3.BitrixVue.mutableComponent('share-photo', {
                 this.$root.savetask(this.tindex);
                 this.$.myModal.hide();
             }
+        },
+        isEdit(){
+            if (typeof this.$root.isUserrEdit == "undefined") return true;
+            return this.$root.isUserrEdit(this.tindex);
         }
     }
 });

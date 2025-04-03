@@ -74,17 +74,20 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 		${$FILTER_NAME}['alert'] = [];
 		$this->arResult['count_alert'] = 0;
 		// Подсчитываем количество исполнений требущие внимания
-		foreach($runner as $item){
-			 if(in_array($item['UF_STATUS'],$alert_status_client)) $this->arResult['count_alert']++;	 
-			 
-			 if(
-					$post['alert'] &&
-					in_array($item['UF_STATUS'],$alert_status_client)
-			 ){
-					$SEARCH_RESULT['alert'] = $post['alert'];
-					${$FILTER_NAME}['statusfind'] = $alert_status_client;
-			 }
-		}
+
+        if (!empty($post['clearform'])) {
+            foreach ($runner as $item) {
+                if (in_array($item['UF_STATUS'], $alert_status_client)) $this->arResult['count_alert']++;
+
+                if (
+                    $post['alert'] &&
+                    in_array($item['UF_STATUS'], $alert_status_client)
+                ) {
+                    $SEARCH_RESULT['alert'] = $post['alert'];
+                    ${$FILTER_NAME}['statusfind'] = $alert_status_client;
+                }
+            }
+        }
 		
        
         if($post['fromdate1']){

@@ -470,7 +470,7 @@ reports_list = (function (){
                     isUserrEdit(index){
                         var runner;
                         runner = this.datarunner[index];
-                        
+                        if (!runner) return true;
                         // ненайдено
                         if (["3","8"].indexOf(runner.UF_STATUS) == -1) return false;
 

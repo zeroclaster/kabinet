@@ -26,7 +26,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
 <div id="kabinetcontent" data-typehead="" data-vuetypeahead="" data-datetimepicker="" data-loadtable="" data-modalload="" data-ckeditor="" data-vuerichtext="" data-usermessanger="report" data-userreports=""></div>
 
 <script type="text/html" id="sharephoto-template">
-    <div class="preview-img-block-2 addbutton2 d-flex justify-content-center align-items-center" @click="showmodale">
+    <div class="preview-img-block-2 addbutton2 d-flex justify-content-center align-items-center" @click="showmodale" v-if="isEdit()">
         <span class="add-images-marker-2">+</span>
     </div>
     <!-- Modal -->
@@ -77,7 +77,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th scope="col">Плановая дата публикации</th>
+                    <th scope="col">Плановая дата исполнения</th>
                     <th scope="col">Текст и согласование</th>
                     <th scope="col">
 							<div class="d-flex">

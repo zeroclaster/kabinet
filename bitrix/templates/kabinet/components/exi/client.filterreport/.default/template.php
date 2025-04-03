@@ -68,6 +68,7 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
     <div class="row justify-content-md-center">
         <div class="col-md-8 text-center">
             <button type="submit" class="btn btn-primary mr-5">Показать</button> <button id="clearform" type="button" class="btn btn-link btn-sm">Все</button>
+            <input type="hidden" name="clearform" value="">
         </div>
     </div>
 </form>

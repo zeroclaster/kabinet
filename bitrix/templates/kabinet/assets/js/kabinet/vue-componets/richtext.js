@@ -1,7 +1,10 @@
 const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
     template: `
+<template v-if="isEdit()">
 <textarea ref="textares" cols="20" rows="10" :id="$id('richtext')" class="fields string form-control" v-model="localModelValue"></textarea>
 <div class="text-right" v-if="showsavebutton"><button class="btn btn-link" type="button" @click="gotosave">Сохранить черновик</button></div>
+</template>
+<template v-else><div v-html="localModelValue"></div></template>
 `,	data(){
         return{
             notSave: false,
@@ -39,27 +42,29 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
         const this_ = this;
 
         let node = this.$refs.textares;
-        let ckSetup = this.ckSetup();
+        if (node) {
+            let ckSetup = this.ckSetup();
 
-        if (typeof this.placeholder != "undefined") ckSetup.placeholder = this.placeholder;
+            if (typeof this.placeholder != "undefined") ckSetup.placeholder = this.placeholder;
 
-        CKEDITOR.ClassicEditor.create( node, ckSetup ).then(  ( editor )=> {
-            this.$.ckEditor = editor;
-            editor.model.document.on('change:data', (evt, data) => {
-                //console.log(editor.getData());
-                this.$emit('update:modelValue', editor.getData());
-                console.log('11')
-                if (typeof this.autosave != "undefined" && !this.notSave) this.$root.inpsave(this.tindex);
-                else this.notSave = false;
+            CKEDITOR.ClassicEditor.create(node, ckSetup).then((editor) => {
+                this.$.ckEditor = editor;
+                editor.model.document.on('change:data', (evt, data) => {
+                    //console.log(editor.getData());
+                    this.$emit('update:modelValue', editor.getData());
+                    console.log('11')
+                    if (typeof this.autosave != "undefined" && !this.notSave) this.$root.inpsave(this.tindex);
+                    else this.notSave = false;
+                });
+                // TODO AKULA сделать отправку по нажатию enter
+                /*
+                editor.on('key', function(event) {
+                    var enterKeyPressed = event.data.keyCode === 13;
+                    console.log(event.data.keyCode)
+                });
+                 */
             });
-            // TODO AKULA сделать отправку по нажатию enter
-            /*
-            editor.on('key', function(event) {
-                var enterKeyPressed = event.data.keyCode === 13;
-                console.log(event.data.keyCode)
-            });
-             */
-        });
+        }
 
     },
     methods: {
@@ -99,6 +104,10 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
                     addTargetToExternalLinks: true
                 }
             }
+        },
+        isEdit(){
+            if (typeof this.$root.isUserrEdit == "undefined") return true;
+            return this.$root.isUserrEdit(this.tindex);
         }
     }
 

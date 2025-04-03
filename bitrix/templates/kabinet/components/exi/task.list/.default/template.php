@@ -402,7 +402,7 @@ $p = $request->get('p');
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
 						<li v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>"><button class="btn btn-link btn-link-site" type="button" @click="stoptask(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-						<li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить в архив</button></li>
+						<li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить задачу</button></li>
                     </ul>
 				</div>
             </div>
@@ -411,7 +411,7 @@ $p = $request->get('p');
     </template>
 
     <questiona_ctivity_component question="Задача не может быть остановлена сейчас, так как есть исполнения, взятые в работу. Задача завершится автоматически, когда будет выполнена. Если вы желаете остановить задачу и прервать исполнения – напишите в чат поддержки." ref="modalqueststop"/>
-    <questiona_ctivity_component question="Вы действительно хотите удалить все исполнения задачи в архив?" ref="modalquestremove"/>
+    <questiona_ctivity_component question="Вы действительно хотите удалить эту задачу, все её исполнения и отчеты? Финансовая информация затронута не будет." ref="modalquestremove"/>
 </script>
 
 
