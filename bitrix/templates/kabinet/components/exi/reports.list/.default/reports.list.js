@@ -467,6 +467,15 @@ reports_list = (function (){
                         //темно-серые – выполнено
                         if ([10].indexOf(parseInt(status)) != -1) return 'alert-done';
                     },
+                    isUserrEdit(index){
+                        var runner;
+                        runner = this.datarunner[index];
+                        
+                        // ненайдено
+                        if (["3","8"].indexOf(runner.UF_STATUS) == -1) return false;
+
+                        return true;
+                    }
                 },
                 created(){
                 },

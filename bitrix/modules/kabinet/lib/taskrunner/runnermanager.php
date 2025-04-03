@@ -252,6 +252,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         [$mouthStart1,$mouthEnd1] = \PHelp::actualMonth();
         [$mouthStart2,$mouthEnd2] = \PHelp::nextMonth();
 
+        $PRODUCT = $TaskManager->getProductByTask($task);
+
         $dateStar = $TaskManager->dateStartCicle($task);
         $dateEnd = $TaskManager->theorDateEnd($task);
 
@@ -260,8 +262,15 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $dateList[] = $mouthStart;
         $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
         if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
-            // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-            $step = floor(30 / $task['UF_NUMBER_STARTS']);
+
+
+            if ($PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']){
+                $step = floor(30 / $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
+            }
+            else {
+                // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
+                $step = floor(30 / $task['UF_NUMBER_STARTS']);
+            }
         }else{
             $step = 1;
         }

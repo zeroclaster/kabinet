@@ -3,9 +3,12 @@ const mytypeahead = BX.Vue3.BitrixVue.mutableComponent('type-ahead', {
                 <div class="col-sm-1 text-sm-right">
                     <label class="col-form-label" :for="$id('id_input')">Ссылка:</label>
                 </div>
-                <div class="col-sm-11">
+                <div class="col-sm-11" v-if="isEdit()">
                     <input ref="input" :id="$id('id_input')" class="form-control" type="text" @change="sendvalinput" v-model="localModelValue" placeholder="начните вводить или выберите из списка">
                 </div>
+                 <div class="col-sm-11" v-else>                 
+                    {{localModelValue}}
+                </div>               
 </div>
 `,	data(){
         return{
@@ -70,6 +73,9 @@ const mytypeahead = BX.Vue3.BitrixVue.mutableComponent('type-ahead', {
             const inp = event.target;
             console.log(inp)
             this.$root.savetask(this.tindex);
+        },
+        isEdit(){
+            return this.$root.isUserrEdit(this.tindex);
         }
     }
 
