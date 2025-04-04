@@ -53,7 +53,7 @@ var task_status = function (){
             }
         }
 
-        if (isRuned == countQueu2(task)) return '<div class="alert-status iphone-style-1 task-stoped"><i class="fa fa-times" aria-hidden="true"></i></div>';
+        if (isRuned == countQueu2(task)) return '<div class="alert-status iphone-style-2 task-stoped"><i class="fa fa-times" aria-hidden="true"></i></div>';
 
         isRuned = 0;
         for(queue of calendarStore_.datacalendarQueue){
@@ -67,10 +67,10 @@ var task_status = function (){
             }
         }
 
-        if (isRuned > 0) return '<div class="alert-status iphone-style-1 task-wait"><i class="fa fa-clock-o" aria-hidden="true"></i></div>';
+        if (isRuned > 0) return '<div class="alert-status iphone-style-2 task-wait"><i class="fa fa-clock-o" aria-hidden="true"></i></div>';
 
 
-        return '<div class="alert-status iphone-style-1 task-start"><i class="fa fa-hourglass-start" aria-hidden="true"></i></div>';
+        return '<div class="alert-status iphone-style-2 task-start"><i class="fa fa-hourglass-start" aria-hidden="true"></i></div>';
     }
 
 

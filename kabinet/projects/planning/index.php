@@ -1,6 +1,6 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Планирование");
+$APPLICATION->SetTitle("Заказ и планирование задач проекта");
 
 
 $context = \Bitrix\Main\Application::getInstance()->getContext();

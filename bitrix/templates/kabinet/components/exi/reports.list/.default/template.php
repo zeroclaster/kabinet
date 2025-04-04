@@ -85,7 +85,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
 									<div class="ml-auto">
 											<form action="" name="formagreeeverything" method="post">
 												<input type="hidden" name="greeeverything" value="y">
-												<button type="submit" class="btn btn-primary btn-sm">Согласовать все</button>
+												<button type="submit" class="btn btn-primary btn-sm" v-if="isViewSoglasovat()">Согласовать все</button>
 											</form>
 									</div>
 							</div>
@@ -138,15 +138,17 @@ $runnerManager = $sL->get('Kabinet.Runner');
                         </div>
                         </template>
 
-                        <div class="plug-block-writecomment"  v-if="!hiddenCommentBlock.isShow(runner)" @click="hiddenCommentBlock.mclick(runner)"><i class="fa fa-chevron-down" aria-hidden="true"></i> Написать комментарий...</div>
-                        <div v-if="hiddenCommentBlock.isShow(runner)">
-                        <messangerperformances :projectID="TaskByIdKey[runner.UF_TASK_ID].UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :queue_id="runner.ID" :targetUserID="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID"/>
-                        </div>
+                        <template v-if="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID>0">
+                            <div class="plug-block-writecomment"  v-if="!hiddenCommentBlock.isShow(runner)" @click="hiddenCommentBlock.mclick(runner)"><i class="fa fa-chevron-down" aria-hidden="true"></i> Написать комментарий...</div>
+                            <div v-if="hiddenCommentBlock.isShow(runner)">
+                            <messangerperformances :projectID="TaskByIdKey[runner.UF_TASK_ID].UF_PROJECT_ID" :taskID="runner.UF_TASK_ID" :queue_id="runner.ID" :targetUserID="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID"/>
+                            </div>
+                        </template>
                         
                     </td>
 
                     <td style="width: 20%">
-                        <div :class="'alert alert-only-text '+alertStyle(runner.UF_STATUS)"><i :class="'fa '+runner.UF_STATUS_ORIGINAL.ICON" aria-hidden="true"></i> {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}</div>
+                        <div :class="'alert alert-only-text abcs-1'+' '+alertStyle(runner.UF_STATUS)"><i :class="'fa '+runner.UF_STATUS_ORIGINAL.ICON" aria-hidden="true"></i> {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}</div>
 
                         <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
                         <commentWrite :tindex="runnerindex" ref="modaleCommnetWrite" v-model="runner.UF_COMMENT"/>

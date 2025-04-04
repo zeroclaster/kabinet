@@ -1,11 +1,8 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Профиль");
+$APPLICATION->SetTitle("Профиль пользователя «Купи-Отзыв»");
 ?>
-
-
-
-<section class="section-xs">
+    <section class="section-xs">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
             <h1><i class="fa fa-user" aria-hidden="true"></i> Профиль пользователя</h1>

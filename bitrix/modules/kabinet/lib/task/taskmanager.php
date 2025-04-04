@@ -587,6 +587,27 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         }
         $ret[] = $st;
 
+
+        // 5 - На согласовании (у клиента)
+        // 8 - Отчет на проверке у клиента
+        $status = [5,8];
+        $Queue = $HLBClass::getlist([
+            'select'=>['ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS'],
+            'filter'=>[
+                '=UF_TASK_ID'=>$id,
+                'UF_STATUS'=>$status
+            ]
+        ])->fetchAll();
+
+        $st = ['STATUS'=>$status,'COUNT'=>0];
+        if ($Queue) {
+            foreach ($Queue as $one) {
+                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
+                else $st['COUNT']++;
+            }
+        }
+        $ret[] = $st;
+
         return $ret;
     }
 

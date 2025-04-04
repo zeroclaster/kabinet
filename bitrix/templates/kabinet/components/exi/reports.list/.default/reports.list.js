@@ -472,9 +472,19 @@ reports_list = (function (){
                         runner = this.datarunner[index];
                         if (!runner) return true;
                         // ненайдено
-                        if (["3","8"].indexOf(runner.UF_STATUS) == -1) return false;
+                        if (["0","3","8"].indexOf(runner.UF_STATUS) == -1) return false;
 
                         return true;
+                    },
+                    isViewSoglasovat(){
+                        const task = this.TaskByIdKey[this.task_id];
+                        // 5 - На согласовании (у клиента)
+                        // 8 - Отчет на проверке у клиента
+                        // bitrix/modules/kabinet/lib/task/taskmanagercache.php
+                        // public function getQueueStatistics(int $id)
+                        if (task.QUEUE_STATIST[4].COUNT > 0) return true;
+
+                        return false;
                     }
                 },
                 created(){

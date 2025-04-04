@@ -81,7 +81,11 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $object->set('UF_COMMENT','');
         $object->set('UF_HITCH',0);
 
-        if (!\PHelp::isAdmin()) throw new SystemException("Изменить данный статус может только администратор.");
+        if (!\PHelp::isAdmin()) {
+            // если отмена, то пропускаем
+            if($object['UF_STATUS'] == 10) return;
+            throw new SystemException("Изменить данный статус может только администратор.");
+        }
 
         // назначаем данной задачи менеджера
         $UF_TASK_ID = $object->get('UF_TASK_ID');

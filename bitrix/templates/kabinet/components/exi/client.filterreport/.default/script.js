@@ -63,7 +63,7 @@ client_filter_report = (function () {
                     for(index in findform.elements)
                         findform.elements[index].value = '';
 
-                    findform.clearform.value = 'y';
+                    findform.clearflag.value = 'y';
 
                     findform.submit();
                 })

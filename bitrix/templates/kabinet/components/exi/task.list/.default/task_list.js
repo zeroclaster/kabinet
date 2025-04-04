@@ -406,7 +406,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
 			// 14 - Остановлена	или только что создана
 			if(this.datatask[taskindex].UF_STATUS != 14 && this.datatask[taskindex].UF_STATUS != '' && this.datatask[taskindex].UF_STATUS != 0){
-				component.addAlert("Задачу сначало необходимо остановить!");
+				component.addAlert("Задачу сначала необходимо остановить!");
 			}
             component.showmodale(taskindex,function(taskindex){                	
 				this.runCommand(this.datatask[taskindex],'removetask');
@@ -516,6 +516,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 			var interval = 0;
 			const product = this.getProductByIndexTask(index);
 			if (product) {
+                // Минимальный интервал планирования (Ограничение в скорости исполнения.)
 				interval = product['MINIMUM_INTERVAL']['VALUE'];
 			}
 				

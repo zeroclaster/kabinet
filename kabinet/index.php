@@ -1,10 +1,7 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Кабинет");
+$APPLICATION->SetTitle("Кабинет «Купи-Отзыв»");
 ?>
-
-
-
 
 <?
 $user = (\KContainer::getInstance())->get('user');

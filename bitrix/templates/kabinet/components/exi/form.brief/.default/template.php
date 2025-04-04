@@ -76,7 +76,9 @@ Loc::loadMessages(__FILE__);
             <button  class="btn btn-block btn-primary" type="button" @click="saveentity">Сохранить</button>
         </div>
         <div class="col-sm-3">
+            <?if($arParams["ID"]):?>
             <a  class="btn btn-block btn-primary" href="/kabinet/projects/planning/?p=<?=$arParams["ID"]?>">Перейти к проекту</a>
+            <?endif;?>
         </div>
     </div>
 </form>

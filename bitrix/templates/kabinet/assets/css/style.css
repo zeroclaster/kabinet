@@ -776,6 +776,15 @@ h6, .h6 {
 	color: #294AFF;
 }
 
+.task-project .alert-status.iphone-style-2{
+	border: 2px solid #FFF;
+	border-radius: 17px;
+	text-align: center;
+	background-color: #e8e7e7;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
 .badge-iphone-style{
 	color: #fff;
 	background-color: #ff000e;
@@ -1047,4 +1056,9 @@ i.fa{
 	color: #fff;
 	background-color: #ecc000;
 	border-color: rgba(236, 192, 0, 0.2);
+}
+
+.alert.abcs-1{
+	font-size: 22px;
+	font-weight: bold;
 }

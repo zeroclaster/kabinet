@@ -168,7 +168,7 @@ $this->setFrameMode(true);
                 <?/*
                   параметр autosave="y" включает автосохранение
                 */?>
-                <richtext :tindex="runnerindex" showsavebutton="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT"/>
+                <richtext :tindex="runnerindex" showsavebutton="y"  :original="runner.UF_REVIEW_TEXT_ORIGINAL" v-model="runner.UF_REVIEW_TEXT" :placeholder="'Текст для публикации...'"/>
             </div>
             </template>
 

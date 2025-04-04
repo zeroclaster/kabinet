@@ -10,34 +10,6 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Main\Type\Datetime;
 
 class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
-    public $status = [
-        0=>"Запланировано, но не начато",
-        1=>"Взят в работу",
-        2=>"Пишется текст",
-        3=>"Ожидается текст от клиента",
-        4=>"На согласовании у специалиста",
-        5=>"На согласование (у клиента)",
-        6=>"Публикация",
-        7=>"Отчет на проверке специалиста",
-        8=>"Отчет на проверке у клиента",
-        9=>"Выполнено",
-        10=>"Отменено"
-    ];
-
-    public $statusCSS = [
-        0=>"fc-event-warning",
-        1=>"fc-event-success",
-        2=>"fc-event-success",
-        3=>"fc-event-success",
-        4=>"fc-event-success",
-        5=>"fc-event-success",
-        6=>"fc-event-success",
-        7=>"fc-event-success",
-        8=>"fc-event-success",
-        9=>"fc-event-light",
-        10=>"fc-event-danger"
-    ];
-
     public $taskFileds = [];
 
     public function __construct(int $id, $HLBCClass,array $selectFields,$config=[])
@@ -263,17 +235,26 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
         if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
 
+            //Day of the month without leading zeros
+            $now = (new \Bitrix\Main\Type\DateTime())->format("d");
+            $d = 30 - $now;
+            $d = $d - $PRODUCT['DELAY_EXECUTION']['VALUE'];
+            $step_ = floor($d / ($task['UF_NUMBER_STARTS']+1));
 
             if ($PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']){
                 $step = floor(30 / $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
+                if ($step_ > $step) $step = $step_;
             }
             else {
                 // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-                $step = floor(30 / $task['UF_NUMBER_STARTS']);
+                //$step = floor(30 / $task['UF_NUMBER_STARTS']);
+                $step = $step_;
             }
         }else{
             $step = 1;
         }
+
+        //throw new SystemException(print_r($step,true));
 
         $mStart =  $mouthStart2->getTimestamp();
         // Если задача еще не начата
@@ -522,7 +503,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     public function getStatusList(){
-        return $this->status;
+        $status = $this->config('STATUS');
+        return $status['LIST'];
     }
 
     public function makeState($fields){		
@@ -585,7 +567,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     public function getStatusCss(int $id){
-        return $this->statusCSS[$id];
+        $status = $this->config('STATUS');
+        return $status['CSS'][$id];
     }
 
     protected function addHistoryChangeStatus($fields,$object,$oldData){

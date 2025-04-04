@@ -70,12 +70,15 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 				$id=[],
 				$filter=['UF_STATUS'=>$alert_status_client]
 		);
-		
+
+
+
+
 		${$FILTER_NAME}['alert'] = [];
 		$this->arResult['count_alert'] = 0;
 		// Подсчитываем количество исполнений требущие внимания
 
-        if (!empty($post['clearform'])) {
+        if (empty($post['clearflag'])) {
             foreach ($runner as $item) {
                 if (in_array($item['UF_STATUS'], $alert_status_client)) $this->arResult['count_alert']++;
 

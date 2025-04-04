@@ -1,6 +1,6 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Финансы");
+$APPLICATION->SetTitle("Финансы кабинета «Купи-Отзыв»");
 ?>
 
 
