@@ -197,6 +197,8 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
 
             //\Dbg::print_r(\Bitrix\Main\Entity\Query::getLastQuery());
 
+            $a = \Bitrix\Main\Entity\Query::getLastQuery();
+
             $messageList = array_reverse($messageList);
           
 			$listdata = [];

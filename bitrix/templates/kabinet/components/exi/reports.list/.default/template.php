@@ -203,12 +203,24 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 <script>
     var shownote = null;
 
+    components.messangerUser = {
+        selector: "[data-usermessanger='report']",
+        script: [
+            './js/kabinet/vue-componets/messanger/uploadfile.js',
+            './js/kabinet/vue-componets/messanger/templates/user.report.js',
+            './js/kabinet/vue-componets/messanger/messanger2.js'
+        ],
+        styles: './css/messanger.css',
+        dependencies:'vuerichtext',
+        init:null
+    }
+
     components.userreports = {
         selector: '[data-userreports]',
         script: [
             '../../kabinet/assets/js/kabinet/vue-componets/show.note.js',
             '../../kabinet/components/exi/task.list/.default/data_helper.js',
-            '../../kabinet/components/exi/reports.list/.default/js/hiddenCommentBlock.js',
+            '../../kabinet/components/exi/reports.list/.default/js/hiddenCommentBlock.js'
         ],
         init:null
     }
@@ -219,9 +231,19 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
                 "note" => $arResult['note'],
             ], false, true)?>);
 
-        messangerperformances = messanger_vuecomponent.start(<?=CUtil::PhpToJSObject([
-            'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
-        ], false, true)?>);
+
+            var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT']], false, true)?>;
+            m.TEMPLATE = messangerTemplate;
+            m.messageStoreInst = function(){
+                return function () {
+                    return messageStore();
+                }
+            };
+            m.messageStore = messageStore;
+
+            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
+            messangerperformances = messanger_vuecomponent2_2.start(m);
+
 
         reports_list.start(<?=CUtil::PhpToJSObject([
             "TASK_ID"=>$arParams['TASK_ID'],

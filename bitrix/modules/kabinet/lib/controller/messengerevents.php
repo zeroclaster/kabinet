@@ -22,13 +22,9 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         parent::__construct($request);
         $r = $this->getRequest();
         $fields = $r->getPostList();
-        //AddMessage2Log(print_r($fields,true), "my_module_id");
     }
 
     public static function onUserLoginExternal(&$result){
-        //AddMessage2Log($result->getParameter('action')->getName(), "my_module_id");
-        //AddMessage2Log($result->getParameter('result'), "my_module_id");
-
         $result = $result->getParameter('result');
         if (empty($result['response']['error'])){
 
@@ -36,19 +32,14 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
 
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
         $fields = $request->getPostList();
-        //AddMessage2Log($fields, "my_module_id");
 
         //$result->getParameter('action')->getName()
-
     }
 
     public function newmessageAction(){
 		$request = $this->getRequest();
         $post = $request->getPostList()->toArray();
 		$files = $request->getFileList()->toArray();
-		
-		//AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $messanger = $sL->get('Kabinet.Messanger');
@@ -64,13 +55,11 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-
-		$messData = $messanger->getData(['UF_QUEUE_ID'=>$post['UF_QUEUE_ID']],$post['OFFSET'],$post['LIMIT'],true);
-
         return [
             'id'=> $upd_id,
-			'datamessage'=>$messData,
-            'message'=>'Сообщение отправлено!'
+			'datamessage'=>$this->getmessData(),
+            'message'=>'Сообщение отправлено!',
+            'action' => $post['action']
         ];
 	}
 
@@ -79,47 +68,9 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         $post = $request->getPostList()->toArray();
         $files = $request->getFileList()->toArray();
 
-        //AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
-
-        $messData = [];
-
-        if ($post['UF_QUEUE_ID'] != NULL && $post['UF_QUEUE_ID']>0)
-                $messData = $messanger->getData(
-                    ['UF_QUEUE_ID'=>$post['UF_QUEUE_ID']],
-                    $post['OFFSET'],
-                    $post['LIMIT'],
-                    $clear=true,
-                    $new_reset=$post['NEW_RESET']
-                );
-        elseif ($post['UF_PROJECT_ID'] != NULL && $post['UF_PROJECT_ID']>0){
-            $f = [];
-            $f['UF_PROJECT_ID'] = $post['UF_PROJECT_ID'];
-            $messData = $messanger->getData(
-                $f,
-                $post['OFFSET'],
-                $post['LIMIT'],
-                $clear=true,
-                $new_reset=$post['NEW_RESET']
-            );
-        }
-        elseif ($post['UF_TARGET_USER_ID'] != NULL && $post['UF_TARGET_USER_ID']>0){
-            $messData = $messanger->getData(
-                ['LOGIC' => 'OR',
-                    'UF_AUTHOR_ID'=>$post['UF_TARGET_USER_ID'],'UF_TARGET_USER_ID'=>$post['UF_TARGET_USER_ID']],
-                $post['OFFSET'],
-                $post['LIMIT'],
-                $clear=true,
-                $new_reset=$post['NEW_RESET']
-            );
-        }
-
-
         return [
-            'datamessage'=>$messData,
+            'datamessage'=>$this->getmessData(),
+            'action' => $post['action']
         ];
     }
 	
@@ -142,10 +93,42 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $messData = $messanger->getData(['UF_QUEUE_ID'=>$post['UF_QUEUE_ID']],$post['OFFSET'],$post['LIMIT'],true);
-
-        return [
-            'datamessage'=>$messData,
+		return [
+		    'datamessage'=>$this->getmessData(),
+            'action' => $post['action']
         ];
-    }	
+    }
+
+    public function getmessData(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $files = $request->getFileList()->toArray();
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $messanger = $sL->get('Kabinet.Messanger');
+
+        $f = [];
+        foreach ($post as $fieldName=>$value){
+            if (preg_match("/^FILTER-(.+)$/is",$fieldName,$matched)){
+                $filterFiled = $matched[1];
+                $f[$filterFiled] = $value;
+            }
+        }
+        if ($post['UF_QUEUE_ID'] != NULL && $post['UF_QUEUE_ID']>0) {
+            $f['UF_QUEUE_ID'] = $post['UF_QUEUE_ID'];
+        }elseif ($post['UF_PROJECT_ID'] != NULL && $post['UF_PROJECT_ID']>0){
+            $f['UF_PROJECT_ID'] = $post['UF_PROJECT_ID'];
+        }
+        elseif ($post['UF_TARGET_USER_ID'] != NULL && $post['UF_TARGET_USER_ID']>0){
+        }
+        $messData = $messanger->getData(
+            $f,
+            $post['OFFSET'],
+            $post['LIMIT'],
+            $clear = true,
+            $new_reset = $post['NEW_RESET']
+        );
+
+        return $messData;
+    }
 }

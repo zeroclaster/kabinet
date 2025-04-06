@@ -5,6 +5,7 @@ messanger_vuecomponent = (function (){
           if (typeof PHPPARAMS.NEW_RESET == "undefined")  PHPPARAMS.NEW_RESET = 'y';
           if (typeof PHPPARAMS.TEMPLATE == "undefined")  PHPPARAMS.TEMPLATE = messangerTemplate;
           if (typeof PHPPARAMS.messageStore == "undefined")  PHPPARAMS.messageStore = messageStore;
+            if (typeof PHPPARAMS.FILTER == "undefined")  PHPPARAMS.FILTER = {};
        /*
        messangerTemplate задается в bitrix/templates/kabinet/assets/js/kabinet/custom.component.js
        определяется атребутом data-usermessanger
@@ -33,7 +34,7 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
             },
             offset:0,
             limit:PHPPARAMS.VIEW_COUNT,
-            new_reset: PHPPARAMS.NEW_RESET,
+            new_reset: PHPPARAMS.NEW_RESET
         }
     },
     props: ['projectID','taskID','queue_id','targetUserID'],
@@ -240,6 +241,9 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
             this.limit = parseInt(this.limit) + 5;
             var form_data = this.addNewMethods_(this.fields);
             form_data.append("NEW_RESET", this.new_reset);
+            for(itm in PHPPARAMS.FILTER){
+                form_data.append("FILTER-"+itm, PHPPARAMS.FILTER[itm]);
+            }
             const kabinetStore = usekabinetStore();
             BX.ajax.runAction('bitrix:kabinet.evn.messengerevents.showmore', {
                 data : form_data,
@@ -249,6 +253,7 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
                 //preparePost: false
             })
                 .then(function(response) {
+
                     const data = response.data;
 
                     const Store = messageStore();

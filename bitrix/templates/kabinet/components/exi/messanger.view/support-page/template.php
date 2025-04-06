@@ -42,15 +42,35 @@ Asset::getInstance()->addJs($templateFolder."/messanger.view.js");
 ?>
 
 <script>
+    components.messangerUsersupport = {
+        selector: "[data-usermessanger='support']",
+        script: [
+            './js/kabinet/vue-componets/messanger/uploadfile.js',
+            './js/kabinet/vue-componets/messanger/templates/user.support.js',
+            './js/kabinet/vue-componets/messanger/messanger2.js',
+        ],
+        styles: './css/messanger.css',
+        dependencies:'vuerichtext',
+        init:null
+    }
+
     const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
         state: () => ({datamessage:<?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?>}),
     });
 
     window.addEventListener("components:ready", function(event) {
 
-        messangerperformances = messanger_vuecomponent.start(<?=CUtil::PhpToJSObject([
-            'VIEW_COUNT' => $arParams['COUNT'],
-        ], false, true)?>);
+        var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['COUNT']], false, true)?>;
+        m.TEMPLATE = messangerTemplate;
+        m.messageStoreInst = function(){
+            return function () {
+                return messageStore();
+            }
+        };
+        m.messageStore = messageStore;
+
+        let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
+        messangerperformances = messanger_vuecomponent2_2.start(m);
 
         messanger_view.start(<?=CUtil::PhpToJSObject([], false, true)?>);
     });

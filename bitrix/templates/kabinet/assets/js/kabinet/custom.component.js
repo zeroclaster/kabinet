@@ -39,72 +39,11 @@ components.vuetypeahead = {
     init:null
 }
 
-components.messangerUser = {
-    selector: "[data-usermessanger='report']",
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/user.report.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-	styles: './css/messanger.css',
-	dependencies:'vuerichtext',
-    init:null
-}
-
-components.messangerUserDashbord = {
-    selector: "[data-usermessanger='dashbord']",
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/user.dashbord.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    styles: './css/messanger.css',
-    dependencies:'vuerichtext',
-    init:null
-}
-
-
-components.messangerUsernotification = {
-    selector: "[data-usermessanger='notification']",
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/user.notification.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    styles: './css/messanger.css',
-    dependencies:'vuerichtext',
-    init:null
-}
-
-components.messangerUserProject = {
-    selector: "[data-usermessanger='project']",
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/user.project.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    styles: './css/messanger.css',
-    dependencies:'vuerichtext',
-    init:null
-}
-
 components.messangerAdmin = {
     selector: '[data-adminmessanger]',
     script: [
         './js/kabinet/vue-componets/messanger/uploadfile.js',
         './js/kabinet/vue-componets/messanger/templates/admin.performances.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    styles: './css/messanger.css',
-    dependencies:'vuerichtext',
-    init:null
-}
-
-components.messangerUsersupport = {
-    selector: "[data-usermessanger='support']",
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/user.support.js',
         './js/kabinet/vue-componets/messanger/messanger.js',
     ],
     styles: './css/messanger.css',

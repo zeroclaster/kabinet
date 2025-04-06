@@ -42,11 +42,23 @@ $this->setFrameMode(true);
 
 <?
 (\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','userStore');
-?>
-
-<?
 $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 ?>
+<script>
+    components.messangerUserDashbord = {
+        selector: "[data-usermessanger='dashbord']",
+        script: [
+            './js/kabinet/vue-componets/messanger/uploadfile.js',
+            './js/kabinet/vue-componets/messanger/templates/user.dashbord.js',
+            './js/kabinet/vue-componets/messanger/messanger2.js',
+        ],
+        styles: './css/messanger.css',
+        dependencies:'vuerichtext',
+        init:null
+    }
+
+
+</script>
 <?ob_start();?>
     <script>
         const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
@@ -58,11 +70,23 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 
     <script>
         window.addEventListener("components:ready", function(event) {
+            var m = <?=CUtil::PhpToJSObject([
+                    'VIEW_COUNT' => $arParams['COUNT'],
+                'NEW_RESET' => $arParams['NEW_RESET'],
+                'FILTER' => $arParams["FILTER"],
+                ], false, true)?>;
 
-            messangerperformances = messanger_vuecomponent.start(<?=CUtil::PhpToJSObject([
-                'VIEW_COUNT' => $arParams['COUNT'],
-                'NEW_RESET' => $arParams['NEW_RESET'],  // фиксироваь пометку причитанные сообщения, N - не фиксировать
-            ], false, true)?>);
+
+            m.TEMPLATE = messangerTemplate;
+            m.messageStoreInst = function(){
+                return function () {
+                    return messageStore();
+                }
+            };
+            m.messageStore = messageStore;
+
+            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
+            messangerperformances = messanger_vuecomponent2_2.start(m);
 
             messanger_view.start(<?=CUtil::PhpToJSObject([], false, true)?>);
         });

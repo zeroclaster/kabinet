@@ -4,7 +4,8 @@ messanger_vuecomponent2 = (function (){
         start(PHPPARAMS){
           if (typeof PHPPARAMS.NEW_RESET == "undefined")  PHPPARAMS.NEW_RESET = 'y';
           if (typeof PHPPARAMS.TEMPLATE == "undefined")  PHPPARAMS.TEMPLATE = messangerTemplate;
-          if (typeof PHPPARAMS.messageStore == "undefined")  PHPPARAMS.messageStore = messageStore2;
+          if (typeof PHPPARAMS.FILTER == "undefined")  PHPPARAMS.FILTER = {};
+
        /*
        messangerTemplate задается в bitrix/templates/kabinet/assets/js/kabinet/custom.component.js
        определяется атребутом data-usermessanger
@@ -36,6 +37,11 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
             limit:PHPPARAMS.VIEW_COUNT,
             new_reset: PHPPARAMS.NEW_RESET,
         }
+    },
+    setup(){
+      const getMessageStore = PHPPARAMS.messageStoreInst();
+
+      return {getMessageStore};
     },
     props: ['projectID','taskID','queue_id','targetUserID'],
     computed: {
@@ -148,41 +154,22 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
 		editmess(item,e){		
 			const node = BX.findChild(e.target.parentNode,{class:'cansel-edit'},true,false);
 			BX.show(node);
-			
+
+            // если установлен ID то запись в таблице не создается а редактируется
 			this.fields.ID = item.ID;
 			this.fields.UF_MESSAGE_TEXT = item.UF_MESSAGE_TEXT;
 			this.fields.UF_MESSAGE_TEXT_ORIGINAL = item.UF_MESSAGE_TEXT_ORIGINAL;
 		},
         //Удалить сообщеине
 		removemess(ID){
-            const this_ = this;
             kabinet.loading();
-            var form_data = new FormData();
-
-			form_data.append("ID", ID);
-
-            for ( var key in this.fields) {
-
-                if (key == "ID") continue;
-
-                if (key == "UF_UPLOADFILE") {
-                    if (this.fields["UF_UPLOADFILE"].length == 0) form_data.append(key + '[]', 0);
-                    for (const file of this.fields["UF_UPLOADFILE"]) {
-                        form_data.append(key + '[]', file);
-                    }
-                } else {
-
-                    if (Array.isArray(this.fields[key])) {
-                        this.fields[key].forEach(function (item, index) {
-                            form_data.append(key + '[]', item.VALUE);
-                        });
-                    } else
-                        form_data.append(key, this.fields[key]);
-                }
+            var form_data =  this.addNewMethods_(this.fields);
+            for(itm in PHPPARAMS.FILTER){
+                form_data.append("FILTER-"+itm, PHPPARAMS.FILTER[itm]);
             }
 
-            form_data.append("OFFSET", this.offset);
-            form_data.append("LIMIT", this.limit);
+			form_data.append("ID", ID);
+            form_data.append('action', 'removemess');
             const kabinetStore = usekabinetStore();
             BX.ajax.runAction('bitrix:kabinet.evn.messengerevents.removemess', {
                 data : form_data,
@@ -191,39 +178,7 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
                 //processData: false,
                 //preparePost: false
             })
-                .then(function(response) {
-                    const data = response.data;
-
-                    /*
-                    let messages;
-                    if (this_.queue_id) {
-                        messages = this_.datamessage[this_.queue_id];
-                    }else{
-                        messages = this_.datamessage;
-                    }
-
-                    for (index in data.datamessage) messages[index] = data.datamessage[index];
-                     */
-
-                    const Store = messageStore();
-                    // если на странице согласования и отчеты, то чат в пределах задачи
-                    if (this_.queue_id) {
-                        Store.datamessage[this_.queue_id] = data.datamessage;
-                    }else{
-                        Store.datamessage = data.datamessage;
-                    }
-
-                    //console.log(response)
-                    kabinet.loading(false);
-                }, function (response) {
-                    //console.log(response);
-                    kabinet.loading(false);
-                    response.errors.forEach((error) => {
-                        kabinetStore.Notify = '';
-                        kabinetStore.Notify = error.message;
-                    });
-
-                });	
+                .then(BX.delegate(this.responseHandler, this), BX.delegate(this.errorHandler, this));
 		},
         removeUplFile(fileIndex){
             const dt = new DataTransfer();
@@ -235,44 +190,74 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
 
             this.fields.UF_UPLOADFILE = dt.files;
         },
+        responseHandler(response){
+
+            const data = response.data;
+            const kabinetStore = usekabinetStore();
+            const Store = this.getMessageStore();
+            kabinetStore.NotifyOk = '';
+            kabinetStore.NotifyOk = data.message;
+            // если на странице согласования и отчеты, то чат в пределах задачи
+            if (this.queue_id) {
+                if (data.action == 'showmore')
+                    if (data.datamessage.length == Store.datamessage[this.queue_id].length) BX.hide(this.$refs.showmoreblock);
+
+                Store.datamessage[this.queue_id] = data.datamessage;
+            }else if(this.projectID){
+                if (data.action == 'showmore')
+                    if (data.datamessage.length == Store.datamessage[this.projectID].length) BX.hide(this.$refs.showmoreblock);
+
+                Store.datamessage[this.projectID] = data.datamessage;
+            }
+            else{
+                if (data.action == 'showmore')
+                    if (data.datamessage.length == Store.datamessage.length) BX.hide(this.$refs.showmoreblock);
+
+                    Store.datamessage = data.datamessage;
+            }
+
+            this.fields.ID = 0;
+            this.fields.UF_MESSAGE_TEXT = '';
+            this.fields.UF_UPLOADFILE = [];
+            this.fields.UF_MESSAGE_TEXT_ORIGINAL = '';
+            this.fields.UF_SUBMESS_ID = 0;
+            this.fields.UF_SUBMESS_ID_ORIGINAL = 0;
+
+            if (this.$refs.richtextref) {
+                this.$refs.richtextref.clear();
+                this.scrollEnd();
+                this.closeAllcanselEdit();
+            }
+
+            //console.log(response)
+            kabinet.loading(false);
+        },
+        errorHandler(response){
+            const kabinetStore = usekabinetStore();
+            //console.log(response);
+            kabinet.loading(false);
+            response.errors.forEach((error) => {
+                kabinetStore.Notify = '';
+                kabinetStore.Notify = error.message;
+            });
+
+        },
         showMore(){
-            const this_ = this;
             kabinet.loading();
             this.limit = parseInt(this.limit) + 5;
             var form_data = this.addNewMethods_(this.fields);
             form_data.append("NEW_RESET", this.new_reset);
-            const kabinetStore = usekabinetStore();
+            form_data.append('action', 'showmore');
+            for(itm in PHPPARAMS.FILTER){
+                form_data.append("FILTER-"+itm, PHPPARAMS.FILTER[itm]);
+            }
             BX.ajax.runAction('bitrix:kabinet.evn.messengerevents.showmore', {
                 data : form_data,
                 // usr_id_const нужен для админа, задается в footer.php
                 getParameters: {usr : usr_id_const},
                 //processData: false,
                 //preparePost: false
-            })
-                .then(function(response) {
-                    const data = response.data;
-
-                    const Store = messageStore();
-                    // если на странице согласования и отчеты, то чат в пределах задачи
-                    if (this_.queue_id) {
-                        if (data.datamessage.length == Store.datamessage[this_.queue_id].length) BX.hide(this_.$refs.showmoreblock);
-                        else Store.datamessage[this_.queue_id] = data.datamessage;
-                    }else{
-                        if (data.datamessage.length == Store.datamessage.length) BX.hide(this_.$refs.showmoreblock);
-                        else Store.datamessage = data.datamessage;
-                    }
-
-                    //console.log(response)
-                    kabinet.loading(false);
-                }, function (response) {
-                    //console.log(response);
-                    kabinet.loading(false);
-                    response.errors.forEach((error) => {
-                        kabinetStore.Notify = '';
-                        kabinetStore.Notify = error.message;
-                    });
-
-                });
+            }).then(BX.delegate(this.responseHandler, this), BX.delegate(this.errorHandler, this));
         },
         scrollEnd(){
             const node = this.$refs.messagelist;
@@ -283,14 +268,14 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
 			}
         },
         sendMessage(e){
-            const this_ = this;
-
             kabinet.loading();
-
             this.limit = parseInt(this.limit) + 1;
             var form_data =  this.addNewMethods_(this.fields);
-
-            const kabinetStore = usekabinetStore();
+            for(itm in PHPPARAMS.FILTER){
+                form_data.append("FILTER-"+itm, PHPPARAMS.FILTER[itm]);
+            }
+            if (this.fields.ID)  form_data.append('action', 'editmessage');
+            else  form_data.append('action', 'newmessage');
             BX.ajax.runAction('bitrix:kabinet.evn.messengerevents.newmessage', {
                 data : form_data,
                 // usr_id_const нужен для админа, задается в footer.php
@@ -298,41 +283,7 @@ return BX.Vue3.BitrixVue.mutableComponent('messanger_comp', {
                 //processData: false,
                 //preparePost: false
             })
-                .then(function(response) {
-                    const data = response.data;
-                    kabinetStore.NotifyOk = '';
-                    kabinetStore.NotifyOk = data.message;
-
-                    const Store = messageStore2();
-                    // если на странице согласования и отчеты, то чат в пределах задачи
-                    if (this_.projectID) {
-                        Store.datamessage[this_.projectID] = data.datamessage;
-                    }else{
-                        Store.datamessage = data.datamessage;
-                    }
-
-                    this_.fields.UF_MESSAGE_TEXT = '';
-                    this_.fields.UF_UPLOADFILE = [];
-                    this_.fields.UF_MESSAGE_TEXT_ORIGINAL = '';
-                    this_.fields.UF_SUBMESS_ID = 0;
-                    this_.fields.UF_SUBMESS_ID_ORIGINAL = 0;
-                    this_.$refs.richtextref.clear();
-
-                    this_.scrollEnd();
-					this_.closeAllcanselEdit();
-
-                    //console.log(response)
-                    kabinet.loading(false);
-                }, function (response) {
-                    //console.log(response);
-                    kabinet.loading(false);
-                    response.errors.forEach((error) => {
-                        kabinetStore.Notify = '';
-                        kabinetStore.Notify = error.message;
-                    });
-
-                });
-
+                .then(BX.delegate(this.responseHandler, this), BX.delegate(this.errorHandler, this));
         },
     },
 	components: {

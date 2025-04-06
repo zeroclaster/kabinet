@@ -52,7 +52,6 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
                 editor.model.document.on('change:data', (evt, data) => {
                     //console.log(editor.getData());
                     this.$emit('update:modelValue', editor.getData());
-                    console.log('11')
                     if (typeof this.autosave != "undefined" && !this.notSave) this.$root.inpsave(this.tindex);
                     else this.notSave = false;
                 });

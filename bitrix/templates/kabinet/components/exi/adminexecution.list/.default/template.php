@@ -23,7 +23,7 @@ $this->setFrameMode(true);
 ?>
 
 
-<div id="kabinetcontent" data-datetimepicker="" data-loadtable="" data-modalload="" data-ckeditor="" data-vuerichtext="" data-adminmessanger=""></div>
+<div id="kabinetcontent" data-datetimepicker="" data-loadtable="" data-modalload="" data-ckeditor="" data-vuerichtext="" data-adminmessanger="" data-adminexecution=""></div>
 
 <script type="text/html" id="sharephoto-template">
     <div class="preview-img-block-2 addbutton2 d-flex justify-content-center align-items-center" @click="showmodale">
@@ -248,53 +248,77 @@ $this->setFrameMode(true);
 </script>
 
 <?
-$client_state = CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true);
-$project_state = CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true);
-$task_state = CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true);
-$order_state = CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true);
-$runner_state = CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true);
 $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
-$filter1 = CUtil::PhpToJSObject($arParams["FILTER"], false, true);
 
 (\KContainer::getInstance())->get('catalogStore');
 ?>
 <?ob_start();?>
 <script>
-    const clientListStoreData = <?=$client_state?>;
-	const projectListStoreData = <?=$project_state?>;
-	const taskListStoreData = <?=$task_state?>;
-	const orderListStoreData = <?=$order_state?>;
-	const runnerListStoreData = <?=$runner_state?>;
-	const filterclientlist = <?=$filter1?>;
-	
-	const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
+    const clientListStoreData = <?=CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true)?>;
+	const projectListStoreData = <?=CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true)?>;
+	const taskListStoreData = <?=CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true)?>;
+	const orderListStoreData = <?=CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true)?>;
+	const runnerListStoreData = <?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>;
+	const filterclientlist = <?=CUtil::PhpToJSObject($arParams["FILTER"], false, true)?>;
+
+
+    const  clientlistStore = BX.Vue3.Pinia.defineStore('clientlist', {
+        state: () => ({dataclient:clientListStoreData}),
+    });
+    const  projectlistStore = BX.Vue3.Pinia.defineStore('projectlist', {
+        state: () => ({dataproject:projectListStoreData}),
+    });
+    const  tasklistStore = BX.Vue3.Pinia.defineStore('tasklist', {
+        state: () => ({datatask:taskListStoreData}),
+    });
+    const  orderlistStore = BX.Vue3.Pinia.defineStore('orderlist', {
+        state: () => ({dataorder:orderListStoreData}),
+    });
+    const  runnerlistStore = BX.Vue3.Pinia.defineStore('runnerlist', {
+        state: () => ({datarunner:runnerListStoreData}),
+    });
+
+
+    const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
     state: () => ({datamessage:<?=$message_state?>}),
+    });
+
+    // Заглушка, т.к. используется в клиентской части
+    const  brieflistStore = BX.Vue3.Pinia.defineStore('brieflist', {
+        state: () => ({data:[]}),
     });
 	
 </script>
     <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/datepicker.js"></script>
     <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/typeahead.js"></script>
     <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/sharephoto.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminclient.data.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminproject.data.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/admintask.data.js"></script>
-	<script type="text/javascript" src="<?=$templateFolder?>/adminorder.data.js"></script>
-	<script type="text/javascript" src="<?=$templateFolder?>/adminrunner.data.js"></script>
     <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/components/exi/profile.user/admin/user.data.php"></script>
     <script type="text/javascript" src="<?=$templateFolder?>/adminexecution_list.js"></script>
 
     <script>
 	    var messangerperformances = null;
 
-	    // Заглушка, т.к. используется в клиентской части
-        const  brieflistStore = BX.Vue3.Pinia.defineStore('brieflist', {
-            state: () => ({data:[]}),
-        });
+        components.userreports = {
+            selector: '[data-adminexecution]',
+            script: [
+                '../../kabinet/assets/js/kabinet/vue-componets/messanger/messanger2.js',
+            ],
+            init:null
+        }
 
         window.addEventListener("components:ready", function(event) {
-				messangerperformances = messanger_vuecomponent.start(<?=CUtil::PhpToJSObject([
-                    'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
-                ], false, true)?>);
+            var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT']], false, true)?>;
+            m.TEMPLATE = messangerTemplate;
+            m.messageStoreInst = function(){
+                return function () {
+                    return messageStore();
+                }
+            };
+            m.messageStore = messageStore;
+
+            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
+            messangerperformances = messanger_vuecomponent2_2.start(m);
+
 
             adminexecution_list.start(<?=CUtil::PhpToJSObject([
 						"viewcount"=>$arParams["COUNT"],
