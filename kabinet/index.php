@@ -48,6 +48,7 @@ $GLOBALS['message_filter'] = ['UF_TYPE'=>\Bitrix\Kabinet\messanger\Messanger::SY
     )
 );?>
 
+
 <section class="section-xs">
         <div class="container-fluid">
           <div class="row row-30">

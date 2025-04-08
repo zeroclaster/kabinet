@@ -45,7 +45,7 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
                 <select name="statusfind" id="statusfind" class="form-control">
                     <option value=""></option>
                     <?foreach ($runnerManager->getStatusList() as $status_id => $title):?>
-                        <option value="<?=$status_id?>" <?if ($SEARCH_RESULT['statusfind'] && $SEARCH_RESULT['statusfind']==$status_id) echo "selected"?>><?=$title?></option>
+                        <option value="<?=$status_id?>" <?if (is_numeric($SEARCH_RESULT['statusfind']) && $SEARCH_RESULT['statusfind']==$status_id) echo "selected"?>><?=$title?></option>
                     <?endforeach;?>
                 </select>
             </div>

@@ -124,7 +124,9 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         if(!empty($FILTER['executionidsearch'])) $Query->addFilter('ID',$FILTER['executionidsearch']);
 
         //Со статусом
-        if(isset($FILTER['statusexecutionsearch']) && ($FILTER['statusexecutionsearch']===0 || $FILTER['statusexecutionsearch']>0)) $Query->addFilter('UF_STATUS',$FILTER['statusexecutionsearch']);
+        if(
+            isset($FILTER['statusexecutionsearch']) && is_numeric($FILTER['statusexecutionsearch'])
+        ) $Query->addFilter('UF_STATUS',$FILTER['statusexecutionsearch']);
 
 
         if(

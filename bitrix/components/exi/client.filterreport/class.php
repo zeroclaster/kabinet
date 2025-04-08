@@ -101,7 +101,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
             $SEARCH_RESULT['todate1'] = $post['todate1'];
             ${$FILTER_NAME}['todate1'] = $post['todate1'];
         }
-        if($post['statusfind']){
+        if(isset($post['statusfind'])){
             $SEARCH_RESULT['statusfind'] = $post['statusfind'];
             ${$FILTER_NAME}['statusfind'] = $post['statusfind'];
         }

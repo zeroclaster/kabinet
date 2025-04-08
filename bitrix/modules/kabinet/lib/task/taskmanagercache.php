@@ -17,9 +17,9 @@ class Taskmanagercache extends Taskmanager {
 
         $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
-        if (!$this->FulfiCacheArray) {
+        if (!$this->FulfiCacheArray) {}
             $this->FulfiCacheArray = $HLBClass::getlist([
-                'select' => ['ID', 'UF_PLANNE_DATE','REF_TASK.ID','UF_ELEMENT_TYPE','UF_NUMBER_STARTS','UF_STATUS','UF_DATE_COMPLETION'],
+                'select' => ['ID', 'UF_PLANNE_DATE', 'REF_TASK.ID', 'UF_ELEMENT_TYPE', 'UF_NUMBER_STARTS', 'UF_STATUS', 'UF_DATE_COMPLETION'],
                 'runtime' => [
                     'REF_TASK' => [
                         'data_type' => \Task::class,
@@ -29,7 +29,7 @@ class Taskmanagercache extends Taskmanager {
                 ],
                 'order' => ['UF_PLANNE_DATE' => 'desc'],
             ])->fetchAll();
-        }
+
 
         $ret = [];
         foreach ($this->FulfiCacheArray as $item) if ($item['FULFILLMENT_REF_TASK_ID'] == $taskId) $ret[]=$item;

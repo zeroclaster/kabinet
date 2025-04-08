@@ -1,6 +1,6 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Заказ и планирование задач проекта");
+$APPLICATION->SetTitle("Заказ услуг и планирование задач");
 
 
 $context = \Bitrix\Main\Application::getInstance()->getContext();
@@ -13,7 +13,7 @@ $project = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getById($p)->fetch
 if (!$project) LocalRedirect("/404.php");
 
 $APPLICATION->AddChainItem("Проект", "/kabinet/projects/?id=".$p);
-$APPLICATION->AddChainItem("Планирование задач", "");
+$APPLICATION->AddChainItem("Заказ услуг и планирование задач", "");
 ?>
 
 
@@ -24,7 +24,7 @@ $APPLICATION->AddChainItem("Планирование задач", "");
         <div class="d-flex justify-content-between">
             <div>
                 <h4 style="margin: 0;">Проект: <?=$project['UF_NAME']?></h4>
-                <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Планирование задач</div>
+                <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Заказ услуг и планирование задач</div>
             </div>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
         </div>

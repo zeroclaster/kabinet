@@ -138,6 +138,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $userBilling = $BillingManager->getData();
         $TaskManager = $sL->get('Kabinet.Task');
         $PRODUCT = $TaskManager->getProductByTask($task);
+
+        $GLOBALS['aaa'] = 'y';
         $dateEnd = $TaskManager->theorDateEnd($task);
 
 

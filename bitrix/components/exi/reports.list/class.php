@@ -179,7 +179,7 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         if(!empty($FILTER['fromdate1']))  $Query->addFilter('>UF_PLANNE_DATE',$FILTER['fromdate1']);
         if(!empty($FILTER['todate1'])) $Query->addFilter('<UF_PLANNE_DATE',$FILTER['todate1']);
 
-        if(!empty($FILTER['statusfind'])) $Query->addFilter('UF_STATUS',$FILTER['statusfind']);
+        if(isset($FILTER['statusfind']) && is_numeric($FILTER['statusfind'])) $Query->addFilter('UF_STATUS',$FILTER['statusfind']);
 
         if(!empty($FILTER['queue_id'])) $Query->addFilter('ID',$FILTER['queue_id']);
 

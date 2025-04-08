@@ -31,7 +31,7 @@ const messangerTemplate2 =  `
 					</div>
 					<div v-if="mess_item.UF_PROJECT_ID>0">
 						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}	
-						Проект <a :href="'/kabinet/projects/?id='+project.ID">{{project.UF_NAME}}</a>						
+						Проект {{project.UF_NAME}}				
 						<span v-if="mess_item.UF_TASK_ID>0">
 							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
 							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}

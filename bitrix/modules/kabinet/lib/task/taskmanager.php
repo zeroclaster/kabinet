@@ -212,6 +212,10 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
             }
 
+            if ($data['UF_CYCLICALITY'] == 1 && $data['UF_STATUS']>0) {
+                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+            }
+
             $dataconvert = $this->convertData($data, $this->getUserFields());
 
             $DATE_COMPLETION = $this->theorDateEnd($dataconvert);
@@ -402,10 +406,9 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $PRODUCT = $this->getProductByTask($task);
 
         // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])){
-            //TADO тестовое значение задержки исполнения
-            $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-        }
+        //TADO тестовое значение задержки исполнения
+        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])) $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
+
 
         $now = new \Bitrix\Main\Type\DateTime();
 
@@ -421,7 +424,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             ])->fetch();
 
             if ($find_last_queue) {
-
                 if ($find_last_queue['UF_DATE_COMPLETION']){
                     if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
                         $now = $find_last_queue['UF_DATE_COMPLETION'];
