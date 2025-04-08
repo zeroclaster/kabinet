@@ -13,13 +13,19 @@ use \Bitrix\Main\SystemException,
 class Taskmanagercache extends Taskmanager {
 
 
-    protected function FulfiCache($taskId){
-
+    protected function FulfiCache($task){
         $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
-        if (!$this->FulfiCacheArray) {}
-            $this->FulfiCacheArray = $HLBClass::getlist([
+        $taskId = $task['ID'];
+        $id = $task['UF_AUTHOR_ID'];
+
+        if (!$this->FulfiCacheArray[$id]) {
+            $this->FulfiCacheArray[$id] = [];
+            $data = $HLBClass::getlist([
                 'select' => ['ID', 'UF_PLANNE_DATE', 'REF_TASK.ID', 'UF_ELEMENT_TYPE', 'UF_NUMBER_STARTS', 'UF_STATUS', 'UF_DATE_COMPLETION'],
+                'filter' => [
+                    'REF_TASK.UF_AUTHOR_ID'=> $id
+                ],
                 'runtime' => [
                     'REF_TASK' => [
                         'data_type' => \Task::class,
@@ -30,9 +36,27 @@ class Taskmanagercache extends Taskmanager {
                 'order' => ['UF_PLANNE_DATE' => 'desc'],
             ])->fetchAll();
 
+            foreach ($data as $key => $item){
+                foreach ($item as $field => $value){
+                    if (is_object($value) && ($value instanceof \Bitrix\Main\Type\DateTime) && $value)
+                        $this->FulfiCacheArray[$id][$key][$field . '_TIMESTAMP'] = $value->getTimestamp();
+
+                    $this->FulfiCacheArray[$id][$key][$field] = $value;
+                }
+            }
+        }
 
         $ret = [];
-        foreach ($this->FulfiCacheArray as $item) if ($item['FULFILLMENT_REF_TASK_ID'] == $taskId) $ret[]=$item;
+        foreach ($this->FulfiCacheArray[$id] as $key =>  $item) if ($item['FULFILLMENT_REF_TASK_ID'] == $taskId) {
+            foreach ($item as $field => $value){
+                if (is_object($value) && ($value instanceof \Bitrix\Main\Type\DateTime) && $value) {
+                    if ($taskId == 94)
+                        $a = 100;
+                    $item[$field] = \Bitrix\Main\Type\DateTime::createFromTimestamp($item[$field . '_TIMESTAMP']);
+                }
+            }
+            $ret[]=$item;
+        }
 
         return $ret;
     }
@@ -52,7 +76,7 @@ class Taskmanagercache extends Taskmanager {
         if($task['UF_STATUS']>0){
             $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
-            $db_array = $this->FulfiCache($task['ID']);
+            $db_array = $this->FulfiCache($task);
             $find_last_queue = [];
             if ($db_array) $find_last_queue = $db_array[0];
 
@@ -78,15 +102,11 @@ class Taskmanagercache extends Taskmanager {
         return $now->getTimestamp();
     }
 
-
-
-    public function getQueueStatistics(int $id){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-
+    public function getQueueStatistics($task){
         $ret = [];
 
         $status = 0;
-        $dbArray = $this->FulfiCache($id);
+        $dbArray = $this->FulfiCache($task);
         $Queue = [];
         foreach ($dbArray as $item)  if ($item['UF_STATUS']==$status) $Queue[]=$item;
 

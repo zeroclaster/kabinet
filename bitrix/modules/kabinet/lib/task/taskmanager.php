@@ -228,6 +228,9 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         }
 
         foreach ($listdata as $index => $task2) {
+            if ($task2['ID'] == 94)
+                    $a = 1000;
+
             $PRODUCT = $this->getProductByTask($task2);
             if (!$PRODUCT){
                 unset($listdata[$index]);
@@ -239,7 +242,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             $listdata[$index]['FINALE_PRICE'] = $listdata[$index]['UF_NUMBER_STARTS'] * $PRODUCT['CATALOG_PRICE_1'];
 
-            $listdata[$index]['QUEUE_STATIST'] = $this->getQueueStatistics($task2['ID']);
+            $listdata[$index]['QUEUE_STATIST'] = $this->getQueueStatistics($task2);
             //$listdata[$index]['QUEUE_STATIST'] = [];
 
 
@@ -510,10 +513,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return [];
     }
 
-    public function getQueueStatistics(int $id){
+    public function getQueueStatistics($task){
         $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
         $ret = [];
+        $id = $task['ID'];
 
         $status = 0;
         $Queue = $HLBClass::getlist([
