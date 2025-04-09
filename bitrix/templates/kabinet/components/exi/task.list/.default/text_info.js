@@ -5,15 +5,8 @@
 
 const textInfoTask = BX.Vue3.BitrixVue.mutableComponent('text-Info-Task', {
     template: `
-                    <!-- Однократное выполнение -->
-                    <template v-if="copytsk.UF_CYCLICALITY == 33">
-                    <div class="mt-3 mb-3" v-if="tsk.UF_STATUS==0">
-                        Заданное количество будет равномерно выполнено до заданной даты. Вы всегда сможете дозаказать ещё нужное количество.
-                    </div>
-                    <div class="mt-3 mb-3" v-if="tsk.UF_STATUS>0">
-                        Вы можете заказать ещё «{{tsk.UF_NAME}}», указав нужное количество и продлить выполнение задачи до выбранной даты.
-                    </div>
-                    </template>
+                    
+                    
 
 
                     <!-- Одно исполнение -->
@@ -32,7 +25,7 @@ const textInfoTask = BX.Vue3.BitrixVue.mutableComponent('text-Info-Task', {
                         Запустится ежемесячное выполнение задачи с заданным количеством. Средства с баланса зарезервируются при запуске, а далее ежемесячно 1 числа. Вы сможете изменить количество или остановить выполнение в любой момент с 1 числа следующего месяца.
                     </div>
                     <div class="mt-3 mb-3" v-if="tsk.UF_STATUS>0">
-                        Вы можете изменить ежемесячное количество. Изменение вступит в силу с {{getmomment().add(1, 'months').startOf('month').format('DD.MM.YYYY')}}.
+                        Вы можете изменить ежемесячное количество. Изменение вступит в силу с {{tsk.RUN_DATE}}.
                     </div>
                     </template>
 

@@ -96,6 +96,40 @@ class Datesite{
         return $ret;
     }
 
+    static function concreteMonth($date){
+
+        // Начало следующего месяца
+        $d = (
+            new \DateTime($date->format("Y-m-d"))
+        )->modify( 'first day of this month' );
+        $Start = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+
+        // Конец следующего месяца
+        $d = (
+            new \DateTime($date->format("Y-m-d") )
+        )->modify( 'last day of this month' );
+        $End = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+
+        return [$Start,$End];
+    }
+
+    static function concretenextMonth($date){
+
+        // Начало следующего месяца
+        $d = (
+            new \DateTime($date->format("Y-m-d") )
+        )->modify( 'first day of next month' );
+        $Start = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+
+        // Конец следующего месяца
+        $d = (
+            new \DateTime($date->format("Y-m-d") )
+        )->modify( 'last day of next month' );
+        $End = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+
+        return [$Start,$End];
+    }
+
     static function nextMonth(){
         // Начало следующего месяца
         $Start = new \Bitrix\Main\Type\DateTime(

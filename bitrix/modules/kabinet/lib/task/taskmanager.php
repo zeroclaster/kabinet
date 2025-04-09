@@ -207,12 +207,17 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
             }
 
-            // Одно исполнение и задача еще не выполняется
-            if ($data['UF_CYCLICALITY'] == 33 && $data['UF_STATUS']==0) {
-                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+            if ($data['UF_STATUS']==0) {
+                // Одно исполнение и задача еще не выполняется
+                if ($data['UF_CYCLICALITY'] == 33) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+
+                //Повторяется ежемесячно, дата завершения пользователь не правит
+                if ($data['UF_CYCLICALITY'] == 2) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+
+                if ($data['UF_CYCLICALITY'] == 34) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
             }
 
-            if ($data['UF_CYCLICALITY'] == 1 && $data['UF_STATUS']>0) {
+            if ($data['UF_STATUS']>0) {
                 $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
             }
 
@@ -237,8 +242,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 continue;
             }
 
-            if (empty($listdata[$index]['UF_NUMBER_STARTS']))
-                $listdata[$index]['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
+            if (empty($listdata[$index]['UF_NUMBER_STARTS'])) $listdata[$index]['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
 
             $listdata[$index]['FINALE_PRICE'] = $listdata[$index]['UF_NUMBER_STARTS'] * $PRODUCT['CATALOG_PRICE_1'];
 
@@ -293,7 +297,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             if ($task2['UF_CYCLICALITY'] == 2) {
                 $d = $this->dateStartCicle($task2);
-                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->add("1 month")->format("d.m.Y");
+                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
             }
         }
 
@@ -390,14 +394,19 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         }else{
             // дата начала
             $dateTimestamp = $this->dateStartCicle($task);
-            [$mouthStart1,$mouthEnd1] = \PHelp::actualMonth();
-            [$mouthStart2,$mouthEnd2] = \PHelp::nextMonth();
+            [$mouthStart1,$mouthEnd1] = \PHelp::concreteMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
+            [$mouthStart2,$mouthEnd2] = \PHelp::concretenextMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
+
 
             $DATE_COMPLETION = $mouthEnd2->getTimestamp();
 
             // Если задача еще не начата
-            if($task['UF_STATUS']==0)
+            if($task['UF_STATUS']==0) {
                 if ($dateTimestamp <= $mouthEnd1->getTimestamp()) $DATE_COMPLETION = $mouthEnd1->getTimestamp();
+                else $DATE_COMPLETION = $mouthEnd2->getTimestamp();
+            }else{
+                $DATE_COMPLETION = $mouthEnd1->getTimestamp();
+            }
 
         }
 
@@ -449,7 +458,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $now->getTimestamp();
     }
 
-    public function dateStartCicle($task){
+    public function dateStartCicle__($task){
         $PRODUCT = $this->getProductByTask($task);
 
         // "Задержка исполнения"
@@ -462,13 +471,57 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         if ($task['UF_CYCLICALITY'] == 2) $DELAY_EXECUTION = $PRODUCT['DELAY_EXECUTION']['VALUE'];
         else $DELAY_EXECUTION = 0;
 
+
         $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
         $firstDayNextMonth = new \Bitrix\Main\Type\DateTime((new \DateTime('first day of next month'))->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
 
-        if ($now > $firstDayNextMonth)
+        if ($now > $firstDayNextMonth || $task['UF_STATUS']>0)
             $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
         else
             $calc_date = $now->getTimestamp();
+
+        return $calc_date;
+    }
+
+    public function dateStartCicle($task){
+        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $PRODUCT = $this->getProductByTask($task);
+
+        //TADO тестовое значение задержки исполнения
+        // "Задержка исполнения"
+        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])) $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
+
+        // если задача циклическая, есть задержка исполнения
+        if ($task['UF_CYCLICALITY'] == 2) $DELAY_EXECUTION = $PRODUCT['DELAY_EXECUTION']['VALUE'];
+        else $DELAY_EXECUTION = 0;
+
+        if($task['UF_STATUS']>0) {
+            // ищем последнее исполнение
+            $find_last_queue = $HLBClass::getlist([
+                'select' => ['ID', 'UF_PLANNE_DATE', 'UF_DATE_COMPLETION'],
+                'filter' => ['UF_TASK_ID' => $task['ID']],
+                'order' => ['UF_PLANNE_DATE' => 'desc'],
+                'limit' => 1
+            ])->fetch();
+        }
+
+
+
+        if($task['UF_STATUS']>0 && $find_last_queue['UF_DATE_COMPLETION']) {
+            $d = (new \DateTime($find_last_queue['UF_DATE_COMPLETION']->format("Y-m-d") ))->modify( 'first day of next month' );
+            $firstDayNextMonth = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
+            //$calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
+            $calc_date = $firstDayNextMonth->getTimestamp();
+        }
+        else{
+            $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
+            $firstDayNextMonth = new \Bitrix\Main\Type\DateTime((new \DateTime('first day of next month'))->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
+
+            if ($now > $firstDayNextMonth)
+                $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
+            else
+                $calc_date = $now->getTimestamp();
+        }
 
         return $calc_date;
     }

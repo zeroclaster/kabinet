@@ -197,6 +197,7 @@ $p = $request->get('p');
                                         </select>
 
                                     </div>
+
                                     <div style="position: relative" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">
                                         <div class="input-group">
                                             <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
@@ -235,6 +236,8 @@ $p = $request->get('p');
                                 <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Изменить количество со следующего месяца:</label>
                             </div>
 
+                            ---{{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}-----
+
                             <div class="col-sm-10" style="position: relative;">
                                 <div class="d-flex">
                                     <div>
@@ -242,14 +245,8 @@ $p = $request->get('p');
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> ед./в месяц</div>
                                 </div>
-                                <div>Новое количество применится с {{dateStartNextMounth().format('DD.MM.YYYY')}}</div>
+                                <div>Новое количество применится с {{task.RUN_DATE}}</div>
                             </div>
-                        </div>
-
-                        <!-- ID 33 Одно исполнение -->
-                        <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 33">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center"><label class="col-form-label" style="padding-top: 0px;">Срок исполнения до:</label></div>
-                            <div class="col-sm-10" style="position: relative;">{{CopyTask.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
                         </div>
 
 
