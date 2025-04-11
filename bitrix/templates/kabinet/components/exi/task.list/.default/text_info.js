@@ -35,7 +35,7 @@ const textInfoTask = BX.Vue3.BitrixVue.mutableComponent('text-Info-Task', {
                         Запустится ежемесячное выполнение задачи. Средства с баланса зарезервируются при запуске, а далее ежемесячно 1 числа. Пополняйте баланс заблаговременно до 1 числа ежемесячно.
                     </div>
                     <div class="mt-3 mb-3" v-if="tsk.UF_STATUS>0">
-                        Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{tsk.RUN_DATE}}. <span v-if="tsk.UF_STATUS == 15" style="word-wrap: unset;"><button class="btn btn-link btn-link-site" type="button" style="padding: 0" @click="stoptask(taskindex)">Остановить с {{tsk.RUN_DATE}}</button></span>
+                        Ежемесячная услуга, ближайшая отчетная дата и дата следующего списания средств: {{tsk.RUN_DATE}}.
                     </div>
                     </template>`,
     data(){

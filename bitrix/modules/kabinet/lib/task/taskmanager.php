@@ -265,23 +265,14 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
                 // 1 - Однократное выполнение
                 if ($v1234['ID'] == 1) {
-                    $d = $this->dateStartOne(array_merge($task2,['UF_CYCLICALITY'=>1]));
-                    $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
-
-                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . $date1->format("d.m.Y") . ' до заданной даты';
+                    $startLastFulfi = $this->dateStartOne(array_merge($task2,['UF_CYCLICALITY'=>1]));
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . (\Bitrix\Main\Type\DateTime::createFromTimestamp($startLastFulfi))->format("d.m.Y") . ' до заданной даты';
                 }
 
                 // 2 - Повторяется ежемесячно
                 if ($v1234['ID'] == 2) {
-                    $d = $this->dateStartCicle(array_merge($task2,['UF_CYCLICALITY'=>2]));
-                    $date1 = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
-
-                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . $date1->format("d.m.Y");
-                }
-
-                // Одно исполнение
-                if ($v1234['ID'] == 33) {
-
+                    $start = $this->dateStartCicle(array_merge($task2,['UF_CYCLICALITY'=>2]));
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . (\Bitrix\Main\Type\DateTime::createFromTimestamp($start))->format("d.m.Y");
                 }
             }
 
@@ -289,16 +280,15 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $listdata[$index]['UF_CYCLICALITY_ORIGINAL'] = $task2['UF_CYCLICALITY_ORIGINAL'];
 
             // Ежемесячная услуга
-            if ($task2['UF_CYCLICALITY'] == 34) {
-                $d = $this->dateStartCicle($task2);
-                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
-            }
+            if ($task2['UF_CYCLICALITY'] == 34) $d = $this->dateStartCicle($task2);
 
+            // Ежемесячное выполнение
+            if ($task2['UF_CYCLICALITY'] == 2) $d = $this->dateStartCicle($task2);
 
-            if ($task2['UF_CYCLICALITY'] == 2) {
-                $d = $this->dateStartCicle($task2);
-                $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
-            }
+            // до заданной даты
+            if ($task2['UF_CYCLICALITY'] == 1 || $task2['UF_CYCLICALITY'] == 33) $d = $this->dateStartOne($task2);
+
+            $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
         }
 
         return $listdata;
