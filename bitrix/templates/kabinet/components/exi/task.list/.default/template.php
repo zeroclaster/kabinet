@@ -168,7 +168,6 @@ $p = $request->get('p');
                         <div class="ml-3">Выполнено: {{taskStatus_v(taskindex)['endwork']}}</div>
                     </div>
 
-
                     <div v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2) && CopyTask.UF_STATUS==0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
                     <div v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
                     <div v-if="CopyTask.UF_CYCLICALITY == 2 && CopyTask.UF_STATUS>0">Примерная периодичность: 2-3 ед. в день.</div>
@@ -176,7 +175,9 @@ $p = $request->get('p');
                     <!-- Только для работающих задач -->
                     <template v-if="task.UF_STATUS>0">
                         <div v-if="CopyTask.UF_CYCLICALITY == 1">Завершится: {{task.RUN_DATE}}</div>
-                        <div v-if="CopyTask.UF_CYCLICALITY == 2">Завершится: {{task.RUN_DATE}}</div>
+
+                        <div v-if="CopyTask.UF_CYCLICALITY == 2 && task.UF_STATUS == <?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">Непрерывная задача</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 2 && task.UF_STATUS == <?=\Bitrix\Kabinet\task\Taskmanager::STOPPED?>">Завершится: {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
                         <!-- Одно исполнение -->
                         <div v-if="CopyTask.UF_CYCLICALITY == 33">Завершится: {{task.RUN_DATE}}</div>
                         <!-- Ежемесячная услуга -->
@@ -406,8 +407,33 @@ $p = $request->get('p');
 					<ul class="list-unstyled task-aciont-list-1">
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
-						<li v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>"><button class="btn btn-link btn-link-site" type="button" @click="stoptask(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-						<li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить задачу</button></li>
+
+                        <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
+                                <?/* 1 Однократное выполнение */?>
+                                <template v-if="task.UF_CYCLICALITY == 1">
+                                    <li><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_1(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                </template>
+
+                                <?/* 2 Повторяется ежемесячно */?>
+                                <template v-if="task.UF_CYCLICALITY == 2">
+                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                </template>
+
+                                <?/* 33 Одно исполнение */?>
+                                <template v-if="task.UF_CYCLICALITY == 33">
+                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                </template>
+
+                                <?/* 34 Ежемесячная услуга */?>
+                                <template v-if="task.UF_CYCLICALITY == 34">
+                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                </template>
+                        </template>
+
+                        <li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить задачу</button></li>
                     </ul>
 				</div>
             </div>
@@ -415,6 +441,14 @@ $p = $request->get('p');
     </div>
     </template>
 
+    <questiona_ctivity_component question="Вы действительно хотите отменить задачу? Задачу будет отменена, средства возвращены на баланс." ref="modalqueststopcyclicality33planned"/>
+    <questiona_ctivity_component question="Задача выполняется и завершится автоматически, когда будет исполнена. Если вы желаете прервать исполнение задачи – напишите в чат поддержки." ref="modalqueststopcyclicality33worked"/>
+
+    <questiona_ctivity_component question="Задача остановлена, зарезервированные средства будут возвращены на ваш баланс." ref="modalqueststopcyclicality2planned"/>
+    <questiona_ctivity_component question="Задача будет выполнена в текущем месяце и далее остановлена." ref="modalqueststopcyclicality2worked"/>
+
+
+    <questiona_ctivity_component question="Вы хотите остановить выполнение задачи? У задачи есть исполнения в работе, которые будут выполнены по плану. Только неначатые исполнения будут отменены, а средства возвращены на баланс." ref="modalqueststopcyclicality1"/>
     <questiona_ctivity_component question="Задача не может быть остановлена сейчас, так как есть исполнения, взятые в работу. Задача завершится автоматически, когда будет выполнена. Если вы желаете остановить задачу и прервать исполнения – напишите в чат поддержки." ref="modalqueststop"/>
     <questiona_ctivity_component question="Вы действительно хотите удалить эту задачу, все её исполнения и отчеты? Финансовая информация затронута не будет." ref="modalquestremove"/>
 </script>

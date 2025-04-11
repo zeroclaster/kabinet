@@ -398,6 +398,55 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 this.runCommand(this.datatask[taskindex],'stoptask');
             });
         },
+        stoptask_cyclicality_1(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality1;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_2_planned(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality2planned;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_2_worked(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality2worked;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_33_planned(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality33planned;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_33_worked(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality33worked;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_34_planned(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality2planned;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
+        stoptask_cyclicality_34_worked(taskindex){
+
+            const component = this.$refs.modalqueststopcyclicality2worked;
+            component.showmodale(taskindex,function(taskindex){
+                this.runCommand(this.datatask[taskindex],'stoptask');
+            });
+        },
         /*
         Удалить в архив
         */

@@ -22,8 +22,6 @@ $runnerManager = $sL->get('Kabinet.Runner');
 
 $task_id = $request->get('t');
 
-$QueueStatistics = $taskManager->getQueueStatistics($task_id);
-
 $taskdata = $taskManager->getData();
 $key = array_search($task_id, array_column($taskdata, 'ID'));
 if ($key !== false){
@@ -33,6 +31,8 @@ else{
    // throw new \Bitrix\Main\SystemException("Task data not found". "(".$task['ID'].")");
     ShowError("Task data not found". "(".$taskdata['ID'].")");
 }
+
+$QueueStatistics = $taskManager->getQueueStatistics($taskdata);
 
 $runner = $runnerManager->getData($taskdata['ID']);
 

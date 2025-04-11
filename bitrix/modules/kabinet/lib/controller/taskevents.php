@@ -242,6 +242,8 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
 
+        $err_mess = '';
+
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');
         $RunnerManager = $sL->get('Kabinet.Runner');
@@ -264,8 +266,14 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         try {
             $RunnerManager->stopTask($task);
         }catch (SystemException $exception){
-            $this->addError(new Error($exception->getMessage(), 1));
-            return null;
+            $code = $exception->getCode();
+            // Если предупредительные сообщения == 300
+            if ($code == 300) {
+                $err_mess = ' Внимание! '. $exception->getMessage();
+            }else {
+                $this->addError(new Error($exception->getMessage(), 1));
+                return null;
+            }
         }
 
 
@@ -280,7 +288,7 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             'task'=>$taskData,
             'data2' =>$orderData,
             'queue' => $Queue,
-            'message'=>'Задача успешно остановлена'
+            'message'=>'Задача успешно остановлена.'.$err_mess
         ];
     }
 	

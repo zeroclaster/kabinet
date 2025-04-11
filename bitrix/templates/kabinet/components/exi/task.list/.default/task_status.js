@@ -95,7 +95,7 @@ var task_status = function (){
                 }
             }
 
-            if (isRuned == countQueu2(task)) return '<div class="alert-only-text alert-cancel font-bold"><i class="fa fa-times" aria-hidden="true"></i> Остановлена</div>';
+            if (isRuned == countQueu2(task) || task.UF_STATUS == 14) return '<div class="alert-only-text alert-cancel font-bold"><i class="fa fa-times" aria-hidden="true"></i> Остановлена</div>';
 
             isRuned = 0;
             for(queue of calendarStore_.datacalendarQueue){
