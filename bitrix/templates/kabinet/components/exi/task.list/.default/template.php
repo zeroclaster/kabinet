@@ -267,7 +267,7 @@ $p = $request->get('p');
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0"><span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
                             </div>
-                            <div class="col-sm-3" style="position: relative;">
+                            <div class="col-sm-4" style="position: relative;">
                                 <div class="d-flex">
                                     <div class="text-sm-right"><label class="col-form-label" :for="'linkInput2Price'+task.ID">Стоимость:&nbsp;</label></div>
                                     <div class="task-price-total">
@@ -285,7 +285,7 @@ $p = $request->get('p');
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="price-product"><span>по запросу</span></div>
                             </div>
-                            <div class="col-sm-3" style="position: relative;">
+                            <div class="col-sm-4" style="position: relative;">
                                 <div class="d-flex">
                                     <div class="text-sm-right"><label class="col-form-label" :for="'linkInput2Price'+task.ID">Стоимость:&nbsp;</label></div>
                                     <div class="task-text-vertical-aling task-price-total">по запросу</div>
@@ -293,23 +293,22 @@ $p = $request->get('p');
                             </div>
                         </div>
 
-
                         <div class="row form-group">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
                                     <?/* 33 Одно исполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                     <?/* 1 Однократное выполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
 
                                     <?/* 2 Повторяется ежемесячно */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && task.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} шт. в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} в мес. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
 
                                     <?/* 34 Ежемесячная услуга */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && task.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                 </div>
                             </div>

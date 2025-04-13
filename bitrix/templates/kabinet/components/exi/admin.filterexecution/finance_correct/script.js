@@ -387,13 +387,13 @@ const filter1 = {
             });
 
             BX.bind(form.elements.clienttextsearch,'change',function () {
-                form.elements.clientidsearch.value = '0';
+                //form.elements.clientidsearch.value = '0';
             });
             BX.bind(form.elements.projecttextsearch,'change',function () {
-                form.elements.projectidsearch.value = '0';
+                //form.elements.projectidsearch.value = '0';
             });
             BX.bind(form.elements.tasktextsearch,'change',function () {
-                form.elements.taskidsearch.value = '0';
+                //form.elements.taskidsearch.value = '0';
             });
 
             BX.bind(BX("clearfilter"),'click',function (e) {

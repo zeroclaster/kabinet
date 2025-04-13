@@ -243,6 +243,7 @@ const filter1 = {
         });
 
     },
+    form:null,
     init(phpparams){
         const this_ = this;
         this_.seach_result = phpparams.SEARCH_RESULT;
@@ -254,6 +255,7 @@ const filter1 = {
             this_.addtypeahead();
 
             const form = BX.findChild(document.body,{attribute:{name:'filterform1'}},true,false);
+            this_.form = form;
             BX.bind(form, 'submit', function (event) {
                 const form = event.target;
 
@@ -282,13 +284,13 @@ const filter1 = {
             });
 
             BX.bind(form.elements.clienttextsearch,'change',function () {
-                form.elements.clientidsearch.value = '0';
+                //form.elements.clientidsearch.value = '0';
             });
             BX.bind(form.elements.projecttextsearch,'change',function () {
-                form.elements.projectidsearch.value = '0';
+                //form.elements.projectidsearch.value = '0';
             });
             BX.bind(form.elements.tasktextsearch,'change',function () {
-                form.elements.taskidsearch.value = '0';
+                //form.elements.taskidsearch.value = '0';
             });
 
             BX.bind(BX("clearfilter"),'click',function (e) {
