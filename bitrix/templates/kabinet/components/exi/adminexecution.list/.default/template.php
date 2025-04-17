@@ -102,16 +102,16 @@ $this->setFrameMode(true);
             <div>
                 <div class="mb-3">
                     <div>Клиент:</div>
-                    <div class="text-primary">{{dataclient[UF_AUTHOR_ID].PRINT_NAME}} (#{{dataclient[UF_AUTHOR_ID].ID}})</div>
+                    <div class="text-primary">{{dataclient[UF_AUTHOR_ID].PRINT_NAME}} (ID{{dataclient[UF_AUTHOR_ID].ID}})</div>
                     <div><a href="mailto:{{dataclient[UF_AUTHOR_ID].EMAIL}}"></a></div>
                 </div>
                 <div class="mb-3">
                     <div>Проект:</div>
-                    <div class="text-primary">{{dataproject[UF_PROJECT_ID].UF_NAME}}</div>
+                    <div class="text-primary">{{dataproject[UF_PROJECT_ID].UF_NAME}} #{{dataproject[UF_PROJECT_ID].UF_EXT_KEY}}</div>
                 </div>
                 <div class="mb-3">
                     <div>Задача:</div>
-                    <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}}</div>
+                    <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}} #{{datatask[runner.UF_TASK_ID].UF_EXT_KEY}}</div>
                     <div style="font-size: 11px;">
                         <div class="info-blk">Дата создания: <span>{{datatask[runner.UF_TASK_ID].UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
                         <div class="info-blk">Дата завершения: <span>{{runner.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
@@ -125,7 +125,7 @@ $this->setFrameMode(true);
         </td>
 
         <td width="40%">
-            <div>Исполнение #{{runner.ID}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
+            <div>Исполнение #{{runner.UF_EXT_KEY}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
             <mytypeahead :tindex="runnerindex" :catalog="datatask[runner.UF_TASK_ID].UF_TARGET_SITE" v-model="runner.UF_LINK"/>
 
             <div class="mb-3" _v-if="runner.UF_ELEMENT_TYPE == 'multiple'">

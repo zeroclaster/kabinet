@@ -149,7 +149,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
             ]));
 
             $output[] = [
-                "value"=>$userName .' '. $item['EMAIL']. ' (#'.$item['ID'].')',
+                "value"=>$userName .' '. $item['EMAIL']. ' (ID'.$item['ID'].')',
                 'id'=>$item['ID'],
             ];
         }
@@ -165,7 +165,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 		if ($ID>0) $filter['UF_AUTHOR_ID'] = $ID;
 
         $data = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([
-            'select'=>['ID','UF_NAME'],
+            'select'=>['ID','UF_NAME','UF_EXT_KEY'],
             'filter'=>$filter,
             'order'=>['UF_NAME'=>'ASC']
         ])->fetchAll();
@@ -178,7 +178,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         foreach ($data as $item){
             $output[] = [
-                "value"=>$item['UF_NAME']. ' (#'.$item['ID'].')',
+                "value"=>$item['UF_NAME']. ' (#'.$item['UF_EXT_KEY'].')',
                 'id'=>$item['ID'],
             ];
         }
@@ -194,7 +194,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 		if ($ID>0) $filter['UF_PROJECT_ID'] = $ID;
 
         $data = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
-            'select'=>['ID','UF_NAME'],
+            'select'=>['ID','UF_NAME','UF_EXT_KEY'],
             'filter'=>$filter,
             'order'=>['UF_NAME'=>'ASC']
         ])->fetchAll();
@@ -205,7 +205,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         foreach ($data as $item){
             $output[] = [
-                "value"=>$item['UF_NAME']. ' (#'.$item['ID'].')',
+                "value"=>$item['UF_NAME']. ' (#'.$item['UF_EXT_KEY'].')',
                 'id'=>$item['ID'],
             ];
         }

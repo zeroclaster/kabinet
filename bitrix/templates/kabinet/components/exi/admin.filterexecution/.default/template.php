@@ -67,7 +67,7 @@ $this->setFrameMode(true);
         <div class="col-md-6">
             <div class="row form-group">
                 <div class="col-sm-8 text-sm-right">
-                    <label class="col-form-label col-form-label-sm" for="search-executionid">Найти исполнение, id</label>
+                    <label class="col-form-label col-form-label-sm" for="search-executionid">Найти исполнение, #</label>
                 </div>
                 <div class="col-sm-4">
                     <input value="<?=$SEARCH_RESULT['executionidsearch']?>" name="executionidsearch" id="search-executionid" class="form-control form-control-sm" type="text" placeholder="">

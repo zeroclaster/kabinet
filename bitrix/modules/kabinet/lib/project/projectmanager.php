@@ -48,11 +48,22 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
 
         parent::__construct($id, $HLBCClass);
 
-        AddEventHandler("", "\Contract::OnBeforeAdd", [$this,"OnBeforeAdd"]);
+        AddEventHandler("", "\Projects::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
     }
 
-    public function OnBeforeAdd($fields,$object)
+    public function AutoIncrementAddHandler($fields,$object)
     {
+        $HLBClass = (\KContainer::getInstance())->get(BRIEF_HL);
+        $last = $HLBClass::getlist([
+            'select'=>['UF_EXT_KEY'],
+            'order'=>['ID'=>"DESC"],
+            'limit' =>1
+        ])->fetch();
+
+        $UF_EXT_KEY = 100000;
+        if ($last && $last['UF_EXT_KEY']>0) $UF_EXT_KEY = $last['UF_EXT_KEY'] + 1;
+
+        $object->set('UF_EXT_KEY', $UF_EXT_KEY);
     }
 
 

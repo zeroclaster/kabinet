@@ -47,7 +47,7 @@ if (!$project) LocalRedirect("/404.php", "404 Not Found");
                         <script type="text/html" id="project-info">
                                 <h4>Проект</h4>
                                 <div class="d-flex">
-                                <h1 class="mr-3" v-if="!showEditTitle">{{project.UF_NAME}}</h1>
+                                <h1 class="mr-3" v-if="!showEditTitle">{{project.UF_NAME}} #{{project.UF_EXT_KEY}}</h1>
                                 <div class="mr-3" v-if="showEditTitle"><input type="text" class="form-control" v-model="project.UF_NAME" @input="saveinput"></div>
                                 <button class="btn btn-link" style="font-size: 25px;padding: 0;" @click="()=>showEditTitle=true" v-if="!showEditTitle"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                                 <button class="btn btn-link" style="font-size: 25px;padding: 0;" @click="()=>showEditTitle=false" v-if="showEditTitle"><i class="fa fa-times" aria-hidden="true"></i></button>

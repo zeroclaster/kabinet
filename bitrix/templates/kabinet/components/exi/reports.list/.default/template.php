@@ -101,7 +101,7 @@ $runnerManager = $sL->get('Kabinet.Runner');
                     </td>
 
                     <td width="30%">
-                        <div>#{{runner.ID}} исполнение для задачи {{TaskByIdKey[runner.UF_TASK_ID].UF_NAME}}</div>
+                        <div>#{{runner.UF_EXT_KEY}} исполнение для задачи {{TaskByIdKey[runner.UF_TASK_ID].UF_NAME}}</div>
 
                         <!-- ссылка -->
                         <mytypeahead :tindex="runnerindex" :catalog="TaskByIdKey[runner.UF_TASK_ID].UF_TARGET_SITE" v-model="runner.UF_LINK"/>

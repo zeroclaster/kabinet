@@ -2,12 +2,21 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Профиль пользователя «Купи-Отзыв»");
 ?>
+
+<?
+
+$user = (\KContainer::getInstance())->get('user');
+$user_id = $user->get('ID');
+?>
+
+
     <section class="section-xs">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
             <h1><i class="fa fa-user" aria-hidden="true"></i> Профиль пользователя</h1>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PROFILE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
         </div>
+        <div class="h3">ID<?=$user_id?></div>
     </div>
 </section>
 <section class="">

@@ -51,7 +51,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
         <div class="d-flex justify-content-between">
             <div>
                 <h4 style="margin: 0;">Проект</h4>
-                <div><h1><?=$project['UF_NAME']?></h1></div>
+                <div><h1><?=$project['UF_NAME']?> #<?=$project['UF_EXT_KEY']?></h1></div>
                 <h4>Задача</h4>
             </div>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="REPORTS" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
@@ -87,7 +87,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                     <img src="<?=$user_order['PREVIEW_PICTURE_SRC']?>" alt="<?=$taskdata['UF_NAME']?>">
                 </div>
                 <div class="col-md-8">
-                    <div class="h3" style="margin-top:0px;"><?=$taskdata['UF_NAME']?></div>
+                    <div class="h3" style="margin-top:0px;"><?=$taskdata['UF_NAME']?> #<?=$taskdata['UF_EXT_KEY']?></div>
 
                     <div class="d-flex task-status-print h4" v-html="taskStatus_m(TASK_ID)"></div>
 

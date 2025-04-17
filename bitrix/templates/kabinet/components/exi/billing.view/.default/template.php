@@ -77,7 +77,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                 <th scope="col" style="width: 10%">Дата</th>
                 <th scope="col">Проект</th>
                 <th scope="col">Операция</th>
-                <th scope="col">id</th>
+                <th scope="col">№</th>
                 <th scope="col" style="width: 5%">Сумма, руб.</th>
             </tr>
             </thead>

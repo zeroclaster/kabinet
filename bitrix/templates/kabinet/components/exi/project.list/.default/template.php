@@ -41,7 +41,7 @@ CUtil::InitJSCore(array('window'));
 
 <div class="panel project-block mb-5" v-for="value in data">
           <div class="panel-body project-item-block">
-              <div>Проект <span class="badge badge-warning">#{{value.ID}}</span></div>
+              <div>Проект <span class="badge badge-warning">#{{value.UF_EXT_KEY}}</span></div>
                 <div class="row table-row-equal">
                     <div class="col-lg-9 h2 thumbnail thumbnail-left" style="margin: 0;">{{value.UF_NAME}}</div>
 

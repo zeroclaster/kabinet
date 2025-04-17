@@ -25,10 +25,26 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         parent::__construct($id, $HLBCClass);
 
         AddEventHandler("", "\Fulfillment::OnBeforeAdd", [$this,'ifCreateNew'],100);
+        AddEventHandler("", "\Fulfillment::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
         AddEventHandler("", "\Fulfillment::OnBeforeUpdate", [$this,'ifChangeStatus'],100);
 		AddEventHandler("", "\Fulfillment::OnBeforeUpdate", [$this,'CommentifChange'],150);
         AddEventHandler("", "\Fulfillment::OnBeforeUpdate", [$this,'historyChangeStatus'],200);
         AddEventHandler("", "\Fulfillment::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
+    }
+
+    public function AutoIncrementAddHandler($fields,$object)
+    {
+        $HLBClass = (\KContainer::getInstance())->get(FULF_HL);
+        $last = $HLBClass::getlist([
+            'select'=>['UF_EXT_KEY'],
+            'order'=>['ID'=>"DESC"],
+            'limit' =>1
+        ])->fetch();
+
+        $UF_EXT_KEY = 3000000;
+        if ($last && $last['UF_EXT_KEY']>0) $UF_EXT_KEY = $last['UF_EXT_KEY'] + 1;
+
+        $object->set('UF_EXT_KEY', $UF_EXT_KEY);
     }
 
     public function ifCreateNew($fields,$object)

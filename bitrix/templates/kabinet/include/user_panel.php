@@ -24,7 +24,7 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
 <div class="rd-navbar-subpanel" id="subpanel-user-menu">
   <div class="panel">
     <div class="panel-header">
-      <h4 class="panel-title"><?=$siteuser->printName()?> (#<?=$siteuser->get('ID')?>)</h4>
+      <h4 class="panel-title"><?=$siteuser->printName()?> (ID<?=$siteuser->get('ID')?>)</h4>
 	  <div class="small"><?=$siteuser->get('EMAIL')?></div>
     </div>
     <div class="panel-body p-0 scroller scroller-vertical">

@@ -42,7 +42,7 @@ $this->setFrameMode(true);
     <tr v-for="(client,clientindex) in dataclient">
         <td style="border-right: 1px solid #dde3e8;width: 10%;padding: 0;">
             <div>
-                <div class="h4">{{client.NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
+                <div class="h4">{{client.NAME}} <span class="badge badge-warning">ID{{client.ID}}</span></div>
 				<div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
 			</div>
 			<div class="mt-4">
