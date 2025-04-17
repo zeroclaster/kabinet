@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && ($_POST['Update'] || $_POST['Apply'] ||
                 $val = serialize($val);
             }
 
-            if ($required && empty($val)) throw new SystemException("Поле ".$arOption[1]. ' обязательное для заполнения!');
+            if ($required && $val=="") throw new SystemException("Поле ".$arOption[1]. ' обязательное для заполнения!');
 
             COption::SetOptionString("kabinet", $name, $val, $arOption[1]);
         }

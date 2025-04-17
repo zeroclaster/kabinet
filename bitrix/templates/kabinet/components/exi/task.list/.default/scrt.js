@@ -11,8 +11,9 @@ var searchProduct = function (){
             let result = [];
             let reg = new RegExp(needle,"i");
             for(index in this.data3){
-                if (reg.test(this.data3[index].NAME)) result.push(this.data3[index]);
                 if(needle == '') result.push(this.data3[index]);
+                else
+                    if (reg.test(this.data3[index].NAME)) result.push(this.data3[index]);
             }
 
             if (typeof this.inpSaveTimer2 != 'undefined') clearTimeout(this.inpSaveTimer2);

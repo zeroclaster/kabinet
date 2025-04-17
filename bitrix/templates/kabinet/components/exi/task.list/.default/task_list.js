@@ -33,6 +33,8 @@ task_list = (function (){
 //$(this.$refs.input).data('DateTimePicker').date(newDate);
 
 //https://momentjs.com/docs/#/displaying/
+            //https://sky.pro/wiki/html/raschyot-kolichestva-dney-mezhdu-datami-v-java-script/
+            //https://sky.pro/wiki/javascript/sravnenie-daty-i-vremeni-v-moment-js-ispolzovanie-is-after/
 /*
 moment().day(-7); // last Sunday (0 - 7)
 moment().day(0); // this Sunday (0)
@@ -264,7 +266,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         return {
             limitpics:5,
             project_id: PHPPARAMS.PROJECT_ID,
-            modaldata: {title:'Добавить услугу',order:0,project:0},
+            modaldata: {title:'Добавьте услугу в проект',order:0,project:0},
             modal2data: {title:'Удалить услугу',message:'',question:'Вы действительно хотите удалить?',basketitem:0,order_id:0},
             myModal:{},
             myModal2:{},
@@ -579,6 +581,55 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 					
 			return $ret;
 		},
+        frequencyCyclicality: function (index){
+
+            let ret = '';
+
+           // unix(this.modelValue)
+
+            const task = this.datatask[index];
+
+            const startOfMonth = moment().startOf('month');
+            const endOfMonth   = moment().endOf('month');
+            var queue_list = [];
+            var S = 0;
+            for(queue of this.datacalendarQueue){
+                if (queue.UF_TASK_ID == task.ID) {
+
+                    //console.log([endOfMonth.isAfter(moment.unix(queue.UF_PLANNE_DATE)),moment.unix(queue.UF_PLANNE_DATE).format("DD.MM.YYYY")]);
+
+                    if (
+                        endOfMonth.isAfter(moment.unix(queue.UF_PLANNE_DATE)) &&
+                        startOfMonth.isBefore(moment.unix(queue.UF_PLANNE_DATE))
+                    )
+                        queue_list.push(queue);
+                }
+            }
+
+            if (queue_list.length>0){
+                const first = queue_list[0];
+                const last = queue_list[queue_list.length-1];
+
+                const diffInDays = moment.unix(last.UF_PLANNE_DATE).diff(moment.unix(first.UF_PLANNE_DATE), 'days');
+                console.log([moment.unix(last.UF_PLANNE_DATE).format("d-m-Y"),moment.unix(first.UF_PLANNE_DATE).format("d-m-Y"),diffInDays]);
+
+                if (diffInDays <=0){
+                    S = 1;
+                    ret += S + " ед./день."
+                }else {
+                    var S = (task.UF_NUMBER_STARTS - 1) / diffInDays;
+                    if (S >= 1) {
+                        S = Math.round(S);
+                        ret += S + " ед./день."
+                    } else {
+                        const D = Math.round(1 / S);
+                        ret += "1 ед./" + D + " дн.";
+                    }
+                }
+            }
+
+            return ret;
+        },
         runCommand:function(task,action){
             var cur = this;
 

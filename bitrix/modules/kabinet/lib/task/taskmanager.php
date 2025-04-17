@@ -45,12 +45,29 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         parent::__construct($id, $HLBCClass);
 
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
+        AddEventHandler("", "\Task::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
         AddEventHandler("", "\Task::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
         AddEventHandler("", "\Task::OnAfterDelete", [$this,"OnAfterDeleteHandler"]);
 
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'ifChangeCycliality'],100);
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'checkBeforeUpdate'],200);
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'ifChangeNumberCycliality'],300);
+    }
+
+
+    public function AutoIncrementAddHandler($fields,$object)
+    {
+        $HLBClass = (\KContainer::getInstance())->get(TASK_HL);
+        $last = $HLBClass::getlist([
+            'select'=>['UF_EXT_KEY'],
+            'order'=>['ID'=>"DESC"],
+            'limit' =>1
+        ])->fetch();
+
+        $UF_EXT_KEY = 200000;
+        if ($last && $last['UF_EXT_KEY']>0) $UF_EXT_KEY = $last['UF_EXT_KEY'] + 1;
+
+        $object->set('UF_EXT_KEY', $UF_EXT_KEY);
     }
 
     public function ifChangeCycliality($id,$primary,$fields,$object,$oldData){

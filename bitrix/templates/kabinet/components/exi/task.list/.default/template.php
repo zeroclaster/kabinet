@@ -168,9 +168,10 @@ $p = $request->get('p');
                         <div class="ml-3">Выполнено: {{taskStatus_v(taskindex)['endwork']}}</div>
                     </div>
 
-                    <div v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2) && CopyTask.UF_STATUS==0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-                    <div v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-                    <div v-if="CopyTask.UF_CYCLICALITY == 2 && CopyTask.UF_STATUS>0">Примерная периодичность: 2-3 ед. в день.</div>
+                    <template v-if="CopyTask.UF_STATUS>0">
+                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 2">Примерная периодичность: {{frequencyCyclicality(taskindex)}}</div>
+                    </template>
 
                     <!-- Только для работающих задач -->
                     <template v-if="task.UF_STATUS>0">
@@ -292,7 +293,7 @@ $p = $request->get('p');
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="row form-group">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
@@ -300,8 +301,8 @@ $p = $request->get('p');
                                     <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                     <?/* 1 Однократное выполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} шт. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} ед. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} ед. «{{task.UF_NAME}}»</button>
 
                                     <?/* 2 Повторяется ежемесячно */?>
                                     <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} в мес. «{{task.UF_NAME}}»</button>

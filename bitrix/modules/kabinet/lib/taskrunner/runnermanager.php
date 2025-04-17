@@ -162,13 +162,13 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         if (
             $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']>$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']
-        ) throw new SystemException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." шт. в месяц");
+        ) throw new SystemException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." ед. в месяц");
 
         // Минимальное количество для заказа
         if (
             $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']<$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']
-        ) throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' шт.');
+        ) throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' ед.');
 
 
 		/*
