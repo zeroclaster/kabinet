@@ -94,6 +94,8 @@ var taskMethods = function(){
                 orderStore.data2 = data.data2;
                 taskStore.datatask = data.datatask;
 
+                cur.makeData(cur.datatask);
+
                 // закрываем окно добавления новой задачи
                 cur.closemodal();
 
