@@ -158,6 +158,13 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
 
         try {
+            AddEventHandler("", "\Fulfillment::OnBeforeAdd", function($fields,$object){
+                $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+                $TaskManager = $sL->get('Kabinet.Task');
+                $TaskManager->FulfiCacheArray = [];
+            });
+
+
             $RunnerManager->startTask($task);
             $ClassHLB::update($task['ID'],['UF_STATUS'=>\Bitrix\Kabinet\task\Taskmanager::WORKED]);
         }catch (SystemException $exception){

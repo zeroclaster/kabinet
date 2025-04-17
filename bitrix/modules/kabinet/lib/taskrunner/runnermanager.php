@@ -238,7 +238,10 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
 
             //Day of the month without leading zeros
-            $now = (new \Bitrix\Main\Type\DateTime())->format("d");
+            if ((new \Bitrix\Main\Type\DateTime())->format("m") == \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("m"))
+                $now = (new \Bitrix\Main\Type\DateTime())->format("d");
+            else
+                $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->format("d");
             $d = 30 - $now;
             $d = $d - $PRODUCT['DELAY_EXECUTION']['VALUE'];
             $step_ = floor($d / ($task['UF_NUMBER_STARTS']+1));
