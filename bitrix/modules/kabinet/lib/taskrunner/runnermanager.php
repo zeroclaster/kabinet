@@ -365,7 +365,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             else
                 $PlannedDate = $this->CiclePlannedPublicationDate($task);
 
-            throw new SystemException(print_r($PlannedDate,true));
+            
 
 
             $FINALE_PRICE = $onePrice*count($PlannedDate);
