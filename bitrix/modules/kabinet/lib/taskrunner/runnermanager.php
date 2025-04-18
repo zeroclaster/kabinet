@@ -213,6 +213,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');
 
+        $PRODUCT = $TaskManager->getProductByTask($task);
+
         $dateStar = $TaskManager->dateStartOne($task);
         $now = \PHelp::dateNow($dateStar);
 
@@ -222,13 +224,20 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         if ($task['UF_NUMBER_STARTS'] > 0) {
             $diffDays = $now->diff(\DateTime::createFromFormat('U', $task['UF_DATE_COMPLETION']))->format('%a');
             // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-            $step = floor($diffDays / $task['UF_NUMBER_STARTS']);
+
+            $diffhours = $diffDays * 24;
+
+            $step = floor($diffhours / $task['UF_NUMBER_STARTS']);
+            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'] > $step) $step = $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
+
+            //$step = floor($diffDays / $task['UF_NUMBER_STARTS']);
 
 
             for ($i = 0; $i < $task['UF_NUMBER_STARTS']; $i++) {
                 $calcDaysStep = $step * ($i + 1);
                 $now = \PHelp::BitrixdateNow($dateStar);
-                $dateList[$i+1] = $now->add("+" . $calcDaysStep . ' days');
+                //$dateList[$i+1] = $now->add("+" . $calcDaysStep . ' days');
+                $dateList[$i+1] = $now->add("+" . $calcDaysStep . ' hours');
             }
         }
 
@@ -355,6 +364,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 $PlannedDate = $this->PlannedPublicationDate($task);
             else
                 $PlannedDate = $this->CiclePlannedPublicationDate($task);
+
+            throw new SystemException(print_r($PlannedDate,true));
+
 
             $FINALE_PRICE = $onePrice*count($PlannedDate);
 
