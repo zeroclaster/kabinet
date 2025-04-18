@@ -589,6 +589,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             const task = this.datatask[index];
 
+            const product = this.getProductByIndexTask(index);
+            if (product.ELEMENT_TYPE.VALUE == 'multiple') return '1 ед./мес.';
+
             const startOfMonth = moment().startOf('month');
             const endOfMonth   = moment().endOf('month');
             var queue_list = [];
@@ -611,7 +614,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 const last = queue_list[queue_list.length-1];
 
                 const diffInDays = moment.unix(last.UF_PLANNE_DATE).diff(moment.unix(first.UF_PLANNE_DATE), 'days');
-                console.log([moment.unix(last.UF_PLANNE_DATE).format("d-m-Y"),moment.unix(first.UF_PLANNE_DATE).format("d-m-Y"),diffInDays]);
 
                 if (diffInDays <=0){
                     S = 1;

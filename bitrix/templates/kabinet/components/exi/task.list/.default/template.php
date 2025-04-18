@@ -169,8 +169,8 @@ $p = $request->get('p');
                     </div>
 
                     <template v-if="CopyTask.UF_STATUS>0">
-                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная периодичность: 1 ед. в {{frequency(taskindex)}}</div>
-                        <div v-if="CopyTask.UF_CYCLICALITY == 2">Примерная периодичность: {{frequencyCyclicality(taskindex)}}</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 ед. в {{frequency(taskindex)}}</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 2">Примерная частота исполнений: {{frequencyCyclicality(taskindex)}}</div>
                     </template>
 
                     <!-- Только для работающих задач -->
