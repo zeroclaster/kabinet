@@ -223,7 +223,7 @@ class MyClass
 
 
 	// создаем обработчик события "OnAfterIBlockElementUpdate"
-	function OnAfterIBlockElementUpdateHandler(&$arFields)
+	static function OnAfterIBlockElementUpdateHandler(&$arFields)
 	{
 
 		//Разделы сайта
@@ -235,7 +235,7 @@ class MyClass
 		}
 	}
 
-	function OnAfterIBlockElementAddHandler(&$arFields)
+    static function OnAfterIBlockElementAddHandler(&$arFields)
 	{
 		//Разделы сайта
 		if ($arFields['IBLOCK_ID'] == 6) {
@@ -245,7 +245,7 @@ class MyClass
 		}
 	}
 
-	function OnAfterIBlockElementDeleteHandler($arFields)
+    static function OnAfterIBlockElementDeleteHandler($arFields)
 	{
 		//Разделы сайта
 		if ($arFields['IBLOCK_ID'] == 6) {
