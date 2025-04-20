@@ -590,7 +590,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             const task = this.datatask[index];
 
             const product = this.getProductByIndexTask(index);
-            if (product.ELEMENT_TYPE.VALUE == 'multiple') return '1 ед./мес.';
+            const MEASURE_NAME = product.MEASURE_NAME;
+            console.log(MEASURE_NAME);
+            if (product.ELEMENT_TYPE.VALUE == 'multiple' || task.UF_NUMBER_STARTS == 1) return '1 '+MEASURE_NAME+'/мес.';
 
             const startOfMonth = moment().startOf('month');
             const endOfMonth   = moment().endOf('month');
@@ -617,15 +619,15 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
                 if (diffInDays <=0){
                     S = 1;
-                    ret += S + " ед./день."
+                    ret += S + " "+MEASURE_NAME+"/день."
                 }else {
                     var S = (task.UF_NUMBER_STARTS - 1) / diffInDays;
                     if (S >= 1) {
                         S = Math.round(S);
-                        ret += S + " ед./день."
+                        ret += S + " "+MEASURE_NAME+"/день."
                     } else {
                         const D = Math.round(1 / S);
-                        ret += "1 ед./" + D + " дн.";
+                        ret += "1 "+MEASURE_NAME+"/" + D + " дн.";
                     }
                 }
             }

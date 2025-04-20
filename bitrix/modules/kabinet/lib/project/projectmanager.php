@@ -186,6 +186,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
             $fields['QUANTITY'] = $basketItem->getQuantity();
             $fields['PRICE'] = $basketItem->getPrice();
             $fields['CATALOG_PRICE_1'] = round($fields['CATALOG_PRICE_1']);
+            $fields['MEASURE_NAME'] = $basketItem->getField("MEASURE_NAME");
 
             /*
             $item->getPropertyCollection(); // Свойства товара в корзине, коллекция объектов Sale\BasketPropertyItem, см. ниже

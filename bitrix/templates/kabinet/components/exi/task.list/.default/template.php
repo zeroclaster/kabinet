@@ -169,7 +169,7 @@ $p = $request->get('p');
                     </div>
 
                     <template v-if="CopyTask.UF_STATUS>0">
-                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 ед. в {{frequency(taskindex)}}</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 {{PRODUCT.MEASURE_NAME}} в {{frequency(taskindex)}}</div>
                         <div v-if="CopyTask.UF_CYCLICALITY == 2">Примерная частота исполнений: {{frequencyCyclicality(taskindex)}}</div>
                     </template>
 
@@ -200,7 +200,7 @@ $p = $request->get('p');
                                     <div>
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
                                     <div class="mr-3">
                                         <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
                                             <option v-for="option in CopyTask.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
@@ -229,7 +229,7 @@ $p = $request->get('p');
                                     <div>
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед.</div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
                                     <div class="mr-3">
                                         <div style="padding: 14px;padding-left: 0px;">{{ showOne1(CopyTask.UF_CYCLICALITY_ORIGINAL) }}</div>
                                     </div>
@@ -253,7 +253,7 @@ $p = $request->get('p');
                                     <div>
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> ед./в месяц</div>
+                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>
                                 <div>Новое количество применится с {{task.RUN_DATE}}</div>
                             </div>
@@ -264,7 +264,7 @@ $p = $request->get('p');
                             СТОИМОСТЬ
                         */?>
                         <div class="row form-group" v-if="CopyTask.FINALE_PRICE>0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" :for="'linkInput2Price1'+task.ID">Цена за ед.: </label></div>
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" :for="'linkInput2Price1'+task.ID">Цена за {{PRODUCT.MEASURE_NAME}}: </label></div>
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0"><span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
                             </div>
@@ -282,7 +282,7 @@ $p = $request->get('p');
 
 
                         <div class="row form-group" v-if="PRODUCT.CATALOG_PRICE_1==0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" :for="'linkInput2Price1'+task.ID">Цена за ед.: </label></div>
+                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" :for="'linkInput2Price1'+task.ID">Цена за {{PRODUCT.MEASURE_NAME}}: </label></div>
                             <div class="col-sm-3" style="position: relative;">
                                 <div class="price-product"><span>по запросу</span></div>
                             </div>
@@ -301,12 +301,12 @@ $p = $request->get('p');
                                     <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                     <?/* 1 Однократное выполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} ед. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} ед. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
 
                                     <?/* 2 Повторяется ежемесячно */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} в мес. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
 
                                     <?/* 34 Ежемесячная услуга */?>
                                     <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
