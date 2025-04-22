@@ -77,10 +77,12 @@ class Taskmanagercache extends Taskmanager {
             $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
             $db_array = $this->FulfiCache($task);
+
             $find_last_queue = [];
             if ($db_array) $find_last_queue = $db_array[0];
 
             if ($find_last_queue) {
+                /*
                 if ($find_last_queue['UF_DATE_COMPLETION']){
                     if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
                         $now = $find_last_queue['UF_DATE_COMPLETION'];
@@ -88,7 +90,11 @@ class Taskmanagercache extends Taskmanager {
                     if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
                         $now = $find_last_queue['UF_PLANNE_DATE'];
                 }
+                */
+                if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
+                    $now = $find_last_queue['UF_PLANNE_DATE'];
 
+                // TODO Для чего используем прибавку мин. интервала
                 if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'])
                     $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
             }else

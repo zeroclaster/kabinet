@@ -108,7 +108,9 @@ class Datesite{
         $d = (
             new \DateTime($date->format("Y-m-d") )
         )->modify( 'last day of this month' );
-        $End = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+        // + 23 часа 59 мин. 0 сек.
+        $d = $d->getTimestamp() + 86340;
+        $End = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
 
         return [$Start,$End];
     }
@@ -125,7 +127,9 @@ class Datesite{
         $d = (
             new \DateTime($date->format("Y-m-d") )
         )->modify( 'last day of next month' );
-        $End = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
+        // + 23 часа 59 мин. 0 сек.
+        $d = $d->getTimestamp() + 86340;
+        $End = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
 
         return [$Start,$End];
     }
@@ -137,11 +141,12 @@ class Datesite{
             "d.m.Y H:i:s"
         );
 
+        $d = new \DateTime('last day of next month');
+        // + 23 часа 59 мин. 0 сек.
+        $d = $d->getTimestamp() + 86340;
+
         // Конец следующего месяца
-        $End = (new \Bitrix\Main\Type\DateTime(
-            (new \DateTime('last day of next month'))->format("d.m.Y 00:00:01"),
-            "d.m.Y H:i:s"
-        ));
+        $End = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
 
         return [$Start,$End];
     }
@@ -153,11 +158,20 @@ class Datesite{
             "d.m.Y H:i:s"
         );
 
+        $d = new \DateTime('last day of this month');
+        // + 23 часа 59 мин. 0 сек.
+        $d = $d->getTimestamp() + 86340;
+
+        // Конец следующего месяца
+        $End = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
+
+        /*
         // Конец месяца
         $End = (new \Bitrix\Main\Type\DateTime(
             (new \DateTime('last day of this month'))->format("d.m.Y 00:00:01"),
             "d.m.Y H:i:s"
         ));
+        */
 
         return [$Start,$End];
     }
@@ -169,11 +183,20 @@ class Datesite{
             "d.m.Y H:i:s"
         );
 
+        /*
         // Конец месяца
         $End = (new \Bitrix\Main\Type\DateTime(
             (new \DateTime('last day of last month'))->format("d.m.Y 00:00:01"),
             "d.m.Y H:i:s"
         ));
+        */
+
+        $d = new \DateTime('last day of last month');
+        // + 23 часа 59 мин. 0 сек.
+        $d = $d->getTimestamp() + 86340;
+
+        // Конец следующего месяца
+        $End = \Bitrix\Main\Type\DateTime::createFromTimestamp($d);
 
         return [$Start,$End];
     }

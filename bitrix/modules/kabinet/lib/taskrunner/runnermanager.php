@@ -175,7 +175,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
 
         // максимальное количество в месяц
+
         if (
+            $task['UF_CYCLICALITY'] == 2 &&
             $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']>$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']
         ) throw new SystemException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." ед. в месяц");
@@ -256,23 +258,31 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $dateStar = $TaskManager->dateStartCicle($task);
         $dateEnd = $TaskManager->theorDateEnd($task);
 
+        ///throw new SystemException(print_r($dateEnd,true));
+
         $mouthStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar);
         $dateList = [];
         $dateList[] = $mouthStart;
         $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
         if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
 
+
+
             //Day of the month without leading zeros
             if ((new \Bitrix\Main\Type\DateTime())->format("m") == \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("m"))
                 $now = (new \Bitrix\Main\Type\DateTime())->format("d");
             else
                 $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->format("d");
-            $d = 30 - $now;
-            $d = $d - $PRODUCT['DELAY_EXECUTION']['VALUE'];
-            $step_ = floor($d / ($task['UF_NUMBER_STARTS']+1));
 
-            if ($PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']){
-                $step = floor(30 / $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
+
+
+            $d = 30 - $now;
+            $h = $d*24 - $PRODUCT['DELAY_EXECUTION']['VALUE'];
+            // +1 что появился интервал до первого исполнения след. месяца.
+            $step_ = floor($h / ($task['UF_NUMBER_STARTS']+1));
+
+            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE']){
+                $step =  $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
                 if ($step_ > $step) $step = $step_;
             }
             else {
@@ -295,7 +305,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                $calcDaysStep = $step * ($i + 1);
 
                // постоянно прибавляем к стартовому значению шаг умноженный на позицию
-               $calcDate = \Bitrix\Main\Type\DateTime::createFromTimestamp($mStart)->add("+" . $calcDaysStep . ' days');
+               $calcDate = \Bitrix\Main\Type\DateTime::createFromTimestamp($mStart)->add("+" . $calcDaysStep . ' hours');
                if ($calcDate->getTimestamp() > $dateEnd) break;
                $dateList[$i + 1] = $calcDate;
             }
@@ -344,7 +354,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 'UF_PLANNE_DATE' => $PlannedDate[0],
                 'UF_MONEY_RESERVE' => $FINALE_PRICE,
                 'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
-                'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
+                //'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
             ]);
             if (!$obResult->isSuccess()) {
                 $err = $obResult->getErrors();
@@ -354,8 +364,6 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             $ID = $obResult->getID();
 
         }else {
-
-
             // цикличность задачи
             // 1 - Однократное выполнение
             // 2 - Повторяется ежемесячно
@@ -365,10 +373,17 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             else
                 $PlannedDate = $this->CiclePlannedPublicationDate($task);
 
-            
+           // throw new SystemException(print_r($task,true));
 
+            if ( $task['UF_CYCLICALITY'] == 34){
+                $now = new \Bitrix\Main\Type\DateTime();
+                 [$startMonth, $endMonth]= \PHelp::concreteMonth($now);
+                $day = $now->format("d");
+                $day2 = $endMonth->format("d");
 
-            $FINALE_PRICE = $onePrice*count($PlannedDate);
+                $FINALE_PRICE = $onePrice * ( ($day2 - $day) / $day2 );
+            }else
+                $FINALE_PRICE = $onePrice*count($PlannedDate);
 
             $isGetMoney = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
             if ($isGetMoney === false) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
@@ -381,7 +396,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                     'UF_PLANNE_DATE' => $PlannedDate[$i],
                     'UF_MONEY_RESERVE' => $onePrice,
                     'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
-                    'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
+                    //'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
                 ]);
                 if (!$obResult->isSuccess()) {
                     $err = $obResult->getErrors();

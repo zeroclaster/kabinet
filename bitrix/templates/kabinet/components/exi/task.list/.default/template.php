@@ -409,6 +409,7 @@ $p = $request->get('p');
 						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
 
                         <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
+
                                 <?/* 1 Однократное выполнение */?>
                                 <template v-if="task.UF_CYCLICALITY == 1">
                                     <li><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_1(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
@@ -423,7 +424,7 @@ $p = $request->get('p');
                                 <?/* 33 Одно исполнение */?>
                                 <template v-if="task.UF_CYCLICALITY == 33">
                                     <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+
                                 </template>
 
                                 <?/* 34 Ежемесячная услуга */?>

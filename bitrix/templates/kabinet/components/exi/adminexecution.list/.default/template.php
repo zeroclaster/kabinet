@@ -114,7 +114,7 @@ $this->setFrameMode(true);
                     <div class="text-primary">{{datatask[runner.UF_TASK_ID].UF_NAME}} #{{datatask[runner.UF_TASK_ID].UF_EXT_KEY}}</div>
                     <div style="font-size: 11px;">
                         <div class="info-blk">Дата создания: <span>{{datatask[runner.UF_TASK_ID].UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
-                        <div class="info-blk">Дата завершения: <span>{{runner.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
+                        <div class="info-blk">Дата завершения: <span>{{datatask[runner.UF_TASK_ID].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
                         <div class="info-blk">Согласование: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_COORDINATION')}}</span></div>
                         <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_REPORTING')}}</span></div>
                         <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(datatask[runner.UF_TASK_ID],'UF_CYCLICALITY')}}</span></div>
@@ -125,13 +125,14 @@ $this->setFrameMode(true);
         </td>
 
         <td width="40%">
-            <div>Исполнение #{{runner.UF_EXT_KEY}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
+            <div class="d-flex">
+            <div>Исполнение&nbsp;#{{runner.UF_EXT_KEY}}<div class="alert alert-danger" role="alert" v-if="runner.UF_HITCH == 1">Просроченная задача</div></div>
+            <div class="mb-3 ml-2" v-if="runner.UF_ELEMENT_TYPE == 'multiple' && runner.UF_NUMBER_STARTS>0">Количество единиц:&nbsp;<span style="font-weight: bold;">{{runner.UF_NUMBER_STARTS}}</span></div>
+            </div>
             <mytypeahead :tindex="runnerindex" :catalog="datatask[runner.UF_TASK_ID].UF_TARGET_SITE" v-model="runner.UF_LINK"/>
 
-            <div class="mb-3" _v-if="runner.UF_ELEMENT_TYPE == 'multiple'">
-                Количество запланированных исполнений: {{runner.UF_NUMBER_STARTS}}
-            </div>
-            
+
+
             <div class="mb-3" v-if="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">
                 <div class="">{{dataorder[UF_AUTHOR_ID][dataproject[UF_PROJECT_ID].UF_ORDER_ID][datatask[runner.UF_TASK_ID].UF_PRODUKT_ID].JUST_FILED.VALUE}}:</div>
                 <input class="form-control" type="text" :value="datatask[runner.UF_TASK_ID].UF_JUSTFIELD">

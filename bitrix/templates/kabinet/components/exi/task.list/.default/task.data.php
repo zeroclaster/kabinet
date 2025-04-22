@@ -38,3 +38,4 @@ $task_state = CUtil::PhpToJSObject($data, false, true);
     });
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php");
+?>
