@@ -164,6 +164,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
         if (!$task['UF_CYCLICALITY']) throw new SystemException("Вы не выбрали Цикличность задачи!");
         if ($task['UF_CYCLICALITY'] == 1 && empty($task['UF_DATE_COMPLETION'])) throw new SystemException("Не выбрана дата завершения!");
+
+
+        // дата завершения не может быть теоретической
         $interval = $task['UF_DATE_COMPLETION'] - $dateEnd;
 
         //поскольку выбираем только день, то разница в минутах и секундах может быть,

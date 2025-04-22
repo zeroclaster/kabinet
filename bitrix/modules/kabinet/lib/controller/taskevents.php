@@ -84,6 +84,9 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         }
         $dataSQL[$key] = array_merge($dataSQL[$key],$BDfield);
 
+        foreach ($dataSQL as $key => $data) {
+            $dataSQL[$key]['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($TaskManager->theorDateEnd($data));
+        }
         $taskData = $TaskManager->remakeData($dataSQL);
 
         return [
@@ -149,11 +152,24 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
+        $dataSQL = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([
+            'select'=>['*'],
+            'filter'=>['ID'=>$upd_id],
+            'limit'=>1
+        ])->fetch();
+
+        //$dataSQL['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($TaskManager->theorDateEnd($dataSQL));
+        // UF_DATE_COMPLETION берем от пользователся, сохранив предварительно в задачи
+        $task = $TaskManager->remakeData([$dataSQL]);
+        $task = $task[0];
+
+        /*
         $task = $TaskManager->getTaskById($post['ID']);
         if (!$task) {
             $this->addError(new Error("Задачи с ID ".$post['ID']. ' не найдена!', 1));
             return null;
         }
+        */
 
         $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
 

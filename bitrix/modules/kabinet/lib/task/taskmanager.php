@@ -110,8 +110,9 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
                 //throw new SystemException(print_r([$old],true));
 
-                if (\Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION)->getTimestamp() > $old['UF_DATE_COMPLETION']->getTimestamp())
-                    $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
+                // 22.04.2025
+                //if (\Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION)->getTimestamp() > $old['UF_DATE_COMPLETION']->getTimestamp())
+                //    $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
 
                 if($new['UF_NUMBER_STARTS'] < $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'])
                     throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']);
@@ -221,25 +222,13 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $listdata = [];
         foreach ($source as $data) {
 
-            // TODO AKULA глюки с сохранением даты
-            if (!$data['UF_DATE_COMPLETION']) {
-                $DATE_COMPLETION = $this->theorDateEnd($data);
-                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
+            /*
+            if ($data['UF_CYCLICALITY'] == 1 && $data['UF_CYCLICALITY'] == 33) {
+                $clendar_date_end = $data['UF_DATE_COMPLETION'];
+                if ($clendar_date_end && is_object($clendar_date_end)) $clendar_date_end = $clendar_date_end->getTimestamp();
+                if ($data['UF_DATE_COMPLETION'] < $clendar_date_end) $data['UF_DATE_COMPLETION'] = $clendar_date_end;
             }
-
-            if ($data['UF_STATUS']==0) {
-                // Одно исполнение и задача еще не выполняется
-                if ($data['UF_CYCLICALITY'] == 33) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
-
-                //Повторяется ежемесячно, дата завершения пользователь не правит
-                if ($data['UF_CYCLICALITY'] == 2) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
-
-                if ($data['UF_CYCLICALITY'] == 34) $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
-            }
-
-            if ($data['UF_STATUS']>0) {
-                $data['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
-            }
+            */
 
             $dataconvert = $this->convertData($data, $this->getUserFields());
 
@@ -247,7 +236,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             //$d = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
             //$d->add("1 day");
             //$dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = (new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:00"),"d.m.Y H:i:s"))->getTimestamp();
-            $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $DATE_COMPLETION;
+            $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $dataconvert['UF_DATE_COMPLETION'];
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();
 
             if ($dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] > $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE']) $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'];
@@ -368,6 +357,10 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             //echo \Bitrix\Main\Entity\Query::getLastQuery();
 
+            foreach ($dataSQL as $key => $data) {
+                $dataSQL[$key]['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+            }
+
             $listdata = $this->remakeData($dataSQL);
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
@@ -406,10 +399,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $DATE_COMPLETION = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp)->add($hours." hours")->getTimestamp();
 
             //throw new SystemException(print_r($task['UF_DATE_COMPLETION'],true));
-
-            $clendar_date_end = $task['UF_DATE_COMPLETION'];
-            if ($clendar_date_end && is_object($clendar_date_end)) $clendar_date_end = $clendar_date_end->getTimestamp();
-            if ($DATE_COMPLETION < $clendar_date_end) $DATE_COMPLETION = $clendar_date_end;
 
         }else{
             // дата начала
