@@ -1,5 +1,5 @@
 <?php
-namespace Bitrix\Kabinet;
+namespace Bitrix\Kabinet\helper;
 
 use Bitrix\Main;
 use Bitrix\Main\Context;

@@ -535,22 +535,15 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             ])->fetch();
         }
 
-
-
         if($task['UF_STATUS']>0 && $find_last_queue['UF_PLANNE_DATE']) {
-            $d = (new \DateTime($find_last_queue['UF_PLANNE_DATE']->format("Y-m-d") ))->modify( 'first day of next month' );
 
-
-            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concreteMonth($d);
-
-
-           //$firstDayNextMonth = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
+            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($find_last_queue['UF_PLANNE_DATE']);
             //$calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
             $calc_date = $firstDayNextMonth->getTimestamp();
         }
         else{
             $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
-            $firstDayNextMonth = new \Bitrix\Main\Type\DateTime((new \DateTime('first day of next month'))->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
+            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($now);
 
             if ($now > $firstDayNextMonth)
                 $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
