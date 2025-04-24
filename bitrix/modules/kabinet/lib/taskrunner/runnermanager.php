@@ -215,6 +215,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     public function PlannedPublicationDate($task){
+
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');
 
@@ -259,7 +260,10 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $PRODUCT = $TaskManager->getProductByTask($task);
 
         $dateStar = $TaskManager->dateStartCicle($task);
+
         $dateEnd = $TaskManager->theorDateEnd($task);
+
+
 
         ///throw new SystemException(print_r($dateEnd,true));
 
@@ -269,20 +273,38 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
         if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
 
-
-
             //Day of the month without leading zeros
             if ((new \Bitrix\Main\Type\DateTime())->format("m") == \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("m"))
                 $now = (new \Bitrix\Main\Type\DateTime())->format("d");
             else
                 $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->format("d");
 
+            $lastDayMonth = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("d");
+
+            //if ($task['ID'] == 133)
+            //   throw new SystemException(print_r($lastDayMonth,true));
 
 
-            $d = 30 - $now;
-            $h = $d*24 - $PRODUCT['DELAY_EXECUTION']['VALUE'];
-            // +1 что появился интервал до первого исполнения след. месяца.
-            $step_ = floor($h / ($task['UF_NUMBER_STARTS']+1));
+            // Если задача не начата
+            if ($task['UF_STATUS']==0){
+                $d = $lastDayMonth - $now + 1;
+                $h = $d*24;
+
+                // Если задача не в работе
+                //if($task['UF_STATUS']==0) $h = $h - $PRODUCT['DELAY_EXECUTION']['VALUE'];
+
+                // +1 что появился интервал до первого исполнения след. месяца.
+                $step_ = floor($h / ($task['UF_NUMBER_STARTS']+1));
+
+            }
+            // Если задача начата
+            else{
+                // +1 что появился интервал до первого исполнения след. месяца.
+                $step_ = floor($lastDayMonth*24 / ($task['UF_NUMBER_STARTS']+1));
+            }
+
+           // if ($task['ID'] == 133)
+           //  throw new SystemException(print_r($step_,true));
 
             if ($PRODUCT['MINIMUM_INTERVAL']['VALUE']){
                 $step =  $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
@@ -293,14 +315,20 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 //$step = floor(30 / $task['UF_NUMBER_STARTS']);
                 $step = $step_;
             }
+
+
+
         }else{
             $step = 1;
         }
 
         //throw new SystemException(print_r($step,true));
 
-        $mStart =  $mouthStart2->getTimestamp();
-        // Если задача еще не начата
+        $mStart =  $dateStar;
+
+
+
+         // Если задача еще не начата
         if($task['UF_STATUS']==0) $mStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->getTimestamp();
 
         if ($task['UF_NUMBER_STARTS'] > 0) {
@@ -354,7 +382,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 'UF_TASK_ID' => $task['ID'],
                 'UF_ELEMENT_TYPE' => $type,
                 'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
-                'UF_PLANNE_DATE' => $PlannedDate[0],
+                'UF_PLANNE_DATE' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']), //$PlannedDate[0],
                 'UF_MONEY_RESERVE' => $FINALE_PRICE,
                 'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
                 //'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),

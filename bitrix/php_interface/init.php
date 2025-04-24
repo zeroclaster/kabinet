@@ -11,6 +11,7 @@ function custom_mail($to, $subject, $message, $additional_headers, $additional_p
 
 define('VUEJS_DEBUG', true);
 
+// BITRIX_SM_TESTRUN в корне файл akula.php
 if ($_COOKIE["BITRIX_SM_TESTRUN"])
     define("AKULA", 1);
 else

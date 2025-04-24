@@ -255,7 +255,6 @@ $p = $request->get('p');
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>
-                                <div>Новое количество применится с {{task.RUN_DATE}}</div>
                             </div>
                         </div>
 

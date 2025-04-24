@@ -392,7 +392,10 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $dateTimestamp = $this->dateStartOne($task);
 
             // ВЫсчитываем сколько займет задача в часах КОЛИЧЕСТВО * МИН ИНТЕРВАЛ МЕЖДУ ИСПОЛНЕНИЯМИ
-            $hours = $task['UF_NUMBER_STARTS'] * $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
+            $hours = ($task['UF_NUMBER_STARTS']-1) * $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
+
+            //if ($task['ID'] == 130)
+            //    throw new SystemException(print_r($task['UF_NUMBER_STARTS'],true));
 
             // Если задача начата, то вычитаем MINIMUM_INTERVAL
             if($task['UF_STATUS']>0) $hours = $hours - $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
@@ -506,30 +509,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $now->getTimestamp();
     }
 
-    public function dateStartCicle__($task){
-        $PRODUCT = $this->getProductByTask($task);
-
-        // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])){
-            //TADO тестовое значение задержки исполнения
-            $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-        }
-
-        // если задача циклическая, есть задержка исполнения
-        if ($task['UF_CYCLICALITY'] == 2) $DELAY_EXECUTION = $PRODUCT['DELAY_EXECUTION']['VALUE'];
-        else $DELAY_EXECUTION = 0;
-
-
-        $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
-        $firstDayNextMonth = new \Bitrix\Main\Type\DateTime((new \DateTime('first day of next month'))->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
-
-        if ($now > $firstDayNextMonth || $task['UF_STATUS']>0)
-            $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
-        else
-            $calc_date = $now->getTimestamp();
-
-        return $calc_date;
-    }
 
     public function dateStartCicle($task){
         $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
@@ -556,9 +535,14 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
 
 
-        if($task['UF_STATUS']>0 && $find_last_queue['UF_DATE_COMPLETION']) {
-            $d = (new \DateTime($find_last_queue['UF_DATE_COMPLETION']->format("Y-m-d") ))->modify( 'first day of next month' );
-            $firstDayNextMonth = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
+        if($task['UF_STATUS']>0 && $find_last_queue['UF_PLANNE_DATE']) {
+            $d = (new \DateTime($find_last_queue['UF_PLANNE_DATE']->format("Y-m-d") ))->modify( 'first day of next month' );
+
+
+            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concreteMonth($d);
+
+
+           //$firstDayNextMonth = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y H:i:s");
             //$calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
             $calc_date = $firstDayNextMonth->getTimestamp();
         }
@@ -609,10 +593,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         if ($key === false) return false;
 
         return $collection[$key];
-    }
-
-    public function getQueueStatistics__(int $id){
-        return [];
     }
 
     public function getQueueStatistics($task){

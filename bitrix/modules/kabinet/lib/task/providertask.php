@@ -39,7 +39,11 @@ class Providertask{
         $user = $this->user;
 		$HLBClass = (\KContainer::getInstance())->get(TASK_HL);
 
-		if ($GLOBALS['task_test'] == 'y') return new Taskmanagertest(TASK,$HLBClass);
+
+		// можно для проверки запустить тестовый вариант
+		// $GLOBALS['task_test'] = 'y'
+		// bitrix/templates/kabinet/components/exi/task.list/.default/task.data_test.php
+		//if ($GLOBALS['task_test'] == 'y') return new Taskmanagertest(TASK,$HLBClass);
 
         return new Taskmanagercache(TASK,$HLBClass);
     }
