@@ -45,6 +45,6 @@ class Providertask{
 		// bitrix/templates/kabinet/components/exi/task.list/.default/task.data_test.php
 		//if ($GLOBALS['task_test'] == 'y') return new Taskmanagertest(TASK,$HLBClass);
 
-        return new Taskmanagercache(TASK,$HLBClass);
+        return new Taskmanager(TASK,$HLBClass);
     }
 }
