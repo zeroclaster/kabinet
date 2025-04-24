@@ -5,8 +5,9 @@ use Bitrix\Main\SystemException,
     Bitrix\Main\Entity,
     Bitrix\Main\Event;
 
-use \Bitrix\Kabinet\DateTime;
-//use \Bitrix\Main\Type\DateTime;
+// Для отладки, можно установить свою дату задав константу TESTDATE
+//use \Bitrix\Kabinet\helper\DateTime;
+use \Bitrix\Main\Type\DateTime;
 
 /*
  * 10-Отменена;

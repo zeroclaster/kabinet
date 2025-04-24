@@ -102,6 +102,7 @@ class Datesite{
         $d = (
             new \DateTime($date->format("Y-m-d"))
         )->modify( 'first day of this month' );
+
         $Start = new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:01"), "d.m.Y 00:00:01");
 
         // Конец следующего месяца
