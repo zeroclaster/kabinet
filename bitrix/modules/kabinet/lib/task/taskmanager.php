@@ -93,8 +93,8 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         if ($new['UF_CYCLICALITY'] == 1) {
             // обновляем дату завершения новой расчетной датой если изменилось колличество или тип цикличность
             if ($old['UF_CYCLICALITY'] != $new['UF_CYCLICALITY']) {
-                $DATE_COMPLETION = $this->theorDateEnd($new);
-                $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
+                $DATE_COMPLETION = $this->getItem($new)->theorDateEnd($new);
+                $object->set('UF_DATE_COMPLETION', $DATE_COMPLETION);
             }
 
             if ($old['UF_NUMBER_STARTS'] != $new['UF_NUMBER_STARTS']) {
@@ -106,9 +106,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 if($new['UF_NUMBER_STARTS'] > $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'])
                     throw new SystemException("Максимальное количество в месяц ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
                 */
-                $DATE_COMPLETION = $this->theorDateEnd($new);
-
-                //throw new SystemException(print_r([$old],true));
 
                 // 22.04.2025
                 //if (\Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION)->getTimestamp() > $old['UF_DATE_COMPLETION']->getTimestamp())
@@ -119,12 +116,10 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
                 // 14.02.2025
                 // было до этого, дата всегда менялась если сменить количество
-                //$DATE_COMPLETION = $this->theorDateEnd($new);
+                //$DATE_COMPLETION = $this->getItem($new)->theorDateEnd($new);
                 //$object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
             }
         }
-
-        //throw new SystemException("Test Stop1");
     }
 
     public function checkBeforeUpdate($id,$primary,$fields,$object,$oldData){
@@ -133,17 +128,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $fields['UF_DATE_COMPLETION'] &&
             $oldData['UF_NUMBER_STARTS']==$fields['UF_NUMBER_STARTS']
         ) {
-            $DATE_COMPLETION = $this->theorDateEnd($oldData);
+            $DATE_COMPLETION = $this->getItem($oldData)->theorDateEnd($oldData);
 
-
-            //throw new SystemException($fields['UF_DATE_COMPLETION']->format('d.m.Y H:i:s'));
-
-            // if ($fields['UF_DATE_COMPLETION']->getTimestamp() < $DATE_COMPLETION)
-            if (\PHelp::compareDates($fields['UF_DATE_COMPLETION'], \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION)))
-                throw new SystemException("Дата завершения не может быть меньше ".\Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION)->format('d.m.Y'));
+            if (\PHelp::compareDates($fields['UF_DATE_COMPLETION'], $DATE_COMPLETION))
+                throw new SystemException("Дата завершения не может быть меньше ".$DATE_COMPLETION->format('d.m.Y'));
         }
-
-        //throw new SystemException("Test Stop1");
     }
 
     // Схема создания новой задачи
@@ -192,10 +181,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 $object->set('UF_NUMBER_STARTS', $PRODUCT['QUANTITY']);
                 $fields_ = $fields;
                 $fields_['UF_NUMBER_STARTS'] = $PRODUCT['QUANTITY'];
+                $fields_['UF_CYCLICALITY'] = 1;
             }
 
-            $DATE_COMPLETION = $this->theorDateEnd($fields_);
-            $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
+            $DATE_COMPLETION = $this->getItem($fields_)->theorDateEnd($fields_);
+            $object->set('UF_DATE_COMPLETION', $DATE_COMPLETION);
         }
 
     }
@@ -221,21 +211,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     public function remakeData(array $source){
         $listdata = [];
         foreach ($source as $data) {
-
-            /*
-            if ($data['UF_CYCLICALITY'] == 1 && $data['UF_CYCLICALITY'] == 33) {
-                $clendar_date_end = $data['UF_DATE_COMPLETION'];
-                if ($clendar_date_end && is_object($clendar_date_end)) $clendar_date_end = $clendar_date_end->getTimestamp();
-                if ($data['UF_DATE_COMPLETION'] < $clendar_date_end) $data['UF_DATE_COMPLETION'] = $clendar_date_end;
-            }
-            */
-
             $dataconvert = $this->convertData($data, $this->getUserFields());
-
-            $DATE_COMPLETION = $this->theorDateEnd($dataconvert);
-            //$d = \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION);
-            //$d->add("1 day");
-            //$dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = (new \Bitrix\Main\Type\DateTime($d->format("d.m.Y 00:00:00"),"d.m.Y H:i:s"))->getTimestamp();
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $dataconvert['UF_DATE_COMPLETION'];
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();
 
@@ -245,8 +221,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         }
 
         foreach ($listdata as $index => $task2) {
-            if ($task2['ID'] == 94)
-                    $a = 1000;
+            $taskObject = $this->getItem($task2);
 
             $PRODUCT = $this->getProductByTask($task2);
             if (!$PRODUCT){
@@ -277,14 +252,12 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
                 // 1 - Однократное выполнение
                 if ($v1234['ID'] == 1) {
-                    $startLastFulfi = $this->dateStartOne(array_merge($task2,['UF_CYCLICALITY'=>1]));
-                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . (\Bitrix\Main\Type\DateTime::createFromTimestamp($startLastFulfi))->format("d.m.Y") . ' до заданной даты';
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'равномерно с ' . $taskObject->dateStartTask(array_merge($task2,['UF_CYCLICALITY'=>1]))->format("d.m.Y") . ' до заданной даты';
                 }
 
                 // 2 - Повторяется ежемесячно
                 if ($v1234['ID'] == 2) {
-                    $start = $this->dateStartCicle(array_merge($task2,['UF_CYCLICALITY'=>2]));
-                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . (\Bitrix\Main\Type\DateTime::createFromTimestamp($start))->format("d.m.Y");
+                    $task2['UF_CYCLICALITY_ORIGINAL'][$k1223]['VALUE'] = 'ежемесячно, начиная с ' . $taskObject->dateStartTask(array_merge($task2,['UF_CYCLICALITY'=>2]))->format("d.m.Y");
                 }
             }
 
@@ -292,15 +265,15 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $listdata[$index]['UF_CYCLICALITY_ORIGINAL'] = $task2['UF_CYCLICALITY_ORIGINAL'];
 
             // Ежемесячная услуга
-            if ($task2['UF_CYCLICALITY'] == 34) $d = $this->dateStartCicle($task2);
+            if ($task2['UF_CYCLICALITY'] == 34) $d = $taskObject->dateStartTask($task2);
 
             // Ежемесячное выполнение
-            if ($task2['UF_CYCLICALITY'] == 2) $d = $this->dateStartCicle($task2);
+            if ($task2['UF_CYCLICALITY'] == 2) $d = $taskObject->dateStartTask($task2);
 
             // до заданной даты
             if ($task2['UF_CYCLICALITY'] == 1 || $task2['UF_CYCLICALITY'] == 33) $d = $this->dateEndOne($task2);
 
-            $listdata[$index]['RUN_DATE'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($d)->format("d.m.Y");
+            $listdata[$index]['RUN_DATE'] = $d->format("d.m.Y");
         }
 
         return $listdata;
@@ -358,7 +331,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             //echo \Bitrix\Main\Entity\Query::getLastQuery();
 
             foreach ($dataSQL as $key => $data) {
-                $dataSQL[$key]['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($this->theorDateEnd($data));
+                $dataSQL[$key]['UF_DATE_COMPLETION'] = $this->getItem($data)->theorDateEnd($data);
             }
 
             $listdata = $this->remakeData($dataSQL);
@@ -375,183 +348,14 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $listdata;
     }
 
-    public function theorDateEnd(array $task){
-        $PRODUCT = $this->getProductByTask($task);
-
-        if(
-            (
-                //Однократное выполнение
-                $task['UF_CYCLICALITY'] == 1 ||
-                // Одно исполнение
-                $task['UF_CYCLICALITY'] == 33)
-            // 12.02.2025
-            // задачи с одним исполнение Минимальный интервал планирования = 0, и из-за этого попадали в ежемес. исполнения
-           // &&
-            //$PRODUCT['MINIMUM_INTERVAL']['VALUE']
-        ){
-            $dateTimestamp = $this->dateStartOne($task);
-
-            // ВЫсчитываем сколько займет задача в часах КОЛИЧЕСТВО * МИН ИНТЕРВАЛ МЕЖДУ ИСПОЛНЕНИЯМИ
-            $hours = ($task['UF_NUMBER_STARTS']-1) * $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-
-            //if ($task['ID'] == 130)
-            //    throw new SystemException(print_r($task['UF_NUMBER_STARTS'],true));
-
-            // Если задача начата, то вычитаем MINIMUM_INTERVAL
-            if($task['UF_STATUS']>0) $hours = $hours - $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-            $DATE_COMPLETION = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp)->add($hours." hours")->getTimestamp();
-
-            //throw new SystemException(print_r($task['UF_DATE_COMPLETION'],true));
-
-        }else{
-            // дата начала
-            $dateTimestamp = $this->dateStartCicle($task);
-            [$mouthStart1,$mouthEnd1] = \PHelp::concreteMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
-            [$mouthStart2,$mouthEnd2] = \PHelp::concretenextMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
-
-            /*
-            if ($task['ID'] == 118) {
-                $d = (
-                new \DateTime(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp)->format("Y-m-d") )
-                )->modify( 'last day of this month' );
-                $d = $d->getTimestamp() + 86399;
-
-                throw new SystemException(print_r([$task['ID'], $d], true));
-            }
-            */
-
-
-            $DATE_COMPLETION = $mouthEnd2->getTimestamp();
-
-            // Если задача еще не начата
-            if($task['UF_STATUS']==0) {
-                if ($dateTimestamp <= $mouthEnd1->getTimestamp()) $DATE_COMPLETION = $mouthEnd1->getTimestamp();
-                else $DATE_COMPLETION = $mouthEnd2->getTimestamp();
-            }else{
-                $DATE_COMPLETION = $mouthEnd1->getTimestamp();
-            }
-
-        }
-
-        return $DATE_COMPLETION;
-    }
-
-    public function dateStartOne($task){
-        $PRODUCT = $this->getProductByTask($task);
-
-        // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])){
-            //TADO тестовое значение задержки исполнения
-            $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-        }
-
-        $now = new \Bitrix\Main\Type\DateTime();
-
-        // если задача уже выполняется, то дата начало это последнее исполнение
-        if($task['UF_STATUS']>0){
-            $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-
-            $db_array = $this->FulfiCache($task);
-
-            $find_last_queue = [];
-            if ($db_array) $find_last_queue = $db_array[0];
-
-            if ($find_last_queue) {
-                /*
-                if ($find_last_queue['UF_DATE_COMPLETION']){
-                    if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
-                        $now = $find_last_queue['UF_DATE_COMPLETION'];
-                }else {
-                    if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                        $now = $find_last_queue['UF_PLANNE_DATE'];
-                }
-                */
-                if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                    $now = $find_last_queue['UF_PLANNE_DATE'];
-
-                // TODO Для чего используем прибавку мин. интервала
-                if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'])
-                    $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
-            }else
-                // минимальный интервал исполнения
-                $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
-        }else {
-            // задержка исполнения
-            $now->add($PRODUCT['DELAY_EXECUTION']['VALUE'] . " hours");
-        }
-
-        return $now->getTimestamp();
-    }
-
     public function dateEndOne($task){
-        $PRODUCT = $this->getProductByTask($task);
-
-        // "Задержка исполнения"
-        //TADO тестовое значение задержки исполнения
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])) $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-        $now = new \Bitrix\Main\Type\DateTime();
-
         // если задача уже выполняется, то дата начало это последнее исполнение
         if($task['UF_STATUS']>0){
-
-            $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-            // ищем последнее исполнение
-            $find_last_queue = $HLBClass::getlist([
-                'select'=>['ID','UF_PLANNE_DATE','UF_DATE_COMPLETION'],
-                'filter'=>['UF_TASK_ID'=>$task['ID']],
-                'order'=>['UF_PLANNE_DATE'=>'desc'],
-                'limit'=>1
-            ])->fetch();
-
-            if ($find_last_queue)
-                $now = $find_last_queue['UF_PLANNE_DATE'];
-
+            $db_array = $this->FulfiCache($task);
+            if ($db_array) return $db_array[0]['UF_PLANNE_DATE'];
         }
 
-        return $now->getTimestamp();
-    }
-
-
-    public function dateStartCicle($task){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-        $PRODUCT = $this->getProductByTask($task);
-
-        //TADO тестовое значение задержки исполнения
-        // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])) $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-
-        // если задача циклическая новая, есть задержка исполнения
-        if ($task['UF_CYCLICALITY'] == 2) $DELAY_EXECUTION = $PRODUCT['DELAY_EXECUTION']['VALUE'];
-        else $DELAY_EXECUTION = 0;
-
-
-        if($task['UF_STATUS']>0) {
-            // ищем последнее исполнение
-            $find_last_queue = $HLBClass::getlist([
-                'select' => ['ID', 'UF_PLANNE_DATE', 'UF_DATE_COMPLETION'],
-                'filter' => ['UF_TASK_ID' => $task['ID']],
-                'order' => ['UF_PLANNE_DATE' => 'desc'],
-                'limit' => 1
-            ])->fetch();
-        }
-
-        if($task['UF_STATUS']>0 && $find_last_queue['UF_PLANNE_DATE']) {
-
-            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($find_last_queue['UF_PLANNE_DATE']);
-            //$calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
-            $calc_date = $firstDayNextMonth->getTimestamp();
-        }
-        else{
-            $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
-            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($now);
-
-            if ($now > $firstDayNextMonth)
-                $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
-            else
-                $calc_date = $now->getTimestamp();
-        }
-
-        return $calc_date;
+        return new \Bitrix\Main\Type\DateTime;
     }
 
     public function getProductByTask(array $task){
@@ -668,7 +472,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $ret;
     }
 
-    protected function FulfiCache($task){
+    public function FulfiCache($task){
         $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
 
         $taskId = $task['ID'];
@@ -705,8 +509,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         foreach ($this->FulfiCacheArray[$id] as $key =>  $item) if ($item['FULFILLMENT_REF_TASK_ID'] == $taskId) {
             foreach ($item as $field => $value){
                 if (is_object($value) && ($value instanceof \Bitrix\Main\Type\DateTime) && $value) {
-                    if ($taskId == 94)
-                        $a = 100;
                     $item[$field] = \Bitrix\Main\Type\DateTime::createFromTimestamp($item[$field . '_TIMESTAMP']);
                 }
             }
@@ -720,5 +522,12 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $archive = (\KContainer::getInstance())->get('ARCHIVE');
         return $archive->add($this,$task);
 
+    }
+
+    public function getItem($task){
+        $Itemfactory = new \Bitrix\Kabinet\task\factory\Itemfactory;
+        $item = $Itemfactory->getObject($task);
+
+        return $item;
     }
 }

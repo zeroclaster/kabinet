@@ -41,28 +41,20 @@ class Datesite{
         }
     }
 
-    static function BitrixdateNow($timestamp = 0){
-        if ($timestamp)
-            $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($timestamp);
-        else
-            $now = new \Bitrix\Main\Type\DateTime();
-        $nowString = $now->format("d.m.Y")." 00:00:01";
-        return new \Bitrix\Main\Type\DateTime($nowString,'d.m.Y h:i:s');
-    }
+    static function BitrixdateNow($datetime = null){
+        $now = new \Bitrix\Main\Type\DateTime();
 
-    static function dateNow($timestamp = 0){
-        $now = new \DateTime();
-        if ($timestamp) $now->setTimestamp($timestamp);
+        if ($datetime) $now = $datetime;
         $nowString = $now->format("d.m.Y")." 00:00:01";
-        return \DateTime::createFromFormat('d.m.Y h:i:s', $nowString);
+        return new \Bitrix\Main\Type\DateTime($nowString,'d.m.Y H:i:s');
     }
 
     static function compareDates($date1, $date2){
         $date1_string = $date1->format("d.m.Y")." 00:00:01";
         $date2_string = $date2->format("d.m.Y")." 00:00:01";
-        $date1_stamp = (new \Bitrix\Main\Type\DateTime($date1_string,'d.m.Y h:i:s'))->getTimestamp();
-        $date2_stamp = (new \Bitrix\Main\Type\DateTime($date2_string,'d.m.Y h:i:s'))->getTimestamp();
-        return $date1_stamp < $date2_stamp;
+        $date1 = (new \Bitrix\Main\Type\DateTime($date1_string,'d.m.Y H:i:s'));
+        $date2 = (new \Bitrix\Main\Type\DateTime($date2_string,'d.m.Y H:i:s'));
+        return $date1 < $date2;
     }
 
     static function timeConvert($value,$to){

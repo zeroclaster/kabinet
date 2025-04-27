@@ -10,7 +10,9 @@ abstract class Itemtask{
 
     abstract public function dateStartTask($task);
 
-    abstract public function theorDateEnd(array $task);
+    abstract public function theorDateEnd($task);
 
     abstract public function PlannedPublicationDate($task);
+
+    abstract public function createFulfi($task,$PlannedDate);
 }

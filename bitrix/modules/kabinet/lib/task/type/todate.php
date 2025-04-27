@@ -1,6 +1,7 @@
 <?
 namespace Bitrix\Kabinet\task\type;
 
+use \Bitrix\Main\SystemException;
 
 class Todate extends Itemtask{
     private $subtype;
@@ -20,7 +21,7 @@ TZ;
     }
 
     public function calcPlannedFinalePrice($task,$PlannedDate){
-        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task);
+        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task,$PlannedDate);
 
         return $FINALE_PRICE;
     }
@@ -28,111 +29,61 @@ TZ;
     public function dateStartTask($task){
         $dateStar = $this->subtype->dateStartTask($task);
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
+        $today = new \Bitrix\Main\Type\DateTime();
 
-        $PRODUCT = $this->getProductByTask($task);
+        // + задержка исполнения
+        if($task['UF_STATUS']==0) return $today->add($PRODUCT['DELAY_EXECUTION']['VALUE'] . " hours");
 
-        // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])){
-            //TADO тестовое значение задержки исполнения
-            $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-        }
+        // ищем последнее исполнение
+        $db_array = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->FulfiCache($task);
+        // что бы дата старта не попала в прошлое
+        if ($db_array && ($db_array[0]['UF_PLANNE_DATE'] > $today)) return $db_array[0]['UF_PLANNE_DATE']->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
 
-        $now = new \Bitrix\Main\Type\DateTime();
 
-        // если задача уже выполняется, то дата начало это последнее исполнение
-        if($task['UF_STATUS']>0){
-            $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-
-            $db_array = $TaskManager->FulfiCache($task);
-
-            $find_last_queue = [];
-            if ($db_array) $find_last_queue = $db_array[0];
-
-            if ($find_last_queue) {
-                /*
-                if ($find_last_queue['UF_DATE_COMPLETION']){
-                    if ($find_last_queue['UF_DATE_COMPLETION']->getTimestamp() > $now->getTimestamp())
-                        $now = $find_last_queue['UF_DATE_COMPLETION'];
-                }else {
-                    if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                        $now = $find_last_queue['UF_PLANNE_DATE'];
-                }
-                */
-                if ($find_last_queue['UF_PLANNE_DATE']->getTimestamp() > $now->getTimestamp())
-                    $now = $find_last_queue['UF_PLANNE_DATE'];
-
-                // TODO Для чего используем прибавку мин. интервала
-                if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'])
-                    $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
-            }else
-                // минимальный интервал исполнения
-                $now->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
-        }else {
-            // задержка исполнения
-            $now->add($PRODUCT['DELAY_EXECUTION']['VALUE'] . " hours");
-        }
-
-        return $now->getTimestamp();
+        // минимальный интервал исполнения
+        return $today->add($PRODUCT['MINIMUM_INTERVAL']['VALUE'] . " hours");
     }
 
-    public function theorDateEnd(array $task){
+    public function theorDateEnd($task){
         $dateEnd = $this->subtype->theorDateEnd($task);
 
-        $PRODUCT = $this->getProductByTask($task);
-
-        $dateTimestamp = $this->dateStartOne($task);
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
 
         // ВЫсчитываем сколько займет задача в часах КОЛИЧЕСТВО * МИН ИНТЕРВАЛ МЕЖДУ ИСПОЛНЕНИЯМИ
         $hours = ($task['UF_NUMBER_STARTS']-1) * $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
 
-        //if ($task['ID'] == 130)
-        //    throw new SystemException(print_r($task['UF_NUMBER_STARTS'],true));
-
         // Если задача начата, то вычитаем MINIMUM_INTERVAL
         if($task['UF_STATUS']>0) $hours = $hours - $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-        $DATE_COMPLETION = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp)->add($hours." hours")->getTimestamp();
-
-        //throw new SystemException(print_r($task['UF_DATE_COMPLETION'],true));
-
-        return $DATE_COMPLETION;
+        return $this->dateStartTask($task)->add($hours." hours");
     }
 
     public function PlannedPublicationDate($task){
         $dateList = $this->subtype->PlannedPublicationDate($task);
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
-
-        $PRODUCT = $TaskManager->getProductByTask($task);
-
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
         $dateStar = $this->dateStartTask($task);
-        $now = \PHelp::dateNow($dateStar);
 
-        $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
-        $dateList = [];
-        $dateList[] = \PHelp::BitrixdateNow($dateStar);
-        if ($task['UF_NUMBER_STARTS'] > 0) {
-            $diffDays = $now->diff(\DateTime::createFromFormat('U', $task['UF_DATE_COMPLETION']))->format('%a');
-            // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
+        $dateList = [\PHelp::BitrixdateNow($dateStar)];
+        $UF_NUMBER_STARTS = $task['UF_NUMBER_STARTS'] - 1;
+        if ($UF_NUMBER_STARTS == 0) return $dateList;
 
-            $diffhours = $diffDays * 24;
+        $diffDays = $dateStar->getDiff(\Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']))->format('%a');
 
-            $step = floor($diffhours / $task['UF_NUMBER_STARTS']);
-            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'] > $step) $step = $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
+        // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
+        $step = floor($diffDays * 24 / $task['UF_NUMBER_STARTS']);
+        $step = max($PRODUCT['MINIMUM_INTERVAL']['VALUE'], $step);
 
-            //$step = floor($diffDays / $task['UF_NUMBER_STARTS']);
-
-
-            for ($i = 0; $i < $task['UF_NUMBER_STARTS']; $i++) {
-                $calcDaysStep = $step * ($i + 1);
-                $now = \PHelp::BitrixdateNow($dateStar);
-                //$dateList[$i+1] = $now->add("+" . $calcDaysStep . ' days');
-                $dateList[$i+1] = $now->add("+" . $calcDaysStep . ' hours');
-            }
+        for ($i = 0; $i < $UF_NUMBER_STARTS; $i++) {
+            $calcDaysStep = $step * ($i + 1);
+            $now = \PHelp::BitrixdateNow($dateStar);
+            $dateList[$i+1] = $now->add("+" . $calcDaysStep . ' hours');
         }
 
         return $dateList;
+    }
+
+    public function createFulfi($task,$PlannedDate){
+        $this->subtype->createFulfi($task,$PlannedDate);
     }
 }

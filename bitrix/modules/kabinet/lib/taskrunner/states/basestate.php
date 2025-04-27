@@ -48,11 +48,15 @@ class Basestate{
 	
 	public function getTask(){
 		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-		$taskManager = $sL->get('Kabinet.Task');
+        $TaskManager = $sL->get('Kabinet.Task');
 		$runnerFields = $this->runnerFields;
-		
-		$UF_TASK_ID = $runnerFields['UF_TASK_ID'];
-        $TaskData = $taskManager->getData(true,[],['ID'=>$UF_TASK_ID]);
+
+        $dataSQL = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([
+            'select'=>['*'],
+            'filter'=>['ID'=>$runnerFields['UF_TASK_ID']],
+            'limit'=>1
+        ])->fetch();
+        $TaskData = $TaskManager->remakeData([$dataSQL]);
         $TaskData = $TaskData[0];
 			
 		return $TaskData;

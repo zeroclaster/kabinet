@@ -1,6 +1,7 @@
 <?
 namespace Bitrix\Kabinet\task\type;
 
+use \Bitrix\Main\SystemException;
 
 class Todate_1 extends Todate{
     private $subtype;
@@ -22,11 +23,9 @@ TZ;
     }
 
     public function calcPlannedFinalePrice($task,$PlannedDate){
-        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task);
+        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task,$PlannedDate);
 
-        $FINALE_PRICE = $task['FINALE_PRICE'];
-        $onePrice = $FINALE_PRICE / $task['UF_NUMBER_STARTS'];
-
+        $onePrice = $task['FINALE_PRICE'] / $task['UF_NUMBER_STARTS'];
         $FINALE_PRICE = $onePrice*count($PlannedDate);
 
         return $FINALE_PRICE;
@@ -38,7 +37,7 @@ TZ;
         return $dateStar;
     }
 
-    public function theorDateEnd(array $task){
+    public function theorDateEnd($task){
         $DATE_COMPLETION = $this->subtype->theorDateEnd($task);
 
         return $DATE_COMPLETION;
@@ -48,5 +47,9 @@ TZ;
         $dateList = $this->subtype->PlannedPublicationDate($task);
 
         return $dateList;
+    }
+
+    public function createFulfi($task,$PlannedDate){
+        $this->subtype->createFulfi($task,$PlannedDate);
     }
 }

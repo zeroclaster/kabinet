@@ -84,8 +84,9 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         }
         $dataSQL[$key] = array_merge($dataSQL[$key],$BDfield);
 
-        foreach ($dataSQL as $key => $data) {
-            $dataSQL[$key]['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($TaskManager->theorDateEnd($data));
+        foreach ($dataSQL as $key => $task) {
+            $taskObject = $TaskManager->getItem($task);
+            $dataSQL[$key]['UF_DATE_COMPLETION'] = $taskObject->theorDateEnd($task);
         }
         $taskData = $TaskManager->remakeData($dataSQL);
 
@@ -158,7 +159,11 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             'limit'=>1
         ])->fetch();
 
-        //$dataSQL['UF_DATE_COMPLETION'] = \Bitrix\Main\Type\DateTime::createFromTimestamp($TaskManager->theorDateEnd($dataSQL));
+        // если это еж. мес. задача, то UF_DATE_COMPLETION пользователь не выставляет
+        if (!$dataSQL['UF_DATE_COMPLETION']) {
+            $taskObject = $TaskManager->getItem($dataSQL);
+            $dataSQL['UF_DATE_COMPLETION'] = $taskObject->theorDateEnd($dataSQL);
+        }
         // UF_DATE_COMPLETION берем от пользователся, сохранив предварительно в задачи
         $task = $TaskManager->remakeData([$dataSQL]);
         $task = $task[0];

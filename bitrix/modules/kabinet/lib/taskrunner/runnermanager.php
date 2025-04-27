@@ -136,7 +136,6 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
     public function OnBeforeDeleteHandler($id, $primary, $oldFields)
     {
-
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $manager = $sL->get('Kabinet.Messanger');
         // ищим все сообщения
@@ -156,7 +155,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $PRODUCT = $TaskManager->getProductByTask($task);
 
         $GLOBALS['aaa'] = 'y';
-        $dateEnd = $TaskManager->theorDateEnd($task);
+        $dateEnd = $TaskManager->getItem($task)->theorDateEnd($task);
 
 
 
@@ -167,12 +166,12 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
 
         // дата завершения не может быть теоретической
-        $interval = $task['UF_DATE_COMPLETION'] - $dateEnd;
+        $interval = $task['UF_DATE_COMPLETION'] - $dateEnd->getTimestamp();
 
         //поскольку выбираем только день, то разница в минутах и секундах может быть,
         // при сравнении это влияет,
         // поэтому предполагаем что эта разница не больше 86300
-        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2) throw new SystemException("Дата завершения не може быть меньше ".DateTime::createFromTimestamp($dateEnd)->format("d.m.Y"));
+        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2) throw new SystemException("Дата завершения не може быть меньше ".$dateEnd->format("d.m.Y"));
 
         if (!$task['UF_NUMBER_STARTS']) throw new SystemException("Не выбранно количество!");
 
@@ -200,150 +199,6 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         return true;
     }
 
-    public function MultiplePlannedPublicationDate($task){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
-
-        if($task['UF_CYCLICALITY'] == 1 || $task['UF_CYCLICALITY'] == 33)
-                    $dateStar = $TaskManager->dateStartOne($task);
-        else
-                    $dateStar = $TaskManager->dateStartCicle($task);
-
-        $dateList[] = \PHelp::BitrixdateNow($dateStar);
-
-        return $dateList;
-    }
-
-    public function PlannedPublicationDate($task){
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
-
-        $PRODUCT = $TaskManager->getProductByTask($task);
-
-        $dateStar = $TaskManager->dateStartOne($task);
-        $now = \PHelp::dateNow($dateStar);
-
-        $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
-        $dateList = [];
-        $dateList[] = \PHelp::BitrixdateNow($dateStar);
-        if ($task['UF_NUMBER_STARTS'] > 0) {
-            $diffDays = $now->diff(\DateTime::createFromFormat('U', $task['UF_DATE_COMPLETION']))->format('%a');
-            // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-
-            $diffhours = $diffDays * 24;
-
-            $step = floor($diffhours / $task['UF_NUMBER_STARTS']);
-            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE'] > $step) $step = $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-
-            //$step = floor($diffDays / $task['UF_NUMBER_STARTS']);
-
-
-            for ($i = 0; $i < $task['UF_NUMBER_STARTS']; $i++) {
-                $calcDaysStep = $step * ($i + 1);
-                $now = \PHelp::BitrixdateNow($dateStar);
-                //$dateList[$i+1] = $now->add("+" . $calcDaysStep . ' days');
-                $dateList[$i+1] = $now->add("+" . $calcDaysStep . ' hours');
-            }
-        }
-
-        return $dateList;
-    }
-
-    public function CiclePlannedPublicationDate($task){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
-
-        [$mouthStart1,$mouthEnd1] = \PHelp::actualMonth();
-        [$mouthStart2,$mouthEnd2] = \PHelp::nextMonth();
-
-        $PRODUCT = $TaskManager->getProductByTask($task);
-
-        $dateStar = $TaskManager->dateStartCicle($task);
-
-        $dateEnd = $TaskManager->theorDateEnd($task);
-
-
-
-        ///throw new SystemException(print_r($dateEnd,true));
-
-        $mouthStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar);
-        $dateList = [];
-        $dateList[] = $mouthStart;
-        $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
-        if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
-
-            //Day of the month without leading zeros
-            if ((new \Bitrix\Main\Type\DateTime())->format("m") == \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("m"))
-                $now = (new \Bitrix\Main\Type\DateTime())->format("d");
-            else
-                $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->format("d");
-
-            $lastDayMonth = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("d");
-
-            //if ($task['ID'] == 133)
-            //   throw new SystemException(print_r($lastDayMonth,true));
-
-
-            // Если задача не начата
-            if ($task['UF_STATUS']==0){
-                $d = $lastDayMonth - $now + 1;
-                $h = $d*24;
-
-                // Если задача не в работе
-                //if($task['UF_STATUS']==0) $h = $h - $PRODUCT['DELAY_EXECUTION']['VALUE'];
-
-                // +1 что появился интервал до первого исполнения след. месяца.
-                $step_ = floor($h / ($task['UF_NUMBER_STARTS']+1));
-
-            }
-            // Если задача начата
-            else{
-                // +1 что появился интервал до первого исполнения след. месяца.
-                $step_ = floor($lastDayMonth*24 / ($task['UF_NUMBER_STARTS']+1));
-            }
-
-           // if ($task['ID'] == 133)
-           //  throw new SystemException(print_r($step_,true));
-
-            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE']){
-                $step =  $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-                if ($step_ > $step) $step = $step_;
-            }
-            else {
-                // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-                //$step = floor(30 / $task['UF_NUMBER_STARTS']);
-                $step = $step_;
-            }
-
-
-
-        }else{
-            $step = 1;
-        }
-
-        //throw new SystemException(print_r($step,true));
-
-        $mStart =  $dateStar;
-
-
-
-         // Если задача еще не начата
-        if($task['UF_STATUS']==0) $mStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->getTimestamp();
-
-        if ($task['UF_NUMBER_STARTS'] > 0) {
-            for ($i = 0; $i < $task['UF_NUMBER_STARTS']; $i++) {
-               $calcDaysStep = $step * ($i + 1);
-
-               // постоянно прибавляем к стартовому значению шаг умноженный на позицию
-               $calcDate = \Bitrix\Main\Type\DateTime::createFromTimestamp($mStart)->add("+" . $calcDaysStep . ' hours');
-               if ($calcDate->getTimestamp() > $dateEnd) break;
-               $dateList[$i + 1] = $calcDate;
-            }
-        }
-
-        return $dateList;
-    }
 
     // /cron/cron1.php запускается в футере
     // \Bitrix\Kabinet\task\Autorun::run()
@@ -358,101 +213,17 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');
         $BillingManager = $sL->get('Kabinet.Billing');
-        $PRODUCT = $TaskManager->getProductByTask($task);
 
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $taskObject = $TaskManager->getItem($task);
+        $PlannedDate = $taskObject->PlannedPublicationDate($task);
 
-        //Тип услуги
-        //$type = $PRODUCT['TYRE_SERVICE']['VALUE'];
+        $FINALE_PRICE = $taskObject->calcPlannedFinalePrice($task,$PlannedDate);
 
-        //Элемент тип
-        $type = $PRODUCT['ELEMENT_TYPE']['VALUE'];
+        $isError = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
+        // $isError === false, потому что $isError возвращает введеную сумму и когда у задачи 0 руб. то при сравнении !$isError возникает ошибка
+        if ($isError === false) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
 
-        $FINALE_PRICE = $task['FINALE_PRICE'];
-        $onePrice = $FINALE_PRICE / $task['UF_NUMBER_STARTS'];
-
-        // если задача множественная, то есть одно исполнение и установленное количество
-        if ($type == 'multiple') {
-            $PlannedDate = $this->MultiplePlannedPublicationDate($task);
-
-            $isGetMoney = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
-            if (!$isGetMoney) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
-
-            $obResult = $HLBClass::add([
-                'UF_TASK_ID' => $task['ID'],
-                'UF_ELEMENT_TYPE' => $type,
-                'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
-                'UF_PLANNE_DATE' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']), //$PlannedDate[0],
-                'UF_MONEY_RESERVE' => $FINALE_PRICE,
-                'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
-                //'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
-            ]);
-            if (!$obResult->isSuccess()) {
-                $err = $obResult->getErrors();
-                throw new SystemException("Ошибка при создании планирования. " . $err[0]->getMessage());
-            }
-
-            $ID = $obResult->getID();
-
-        }else {
-            // цикличность задачи
-            // 1 - Однократное выполнение
-            // 2 - Повторяется ежемесячно
-            // 33 - Одно исполнение
-            if ($task['UF_CYCLICALITY'] == 1 || $task['UF_CYCLICALITY'] == 33)
-                $PlannedDate = $this->PlannedPublicationDate($task);
-            else
-                $PlannedDate = $this->CiclePlannedPublicationDate($task);
-
-           // throw new SystemException(print_r($task,true));
-
-            if ( $task['UF_CYCLICALITY'] == 34){
-                $now = new \Bitrix\Main\Type\DateTime();
-                 [$startMonth, $endMonth]= \PHelp::concreteMonth($now);
-                $day = $now->format("d");
-                $day2 = $endMonth->format("d");
-
-                $FINALE_PRICE = $onePrice * ( ($day2 - $day) / $day2 );
-            }else
-                $FINALE_PRICE = $onePrice*count($PlannedDate);
-
-            $isGetMoney = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
-            if ($isGetMoney === false) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
-
-            for ($i = 0; $i < count($PlannedDate); $i++) {
-                $obResult = $HLBClass::add([
-                    'UF_TASK_ID' => $task['ID'],
-                    'UF_ELEMENT_TYPE' => $type,
-                    'UF_CREATE_DATE' => new \Bitrix\Main\Type\DateTime(),
-                    'UF_PLANNE_DATE' => $PlannedDate[$i],
-                    'UF_MONEY_RESERVE' => $onePrice,
-                    'UF_NUMBER_STARTS' => $task['UF_NUMBER_STARTS'],
-                    //'UF_DATE_COMPLETION' => \Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']),
-                ]);
-                if (!$obResult->isSuccess()) {
-                    $err = $obResult->getErrors();
-                    throw new SystemException("Ошибка при создании планирования. " . $err[0]->getMessage());
-                }
-
-                $ID = $obResult->getID();
-
-                /*
-                Наличее сретств проверяется сразу и не дает создать планирование
-                */
-                /*
-                $money = $BillingManager->getMoney($onePrice);
-                $obResult = $HLBClass::update($ID,['UF_MONEY_RESERVE'=>$money]);
-                if (!$obResult->isSuccess()){
-                    $err = $obResult->getErrors();
-                    throw new SystemException("Ошибка при резервировании денежных средств. ".$err[0]->getMessage());
-                }
-                */
-
-                //$state = (\KContainer::getInstance())->get('states')->$type()->state1($ID);
-                //$Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
-                //$Queue->completeStage($state);
-            }
-        }
+        $taskObject->createFulfi($task,$PlannedDate);
     }
 
     public function stopTask($task){

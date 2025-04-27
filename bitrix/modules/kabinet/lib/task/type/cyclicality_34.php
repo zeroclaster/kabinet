@@ -1,6 +1,7 @@
 <?
 namespace Bitrix\Kabinet\task\type;
 
+use \Bitrix\Main\SystemException;
 
 class Cyclicality_34 extends Cyclicality{
     private $subtype;
@@ -21,15 +22,13 @@ TZ;
     }
 
     public function calcPlannedFinalePrice($task,$PlannedDate){
-        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task);
+        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task,$PlannedDate);
 
+        $onePrice = $task['FINALE_PRICE'] / $task['UF_NUMBER_STARTS'];
 
-        $FINALE_PRICE = $task['FINALE_PRICE'];
-        $onePrice = $FINALE_PRICE / $task['UF_NUMBER_STARTS'];
-
-        $now = new \Bitrix\Main\Type\DateTime();
-        [$startMonth, $endMonth]= \PHelp::concreteMonth($now);
-        $day = $now->format("d");
+        $today = new \Bitrix\Main\Type\DateTime();
+        [$startMonth, $endMonth]= \PHelp::concreteMonth($today);
+        $day = $today->format("d");
         $day2 = $endMonth->format("d");
 
         $FINALE_PRICE = $onePrice * ( ($day2 - $day) / $day2 );
@@ -43,7 +42,7 @@ TZ;
         return $calc_date;
     }
 
-    public function theorDateEnd(array $task){
+    public function theorDateEnd($task){
         $DATE_COMPLETION = $this->subtype->theorDateEnd($task);
 
         return $DATE_COMPLETION;
@@ -52,6 +51,10 @@ TZ;
     public function PlannedPublicationDate($task){
         $dateList = $this->subtype->PlannedPublicationDate($task);
 
-        return $dateList;
+        return [$this->dateStartTask($task)];
+    }
+
+    public function createFulfi($task,$PlannedDate){
+        $this->subtype->createFulfi($task,$PlannedDate);
     }
 }

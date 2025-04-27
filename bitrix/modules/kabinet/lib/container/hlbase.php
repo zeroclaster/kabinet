@@ -133,9 +133,10 @@ class Hlbase extends Base {
                 }
 
                 if ($HL_FIELD_DATA["USER_TYPE_ID"] == 'datetime') {
-                    if ($value)
+                    if ($value) {
                         // представление в виде timestamp
                         $value = $value->getTimestamp();
+                    }
                     else
                         $value = '';
                 }

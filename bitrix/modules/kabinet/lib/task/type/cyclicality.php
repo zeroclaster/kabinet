@@ -1,6 +1,7 @@
 <?
 namespace Bitrix\Kabinet\task\type;
 
+use \Bitrix\Main\SystemException;
 
 class Cyclicality extends Itemtask{
     private $subtype;
@@ -21,7 +22,7 @@ TZ;
     }
 
     public function calcPlannedFinalePrice($task,$PlannedDate){
-        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task);
+        $FINALE_PRICE = $this->subtype->calcPlannedFinalePrice($task,$PlannedDate);
 
         return $FINALE_PRICE;
     }
@@ -29,179 +30,155 @@ TZ;
     public function dateStartTask($task){
         $dateStar = $this->subtype->dateStartTask($task);
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-        $TaskManager = $sL->get('Kabinet.Task');
-
-        $PRODUCT = $TaskManager->getProductByTask($task);
-
-        //TADO тестовое значение задержки исполнения
-        // "Задержка исполнения"
-        if (empty($PRODUCT['DELAY_EXECUTION']['VALUE'])) $PRODUCT['DELAY_EXECUTION']['VALUE'] = 72;
-
-        // если задача циклическая новая, есть задержка исполнения
-        if ($task['UF_CYCLICALITY'] == 2) $DELAY_EXECUTION = $PRODUCT['DELAY_EXECUTION']['VALUE'];
-        else $DELAY_EXECUTION = 0;
-
-
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
+        $today = new \Bitrix\Main\Type\DateTime();
         if($task['UF_STATUS']>0) {
             // ищем последнее исполнение
-            $find_last_queue = $HLBClass::getlist([
-                'select' => ['ID', 'UF_PLANNE_DATE', 'UF_DATE_COMPLETION'],
-                'filter' => ['UF_TASK_ID' => $task['ID']],
-                'order' => ['UF_PLANNE_DATE' => 'desc'],
-                'limit' => 1
-            ])->fetch();
+            $db_array = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->FulfiCache($task);
+
+            if ($db_array) {
+                [$firstDayNextMonth, $lastDayNextMonth] = \PHelp::concretenextMonth($db_array[0]['UF_PLANNE_DATE']);
+                // что бы дата старта не попала в прошлое
+                if ($db_array[0]['UF_PLANNE_DATE'] > $today) return $firstDayNextMonth;
+
+            }
         }
 
-        if($task['UF_STATUS']>0 && $find_last_queue['UF_PLANNE_DATE']) {
+        // ЕСЛИ ЗАДАЧА НОВАЯ!
 
-            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($find_last_queue['UF_PLANNE_DATE']);
-            //$calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
-            $calc_date = $firstDayNextMonth->getTimestamp();
-        }
-        else{
-            $now = (new \Bitrix\Main\Type\DateTime)->add($DELAY_EXECUTION." hours");
-            [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($now);
+        $today->add($PRODUCT['DELAY_EXECUTION']['VALUE']." hours");
+        [$firstDayNextMonth,$lastDayNextMonth] = \PHelp::concretenextMonth($today);
 
-            if ($now > $firstDayNextMonth)
-                $calc_date = $firstDayNextMonth->add($DELAY_EXECUTION . " hours")->getTimestamp();
-            else
-                $calc_date = $now->getTimestamp();
-        }
+        if ($today->getTimestamp() > $firstDayNextMonth->getTimestamp()) return $firstDayNextMonth->add($PRODUCT['DELAY_EXECUTION']['VALUE'] . " hours");
 
-        return $calc_date;
+        return $today;
     }
 
-    public function theorDateEnd(array $task){
+    public function theorDateEnd($task){
         $dateEnd = $this->subtype->theorDateEnd($task);
 
-
-        $PRODUCT = $this->getProductByTask($task);
-
         // дата начала
-        $dateTimestamp = $this->dateStartTask($task);
-        [$mouthStart1,$mouthEnd1] = \PHelp::concreteMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
-        [$mouthStart2,$mouthEnd2] = \PHelp::concretenextMonth(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp));
+        $dateStart = $this->dateStartTask($task);
+        [$mouthStart1,$mouthEnd1] = \PHelp::concreteMonth($dateStart);
 
-        /*
-        if ($task['ID'] == 118) {
-            $d = (
-            new \DateTime(\Bitrix\Main\Type\DateTime::createFromTimestamp($dateTimestamp)->format("Y-m-d") )
-            )->modify( 'last day of this month' );
-            $d = $d->getTimestamp() + 86399;
-
-            throw new SystemException(print_r([$task['ID'], $d], true));
-        }
-        */
-
-
-        $DATE_COMPLETION = $mouthEnd2->getTimestamp();
-
-        // Если задача еще не начата
-        if($task['UF_STATUS']==0) {
-            if ($dateTimestamp <= $mouthEnd1->getTimestamp()) $DATE_COMPLETION = $mouthEnd1->getTimestamp();
-            else $DATE_COMPLETION = $mouthEnd2->getTimestamp();
-        }else{
-            $DATE_COMPLETION = $mouthEnd1->getTimestamp();
-        }
-
-        return $DATE_COMPLETION;
+        return $mouthEnd1;
     }
 
     public function PlannedPublicationDate($task){
         $dateList = $this->subtype->PlannedPublicationDate($task);
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
+        $dateStar = $this->dateStartTask($task);
+        $dateEnd = $this->theorDateEnd($task);
 
-        [$mouthStart1,$mouthEnd1] = \PHelp::actualMonth();
-        [$mouthStart2,$mouthEnd2] = \PHelp::nextMonth();
+        $dateList = [$dateStar];
 
-        $PRODUCT = $TaskManager->getProductByTask($task);
-
-        $dateStar = $TaskManager->dateStartCicle($task);
-
-        $dateEnd = $TaskManager->theorDateEnd($task);
+        $UF_NUMBER_STARTS = $task['UF_NUMBER_STARTS'] - 1;
+        if ($UF_NUMBER_STARTS == 0)  return $dateList;
 
 
-        ///throw new SystemException(print_r($dateEnd,true));
+        // Если задача не начата
+        if ($task['UF_STATUS']==0){
+            $d = $dateEnd->format("d") - $dateStar->format("d") + 1;
+            $h = $d*24;
 
-        $mouthStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar);
-        $dateList = [];
-        $dateList[] = $mouthStart;
-        $task['UF_NUMBER_STARTS'] = $task['UF_NUMBER_STARTS'] - 1;
-        if ($task['UF_CYCLICALITY'] == 2 && $task['UF_NUMBER_STARTS'] > 0) {
+            // +1 что появился интервал до первого исполнения след. месяца.
+            $step_ = floor($h / ($task['UF_NUMBER_STARTS']));
 
-            //Day of the month without leading zeros
-            if ((new \Bitrix\Main\Type\DateTime())->format("m") == \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("m"))
-                $now = (new \Bitrix\Main\Type\DateTime())->format("d");
-            else
-                $now = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->format("d");
-
-            $lastDayMonth = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateEnd)->format("d");
-
-            //if ($task['ID'] == 133)
-            //   throw new SystemException(print_r($lastDayMonth,true));
-
-
-            // Если задача не начата
-            if ($task['UF_STATUS']==0){
-                $d = $lastDayMonth - $now + 1;
-                $h = $d*24;
-
-                // Если задача не в работе
-                //if($task['UF_STATUS']==0) $h = $h - $PRODUCT['DELAY_EXECUTION']['VALUE'];
-
-                // +1 что появился интервал до первого исполнения след. месяца.
-                $step_ = floor($h / ($task['UF_NUMBER_STARTS']+1));
-
-            }
-            // Если задача начата
-            else{
-                // +1 что появился интервал до первого исполнения след. месяца.
-                $step_ = floor($lastDayMonth*24 / ($task['UF_NUMBER_STARTS']+1));
-            }
-
-            // if ($task['ID'] == 133)
-            //  throw new SystemException(print_r($step_,true));
-
-            if ($PRODUCT['MINIMUM_INTERVAL']['VALUE']){
-                $step =  $PRODUCT['MINIMUM_INTERVAL']['VALUE'];
-                if ($step_ > $step) $step = $step_;
-            }
-            else {
-                // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-                //$step = floor(30 / $task['UF_NUMBER_STARTS']);
-                $step = $step_;
-            }
-
-
-
-        }else{
-            $step = 1;
+        }
+        // Если задача начата
+        else{
+            // +1 что появился интервал до первого исполнения след. месяца.
+            $step_ = floor($dateEnd->format("d") * 24 / ($task['UF_NUMBER_STARTS']));
         }
 
-        //throw new SystemException(print_r($step,true));
 
-        $mStart =  $dateStar;
+        $step = max($PRODUCT['MINIMUM_INTERVAL']['VALUE'],$step_);
 
+        for ($i = 0; $i < $UF_NUMBER_STARTS; $i++) {
+            $calcDaysStep = $step * ($i + 1);
 
-
-        // Если задача еще не начата
-        if($task['UF_STATUS']==0) $mStart = \Bitrix\Main\Type\DateTime::createFromTimestamp($dateStar)->getTimestamp();
-
-        if ($task['UF_NUMBER_STARTS'] > 0) {
-            for ($i = 0; $i < $task['UF_NUMBER_STARTS']; $i++) {
-                $calcDaysStep = $step * ($i + 1);
-
-                // постоянно прибавляем к стартовому значению шаг умноженный на позицию
-                $calcDate = \Bitrix\Main\Type\DateTime::createFromTimestamp($mStart)->add("+" . $calcDaysStep . ' hours');
-                if ($calcDate->getTimestamp() > $dateEnd) break;
-                $dateList[$i + 1] = $calcDate;
-            }
+            // постоянно прибавляем к стартовому значению шаг умноженный на позицию
+            $newObjectDate = clone $dateStar;
+            $calcDate = $newObjectDate->add("+" . $calcDaysStep . ' hours');
+            if ($calcDate->getTimestamp() > $dateEnd->getTimestamp()) break;
+            $dateList[$i + 1] = $calcDate;
         }
 
         return $dateList;
+    }
+
+    /*
+    public function theorDateEnd__($task){
+        $dateEnd = $this->subtype->theorDateEnd($task);
+
+        // дата начала
+        $dateStart = $this->dateStartTask($task);
+        [$mouthStart1,$mouthEnd1] = \PHelp::concreteMonth($dateStart);
+        [$mouthStart2,$mouthEnd2] = \PHelp::concretenextMonth($dateStart);
+
+        if($task['UF_STATUS']>0) return $mouthEnd1;
+
+        // Если задача еще не начата
+        if ($dateStart->getTimestamp() <= $mouthEnd1->getTimestamp()) return $mouthEnd1;
+        else return $mouthEnd2;
+    }
+    */
+
+    /*
+    public function PlannedPublicationDate__($task){
+        $dateList = $this->subtype->PlannedPublicationDate($task);
+
+        $PRODUCT = (\Bitrix\Main\DI\ServiceLocator::getInstance())->get('Kabinet.Task')->getProductByTask($task);
+        $dateStar = $this->dateStartTask($task);
+        $dateEnd = $this->theorDateEnd($task);
+
+        $dateList = [$dateStar];
+
+        $UF_NUMBER_STARTS = $task['UF_NUMBER_STARTS'] - 1;
+        if ($UF_NUMBER_STARTS == 0)  return $dateList;
+
+        //Day of the month without leading zeros
+        if ((new \Bitrix\Main\Type\DateTime())->format("m") == $dateEnd->format("m"))
+            $currentDay = (new \Bitrix\Main\Type\DateTime())->format("d");
+        else
+            $currentDay = $dateStar->format("d");
+
+        $lastDayMonth = $dateEnd->format("d");
+
+        // Если задача не начата
+        if ($task['UF_STATUS']==0){
+            $d = $lastDayMonth - $currentDay + 1;
+            $h = $d*24;
+
+            // +1 что появился интервал до первого исполнения след. месяца.
+            $step_ = floor($h / ($task['UF_NUMBER_STARTS']));
+
+        }
+        // Если задача начата
+        else{
+            // +1 что появился интервал до первого исполнения след. месяца.
+            $step_ = floor($lastDayMonth*24 / ($task['UF_NUMBER_STARTS']));
+        }
+
+
+        $step = max($PRODUCT['MINIMUM_INTERVAL']['VALUE'],$step_);
+
+        for ($i = 0; $i < $UF_NUMBER_STARTS; $i++) {
+            $calcDaysStep = $step * ($i + 1);
+
+            // постоянно прибавляем к стартовому значению шаг умноженный на позицию
+            $newObjectDate = clone $dateStar;
+            $calcDate = $newObjectDate->add("+" . $calcDaysStep . ' hours');
+            if ($calcDate->getTimestamp() > $dateEnd) break;
+            $dateList[$i + 1] = $calcDate;
+        }
+
+        return $dateList;
+    }
+    */
+
+    public function createFulfi($task,$PlannedDate){
+        $this->subtype->createFulfi($task,$PlannedDate);
     }
 }
