@@ -1062,3 +1062,23 @@ i.fa{
 	font-size: 22px;
 	font-weight: bold;
 }
+
+.timelinetask-block {
+	overflow: scroll;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+}
+
+
+.timelinetask-block .item {
+	width: 50px;
+}
+
+.timelinetask-block .item > div:first-child{
+	border:1px solid #CCCCCC;
+	height: 50px;
+}
+
+.timelinetask-block .item > div:first-child~div{
+	font-size: 12px;
+}

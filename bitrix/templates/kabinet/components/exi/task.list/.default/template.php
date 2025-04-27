@@ -40,22 +40,38 @@ $p = $request->get('p');
 
     <div class="panel project-item-block mb-5">
         <div class="panel-body">
-            <div class="d-flex flex-wrap">
-                <div v-for="task in projectTask(project_id)" class="order-item-block">
-                    {{(order = data2[projectOrder(project_id)][task['UF_PRODUKT_ID']],null)}}
+            <div class="row align-items-center">
+                <div class="col-md-10">
+                    <div class="d-flex flex-wrap">
+                        <div v-for="task in projectTask(project_id)" class="order-item-block">
+                            {{(order = data2[projectOrder(project_id)][task['UF_PRODUKT_ID']],null)}}
 
-                    <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']" @click="viewTask(task.ID)">
+                            <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']" @click="viewTask(task.ID)">
 
-                    <?/*
+                            <?/*
                     <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']" @click="viewTask(data2[projectOrder(project_id)][task['UF_PRODUKT_ID']].ID)">
                     */?>
 
-                    <?/*<div class="block-remove-butt"><button class="order-remove-button" type="button" @click="removeProductModal(PRODUKT)"><i class="fa fa-times" aria-hidden="true"></i></button></div>
+                            <?/*<div class="block-remove-butt"><button class="order-remove-button" type="button" @click="removeProductModal(PRODUKT)"><i class="fa fa-times" aria-hidden="true"></i></button></div>
                     */?>
-                </div>
+                        </div>
 
-                <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
+                        <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
+                    </div>
+                </div>
+                <div class="col-md-2">
+
+                    <template v-if="getRequireFields(project_id).length > 0">
+                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                    </template>
+                    <template v-else>
+                        <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+project_id"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                    </template>
+
+                    </div>
             </div>
+
+
         </div>
     </div>
 
@@ -163,10 +179,12 @@ $p = $request->get('p');
 					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
 
                     <div class="d-flex" v-if="task.UF_STATUS>0">
-                        <div>Запланированы: {{taskStatus_v(taskindex)['stopwark']}}</div>
+                        <div>Запланированы: {{anim_counter[taskindex]}}</div>
                         <div class="ml-3">Выполняются: {{taskStatus_v(taskindex)['work']}}</div>
                         <div class="ml-3">Выполнено: {{taskStatus_v(taskindex)['endwork']}}</div>
                     </div>
+
+                    <timeLineTask :taskindex="taskindex"/>
 
                     <template v-if="CopyTask.UF_STATUS>0">
                         <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 {{PRODUCT.MEASURE_NAME}} в {{frequency(taskindex)}}</div>
@@ -405,7 +423,6 @@ $p = $request->get('p');
                 <div class="col">
 					<ul class="list-unstyled task-aciont-list-1">
 						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
-						<li><a style="padding-left: 0px;" :href="'/kabinet/projects/breif/?id='+task.UF_PROJECT_ID">Редактировать бриф</a></li>
 
                         <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
 
@@ -469,7 +486,8 @@ Asset::getInstance()->addJs($templateFolder."/task_list.js");
             '../../kabinet/components/exi/task.list/.default/task_status.js',
             '../../kabinet/components/exi/task.list/.default/canbesaved.js',
             '../../kabinet/components/exi/task.list/.default/text_info.js',
-            '../../kabinet/components/exi/task.list/.default/data_helper.js'
+            '../../kabinet/components/exi/task.list/.default/data_helper.js',
+            '../../kabinet/components/exi/task.list/.default/js/timelinetask.js',
         ],
         init:null
     }

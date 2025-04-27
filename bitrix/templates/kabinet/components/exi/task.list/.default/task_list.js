@@ -270,7 +270,8 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             modal2data: {title:'Удалить услугу',message:'',question:'Вы действительно хотите удалить?',basketitem:0,order_id:0},
             myModal:{},
             myModal2:{},
-            listprd: []
+            listprd: [],
+            anim_counter: []
         }
     },
     setup(){
@@ -356,14 +357,15 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...taskMethods(),
         ...addNewMethods(),
         ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare']),
+        ...BX.Vue3.Pinia.mapActions(brieflistStore, ['getRequireFields']),
         starttask(index){
             var cur = this;
             console.log(this.datataskCopy);
             var form_data = this.dataToFormData(this.datataskCopy[index]);
             this.saveData('bitrix:kabinet.evn.taskevents.starttaskcopy',form_data,function(data){
 
-                for (index in data.task){
-                    cur.datataskCopy[index] = data.task[index];
+                for (index_ in data.task){
+                    cur.datataskCopy[index_] = data.task[index_];
                 }
 
                 // Обновляем календарь
@@ -384,6 +386,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                     const billing = billingStore();
                     billing.databilling = data.billing;
                 }
+
+
+                cur.animatedCounter(index);
 
             });
         },
@@ -737,6 +742,15 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         },
         dateEndNextMounth(){
             return moment().add(1, 'months').endOf('month');
+        },
+        animatedCounter(taskindex){
+            const c = this.taskStatus_v(taskindex)['stopwark'];
+             setTimeout(()=> {
+                 if (this.anim_counter[taskindex] < c) {
+                     this.anim_counter[taskindex] = this.anim_counter[taskindex] + 1;
+                     this.animatedCounter(taskindex);
+                 }
+             },200);
         }
     },
     created(){
@@ -821,12 +835,19 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         for(index in this.data3) {
             this.listprd.push(this.data3[index]);
         }
+
+        var c;
+        for(index in this.datatask) {
+            c = this.taskStatus_v(index)['stopwark'];
+            this.anim_counter[index] = c;
+        }
     },
 	components: {
 			myInputFileComponent,
             mydatepicker,
             questiona_ctivity_component,
-            textInfoTask
+            textInfoTask,
+            timeLineTask
 	},
         // language=Vue
     template: '#kabinet-content'
