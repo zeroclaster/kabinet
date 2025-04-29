@@ -214,6 +214,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $listdata = [];
         foreach ($source as $data) {
             $dataconvert = $this->convertData($data, $this->getUserFields());
+
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $dataconvert['UF_DATE_COMPLETION'];
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();
 

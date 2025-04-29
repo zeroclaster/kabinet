@@ -1,230 +1,160 @@
-/*
-window.addEventListener("typeahead:readyScripts", function(event) {
-    var strs = ["tiyutiu"];
-    var node = $('#search-client');
-    node.typeahead(
-        {
-            hint: true,
-            highlight: true,
-            minLength: 0
-        },
-        {
-            limit: 10,
-            name: node.attr( 'placeholder' ),
-            displayKey: 'value',
-            source: function findMatches( q, cb ) {
-                let matches = [];
-                strs.forEach( function( str ) {
-                    if ( ( new RegExp( q, 'i' ) ).test( str ) ) matches.push({ value: str });
-                });
-                cb( matches );
-            }
-        }
-    );
+class FilterComponent {
+    constructor() {
+        this.searchResult = {};
+        this.clients = [];
+        this.projects = [];
+        this.tasks = [];
+        this.kabinetStore = usekabinetStore();
+    }
 
-});
+    async loadDataClient() {
+        try {
+            const formData = new FormData();
+            const response = await BX.ajax.runComponentAction(
+                "exi:admin.filterclient",
+                "getclients",
+                {
+                    mode: 'class',
+                    data: formData,
+                    timeout: 300
+                }
+            );
 
-
- */
-
-
-const filter1 = {
-    seach_result:[],
-    clients: [],
-    projects: [],
-    tasks: [],
-    loadDataClient(){
-        const this_ = this;
-        let formData = new FormData;
-        const kabinetStore = usekabinetStore();
-        var data = BX.ajax.runComponentAction("exi:admin.filterclient", "getclients", {
-            mode: 'class',
-            data: formData,
-            timeout: 300
-        }).then(function (response) {
-            this_.clients = response.data;
+            this.clients = response.data;
             $('#clientidsearch').val(0);
 
-
-            // устанавливаем значение выбранное пользователем
-            if(typeof this_.seach_result.clientidsearch != 'undefined'){
-                this_.projects = [];
-                this_.tasks = [];
+            // Set user-selected value if exists
+            if (this.searchResult.clientidsearch) {
+                this.projects = [];
+                this.tasks = [];
 
                 $('#projectidsearch').val(0);
                 $('#taskidsearch').val(0);
 
-                for(element of this_.clients){
-                    if (element.id == this_.seach_result.clientidsearch){
-                        $('#search-client').typeahead('val', element.value);
-                        break;
-                    }
+                const selectedClient = this.clients.find(
+                    client => client.id == this.searchResult.clientidsearch
+                );
+
+                if (selectedClient) {
+                    $('#search-client').typeahead('val', selectedClient.value);
                 }
 
-                // загружаем проекты выбранного клиента
-                this_.loadDataProjects(this_.seach_result.clientidsearch);
-                $('#clientidsearch').val(this_.seach_result.clientidsearch);
+                // Load projects for selected client
+                await this.loadDataProjects(this.searchResult.clientidsearch);
+                $('#clientidsearch').val(this.searchResult.clientidsearch);
             }
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 
-        }, function (response) {
-            kabinet.loading(false);
-            if (response.errors[0].code != 0) {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = response.errors[0].message;
-            }else {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
-            }
-        });
-    },
-    loadDataProjects(client = 0){
-        const this_ = this;
-        let formData = new FormData;
-		formData.append("ID",client);
-        const kabinetStore = usekabinetStore();
-        var data = BX.ajax.runComponentAction("exi:admin.filterclient", "getproject", {
-            mode: 'class',
-            data: formData,
-            timeout: 300
-        }).then(function (response) {
+    async loadDataProjects(clientId = 0) {
+        try {
+            const formData = new FormData();
+            formData.append("ID", clientId);
+
+            const response = await BX.ajax.runComponentAction(
+                "exi:admin.filterclient",
+                "getproject",
+                {
+                    mode: 'class',
+                    data: formData,
+                    timeout: 300
+                }
+            );
 
             $('#projectidsearch').val(0);
             $('#taskidsearch').val(0);
+            this.projects = response.data;
 
-            this_.projects = response.data;
-
-            if (typeof $('#search-task').typeahead != "undefined") {
+            // Reset task search if exists
+            if (typeof $('#search-task').typeahead !== "undefined") {
                 $('#search-task').typeahead('val', "");
                 $('#search-task').typeahead('destroy');
             }
 
-            var input = $('#search-project');
-            if (typeof input.typeahead != "undefined") {
-                input.typeahead('val', "");
-                input.typeahead('destroy');
-            }
-
-            input.typeahead(
-                {
-                    hint: true,
-                    highlight: true,
-                    minLength: 0
-                },
-                {
-                    limit: 1000000,
-                    name: input.attr('placeholder'),
-                    displayKey: 'value',
-                    source: function findMatches(q, cb, async) {
-                        let matches = [];
-                        this_.projects.forEach(function (element) {
-                            if ((new RegExp(q, 'i')).test(element.value)) matches.push(element);
-                        });
-                        cb(matches);
-                    }
+            this.initTypeahead(
+                '#search-project',
+                this.projects,
+                'projectidsearch',
+                (suggestion) => {
+                    $('#projectidsearch').val(suggestion.id);
+                    this.loadDataTasks(suggestion.id);
                 }
             );
-            $('#search-project').bind('typeahead:select', function (ev, suggestion) {
-                $('#projectidsearch').val(suggestion.id);
-                this_.loadDataTasks(suggestion.id);
-            });
 
-            // устанавливаем значение выбранное пользователем
-            if(typeof this_.seach_result.projectidsearch != 'undefined'){
-                this_.tasks = [];
+            // Set user-selected value if exists
+            if (this.searchResult.projectidsearch) {
+                this.tasks = [];
                 $('#taskidsearch').val(0);
 
-                for(element of this_.projects){
-                    if (element.id == this_.seach_result.projectidsearch){
-                        $('#search-project').typeahead('val', element.value);
-                        break;
-                    }
+                const selectedProject = this.projects.find(
+                    project => project.id == this.searchResult.projectidsearch
+                );
+
+                if (selectedProject) {
+                    $('#search-project').typeahead('val', selectedProject.value);
                 }
 
-                this_.loadDataTasks(this_.seach_result.projectidsearch);
-                $('#projectidsearch').val(this_.seach_result.projectidsearch);
+                await this.loadDataTasks(this.searchResult.projectidsearch);
+                $('#projectidsearch').val(this.searchResult.projectidsearch);
             }
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 
-        }, function (response) {
-            kabinet.loading(false);
-            if (response.errors[0].code != 0) {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = response.errors[0].message;
-            }else {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
-            }
-        });
-    },
-    loadDataTasks(project = 0){
-        const this_ = this;
-        let formData = new FormData;
-		formData.append("ID",project);
-        const kabinetStore = usekabinetStore();
-        var data = BX.ajax.runComponentAction("exi:admin.filterclient", "gettask", {
-            mode: 'class',
-            data: formData,
-            timeout: 300
-        }).then(function (response) {
+    async loadDataTasks(projectId = 0) {
+        try {
+            const formData = new FormData();
+            formData.append("ID", projectId);
 
-            this_.tasks = response.data;
-            var input = $('#search-task');
-            if (typeof input.typeahead != "undefined") {
-                input.typeahead('val', "");
-                input.typeahead('destroy');
-            }
-
-            input.typeahead(
-                    {
-                        hint: true,
-                        highlight: true,
-                        minLength: 0
-                    },
-                    {
-                        limit: 1000000,
-                        name: input.attr('placeholder'),
-                        displayKey: 'value',
-                        source: function findMatches(q, cb, async) {
-                            let matches = [];
-                            this_.tasks.forEach(function (element) {
-                                if ((new RegExp(q, 'i')).test(element.value)) matches.push(element);
-                            });
-                            cb(matches);
-                        }
-                    }
+            const response = await BX.ajax.runComponentAction(
+                "exi:admin.filterclient",
+                "gettask",
+                {
+                    mode: 'class',
+                    data: formData,
+                    timeout: 300
+                }
             );
 
-            input.bind('typeahead:select', function (ev, suggestion) {
+            this.tasks = response.data;
+            this.initTypeahead(
+                '#search-task',
+                this.tasks,
+                'taskidsearch',
+                (suggestion) => {
                     $('#taskidsearch').val(suggestion.id);
-            });
+                }
+            );
 
-            // устанавливаем значение выбранное пользователем
-            if(typeof this_.seach_result.taskidsearch != 'undefined'){
-                for(element of this_.tasks){
-                    if (element.id == this_.seach_result.taskidsearch){
-                        $('#search-task').typeahead('val', element.value);
-                        break;
-                    }
+            // Set user-selected value if exists
+            if (this.searchResult.taskidsearch) {
+                const selectedTask = this.tasks.find(
+                    task => task.id == this.searchResult.taskidsearch
+                );
+
+                if (selectedTask) {
+                    $('#search-task').typeahead('val', selectedTask.value);
                 }
 
-                $('#taskidsearch').val(this_.seach_result.taskidsearch);
+                $('#taskidsearch').val(this.searchResult.taskidsearch);
             }
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 
+    initTypeahead(selector, data, hiddenFieldId, onSelectCallback) {
+        const input = $(selector);
 
-        }, function (response) {
-            kabinet.loading(false);
-            if (response.errors[0].code != 0) {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = response.errors[0].message;
-            }else {
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
-            }
-        });
-    },
-    addtypeahead(){
-        const this_ = this;
+        // Destroy existing typeahead if exists
+        if (typeof input.typeahead !== "undefined") {
+            input.typeahead('val', "");
+            input.typeahead('destroy');
+        }
 
-        var input = $('#search-client');
         input.typeahead(
             {
                 hint: true,
@@ -233,199 +163,157 @@ const filter1 = {
             },
             {
                 limit: 1000000,
-                name: input.attr( 'placeholder' ),
+                name: input.attr('placeholder'),
                 displayKey: 'value',
-                source:function findMatches( q, cb,async ) {
-                    let matches = [];
-                    this_.clients.forEach( function( element ) {
-                        if ( ( new RegExp( q, 'i' ) ).test( element.value ) ) matches.push(element);
-                    });
-                    cb( matches );
+                source: (q, cb) => {
+                    const matches = data.filter(element =>
+                        new RegExp(q, 'i').test(element.value)
+                    );
+                    cb(matches);
                 }
             }
         );
 
+        input.bind('typeahead:select', (ev, suggestion) => {
+            onSelectCallback(suggestion);
+        });
+    }
 
-        input.bind('typeahead:select', function(ev, suggestion) {
-            $('#clientidsearch').val(suggestion.id);
-            this_.loadDataProjects(suggestion.id);
+    initClientTypeahead() {
+        this.initTypeahead(
+            '#search-client',
+            this.clients,
+            'clientidsearch',
+            (suggestion) => {
+                $('#clientidsearch').val(suggestion.id);
+                this.loadDataProjects(suggestion.id);
+            }
+        );
+    }
+
+    initDatePickers() {
+        this.initDateRangePicker(
+            '#search-planedaterangefrom',
+            '#search-planedaterangeto'
+        );
+
+        this.initDateRangePicker(
+            '#search-publicdatefrom',
+            '#search-publicdateto'
+        );
+    }
+
+    initDateRangePicker(fromSelector, toSelector) {
+        const $from = $(fromSelector);
+        const $to = $(toSelector);
+
+        $from.datetimepicker({
+            locale: moment.locale('ru'),
+            format: 'DD.MM.YYYY'
         });
 
-    },
-    init(phpparams){
-        const this_ = this;
-        this_.seach_result = phpparams.SEARCH_RESULT;
-
-        $(function () {
-            const $fromDatepicker = $("#search-planedaterangefrom");
-            const $toDatepicker = $("#search-planedaterangeto");
-
-            $fromDatepicker.datetimepicker({
-                locale: moment.locale('ru'),
-                format: 'DD.MM.YYYY',
-                //minDate: newDate.toDate()
-            });
-
-            $toDatepicker.datetimepicker({
-                locale: moment.locale('ru'),
-                format: 'DD.MM.YYYY',
-                //minDate: newDate.toDate()
-            });
-
-            const datepicker1 = $toDatepicker.data('DateTimePicker');
-            const datepicker2 = $fromDatepicker.data('DateTimePicker');
-
-            $fromDatepicker.on('dp.change', (event) => {
-                //console.log(event.date);
-
-                if (event.date) {
-                    const newDate = moment(event.date, "DD.MM.YYYY");
-                    let d = $toDatepicker.val();
-                    datepicker1.minDate(newDate);
-                    if (!d) datepicker1.date(null);
-                }else{
-                    let d = $toDatepicker.val();
-                    datepicker1.minDate(false);
-                    if (!d) datepicker1.date(null);
-                }
-
-            });
-
-            $toDatepicker.on('dp.change', (event) => {
-                //console.log(event.date);
-                if (event.date) {
-                    const newDate = moment(event.date, "DD.MM.YYYY");
-                    let d = $fromDatepicker.val();
-                    datepicker2.maxDate(newDate);
-                    if (!d) datepicker2.date(null);
-                }else{
-                    let d = $fromDatepicker.val();
-                    datepicker2.maxDate(false);
-                    if (!d) datepicker2.date(null);
-                }
-
-            });
-
-
-            const $fromDatepickerPub = $("#search-publicdatefrom");
-            const $toDatepickerPub = $("#search-publicdateto");
-
-            $fromDatepickerPub.datetimepicker({
-                locale: moment.locale('ru'),
-                format: 'DD.MM.YYYY',
-                //minDate: newDate.toDate()
-            });
-
-            $toDatepickerPub.datetimepicker({
-                locale: moment.locale('ru'),
-                format: 'DD.MM.YYYY',
-                //minDate: newDate.toDate()
-            });
-
-            const datepicker1Pub = $toDatepickerPub.data('DateTimePicker');
-            const datepicker2Pub = $fromDatepickerPub.data('DateTimePicker');
-
-            $fromDatepickerPub.on('dp.change', (event) => {
-                //console.log(event.date);
-                if (event.date) {
-                    const newDate = moment(event.date, "DD.MM.YYYY");
-                    let d = $toDatepickerPub.val();
-                    datepicker1Pub.minDate(newDate);
-                    if (!d) datepicker1Pub.date(null);
-                }else{
-                    let d = $toDatepickerPub.val();
-                    datepicker1Pub.minDate(false);
-                    if (!d) datepicker1Pub.date(null);
-                }
-
-            });
-
-            $toDatepickerPub.on('dp.change', (event) => {
-                //console.log(event.date);
-                if (event.date) {
-                    const newDate = moment(event.date, "DD.MM.YYYY");
-                    let d = $fromDatepickerPub.val();
-                    datepicker2Pub.maxDate(newDate);
-                    if (!d) datepicker2Pub.date(null);
-                }else {
-                    let d = $fromDatepickerPub.val();
-                    datepicker2Pub.maxDate(false);
-                    if (!d) datepicker2Pub.date(null);
-                }
-            });
-
+        $to.datetimepicker({
+            locale: moment.locale('ru'),
+            format: 'DD.MM.YYYY'
         });
 
-        window.addEventListener("components:ready", function(event) {
+        const toPicker = $to.data('DateTimePicker');
+        const fromPicker = $from.data('DateTimePicker');
 
-            this_.loadDataClient();
-            if(typeof this_.seach_result.clientidsearch == 'undefined') this_.loadDataProjects();
-            if(typeof this_.seach_result.projectidsearch == 'undefined') this_.loadDataTasks();
-            this_.addtypeahead();
+        $from.on('dp.change', (event) => {
+            if (event.date) {
+                const newDate = moment(event.date, "DD.MM.YYYY");
+                toPicker.minDate(newDate);
+                if (!$to.val()) toPicker.date(null);
+            } else {
+                toPicker.minDate(false);
+                if (!$to.val()) toPicker.date(null);
+            }
+        });
 
-            const form = BX.findChild(document.body,{attribute:{name:'filterform1'}},true,false);
-            BX.bind(form, 'submit', function (event) {
-                const form = event.target;
+        $to.on('dp.change', (event) => {
+            if (event.date) {
+                const newDate = moment(event.date, "DD.MM.YYYY");
+                fromPicker.maxDate(newDate);
+                if (!$from.val()) fromPicker.date(null);
+            } else {
+                fromPicker.maxDate(false);
+                if (!$from.val()) fromPicker.date(null);
+            }
+        });
+    }
 
+    handleError(error) {
+        error.errors.forEach(err => {
+            this.kabinetStore.Notify = '';
+            this.kabinetStore.Notify = err.message;
+        });
+    }
 
+    initFormHandlers() {
+        const form = BX.findChild(document.body, { attribute: { name: 'filterform1' } }, true, false);
 
-                if (form.elements.clienttextsearch.value == '') form.elements.clientidsearch.value = '0';
-                if (form.elements.projecttextsearch.value == '') form.elements.projectidsearch.value = '0';
-                if (form.elements.tasktextsearch.value == '') form.elements.taskidsearch.value = '0';
+        BX.bind(form, 'submit', (event) => {
+            const form = event.target;
 
+            // Reset IDs if text fields are empty
+            if (!form.elements.clienttextsearch.value) form.elements.clientidsearch.value = '0';
+            if (!form.elements.projecttextsearch.value) form.elements.projectidsearch.value = '0';
+            if (!form.elements.tasktextsearch.value) form.elements.taskidsearch.value = '0';
 
-                BX.findChild(document.body,{attribute:{name:'clientidsearch'}},true,false);
-
-                let sum = 0;
-                for(node of form.elements) {
-                    if(node.type == 'hidden' && node.value) sum = sum + parseInt(node.value);
-                    if(node.type == 'text' && node.value) sum = sum + node.value.length;
-                    if(node.type == 'select-one' && node.value) sum = sum + parseInt(node.value);
-                    if(node.type == 'radio' && node.value) sum = sum + 1;
-                }
-                const kabinetStore = usekabinetStore();
-                // не отправляем, ничего не выбрано
-                if (!sum) {
-                    kabinetStore.Notify = '';
-                    kabinetStore.Notify = 'Вы не выбрали не одного поля!';
-
-                    event.preventDefault();
-                    event.stopPropagation()
-                    return false;
-                }
-            });
-
-            BX.bind(form.elements.clienttextsearch,'change',function () {
-                //form.elements.clientidsearch.value = '0';
-            });
-            BX.bind(form.elements.projecttextsearch,'change',function () {
-                //form.elements.projectidsearch.value = '0';
-            });
-            BX.bind(form.elements.tasktextsearch,'change',function () {
-                //form.elements.taskidsearch.value = '0';
-            });
-
-            BX.bind(BX("clearfilter"),'click',function (e) {
-
-                for(input of form.elements)
-                    input.value = '';
-
-                form.submit();
-
-                event.preventDefault();
-                event.stopPropagation()
+            // Check if any filter is selected
+            const hasFilters = Array.from(form.elements).some(node => {
+                if (node.type === 'hidden' && node.value) return true;
+                if (node.type === 'text' && node.value) return true;
+                if (node.type === 'select-one' && node.value) return true;
+                if (node.type === 'radio' && node.checked) return true;
                 return false;
             });
 
-            //Требует внимания
-            const b = BX.findChild(form,{class:'alert-filter-block'},true,false);
-            const inp = BX.findChild(b,{tag:'input'},true,true);
-            inp.forEach(function (node) {
-                BX.bind(node,'change',function () {form.submit();});
-            })
+            if (!hasFilters) {
+                this.kabinetStore.Notify = 'Вы не выбрали ни одного поля!';
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        });
 
+        // Clear filter handler
+        BX.bind(BX("clearfilter"), 'click', (e) => {
+            Array.from(form.elements).forEach(input => {
+                input.value = '';
+            });
+            form.submit();
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+
+        // "Requires attention" checkboxes
+        const alertBlock = BX.findChild(form, { class: 'alert-filter-block' }, true, false);
+        const checkboxes = BX.findChild(alertBlock, { tag: 'input' }, true, true);
+        checkboxes.forEach(checkbox => {
+            BX.bind(checkbox, 'change', () => form.submit());
         });
     }
-};
 
+    async init(phpParams) {
+        this.searchResult = phpParams.SEARCH_RESULT || {};
 
+        $(() => {
+            this.initDatePickers();
+
+            window.addEventListener("components:ready", async () => {
+                await this.loadDataClient();
+
+                if (!this.searchResult.clientidsearch) await this.loadDataProjects();
+                if (!this.searchResult.projectidsearch) await this.loadDataTasks();
+
+                this.initClientTypeahead();
+                this.initFormHandlers();
+            });
+        });
+    }
+}
+
+const filter = new FilterComponent();

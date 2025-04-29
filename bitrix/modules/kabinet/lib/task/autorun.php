@@ -37,8 +37,8 @@ class Autorun{
         $TaskManager = $sL->get('Kabinet.Task');
         $runnerManager = $sL->get('Kabinet.Runner');
 
-        $list = $HLBClassTask::getlist([
-            'select'=>['ID'],
+        $list = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
+            'select'=>['*'],
             'filter'=>[
                 'UF_ACTIVE'=>1,
                 'UF_CYCLICALITY' =>[2,34],
@@ -48,20 +48,9 @@ class Autorun{
             'limit'	=> 5
         ])->fetchAll();
 
-        // Начало следующего месяца
-        $mouthStart = new \Bitrix\Main\Type\DateTime(
-            (new \DateTime('first day of next month'))->format("d.m.Y 00:00:01"),
-            "d.m.Y H:i:s"
-        );
-
-        // Конец следующего месяца
-        $mouthEnd = (new \Bitrix\Main\Type\DateTime(
-            (new \DateTime('last day of next month'))->format("d.m.Y 00:00:01"),
-            "d.m.Y H:i:s"
-        ));
+        [$mouthStart,$mouthEnd] = \PHelp::nextMonth();
 
         foreach ($list as $task){
-
             // проверяем, есть ли запланированные исполнения на след месяц
             $isExists = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
                 'select' => ['ID','UF_TASK_ID'],
