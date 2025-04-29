@@ -13,7 +13,7 @@ questionactivity_vuecomponent = (function (){
                 </div>
                 <div class="modal-footer">  
                     <button type="button" class="btn btn-primary" v-if="alert_mode==''" @click="ok">Ок</button>   
-                    <button type="button" class="btn btn-secondary" @click="closemodal">Закрыть</button>
+                    <button type="button" class="btn btn-secondary" @click="closemodal">Отмена</button>
                 </div>
             </div>
         </div>

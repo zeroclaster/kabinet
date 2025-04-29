@@ -17,21 +17,17 @@ const messangerTemplate =  `
 						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
 						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
-				
-					
+									
 					<div v-if="mess_item.UF_PROJECT_ID>0">				
 						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}
 						<div>				
-						    Проект <span class="">{{project.UF_NAME}} #{{project.UF_EXT_KEY}}</span>
-					 
+						    Проект <span class="">«{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}</span>				
                             <span v-if="mess_item.UF_TASK_ID>0">
                                 {{(task = tasklist[mess_item.UF_TASK_ID],null)}}
                                 {{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
-                                , Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</a>                 
-                            </span>
-					        Написал:
-						</div>
-											
+                                , Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>                 
+                            </span>					        
+						</div>											
 					</div>
 					
 					<div v-for="uplodfile in mess_item.UF_UPLOADFILE_ORIGINAL" class="mb-3">
@@ -50,13 +46,13 @@ const messangerTemplate =  `
 					</div>
 					<div v-if="mess_item.UF_PROJECT_ID>0">
 						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}	
-						<div>Проект {{project.UF_NAME}}	#{{project.UF_EXT_KEY}}			
+						<div>Проект «{{project.UF_NAME}}»	#{{project.UF_EXT_KEY}}			
 						<span v-if="mess_item.UF_TASK_ID>0">
 							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
 							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
-							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</a>
+							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>
 						</span>
-						, написал:
+						,
 						</div>
 						
 					</div>

@@ -291,7 +291,7 @@ $p = $request->get('p');
                                     <div class="task-price-total">
                                         <span>{{CopyTask.FINALE_PRICE}}</span>
                                         <span v-if="CopyTask.UF_CYCLICALITY==1 || CopyTask.UF_CYCLICALITY==33"> руб.</span>
-                                        <span v-if="CopyTask.UF_CYCLICALITY==2 || CopyTask.UF_CYCLICALITY==34"> руб. (/мес.)</span>
+                                        <span v-if="CopyTask.UF_CYCLICALITY==2 || CopyTask.UF_CYCLICALITY==34"> руб/мес</span>
                                     </div>
                                 </div>
                             </div>
@@ -487,7 +487,7 @@ Asset::getInstance()->addJs($templateFolder."/task_list.js");
             '../../kabinet/components/exi/task.list/.default/canbesaved.js',
             '../../kabinet/components/exi/task.list/.default/text_info.js',
             '../../kabinet/components/exi/task.list/.default/data_helper.js',
-            '../../kabinet/components/exi/task.list/.default/js/timelinetask.js',
+            '../../kabinet/components/exi/task.list/.default/js/timelinetask2.js',
         ],
         init:null
     }

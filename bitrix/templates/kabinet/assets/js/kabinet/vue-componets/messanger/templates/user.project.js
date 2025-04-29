@@ -36,8 +36,8 @@ const messangerTemplate =  `
 						<div v-if="mess_item.UF_TASK_ID>0">
 							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
 							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
-						В задаче <a :href="'/kabinet/projects/reports/?t='+task.ID">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</a>,
-						проекта {{project.UF_NAME}} #{{project.UF_EXT_KEY}}</div>
+						В задаче <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>,
+						проекта «{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}</div>
 					</div>
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 				</div>
@@ -62,10 +62,8 @@ const messangerTemplate =  `
                     <messUploadFileComponent v-model="fields.UF_UPLOADFILE"/>
                 </div>
                 <div class="message-text-block">
-                    <div class="upload-file-list d-flex flex-wrap" v-if="fields.UF_UPLOADFILE.length>0">
-             
-                        <div class="mr-2 p-2" v-for="(upl_file,fileIndex) of fields.UF_UPLOADFILE">{{upl_file.name}} <div class="remove-upload-file text-primary" @click="removeUplFile(fileIndex)"><i class="fa fa-times" aria-hidden="true"></i></div></div>
-                      
+                    <div class="upload-file-list d-flex flex-wrap" v-if="fields.UF_UPLOADFILE.length>0">             
+                        <div class="mr-2 p-2" v-for="(upl_file,fileIndex) of fields.UF_UPLOADFILE">{{upl_file.name}} <div class="remove-upload-file text-primary" @click="removeUplFile(fileIndex)"><i class="fa fa-times" aria-hidden="true"></i></div></div>                      
                     </div>
 					<richtext ref="richtextref" :original="fields.UF_MESSAGE_TEXT_ORIGINAL" v-model="fields.UF_MESSAGE_TEXT"/>
                 </div>

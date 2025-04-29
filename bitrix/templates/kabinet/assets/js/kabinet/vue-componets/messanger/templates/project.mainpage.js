@@ -31,13 +31,13 @@ const messangerTemplate2 =  `
 					</div>
 					<div v-if="mess_item.UF_PROJECT_ID>0">
 						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}	
-						Проект {{project.UF_NAME}} #{{project.UF_EXT_KEY}}			
+						Проект «{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}			
 						<span v-if="mess_item.UF_TASK_ID>0">
 							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
 							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
-							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</a>												
+							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>												
 						</span>
-						, написал:				
+						,				
 					</div>
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 				</div>
