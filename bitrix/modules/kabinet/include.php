@@ -9,9 +9,17 @@ Bitrix\Main\Loader::registerAutoloadClasses(
 	)
 );
 
+// Kabinet Exceptions
+\Bitrix\Main\Loader::registerAutoLoadClasses("kabinet", array(
+    "Bitrix\Kabinet\TaskException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\ProjectException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\FulfiException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\MessangerException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\BillingException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\TestException" => "lib/exceptions/exceptions.php",
+));
 
 CModule::IncludeModule('highloadblock');
-
 
 define("BRIEF", 4);
 define("BRIEFFIELDS", 5);
