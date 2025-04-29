@@ -1064,21 +1064,28 @@ i.fa{
 }
 
 .timelinetask-block {
-	overflow: scroll;
 	padding-bottom: 20px;
 	margin-bottom: 20px;
 }
 
+.timelinetask-block > div:first-child{
+	width: 100%;
+}
 
 .timelinetask-block .item {
-	width: 50px;
+	position: relative;
+	border:1px solid #E8E8E8;
+	height: 37px;
+	width: 2%;
 }
 
-.timelinetask-block .item > div:first-child{
-	border:1px solid #CCCCCC;
-	height: 50px;
-}
-
-.timelinetask-block .item > div:first-child~div{
+.timelinetask-block .item div{
 	font-size: 12px;
+	position: absolute;
+	bottom: -18px;
+}
+
+
+.task-aciont-list-1 li a,.task-aciont-list-1 li .btn.btn-link-site{
+	font-size: 18px;
 }

@@ -44,6 +44,8 @@ const timeLineTask = BX.Vue3.BitrixVue.mutableComponent('time-Line-Task', {
                 }
             }
 
+            if(!Queue.length) return [];
+
             var today = moment().endOf("month");
 
 
