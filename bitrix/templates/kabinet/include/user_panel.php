@@ -10,7 +10,10 @@ id = headderapp
 bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
 */?>
 <div class="rd-navbar-panel-cell"><a href="/kabinet/finance/deposit/" title="пополнить баланс"><img src="<?=SITE_TEMPLATE_PATH?>/assets/images/popolnenie_64b.png" alt="" style="width: 50px;"></a></div>
+
+<!-- тут выводится балланс пользователя -->
 <div id="headderapp" class="rd-navbar-panel-cell"></div>
+
 <div class="rd-navbar-panel-cell"><a href="/kabinet/notifications/" title="Уведомления"><span class="fa-bell site-red" style="font-size: 22px;"></span></a></div>
 <div class="rd-navbar-panel-cell">
 <div id="usergamburgermenu" class="navbar-toggle d-flex" data-multi-switch='{"targets":"#subpanel-user-menu","scope":"#subpanel-user-menu","isolate":"[data-multi-switch]"}' title="Меню пользователя">
