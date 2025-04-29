@@ -7,6 +7,8 @@
 namespace Bitrix\Kabinet\taskrunner;
 
 use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\Exceptions\FulfiException,
+    \Bitrix\Kabinet\Exceptions\TestException,
     \Bitrix\Main\Type\Datetime;
 
 class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
@@ -16,7 +18,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new FulfiException("Сritical error! Registered users only.");
 		
 		$this->config = $config;
 
@@ -53,7 +55,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         /*
         if($fields['UF_MONEY_RESERVE'] > 0){}
         else{
-            throw new SystemException("У Вас недостаточно средств для создания исполнений");
+            throw new FulfiException("У Вас недостаточно средств для создания исполнений");
         }
         */
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
@@ -87,7 +89,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
         }
 
-        //throw new SystemException("Test Stop1");
+        //throw new FulfiException("Test Stop1");
     }
 	
 	/*
@@ -119,7 +121,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 		            
         }
 
-        //throw new SystemException("Test Stop1");
+        //throw new FulfiException("Test Stop1");
     }	
 
     public function historyChangeStatus($id,$primary,$fields,$object,$oldData){
@@ -159,10 +161,10 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
 
 
-        if (!$task['UF_TARGET_SITE'][0]['VALUE']) throw new SystemException("Вы не заполнили обязательное поле Ссылка!");
+        if (!$task['UF_TARGET_SITE'][0]['VALUE']) throw new FulfiException("Вы не заполнили обязательное поле Ссылка!");
 
-        if (!$task['UF_CYCLICALITY']) throw new SystemException("Вы не выбрали Цикличность задачи!");
-        if ($task['UF_CYCLICALITY'] == 1 && empty($task['UF_DATE_COMPLETION'])) throw new SystemException("Не выбрана дата завершения!");
+        if (!$task['UF_CYCLICALITY']) throw new FulfiException("Вы не выбрали Цикличность задачи!");
+        if ($task['UF_CYCLICALITY'] == 1 && empty($task['UF_DATE_COMPLETION'])) throw new FulfiException("Не выбрана дата завершения!");
 
 
         // дата завершения не может быть теоретической
@@ -171,9 +173,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         //поскольку выбираем только день, то разница в минутах и секундах может быть,
         // при сравнении это влияет,
         // поэтому предполагаем что эта разница не больше 86300
-        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2) throw new SystemException("Дата завершения не може быть меньше ".$dateEnd->format("d.m.Y"));
+        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2) throw new FulfiException("Дата завершения не може быть меньше ".$dateEnd->format("d.m.Y"));
 
-        if (!$task['UF_NUMBER_STARTS']) throw new SystemException("Не выбранно количество!");
+        if (!$task['UF_NUMBER_STARTS']) throw new FulfiException("Не выбранно количество!");
 
 
         // максимальное количество в месяц
@@ -182,19 +184,19 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             $task['UF_CYCLICALITY'] == 2 &&
             $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']>$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']
-        ) throw new SystemException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." ед. в месяц");
+        ) throw new FulfiException("Вы привысили максимальное количество ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']." ед. в месяц");
 
         // Минимальное количество для заказа
         if (
             $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']<$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']
-        ) throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' ед.');
+        ) throw new FulfiException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' ед.');
 
 
 		/*
 		Наличее сретств проверяется сразу и не дает создать планирование
 		*/
-        //if ($task['FINALE_PRICE'] > $userBilling['UF_VALUE']) throw new SystemException("У Вас недостаточно срудств для выполнение операции".$userBilling['UF_VALUE']);
+        //if ($task['FINALE_PRICE'] > $userBilling['UF_VALUE']) throw new FulfiException("У Вас недостаточно срудств для выполнение операции".$userBilling['UF_VALUE']);
 
         return true;
     }
@@ -205,7 +207,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     // ищет все задачи с 'UF_CYCLICALITY' =>[2,34] и
     public function startTask($task){
 
-        //throw new SystemException("Временно не доступно! В разработке!");
+        //throw new FulfiException("Временно не доступно! В разработке!");
 
         $this->taskFileds = $task;
         $this->checkTask($task);
@@ -221,13 +223,13 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
         $isError = $BillingManager->getMoney($FINALE_PRICE,$task['UF_AUTHOR_ID'],$this);
         // $isError === false, потому что $isError возвращает введеную сумму и когда у задачи 0 руб. то при сравнении !$isError возникает ошибка
-        if ($isError === false) throw new SystemException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
+        if ($isError === false) throw new FulfiException("Недостаточно средств для выполнения задачи. Пополните баланс и запустите задачу.");
 
         $taskObject->createFulfi($task,$PlannedDate);
     }
 
     public function stopTask($task){
-        //throw new SystemException("Временно не доступно! В разработке!");
+        //throw new FulfiException("Временно не доступно! В разработке!");
         $countStopTask = 0;
         $datalist = $this->getData($task['ID']);
         foreach ($datalist as $fields){
@@ -243,7 +245,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         }
 
         if ($task['UF_CYCLICALITY'] != 2 && $task['UF_CYCLICALITY'] != 34){
-                if (!$countStopTask) throw new SystemException("Нет исполнений которые можно остановить. Дождитесь выполнения задач.");
+                if (!$countStopTask) throw new FulfiException("Нет исполнений которые можно остановить. Дождитесь выполнения задач.");
         }
 
         return $countStopTask;
@@ -299,7 +301,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             elseif($id) $filter['ID'] = $id;
 		
 
-            if (!$filter) throw new SystemException("Фильтр для исполнений не определен");
+            if (!$filter) throw new FulfiException("Фильтр для исполнений не определен");
 
             $select = $this->getSelectFields();
             $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
@@ -358,13 +360,13 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     public function makeState($fields){		
-        if (!$fields['UF_ELEMENT_TYPE']) throw new SystemException("Отсутствует тип. Невозможно создать стадию.");
+        if (!$fields['UF_ELEMENT_TYPE']) throw new FulfiException("Отсутствует тип. Невозможно создать стадию.");
         $type = $fields['UF_ELEMENT_TYPE'];
         $status = $fields['UF_STATUS'];
         $ID = $fields['ID'];
         $list = $this->getStatus($type);
         $key = array_search($status, array_column($list, 'ID'));
-        if ($key === false) throw new SystemException("Ошибка при определение разрешенных статусов.");
+        if ($key === false) throw new FulfiException("Ошибка при определение разрешенных статусов.");
 
         $nameState = $list[$key]['NAME'];
 
@@ -387,7 +389,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
         /*
         $key = array_search($status, array_column($list, 'ID'));
-        if ($key === false) throw new SystemException("Ошибка при определение разрешенных статусов.");
+        if ($key === false) throw new FulfiException("Ошибка при определение разрешенных статусов.");
         $filtered[] = $list[$key];
         */
 
@@ -409,7 +411,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $key = array_search($status, array_column($list, 'ID'));
         if ($key === false) {
 			//var_dump([$status,$runner['ID'],$list,$runner['UF_ELEMENT_TYPE']]);
-			throw new SystemException("Ошибка при определение разрешенных статусов.");
+			throw new FulfiException("Ошибка при определение разрешенных статусов.");
 			}
         $filtered = array_merge($filtered,$list[$key]);
 

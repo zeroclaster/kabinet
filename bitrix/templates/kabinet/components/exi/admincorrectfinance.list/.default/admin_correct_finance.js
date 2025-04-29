@@ -149,11 +149,13 @@ admin_correct_finance = (function (){
 
                         }, function (response) {
                             kabinet.loading(false);
-                            //console.log(response);
-                            response.errors.forEach((error) => {
+                            if (response.errors[0].code != 0) {
                                 kabinetStore.Notify = '';
-                                kabinetStore.Notify = error.message;
-                            });
+                                kabinetStore.Notify = response.errors[0].message;
+                            }else {
+                                kabinetStore.Notify = '';
+                                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                            }
                         });
 
                         e.preventDefault();
@@ -257,12 +259,14 @@ admin_correct_finance = (function (){
                                 cur.datarunner[index] = data.runner;
                                 kabinet.loading(false);
                             }, function (response) {
-                                //console.log(response);
                                 kabinet.loading(false);
-                                response.errors.forEach((error) => {
+                                if (response.errors[0].code != 0) {
                                     kabinetStore.Notify = '';
-                                    kabinetStore.Notify = error.message;
-                                });
+                                    kabinetStore.Notify = response.errors[0].message;
+                                }else {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                }
 
                                 // сбрасываем данные до сохранения
                                 setTimeout(()=>cur.resetSave(index),500);
@@ -293,13 +297,14 @@ admin_correct_finance = (function (){
                                 cur.datarunner[index] = data.runner;
                                 //kabinet.loading(false);
                             }, function (response) {
-                                //console.log(response);
-                                //kabinet.loading(false);
-                                response.errors.forEach((error) => {
+                                kabinet.loading(false);
+                                if (response.errors[0].code != 0) {
                                     kabinetStore.Notify = '';
-                                    kabinetStore.Notify = error.message;
-                                });
-
+                                    kabinetStore.Notify = response.errors[0].message;
+                                }else {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                }
                             });
                     },
                     catalogItem(PRODUCT_ID){

@@ -11,12 +11,12 @@ Bitrix\Main\Loader::registerAutoloadClasses(
 
 // Kabinet Exceptions
 \Bitrix\Main\Loader::registerAutoLoadClasses("kabinet", array(
-    "Bitrix\Kabinet\TaskException" => "lib/exceptions/exceptions.php",
-    "Bitrix\Kabinet\ProjectException" => "lib/exceptions/exceptions.php",
-    "Bitrix\Kabinet\FulfiException" => "lib/exceptions/exceptions.php",
-    "Bitrix\Kabinet\MessangerException" => "lib/exceptions/exceptions.php",
-    "Bitrix\Kabinet\BillingException" => "lib/exceptions/exceptions.php",
-    "Bitrix\Kabinet\TestException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\TaskException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\ProjectException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\FulfiException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\MessangerException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\BillingException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\TestException" => "lib/exceptions/exceptions.php",
 ));
 
 CModule::IncludeModule('highloadblock');

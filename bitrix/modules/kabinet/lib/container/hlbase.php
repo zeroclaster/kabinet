@@ -1,7 +1,8 @@
 <?php
 namespace Bitrix\Kabinet\container;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\KabinetException;
 
 class Hlbase extends Base {
     protected $RESTRICT_TIME = 180; // sec.
@@ -20,23 +21,23 @@ class Hlbase extends Base {
 
         // просеиваем поля
         $addFields = $this->siftFields($fields);
-        if (!$addFields) throw new SystemException("You can't create an object with empty fields");
+        if (!$addFields) throw new KabinetException("You can't create an object with empty fields");
 
         $addFields = $this->removeSystemFields([],$addFields);
         $addFields = $this->transformField([],$addFields);
         $checkResult = $this->checkFields($addFields);
         if(!$checkResult) {
-            throw new SystemException("Не заполнено обязательно поле ".$this->requiredField);
+            throw new KabinetException("Не заполнено обязательно поле ".$this->requiredField);
         }
 
-        //if(!$this->RestrictForm()) throw new SystemException("Слишком много одновременных запросов!");
+        //if(!$this->RestrictForm()) throw new KabinetException("Слишком много одновременных запросов!");
 
         $addFields = $this->addDefault($addFields);
         $obResult = $HLBClass::add($addFields);
         if (!$obResult->isSuccess()){
             $err = $obResult->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new KabinetException($mess);
         }
 
         $ID = $obResult->getID();
@@ -49,16 +50,16 @@ class Hlbase extends Base {
     public function preparationUpdate(array $fields){
         $HLBClass = $this->getHLBClass();
 
-        if (empty($fields['ID'])) throw new SystemException("You can't edit an object without ID");
+        if (empty($fields['ID'])) throw new KabinetException("You can't edit an object without ID");
         $id = $fields['ID'];
         unset($fields['ID']);
 
         $oldFileds = $HLBClass::getById($id)->fetch();
-        if (!$oldFileds)  throw new SystemException("Object with ID ".$id." not found");
+        if (!$oldFileds)  throw new KabinetException("Object with ID ".$id." not found");
 
         // просеиваем поля
         $editFields = $this->siftFields($fields);
-        if (!$editFields) throw new SystemException("You can't edit an object with empty fields");
+        if (!$editFields) throw new KabinetException("You can't edit an object with empty fields");
 
         $editFields = $this->removeSystemFields($oldFileds,$editFields);
         $editFields = $this->transformField($oldFileds,$editFields);
@@ -68,11 +69,11 @@ class Hlbase extends Base {
         // делаем валидацию
         $checkResult = $this->checkFields($fullFields);
         if(!$checkResult) {
-            throw new SystemException("Не заполнено обязательно поле ".$this->requiredField);
+            throw new KabinetException("Не заполнено обязательно поле ".$this->requiredField);
         }
 
         if(!empty($oldFileds['UF_AUTHOR_ID']))
-            if($this->isnotUserElement($id)) throw new SystemException("Объект не принадлежит пользователю");
+            if($this->isnotUserElement($id)) throw new KabinetException("Объект не принадлежит пользователю");
 
         //AddMessage2Log([$fullFields], "my_module_id");
 
@@ -82,7 +83,7 @@ class Hlbase extends Base {
     public function update(array $fields){
         $HLBClass = $this->getHLBClass();
 
-        if (empty($fields['ID'])) throw new SystemException("You can't edit an object without ID");
+        if (empty($fields['ID'])) throw new KabinetException("You can't edit an object without ID");
         $id = $fields['ID'];
 
         $fullFields = $this->preparationUpdate($fields);
@@ -92,7 +93,7 @@ class Hlbase extends Base {
         if (!$obResult->isSuccess()){
             $err = $obResult->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new KabinetException($mess);
         }
 
         $this->clearCache();
@@ -102,13 +103,13 @@ class Hlbase extends Base {
     public function delete(int $id){
         $HLBClass = $this->getHLBClass();
         if ($HLBClass::getEntity()->hasField('UF_AUTHOR_ID'))
-            if($this->isnotUserElement($id)) throw new SystemException("Объект не принадлежит пользователю");
+            if($this->isnotUserElement($id)) throw new KabinetException("Объект не принадлежит пользователю");
 
         $result = $HLBClass::delete($id);
         if (!$result->isSuccess()){
             $err = $result->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new KabinetException($mess);
         }
 
         $this->clearCache();

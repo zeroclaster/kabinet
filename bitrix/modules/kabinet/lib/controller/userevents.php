@@ -22,33 +22,21 @@ class Userevents extends \Bitrix\Main\Engine\Controller
         parent::__construct($request);
         $r = $this->getRequest();
         $fields = $r->getPostList();
-        //AddMessage2Log(print_r($fields,true), "my_module_id");
     }
 
     public static function onUserLoginExternal(&$result){
-        //AddMessage2Log($result->getParameter('action')->getName(), "my_module_id");
-        //AddMessage2Log($result->getParameter('result'), "my_module_id");
-
         $result = $result->getParameter('result');
         if (empty($result['response']['error'])){
-
         }
 
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
         $fields = $request->getPostList();
-        //AddMessage2Log($fields, "my_module_id");
-
-        //$result->getParameter('action')->getName()
-
     }
 
     public function editAction(){
 		$request = $this->getRequest();
         $post = $request->getPostList()->toArray();
 		$files = $request->getFileList()->toArray();
-		
-		//AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $clientManager = $sL->get('Kabinet.Client');
@@ -60,9 +48,6 @@ class Userevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-		/*
-		*Берем только один объект задачи, vue не может обновить весь массив
-		*/
 		$clientData = $clientManager->getData();
 
         return [

@@ -75,14 +75,15 @@ var addNewMethods = function(){
 
 						kabinet.loading(false);
 					}, function (response) {
-						//console.log(response);
 						kabinet.loading(false);
-						response.errors.forEach((error) => {
-							kabinetStore.Notify = '';
-							kabinetStore.Notify = error.message;
-						});
-
-					});		
+							if (response.errors[0].code != 0) {
+								kabinetStore.Notify = '';
+								kabinetStore.Notify = response.errors[0].message;
+							}else {
+								kabinetStore.Notify = '';
+								kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+							}
+					});
 		},
 	};
 }

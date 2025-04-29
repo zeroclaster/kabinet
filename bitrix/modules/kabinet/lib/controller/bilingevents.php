@@ -23,13 +23,9 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
         parent::__construct($request);
         $r = $this->getRequest();
         $fields = $r->getPostList();
-        //AddMessage2Log(print_r($fields,true), "my_module_id");
     }
 
     public static function onUserLoginExternal(&$result){
-        //AddMessage2Log($result->getParameter('action')->getName(), "my_module_id");
-        //AddMessage2Log($result->getParameter('result'), "my_module_id");
-
         $result = $result->getParameter('result');
         if (empty($result['response']['error'])){
 
@@ -37,10 +33,8 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
 
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
         $fields = $request->getPostList();
-        //AddMessage2Log($fields, "my_module_id");
 
         //$result->getParameter('action')->getName()
-
     }
 
     public function configureActions()

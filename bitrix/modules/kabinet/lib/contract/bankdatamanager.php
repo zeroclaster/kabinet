@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\contract;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\BankException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 class Bankdatamanager extends \Bitrix\Kabinet\container\Hlbase {
 
@@ -13,7 +15,7 @@ class Bankdatamanager extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new BankException("Сritical error! Registered users only.");
 
         parent::__construct($id, $HLBCClass);
 

@@ -227,13 +227,14 @@ project_list = (function (){
 								
                                 //console.log(data)
                             }, function (response) {
-                                //console.log(response);
-                                response.errors.forEach((error) => {
+                                kabinet.loading(false);
+                                if (response.errors[0].code != 0) {
                                     kabinetStore.Notify = '';
-                                    kabinetStore.Notify = error.message;
-                                    kabinet.loading(false);
-                                });
-
+                                    kabinetStore.Notify = response.errors[0].message;
+                                }else {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                }
                             });
 
                     },
@@ -264,12 +265,14 @@ project_list = (function (){
                                 for(name in data.data2) cur.data2[name] = data.data2[name];
                                 //console.log(data)
                             }, function (response) {
-                                //console.log(response);
-                                response.errors.forEach((error) => {
+                                kabinet.loading(false);
+                                if (response.errors[0].code != 0) {
                                     kabinetStore.Notify = '';
-                                    kabinetStore.Notify = error.message;
-                                });
-
+                                    kabinetStore.Notify = response.errors[0].message;
+                                }else {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                }
                             });
 
                     }

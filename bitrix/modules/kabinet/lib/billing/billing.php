@@ -2,6 +2,8 @@
 namespace Bitrix\Kabinet\billing;
 
 use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\BillingException,
+    \Bitrix\Kabinet\exceptions\TestException,
     \Bitrix\Kabinet\billing\datamanager\TransactionTable;
 
 class Billing extends \Bitrix\Kabinet\container\Hlbase {
@@ -14,7 +16,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new BillingException("Сritical error! Registered users only.");
 
         $this->config = $config;
 
@@ -42,7 +44,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         if(empty($fields['BILING_ID']) ||
         empty($fields['USER_ID']) ||
         empty($fields['SUM']))
-            throw new SystemException("error");
+            throw new BillingException("error");
     }
 
     public function OnBeforeAddHandler($fields,$object)
@@ -51,7 +53,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 
     public function OnBeforeUpdateHandler($id,$primary,$fields,$object,$oldData)
     {
-		//if($fields['UF_VALUE'] < 0) throw new SystemException("Значение биллинга не может быть отрицательным числом");
+		//if($fields['UF_VALUE'] < 0) throw new BillingException("Значение биллинга не может быть отрицательным числом");
     }
 
     public function OnBeforeDeleteHandler($id)
@@ -103,7 +105,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             $filter = [];
 
         $billing = $this->getData(true,$filter);
-        if (!$billing) throw new SystemException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
+        if (!$billing) throw new BillingException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
 
         $Money = floatval($billing['UF_VALUE']);
 
@@ -123,7 +125,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             $filter = [];
 
         $userMoney = $this->getData(true,$filter);
-        if (!$userMoney) throw new SystemException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
+        if (!$userMoney) throw new BillingException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
 
         $Money = floatval($userMoney['UF_VALUE']);
 
@@ -140,7 +142,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             $filter = [];
 		
         $userMoney = $this->getData(true,$filter);
-		if (!$userMoney) throw new SystemException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
+		if (!$userMoney) throw new BillingException("Не удалось определить биллинг для пользователя"." ". " id:".$user_id);
 
 		$Money = floatval($userMoney['UF_VALUE']);
 
@@ -562,7 +564,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         if (!$obResult->isSuccess()){
             $err = $obResult->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new BillingException($mess);
         }
 
         return $obResult->getID();

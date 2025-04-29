@@ -64,13 +64,14 @@ profile_user= (function (){
 
                                     kabinet.loading(false);
                                 }, function (response) {
-                                    //console.log(response);
                                     kabinet.loading(false);
-                                    response.errors.forEach((error) => {
+                                    if (response.errors[0].code != 0) {
                                         kabinetStore.Notify = '';
-                                        kabinetStore.Notify = error.message;
-                                    });
-
+                                        kabinetStore.Notify = response.errors[0].message;
+                                    }else {
+                                        kabinetStore.Notify = '';
+                                        kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                    }
                                 });
 
                     },
@@ -102,7 +103,6 @@ profile_user= (function (){
                             }
                         }
 
-                        console.log(event.target.files)
                         this.datauser ["PERSONAL_PHOTO"] = event.target.files;
                         this.savefields();
                     }

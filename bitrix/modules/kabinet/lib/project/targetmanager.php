@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\project;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\ProjectException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 class Targetmanager extends \Bitrix\Kabinet\container\Hlbase {
     public $fieldsType = [
@@ -16,7 +18,7 @@ class Targetmanager extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
 
         parent::__construct($id, $HLBCClass);
 

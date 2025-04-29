@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\project;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\ProjectException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
     public $fieldsType___ = [
@@ -44,7 +46,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
 
         parent::__construct($id, $HLBCClass);
 
@@ -409,7 +411,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         {
             $err = $result->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new ProjectException($mess);
         }
 
         // Сбрассываем кеширование у пользователя
@@ -468,7 +470,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         {
             $err = $result->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new ProjectException($mess);
         }
 
         // Сбрассываем кеширование у пользователя
@@ -492,7 +494,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         {
             $err = $result->getErrors();
             $mess = $err[0]->getMessage();
-            throw new SystemException($mess);
+            throw new ProjectException($mess);
         }
 
         // Сбрассываем кеширование у пользователя

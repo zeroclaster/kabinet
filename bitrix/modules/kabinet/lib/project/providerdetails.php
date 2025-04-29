@@ -1,6 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\project;
 
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\ProjectException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 /**
  * провайдер не будект создаваться несколько экземпляяров, поэтому он Singleton
@@ -19,7 +22,7 @@ class Providerdetails{
 
     public function __wakeup()
     {
-        throw new SystemException("Cannot unserialize a singleton.");
+        throw new ProjectException("Cannot unserialize a singleton.");
     }
 
     public static function getInstance()

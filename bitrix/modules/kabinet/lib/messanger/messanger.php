@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\messanger;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\MessangerException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 class Messanger extends \Bitrix\Kabinet\container\Hlbase {
 
@@ -23,7 +25,7 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Fatal error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new MessangerException("Fatal error! Registered users only.");
 
         $this->config = $config;
 
@@ -74,10 +76,10 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
         !$fields['UF_QUEUE_ID'] &&
         !$fields['UF_TARGET_USER_ID']
         ){
-            throw new SystemException("Ошибка при отправки сообщения. Системные поля пустые.");
+            throw new MessangerException("Ошибка при отправки сообщения. Системные поля пустые.");
         }
 
-        if (!$fields['UF_MESSAGE_TEXT']) throw new SystemException("Ошибка. Вы отправляете пустое сообщение.");
+        if (!$fields['UF_MESSAGE_TEXT']) throw new MessangerException("Ошибка. Вы отправляете пустое сообщение.");
 
     }
 
@@ -116,7 +118,7 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
 
         if ($TASK_ID && !$PROJECT_ID) {
             $taskData = $taskManager->getData($cache=true,$user_id = [],$filter=['ID'=>$TASK_ID]);
-            if (!$taskData) throw new SystemException("При отправки сообщения не найдена задача с ID:".$TASK_ID);
+            if (!$taskData) throw new MessangerException("При отправки сообщения не найдена задача с ID:".$TASK_ID);
             $taskData = $taskData[0];
 
             $fields['UF_TASK_ID'] = $taskData['ID'];
@@ -126,7 +128,7 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
 
         if (!$TASK_ID && $PROJECT_ID){
             $projectData = $projectManager->getData($cache=true,$user_id = [],$filter=['ID'=>$PROJECT_ID]);
-            if (!$projectData) throw new SystemException("При отправки сообщения не найден проект с ID:".$PROJECT_ID);
+            if (!$projectData) throw new MessangerException("При отправки сообщения не найден проект с ID:".$PROJECT_ID);
             $projectData = $projectData[0];
 
             $fields['UF_PROJECT_ID'] = $projectData['ID'];

@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\container;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\Exceptions\KabinetException,
+    \Bitrix\Kabinet\Exceptions\TestException;
 
 abstract class Base{
     protected $HB_ID = 0;
@@ -335,7 +337,6 @@ abstract class Base{
             if (isset($fields[$name.'_DOUBLE'])) unset($fields[$name.'_DOUBLE']);
         }
 
-        //throw new SystemException(print_r($fields,true));
         return $fields;
     }
 

@@ -329,7 +329,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         if ($this->hasErrors())
         {
-            $this->errorCollection[] = new Error('Ошибка в запросе loadmore!');
+            $this->errorCollection[] = new Error('Ошибка в запросе loadmore!',1);
             if ($this->hasErrors())
                 return null;
         }

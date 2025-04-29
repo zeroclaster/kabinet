@@ -34,7 +34,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         //\Dbg::var_dump($post);
 
-        //if ($request->get('ID') == NULL ) $this->errorCollection[] = new Error('id not found!');
+        //if ($request->get('ID') == NULL ) $this->errorCollection[] = new Error('id not found!',1);
 
         return $params;
     }
@@ -137,7 +137,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         ])->fetchAll();
 
         if (!$data) {
-            $this->errorCollection[] = new Error('Нет данных по клиентам!');
+            $this->errorCollection[] = new Error('Нет данных по клиентам!',1);
             if ($this->hasErrors())
                 return null;
         }
@@ -171,7 +171,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         ])->fetchAll();
 
         if (!$data) {
-            $this->errorCollection[] = new Error('Нет данных по проектам');
+            $this->errorCollection[] = new Error('Нет данных по проектам',1);
             if ($this->hasErrors())
                 return null;
         }
@@ -210,7 +210,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
             ];
         }
 
-        //$this->errorCollection[] = new Error('You are so beautiful or so handsome');
+        //$this->errorCollection[] = new Error('You are so beautiful or so handsome',1);
         if ($this->hasErrors())
             return null;
 

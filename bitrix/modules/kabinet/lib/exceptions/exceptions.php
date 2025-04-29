@@ -4,6 +4,16 @@ namespace Bitrix\Kabinet\exceptions;
 use \Bitrix\Main\SystemException;
 
 /**
+ * Exception is thrown Kabinet.
+ */
+class KabinetException extends SystemException
+{
+    public function __construct($message = "", \Exception $previous = null)
+    {
+        parent::__construct($message, 700, '', 0, $previous);
+    }
+}
+/**
  * Exception is thrown Task.
  */
 class TaskException extends SystemException
@@ -67,6 +77,26 @@ class ContractException extends SystemException
  * Exception is thrown Contract.
  */
 class TestException extends SystemException
+{
+    public function __construct($message = "", \Exception $previous = null)
+    {
+        parent::__construct($message, 750, '', 0, $previous);
+    }
+}
+/**
+ * Exception is thrown Contract.
+ */
+class ClientException extends SystemException
+{
+    public function __construct($message = "", \Exception $previous = null)
+    {
+        parent::__construct($message, 750, '', 0, $previous);
+    }
+}
+/**
+ * Exception is thrown Contract.
+ */
+class BankException extends SystemException
 {
     public function __construct($message = "", \Exception $previous = null)
     {

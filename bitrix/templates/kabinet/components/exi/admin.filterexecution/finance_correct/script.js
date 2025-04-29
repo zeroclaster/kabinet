@@ -67,11 +67,14 @@ const filter1 = {
             }
 
         }, function (response) {
-            //console.log(response);
-            response.errors.forEach((error) => {
+            kabinet.loading(false);
+            if (response.errors[0].code != 0) {
                 kabinetStore.Notify = '';
-                kabinetStore.Notify = error.message;
-            });
+                kabinetStore.Notify = response.errors[0].message;
+            }else {
+                kabinetStore.Notify = '';
+                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+            }
         });
     },
     loadDataProjects(client = 0){
@@ -142,11 +145,14 @@ const filter1 = {
             }
 
         }, function (response) {
-            //console.log(response);
-            response.errors.forEach((error) => {
+            kabinet.loading(false);
+            if (response.errors[0].code != 0) {
                 kabinetStore.Notify = '';
-                kabinetStore.Notify = error.message;
-            });
+                kabinetStore.Notify = response.errors[0].message;
+            }else {
+                kabinetStore.Notify = '';
+                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+            }
         });
     },
     loadDataTasks(project = 0){

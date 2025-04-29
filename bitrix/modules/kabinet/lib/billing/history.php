@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\billing;
 
-use \Bitrix\Main\SystemException;
+use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\BillingException,
+    \Bitrix\Kabinet\exceptions\TestException;
 
 class History extends \Bitrix\Kabinet\container\Hlbase {
 
@@ -13,7 +15,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new BillingException("Сritical error! Registered users only.");
 
         parent::__construct($id, $HLBCClass);
 

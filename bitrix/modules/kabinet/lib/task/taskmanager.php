@@ -7,6 +7,8 @@
 namespace Bitrix\Kabinet\task;
 
 use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\Exceptions\TaskException,
+    \Bitrix\Kabinet\Exceptions\TestException,
     \Bitrix\Main\Entity;
 
 class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
@@ -40,7 +42,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new TaskException("Сritical error! Registered users only.");
 
         parent::__construct($id, $HLBCClass);
 
@@ -80,7 +82,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $object->set('UF_DATE_COMPLETION', null);
         }
 
-        //throw new SystemException("Test Stop1");
+        //throw new TestException("Test Stop1");
     }
 
     public function ifChangeNumberCycliality($id,$primary,$fields,$object,$oldData){
@@ -104,7 +106,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 // 2025-02-13 Если выбран вариант «равномерно до заданной даты», то надо поле количество уже не надо проверять на привышение максимума
                 /*
                 if($new['UF_NUMBER_STARTS'] > $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'])
-                    throw new SystemException("Максимальное количество в месяц ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
+                    throw new TaskException("Максимальное количество в месяц ".$PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE']);
                 */
 
                 // 22.04.2025
@@ -112,7 +114,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
                 //    $object->set('UF_DATE_COMPLETION', \Bitrix\Main\Type\DateTime::createFromTimestamp($DATE_COMPLETION));
 
                 if($new['UF_NUMBER_STARTS'] < $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'])
-                    throw new SystemException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']);
+                    throw new TaskException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']);
 
                 // 14.02.2025
                 // было до этого, дата всегда менялась если сменить количество
@@ -131,7 +133,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
             $DATE_COMPLETION = $this->getItem($oldData)->theorDateEnd($oldData);
 
             if (\PHelp::compareDates($fields['UF_DATE_COMPLETION'], $DATE_COMPLETION))
-                throw new SystemException("Дата завершения не может быть меньше ".$DATE_COMPLETION->format('d.m.Y'));
+                throw new TaskException("Дата завершения не может быть меньше ".$DATE_COMPLETION->format('d.m.Y'));
         }
     }
 
@@ -144,11 +146,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
         $HLBClass = (\KContainer::getInstance())->get(BRIEF_HL);
         $isExistsProject = $HLBClass::getById($fields["UF_PROJECT_ID"])->fetch();
-        if (!$isExistsProject) throw new SystemException("Invalid field value UF_PROJECT_ID");
+        if (!$isExistsProject) throw new TaskException("Invalid field value UF_PROJECT_ID");
 
         // не даем создавать задачу, если нет такого продукта
         $isExists = \Bitrix\Iblock\ElementTable::getById($fields["UF_PRODUKT_ID"])->fetch();
-        if (!$isExists) throw new SystemException("Invalid field value UF_PRODUKT_ID");
+        if (!$isExists) throw new TaskException("Invalid field value UF_PRODUKT_ID");
 
         $object->set('UF_NAME',$isExists['NAME']);
 
@@ -371,11 +373,12 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $orders =$ProjectManager->orderData($task['UF_AUTHOR_ID']);
 
         $key = array_search($task['UF_PROJECT_ID'], array_column($briefs, 'ID'));
-        if ($key === false) throw new SystemException("Не найден проект с ID ".$task['UF_PROJECT_ID']);
+        if ($key === false) throw new TaskException("Не найден проект с ID ".$task['UF_PROJECT_ID']);
         $UF_ORDER_ID = $briefs[$key]['UF_ORDER_ID'];
 
+
         if (empty($orders[$UF_ORDER_ID][$PRODUKT_ID])) {
-            throw new SystemException("Не найден продукт с ID ".$PRODUKT_ID. ' в заказе '. $UF_ORDER_ID);
+            throw new TaskException("Не найден продукт с ID ".$PRODUKT_ID. ' в заказе '. $UF_ORDER_ID);
             $this->delete($task['ID']);
             return false;
         }
@@ -531,3 +534,4 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $item;
     }
 }
+

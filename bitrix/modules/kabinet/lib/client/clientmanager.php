@@ -2,6 +2,8 @@
 namespace Bitrix\Kabinet\client;
 
 use \Bitrix\Main\SystemException,
+    \Bitrix\Kabinet\exceptions\ClientException,
+    \Bitrix\Kabinet\exceptions\TestException,
     \Bitrix\Main\Entity;
 
 class Clientmanager {
@@ -21,7 +23,7 @@ class Clientmanager {
         $this->defFiltere = $defFiltere;
         if ($selectFields) $this->updateFields = $selectFields;
 
-        if (!$USER->IsAuthorized()) throw new SystemException("Сritical error! Registered users only.");
+        if (!$USER->IsAuthorized()) throw new ClientException("Сritical error! Registered users only.");
 
     }
 
@@ -44,12 +46,12 @@ class Clientmanager {
 
         $editFields = $this->retrieveAdditionalsFields($fields);
 
-        //throw new SystemException(print_R($editFields,true));
+        //throw new ClientException(print_R($editFields,true));
 
         $user = new \CUser;
 
         $user->Update($ID, $editFields);
-        if ($user->LAST_ERROR) throw new SystemException($user->LAST_ERROR);
+        if ($user->LAST_ERROR) throw new ClientException($user->LAST_ERROR);
 
         return $ID;
     }
