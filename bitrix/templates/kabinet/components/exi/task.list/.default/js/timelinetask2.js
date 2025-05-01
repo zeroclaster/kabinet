@@ -4,7 +4,7 @@ const timeLineTask = BX.Vue3.BitrixVue.mutableComponent('time-Line-Task', {
     <div class="d-flex">
     <template v-for="runner in getTaskQueueTimeLine(taskindex)">
         <template v-if="runner">
-        <div :class="'item '+runner.data1">
+        <div :class="'item '+runner.css">
             <div>{{runner.data1}}</div>
         </div>
         </template>
@@ -37,7 +37,7 @@ const timeLineTask = BX.Vue3.BitrixVue.mutableComponent('time-Line-Task', {
 
             return Queue;
         },
-        getTaskQueueTimeLine(taskindex){
+        getTaskQueueTimeLine__(taskindex){
             let Queue = [];
             let ret = [];
 
@@ -52,14 +52,15 @@ const timeLineTask = BX.Vue3.BitrixVue.mutableComponent('time-Line-Task', {
 
             for (i=0;i<diff;i++) {
                 let day = moment.unix(Queue[0].UF_PLANNE_DATE).add(i, 'days');
+                let m_start = moment.unix(Queue[0].UF_PLANNE_DATE).add(i, 'days').startOf("month");
                 let m_end = moment.unix(Queue[0].UF_PLANNE_DATE).add(i, 'days').endOf("month");
                 let obj = null;
                 for (j=0;j<Queue.length;j++) {
                     let d = moment.unix(Queue[j].UF_PLANNE_DATE);
-                    if (day.isSame(m_end, 'day') && day.isSame(moment.unix(Queue[j].UF_PLANNE_DATE), 'day'))
+                    if (day.isSame(m_start, 'day') && day.isSame(moment.unix(Queue[j].UF_PLANNE_DATE), 'day'))
                         obj = {
                             day:day.format("DD.MMM"),
-                            data1:m_end.format("DD.MMM"),
+                            data1:m_start.format("MMM.YY"),
                             css:this.alertStyle(Queue[j].UF_STATUS)
                         };
                     else if (day.isSame(moment.unix(Queue[j].UF_PLANNE_DATE), 'day'))
@@ -70,15 +71,44 @@ const timeLineTask = BX.Vue3.BitrixVue.mutableComponent('time-Line-Task', {
                         };
                 }
 
-                if(!obj && day.isSame(m_end, 'day'))
-                    obj = {day:day.format("DD.MMM"), data1:m_end.format("DD.MMM"), css:""};
+                if(!obj && day.isSame(m_start, 'day'))
+                    obj = {day:day.format("DD.MMM"), data1:m_start.format("MMM.YY"), css:""};
                 else if(!obj)
                     obj = {day:day.format("DD.MMM"), data1:"", css: ""};
 
                 ret.push(obj);
             }
 
+            console.log(ret);
+
             return ret;
+        },
+        getTaskQueueTimeLine(taskIndex) {
+            const queue = this.taskQueue(taskIndex);
+            if (!queue.length) return [];
+
+            const firstDate = moment.unix(queue[0].UF_PLANNE_DATE);
+            const lastDate = moment.unix(queue[queue.length - 1].UF_PLANNE_DATE);
+            const endMonth = lastDate.clone().add(2, 'months').endOf('month').add(1, 'day');
+            const dayCount = endMonth.diff(firstDate, 'days');
+
+            // Создаем массив нужной длины и заполняем его по индексу
+            const timeline = Array.from({ length: dayCount }, (_, i) => {
+                const currentDay = firstDate.clone().add(i, 'days');
+                const isFirstDayOfMonth = currentDay.isSame(currentDay.clone().startOf('month'), 'day');
+
+                const taskForDay = queue.find(task =>
+                    currentDay.isSame(moment.unix(task.UF_PLANNE_DATE), 'day')
+                );
+
+                return {
+                    day: currentDay.format('DD.MMM'),
+                    data1: isFirstDayOfMonth ? currentDay.format('MMM.YY') : '',
+                    css: taskForDay ? this.alertStyle(taskForDay.UF_STATUS) : ''
+                };
+            });
+
+            return timeline;
         },
         alertStyle(status){
 

@@ -38,11 +38,13 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         'fb226d4fc4447d5c81e2a902042ffca3' =>[34],   //Ежемесячная услуга
     ];
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct(int $id, $HLBCClass,$config=[])
     {
         global $USER;
 
         if (!$USER->IsAuthorized()) throw new TaskException("Сritical error! Registered users only.");
+
+        $this->config = $config;
 
         parent::__construct($id, $HLBCClass);
 
