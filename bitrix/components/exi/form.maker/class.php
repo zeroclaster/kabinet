@@ -54,9 +54,9 @@ class FormMakerComponent extends \Bitrix\Kabinet\component\Basecreator implement
 		$data = [];
         if ($arParams["ID"]){
             $arResult["ACTION"] = 'EDIT';		
-			$HLBClass = (\KContainer::getInstance())->get(BRIEF_HL);
-			$HLBClass2 = (\KContainer::getInstance())->get(PROJECTSINFO_HL);
-			$HLBClass3 = (\KContainer::getInstance())->get(PROJECTSDETAILS_HL);
+			$HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
+			$HLBClass2 = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('PROJECTSINFO_HL');
+			$HLBClass3 = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('PROJECTSDETAILS_HL');
 						
 			$data = $HLBClass::getlist(['filter'=>['ID'=>$arParams["ID"]],'limit'=>1])->fetch();			
 			$data2 = $HLBClass2::getlist(['filter'=>['UF_PROJECT_ID'=>$arParams["ID"]],'limit'=>1])->fetch();

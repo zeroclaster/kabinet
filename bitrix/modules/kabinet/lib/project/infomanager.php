@@ -20,13 +20,12 @@ class Infomanager extends \Bitrix\Kabinet\container\Hlbase {
         "UF_WORKING_HOURS"=>1,
     ];
 
-    public function __construct(int $id, $HLBCClass)
+    protected $user;
+
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Projectsinfo::OnBeforeAdd", [$this,"OnBeforeAddHendler"]);
         AddEventHandler("", "\Projectsinfo::OnBeforeUpdate", [$this,'clearCacheHandler'],100);

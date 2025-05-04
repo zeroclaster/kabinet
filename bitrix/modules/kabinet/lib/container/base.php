@@ -10,9 +10,13 @@ abstract class Base{
     protected $HLBCClass;
     public $requiredField;
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($HLBCClass)
     {
-        $this->HB_ID = $id;
+        $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
+            'filter' => ['=TABLE_NAME' => $HLBCClass::getTableName()]
+        ])->fetch();
+
+        $this->HB_ID = $hlblock['ID']; // Получим ID
 		$this->HLBCClass = $HLBCClass;
     }
 
@@ -56,7 +60,7 @@ abstract class Base{
     public function sortFieldMAx(){
         $max_sort = 10;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $userID = $user->get('ID');
 
         $HLBClass = $this->getHLBClass();
@@ -94,7 +98,7 @@ abstract class Base{
         $fields['UF_PUBLISH_DATE'] = new \Bitrix\Main\Type\DateTime();
         $fields['UF_ACTIVE'] = 1;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $fields['UF_AUTHOR_ID'] = $user->get('ID');
 
         // пользователя изменяющий настоящий
@@ -167,7 +171,7 @@ abstract class Base{
             $DC2 = time();
             $DC1 = $DC2 - intval($this->RESTRICT_TIME);
 
-			$user = (\KContainer::getInstance())->get('user');
+			$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
             $arFilter = array("UF_AUTHOR_ID" => $user->get('ID'));
 
             $arFilter = array_merge($arFilter, array(

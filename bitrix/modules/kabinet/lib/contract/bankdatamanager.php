@@ -10,15 +10,12 @@ class Bankdatamanager extends \Bitrix\Kabinet\container\Hlbase {
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
     public $fieldsType = [];
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new BankException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
-
+        $this->user = $user;
+        parent::__construct($HLBCClass);
         AddEventHandler("", "\Contract::OnBeforeAdd", [$this,"OnBeforeAdd"]);
     }
 
@@ -29,7 +26,7 @@ class Bankdatamanager extends \Bitrix\Kabinet\container\Hlbase {
     public function getData($clear=false){
         global $CACHE_MANAGER;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         $requestURL = $user_id;

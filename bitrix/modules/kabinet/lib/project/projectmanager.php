@@ -40,22 +40,19 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         "UF_NAME"=>1,
         "UF_ADDITIONAL_WISHES"=>1,
     ];
+    protected $user;
 
-
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Projects::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
     }
 
     public function AutoIncrementAddHandler($fields,$object)
     {
-        $HLBClass = (\KContainer::getInstance())->get(BRIEF_HL);
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
         $last = $HLBClass::getlist([
             'select'=>['UF_EXT_KEY'],
             'order'=>['ID'=>"DESC"],
@@ -73,7 +70,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         global $CACHE_MANAGER;
 
         if (!$user_id) {
-            $user = (\KContainer::getInstance())->get('user');
+            $user = $this->user;
             $user_id = $user->get('ID');
         }
 
@@ -236,7 +233,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         \Bitrix\Main\Loader::includeModule("sale");
 
         if (!$user_id){
-            $user = (\KContainer::getInstance())->get('user');
+            $user = $this->user;
             $user_id = $user->get('ID');
         }
 
@@ -356,7 +353,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         \Bitrix\Main\Loader::includeModule("catalog");
         \Bitrix\Main\Loader::includeModule("sale");
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         $basket = \Bitrix\Sale\Basket::create('s1');

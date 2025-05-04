@@ -1,6 +1,6 @@
 <?
-$siteuser = (\KContainer::getInstance())->get('siteuser');
-$user = (\KContainer::getInstance())->get('user');
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
 <div class="rd-navbar-panel-cell" id="admincontent">
     <div class="h4">Профиль администратора</div>

@@ -20,25 +20,25 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
     public $fieldsType = [];
+    protected $clientmanager;
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass,$config=[])
+    public function __construct($user, $HLBCClass,$clientmanager,$config=[])
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new MessangerException("Fatal error! Registered users only.");
-
         $this->config = $config;
+        //"Kabinet.ClientMessanger"
+        $this->clientmanager = $clientmanager;
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $sL->addInstanceLazy("Kabinet.ClientMessanger", ['constructor'=>
-            static function(){
-                $provider = \Bitrix\Kabinet\client\Providermessangerclient::getInstance();
-                $project = $provider->build();
-                return $project;
-            }
-        ]);
+        if (!\PHelp::isAdmin()) {
+            AddEventHandler("", "\Lmessanger::OnBeforeUpdate", function ($id, $fields, $object, $oldData) {
 
-        parent::__construct($id, $HLBCClass);
+                $UF_STATUS = $oldData->get('UF_STATUS');
+                if ($UF_STATUS != Messanger::NEW_MASSAGE) throw new SystemException("Невозможно выполнить команду. Нехватает прав.");
+
+            });
+        }
 
         AddEventHandler("", "\Lmessanger::OnBeforeAdd", [$this,"convertMessage"]);
         AddEventHandler("", "\Lmessanger::OnBeforeAdd", [$this,"checkSendMessage"]);
@@ -146,9 +146,8 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
     public function getData($filter = [],$offset=0,$limit=5,$clear=false,$new_reset='y'){
         global $CACHE_MANAGER, $USER;
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $ClientManager = $sL->get('Kabinet.ClientMessanger');
-        $user = (\KContainer::getInstance())->get('user');
+        $ClientManager = $this->clientmanager;
+        $user = $this->user;
         $user_id = $user->get('ID');
         $isAdmin = !($user_id && 1);
 

@@ -11,7 +11,7 @@ $context = \Bitrix\Main\Application::getInstance()->getContext();
 $server = $context->getServer();
 $request = $context->getRequest();
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $user_id = $user->get('ID');
 
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();

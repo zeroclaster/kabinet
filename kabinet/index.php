@@ -4,7 +4,7 @@ $APPLICATION->SetTitle("Кабинет «Купи-Отзыв»");
 ?>
 
 <?
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 $projectManager = $sL->get('Kabinet.Project');
 $projects = $projectManager->getData();

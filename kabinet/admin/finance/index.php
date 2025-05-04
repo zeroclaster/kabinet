@@ -5,8 +5,8 @@ $APPLICATION->SetTitle("Финансы");
 
 
 <?
-$siteuser = (\KContainer::getInstance())->get('siteuser');
-$user = (\KContainer::getInstance())->get('user');
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
 <section class="section-xs">
     <div class="container-fluid">

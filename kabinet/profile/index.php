@@ -5,7 +5,7 @@ $APPLICATION->SetTitle("Профиль пользователя «Купи-От�
 
 <?
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $user_id = $user->get('ID');
 ?>
 

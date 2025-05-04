@@ -8,7 +8,7 @@ $server = $context->getServer();
 $request = $context->getRequest();
 
 $p = $request->get('p');
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $user_id = $user->get('ID');
 if ($p == null) LocalRedirect("/404.php");
 $project = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([

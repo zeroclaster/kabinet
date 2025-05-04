@@ -81,8 +81,8 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		$runnerManager = $sL->get('Kabinet.Runner');
 
 		$ClassClient = \Bitrix\Kabinet\UserTable::class;
-        $HLBClassProject = (\KContainer::getInstance())->get('BRIEF_HL');
-        $HLBClassTask = (\KContainer::getInstance())->get('TASK_HL');
+        $HLBClassProject = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
+        $HLBClassTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
 
 
         $Query = $ClassClient::query();

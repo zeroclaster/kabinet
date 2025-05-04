@@ -32,7 +32,7 @@ class Queue{
     }
 
     public function isEmpty(){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $isQueue = $HLBClass::getlist([
             'select'=>[new Entity\ExpressionField('CNT', 'COUNT(*)')],
             'filter'=>['UF_ACTIVE'=>1]
@@ -46,7 +46,7 @@ class Queue{
 	public function getQueue($id=0){
 		$filter = [];
 		if ($id) $filter['=UF_TASK_ID'] = $id;
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         //$HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
         $Queue = $HLBClass::getlist([
             'select'=>['*'],
@@ -62,7 +62,7 @@ class Queue{
     public function getQueueById($id=0){
         $filter = [];
         if ($id) $filter['ID'] = $id;
-        //$HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        //$HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
         $Queue = $HLBClass::getlist([
             'select'=>['*'],
@@ -77,7 +77,7 @@ class Queue{
 
     public function run(){
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
 
         // Filter
         $SQL_data = $HLBClass::getlist([
@@ -106,7 +106,7 @@ class Queue{
     }
 
     public function goToEndLine($id){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $Queue = $HLBClass::getlist([
             'select'=>['ID','UF_RUN_DATE'],
             'filter'=>['UF_ACTIVE'=>1],

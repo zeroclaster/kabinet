@@ -18,13 +18,12 @@ class Detailsmanager extends \Bitrix\Kabinet\container\Hlbase {
         "UF_KEYWORDS"=>1,
     ];
 
-    public function __construct(int $id, $HLBCClass)
+    protected $user;
+
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Projectsdetails::OnBeforeAdd", [$this,"OnBeforeAddHendler"]);
         AddEventHandler("", "\Projectsdetails::OnBeforeUpdate", [$this,'clearCacheHandler'],100);

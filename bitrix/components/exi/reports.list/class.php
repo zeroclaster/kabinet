@@ -145,8 +145,8 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $runnerManager = $sL->get('Kabinet.Runner');
         $messanger = $sL->get('Kabinet.Messanger');
 
-        $HLBClassTask = (\KContainer::getInstance())->get('TASK_HL');
-        $HLBClassFulf = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClassTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
+        $HLBClassFulf = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
 
         $Query = $HLBClassFulf::query();
         $entity = $Query->getEntity();

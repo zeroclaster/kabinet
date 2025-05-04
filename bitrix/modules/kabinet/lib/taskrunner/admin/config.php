@@ -35,4 +35,14 @@ $configadmin = [
     ]
 ];
 
+$a = $GLOBALS["USER_FIELD_MANAGER"]->getUserFields('HLBLOCK_14',null,LANGUAGE_ID);
+$fields = array_keys($a);
+$fields[] = 'ID';
+
+$allowFileds = array_diff($fields,['UF_OPERATION',]);
+
+$configadmin['ALLOW_FIELDS'] = $allowFileds;
+
+$c1 = include __DIR__ . '/../config.php';
+$config = array_merge($c1,$configadmin);
 return $configadmin;

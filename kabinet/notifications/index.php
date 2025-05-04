@@ -4,7 +4,7 @@ $APPLICATION->SetTitle("Все комментарии к исполнениям"
 ?>
 
 <?
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 ?>
 

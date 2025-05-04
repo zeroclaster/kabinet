@@ -109,7 +109,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $arResult['ACTUAL_MONTH_BUDGET'] = 0;
         $arResult['RECOMMEND_UP_BALANCE'] = 0;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
 
 		$cacheId = '';
@@ -192,7 +192,7 @@ class BillingViewComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();       
         $taskManager = $sL->get('Kabinet.Task');
 		
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
 				
 		$l = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([

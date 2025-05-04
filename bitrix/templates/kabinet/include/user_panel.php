@@ -1,7 +1,7 @@
 <?
 use Bitrix\Main\Page\Asset;
 
-$siteuser = (\KContainer::getInstance())->get('siteuser');
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 (\KContainer::getInstance())->get('billingStore');
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/billing.js");
 ?>

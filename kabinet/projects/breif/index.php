@@ -3,7 +3,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Бриф проекта");
 ?>
 <?
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
 
     <section class="">
@@ -74,7 +74,7 @@ $user = (\KContainer::getInstance())->get('user');
         "GROUP4"=>[
             0=>"HLBLOCK_4_UF_ADDITIONAL_WISHES",
         ],
-        "HB_ID" => BRIEF,
+        "HB_ID" => 4,
         "FIELDS" => 'ALL',
         "QUERY_VARIABLE" => "sourcehtml",
         "QUERYVARIABLE" => ["sourcehtml"],

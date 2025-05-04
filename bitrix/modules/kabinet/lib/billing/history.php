@@ -10,18 +10,16 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
     public $fieldsType = [];
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($user, $HLBCClass)
     {
         global $USER;
+        $this->user = $user;
 
-        if (!$USER->IsAuthorized()) throw new BillingException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
-
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Billing::OnAfterAdd", [$this,"OnAfterAddHandler"]);
-
         AddEventHandler("", "\Billinghistory::OnBeforeAdd", [$this,"OnBeforeAdd"]);
         //AddEventHandler("", "\Billinghistory::OnBeforeUpdate", [$this,"OnBeforeUpdate"]);
         //AddEventHandler("", "\Billinghistory::OnBeforeDelete", [$this,"OnBeforeDelete"]);
@@ -29,8 +27,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 
     public function OnAfterAddHandler($id,$primary,$fields,$object)
     {
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $user = (\KContainer::getInstance())->get('siteuser');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 
         \Bitrix\Kabinet\billing\datamanager\BillinghistoryTable::add([
             'UF_ACTIVE'=>1,
@@ -68,8 +65,8 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
 		global $USER;
 		
 		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $user = (\KContainer::getInstance())->get('user');
-        $siteuser = (\KContainer::getInstance())->get('siteuser');
+        $user = $this->user;
+        $siteuser = $sL->get('siteuser');
 
         $fields = [];
         $fields['UF_USER_EDIT'] = $siteuser->printName().' '.'(email:'.$siteuser['EMAIL'].')';
@@ -143,7 +140,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
     public function getData($clear=false,$filter = [],$offset=0,$limit=5){
         global $CACHE_MANAGER;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // сколько времени кешировать

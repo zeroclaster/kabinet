@@ -30,7 +30,7 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
     public function onPrepareComponentParams($params)
     {
         $request =$this->request;
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
         //if (empty($params['TASK_ID'])) $this->errorCollection[] = new Error('Поле TASK_ID не задано!',self::ERROR_TEXT);
 		

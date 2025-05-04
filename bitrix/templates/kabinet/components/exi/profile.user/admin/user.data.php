@@ -21,8 +21,8 @@ header('Content-type: application/javascript; charset=utf-8');
 //ini_set('display_startup_errors', 1);
 
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-$ClientManager = $sL->get('Kabinet.AdminClient');
-$siteuser = (\KContainer::getInstance())->get('siteuser');
+$ClientManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.AdminClient');
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 $dataArray = $ClientManager->getData([],['ID'=>$siteuser->get('ID')]);
 $currentUser = $dataArray[0];
 //echo "<pre>";

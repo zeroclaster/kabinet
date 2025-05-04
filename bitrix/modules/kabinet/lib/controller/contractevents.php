@@ -50,11 +50,10 @@ class Contractevents extends \Bitrix\Main\Engine\Controller
 		//AddMessage2Log([$post], "my_module_id");
         //AddMessage2Log($files, "my_module_id");
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         \CUserOptions::SetOption('kabinet','usertype',$post['contracttype'],false,$user->get('ID'));
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $contractManager = $sL->get('Kabinet.Contract');
+        $contractManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Contract');
 
         $crearPOST = $contractManager->retrieveAdditionalsFields(array_merge($post,$files));
         try {
@@ -67,7 +66,7 @@ class Contractevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $bankManager = $sL->get('Kabinet.Bankdata');
+        $bankManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Bankdata');
         $crearPOST = $bankManager->retrieveAdditionalsFields(array_merge($post,$files));
         try {
             if (empty($crearPOST['ID']))

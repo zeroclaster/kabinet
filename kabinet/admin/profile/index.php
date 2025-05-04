@@ -4,7 +4,7 @@ $APPLICATION->SetTitle("Профиль");
 
 
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
     <section class="section-xs">
         <div class="container-fluid">

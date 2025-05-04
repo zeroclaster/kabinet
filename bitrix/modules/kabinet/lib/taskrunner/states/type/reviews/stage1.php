@@ -89,9 +89,9 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
         // назначаем данной задачи менеджера
         $UF_TASK_ID = $object->get('UF_TASK_ID');
-        $HLBClass = (\KContainer::getInstance())->get('TASK_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
 
-        $siteuser = (\KContainer::getInstance())->get('siteuser');
+        $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 
         $obResult = $HLBClass::update($UF_TASK_ID,['UF_MANAGER_ID'=>$siteuser->get('ID')]);
         if (!$obResult->isSuccess()){
@@ -102,8 +102,7 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     }
 
     public function execute(){
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-		$BillingManager = $sL->get('Kabinet.Billing');
+		$BillingManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
         $runnerFields = $this->runnerFields;
 
         $event = new Event("kabinet", "OnBeforeStartStage", ['id'=>$this->id,'name'=>$this->getName(),'title'=>$this->getTitle()]);
@@ -125,7 +124,7 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 			if ($BillingManager->teorygetMoney($value,$user_id)){
 
 			    /*
-				$HLBClass = (\KContainer::getInstance())->get(FULF_HL);
+				$HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get(FULF_HL);
 				$obResult = $HLBClass::update($runnerFields['ID'],['UF_MONEY_RESERVE'=>$value]);
 				 if (!$obResult->isSuccess()){
 					$err = $obResult->getErrors();

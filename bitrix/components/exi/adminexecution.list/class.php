@@ -100,9 +100,9 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		$ClassClient = \Bitrix\Kabinet\UserTable::class;
         $ClassMessager = \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::class;
 
-        $HLBClassProject = (\KContainer::getInstance())->get('BRIEF_HL');
-        $HLBClassTask = (\KContainer::getInstance())->get('TASK_HL');
-        $HLBClassFulf = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClassProject = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
+        $HLBClassTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
+        $HLBClassFulf = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
 
         $Query = $HLBClassFulf::query();
         $entity = $Query->getEntity();

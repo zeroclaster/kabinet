@@ -206,11 +206,10 @@ class Briefevents extends \Bitrix\Main\Engine\Controller
         $request = $this->getRequest();
         $fields = $request->getPostList()->toArray();
 
-        $user = (\KContainer::getInstance())->get('user');
-        $BRIEF_HLClass = (\KContainer::getInstance())->get(BRIEF_HL);
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $projectManager = $sL->get('Kabinet.Project');
-        $taskManager = $sL->get('Kabinet.Task');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
+        $BRIEF_HLClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
+        $projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
+        $taskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
 
 
         if (!$fields['id']) {

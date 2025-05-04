@@ -37,16 +37,14 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         '51e37ecf0978bf080600464552b95d1f'=>[1,2],  //Однократная или непрерывная
         'fb226d4fc4447d5c81e2a902042ffca3' =>[34],   //Ежемесячная услуга
     ];
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass,$config=[])
+    public function __construct($user, $HLBCClass,$config=[],$runnermanager=null)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new TaskException("Сritical error! Registered users only.");
-
         $this->config = $config;
+        $this->user = $user;
 
-        parent::__construct($id, $HLBCClass);
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
@@ -61,7 +59,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
     public function AutoIncrementAddHandler($fields,$object)
     {
-        $HLBClass = (\KContainer::getInstance())->get(TASK_HL);
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
         $last = $HLBClass::getlist([
             'select'=>['UF_EXT_KEY'],
             'order'=>['ID'=>"DESC"],
@@ -143,10 +141,9 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     public function OnBeforeAddHandler($fields,$object)
     {
         \Bitrix\Main\Loader::includeModule("iblock");
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $ProjectManager = $sL->get('Kabinet.Project');
+        $ProjectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
 
-        $HLBClass = (\KContainer::getInstance())->get(BRIEF_HL);
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
         $isExistsProject = $HLBClass::getById($fields["UF_PROJECT_ID"])->fetch();
         if (!$isExistsProject) throw new TaskException("Invalid field value UF_PROJECT_ID");
 
@@ -196,16 +193,13 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
     public function OnBeforeDeleteHandler($id, $primary, $oldFields)
     {
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $filter['UF_TASK_ID'] = $id;
         $listdata = $HLBClass::getlist(['select' => ['*'], 'filter'=>$filter])->fetchAll();
         foreach($listdata as $item){
             $RunnerManager->delete($item['ID']);
         }
-
     }
 
     public function OnAfterDeleteHandler($id, $primary, $oldFields)
@@ -288,7 +282,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         global $CACHE_MANAGER;
 
         if (!$user_id){
-            $user = (\KContainer::getInstance())->get('user');
+            $user = $this->user;
             $user_id = $user->get('ID');
         }
 
@@ -479,7 +473,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function FulfiCache($task){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
 
         $taskId = $task['ID'];
         $id = $task['UF_AUTHOR_ID'];
@@ -525,13 +519,12 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function toArchive($task){
-        $archive = (\KContainer::getInstance())->get('ARCHIVE');
+        $archive = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVE');
         return $archive->add($this,$task);
-
     }
 
     public function getItem($task){
-        $Itemfactory = new \Bitrix\Kabinet\task\factory\Itemfactory;
+        $Itemfactory = new \Bitrix\Kabinet\task\factory\Itemfactory2;
         $item = $Itemfactory->getObject($task);
 
         return $item;

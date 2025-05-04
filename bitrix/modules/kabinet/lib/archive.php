@@ -13,7 +13,7 @@ class Archive{
 
 
 		if ($object instanceof \Bitrix\Kabinet\taskrunner\Runnermanager){
-			$ClassHL = (\KContainer::getInstance())->get(ARCHIVEFULFI_HL);
+			$ClassHL = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVEFULFI_HL');
 
 			foreach($fields['UF_PIC_REVIEW'] as $key => $file_id){
 				$fileInfo = \CFile::GetFileArray($file_id);
@@ -35,8 +35,8 @@ class Archive{
             $ret = $ID;
 		
 			// ищим все сообщения
-			$HLMess = (\KContainer::getInstance())->get(LMESSANGER_HL);
-			$HLArchiveMess = (\KContainer::getInstance())->get(ARCHIVELMESS_HL);
+			$HLMess = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('LMESSANGER_HL');
+			$HLArchiveMess = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVELMESS_HL');
 			$data_mess = $HLMess::getlist([
 				'select'=>['*'],
 				'filter' => ['UF_QUEUE_ID'=>$QUEUE_ID],
@@ -84,7 +84,7 @@ class Archive{
 
 
 		if ($object instanceof \Bitrix\Kabinet\task\Taskmanager){
-			$HLArchiveTask = (\KContainer::getInstance())->get(ARCHIVETASK_HL);
+			$HLArchiveTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVETASK_HL');
 	
 			foreach($fields['UF_PHOTO'] as $key => $file_id){
 				$fileInfo = \CFile::GetFileArray($file_id);

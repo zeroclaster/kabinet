@@ -9,10 +9,9 @@ class Hlbase extends Base {
     protected $selectFields = [];
     protected $config = [];
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($HLBCClass)
     {
-        parent::__construct($id, $HLBCClass);
-
+        parent::__construct($HLBCClass);
     }
 
     public function add($fields){

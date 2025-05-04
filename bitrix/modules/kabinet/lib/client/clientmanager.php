@@ -15,16 +15,14 @@ class Clientmanager {
         'PERSONAL_PHOTO','PERSONAL_PHONE','PERSONAL_PROFESSION','PERSONAL_WWW','PASSWORD'
     ];
     public $defFiltere = [];
+    protected $user;
 
-    public function __construct($defFiltere,array $selectFields = [])
+    public function __construct($user,$defFiltere,array $selectFields = [])
     {
         global $USER;
-
         $this->defFiltere = $defFiltere;
+        $this->user = $user;
         if ($selectFields) $this->updateFields = $selectFields;
-
-        if (!$USER->IsAuthorized()) throw new ClientException("Сritical error! Registered users only.");
-
     }
 
     public function retrieveAdditionalsFields(array $fields){
@@ -59,7 +57,7 @@ class Clientmanager {
     public function getData($id=[],$filter=[],$runtime=[],$limit=20000000,$offset=0){
 
         if (!$filter){
-            $user = (\KContainer::getInstance())->get('user');
+            $user = $this->user;
             $filter = ['ID'=>$user->get('ID')];
         }
 

@@ -72,7 +72,7 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $messanger = $sL->get('Kabinet.Messanger');
         $billing = $sL->get('Kabinet.Billing');
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
 
         $saveData = $projectManager->getData();
@@ -227,7 +227,7 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         //$name = $this->arParams['QUERY_VARIABLE'];
         $output = "";
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $proj = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getListActive([
             'select'=>['*','INFO','DETAILS','TARGETAUDIENCE'],
             'filter'=>['UF_AUTHOR_ID'=>$user->get('ID')],

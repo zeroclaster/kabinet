@@ -13,14 +13,12 @@ class Targetmanager extends \Bitrix\Kabinet\container\Hlbase {
         "UF_CITY"=>1,
         "UF_RATIO_GENDERS"=>1,
     ];
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass)
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new ProjectException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Targetaudience::OnBeforeAdd", [$this,"OnBeforeAddHendler"]);
         AddEventHandler("", "\Targetaudience::OnBeforeUpdate", [$this,'clearCacheHandler'],100);

@@ -32,7 +32,7 @@ class FormBriefComponent extends \Bitrix\Kabinet\component\Basecreator implement
         // /bitrix/modules/main/classes/mysql/usertype.php
 		// /bitrix/modules/main/classes/general/usertypemanager.php
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
         $arResult = &$this->arResult;
         $arParams = &$this->arParams;

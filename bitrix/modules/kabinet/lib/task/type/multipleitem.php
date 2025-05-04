@@ -51,10 +51,8 @@ TZ;
     }
 
     public function createFulfi($task,$PlannedDate){
-        $HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
-
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
         $PRODUCT = $TaskManager->getProductByTask($task);
 
         //Элемент тип

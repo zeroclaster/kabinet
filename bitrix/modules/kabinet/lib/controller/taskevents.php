@@ -52,10 +52,9 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         $post = $request->getPostList()->toArray();
         $files = $request->getFileList()->toArray();
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
         $HLBClass = $TaskManager->getHLBClass();
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
         $upd_id = $post['ID'];
 
@@ -176,7 +175,7 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         }
         */
 
-        $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
+        $ClassHLB = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
 
         try {
             AddEventHandler("", "\Fulfillment::OnBeforeAdd", function($fields,$object){
@@ -235,7 +234,7 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
+        $ClassHLB = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
 
 
         try {
@@ -288,7 +287,7 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $ClassHLB = (\KContainer::getInstance())->get('TASK_HL');
+        $ClassHLB = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
         $ClassHLB::update($task['ID'],['UF_STATUS'=>\Bitrix\Kabinet\task\Taskmanager::STOPPED]);
 
         try {
@@ -328,14 +327,14 @@ class Taskevents extends \Bitrix\Main\Engine\Controller
         //AddMessage2Log($files, "my_module_id");
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $HLBClassTask = (\KContainer::getInstance())->get('TASK_HL');
-        $HLBClassQueue = (\KContainer::getInstance())->get('FULF_HL');
-        $HLBClassProject = (\KContainer::getInstance())->get('BRIEF_HL');
-        $ClassHLArchiveFulfi = (\KContainer::getInstance())->get(ARCHIVEFULFI_HL);
-        $TaskManager = $sL->get('Kabinet.Task');
-        $RunnerManager = $sL->get('Kabinet.Runner');
-        $projectManager = $sL->get('Kabinet.Project');
-        $projectManager = $sL->get('Kabinet.Project');
+        $HLBClassTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
+        $HLBClassQueue = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
+        $HLBClassProject = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
+        $ClassHLArchiveFulfi = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVEFULFI_HL');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
+        $projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
+        $projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
 
 
         if (empty($post['ID'])){

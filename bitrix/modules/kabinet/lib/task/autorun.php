@@ -31,11 +31,8 @@ class Autorun{
     }
 
     public function run(){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $HLBClassFulfi = (\KContainer::getInstance())->get('FULF_HL');
-        $HLBClassTask = (\KContainer::getInstance())->get('TASK_HL');
-        $TaskManager = $sL->get('Kabinet.Task');
-        $runnerManager = $sL->get('Kabinet.Runner');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
+        $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 
         $list = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
             'select'=>['*'],
@@ -74,7 +71,7 @@ class Autorun{
     }
 
     public function goToEndLine($id){
-        $HLBClass = (\KContainer::getInstance())->get('TASK_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
         $task = $HLBClass::getlist([
             'select'=>['ID','UF_RUN_DATE'],
             'filter'=>['UF_ACTIVE'=>1],

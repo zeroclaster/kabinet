@@ -13,18 +13,16 @@ use \Bitrix\Main\SystemException,
 
 class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     public $taskFileds = [];
+    protected $user;
 
-    public function __construct(int $id, $HLBCClass,array $selectFields,$config=[])
+    public function __construct($user, $HLBCClass,$config=[])
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new FulfiException("Сritical error! Registered users only.");
-		
 		$this->config = $config;
+        $this->user = $user;
 
-        $this->selectFields = $selectFields;
+        $this->selectFields = $config['ALLOW_FIELDS'];
 
-        parent::__construct($id, $HLBCClass);
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Fulfillment::OnBeforeAdd", [$this,'ifCreateNew'],100);
         AddEventHandler("", "\Fulfillment::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
@@ -36,7 +34,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
     public function AutoIncrementAddHandler($fields,$object)
     {
-        $HLBClass = (\KContainer::getInstance())->get(FULF_HL);
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $last = $HLBClass::getlist([
             'select'=>['UF_EXT_KEY'],
             'order'=>['ID'=>"DESC"],
@@ -105,7 +103,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 		
         if ($old == '' && $new != '') {
 		   
-		   $HLTask = (\KContainer::getInstance())->get(TASK_HL);
+		   $HLTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
 		   $task = $HLTask::getlist(['select'=>['*'],'filter'=>['ID'=>$oldData['UF_TASK_ID']],'limit'=>1])->fetch();
 		   
 		   // создать сообщение в чате
@@ -138,10 +136,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
     public function OnBeforeDeleteHandler($id, $primary, $oldFields)
     {
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $manager = $sL->get('Kabinet.Messanger');
+        $manager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
         // ищим все сообщения
-        $HLMess = (\KContainer::getInstance())->get(LMESSANGER_HL);
+        $HLMess = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('LMESSANGER_HL');
         $filter['UF_QUEUE_ID'] = $id;
         $listdata = $HLMess::getlist(['select'=>['*'], 'filter' => $filter])->fetchAll();
         foreach($listdata as $item){
@@ -150,10 +147,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     public function checkTask(array $task){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $BillingManager = $sL->get('Kabinet.Billing');
+        $BillingManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
         $userBilling = $BillingManager->getData();
-        $TaskManager = $sL->get('Kabinet.Task');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
         $PRODUCT = $TaskManager->getProductByTask($task);
 
         $GLOBALS['aaa'] = 'y';
@@ -371,13 +367,13 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $nameState = $list[$key]['NAME'];
 
         //new \Bitrix\Kabinet\taskrunner\states\Xmlload
-        $state = (\KContainer::getInstance())->get('states')->$type()->$nameState($fields);
+        $state = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('states')->$type()->$nameState($fields);
 		
         return $state;
     }
 
     public function getStatus($type){
-        $list = (\KContainer::getInstance())->get('states')->getQueuStatus($type);
+        $list = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('states')->getQueuStatus($type);
         return $list;
     }
 
@@ -424,7 +420,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 
     protected function addHistoryChangeStatus($fields,$object,$oldData){
-        $siteuser = (\KContainer::getInstance())->get('siteuser');
+        $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
         $history = [];
 
         $newState = $this->makeState($fields);
@@ -446,9 +442,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     }
 	
 	public function toArchive($task){
-		$HLBClass = (\KContainer::getInstance())->get('FULF_HL');
-		
-		$archive = (\KContainer::getInstance())->get('ARCHIVE');
+		$HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
+		$archive = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('ARCHIVE');
 		
 		$data = $HLBClass::getlist([
 			'select' => ['*'],

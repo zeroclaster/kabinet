@@ -10,26 +10,28 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
     public $fieldsType = [];
+    protected $history;
+    protected $user;
 
-
-    public function __construct(int $id, $HLBCClass,$config=[])
+    public function __construct($user, $HLBCClass,$history,$config=[])
     {
         global $USER;
 
-        if (!$USER->IsAuthorized()) throw new BillingException("Сritical error! Registered users only.");
-
         $this->config = $config;
+        // Kabinet.BilligHistory
+        $this->history = $history;
+        $this->user = $user;
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $sL->addInstanceLazy("Kabinet.BilligHistory", ['constructor'=>
-            static function(){
-                $provider = \Bitrix\Kabinet\billing\Providerhistory::getInstance();
-                $project = $provider->build();
-                return $project;
-            }
-        ]);
+        parent::__construct($HLBCClass);
 
-        parent::__construct($id, $HLBCClass);
+        if (!\PHelp::isAdmin()){
+            AddEventHandler("", "\Billing::OnBeforeUpdate", function($id,$fields,$object,$oldData){
+                //throw new SystemException("Невозможно выполнить команду. Нехватает прав.");
+            });
+            AddEventHandler("", "\Billing::OnBeforeDelete", function($id){
+                throw new SystemException("Невозможно выполнить команду. Нехватает прав.");
+            });
+        }
 
         AddEventHandler("", "\Billing::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
         AddEventHandler("", "\Billing::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
@@ -74,11 +76,8 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 
         $calc = $userMoney['UF_VALUE'] + $value;
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $history = $sL->get('Kabinet.BilligHistory');
-
         $this->update(['ID'=>$userMoney['ID'],'UF_VALUE'=>$calc]);
-        $history->addHistory('Возврат средств. Отмена исполнения по задаче: ',$initiator,$value);
+        $this->history->addHistory('Возврат средств. Отмена исполнения по задаче: ',$initiator,$value);
     }
 
     public function cachback2($value,$user_id = 0,$initiator){
@@ -90,15 +89,11 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
 
         $calc = $userMoney['UF_VALUE'] + $value;
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $history = $sL->get('Kabinet.BilligHistory');
-
         $this->update(['ID'=>$userMoney['ID'],'UF_VALUE'=>$calc]);
-        $history->addHistory('Возврат средств. По задаче: ',$initiator,$value);
+        $this->history->addHistory('Возврат средств. По задаче: ',$initiator,$value);
     }
 
     public function addMoney($value,$user_id = 0,$initiator){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         if ($user_id)
             $filter = ['UF_AUTHOR_ID'=>$user_id];
         else
@@ -112,8 +107,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
         $calc = $Money + $value;
         $this->update(['ID'=>$billing['ID'],'UF_VALUE'=>$calc]);
         $this->getData($clear=true,$filter);
-        $history = $sL->get('Kabinet.BilligHistory');
-        $history->addHistory('Пополнение баланса.',$initiator,$value);
+        $this->history->addHistory('Пополнение баланса.',$initiator,$value);
     }
 
 
@@ -135,7 +129,6 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function getMoney($value,$user_id = 0,$initiator,$why='Списание по задаче: '){
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 		if ($user_id)
             $filter = ['UF_AUTHOR_ID'=>$user_id];
         else
@@ -160,8 +153,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
                 return null;
         }
 
-		$history = $sL->get('Kabinet.BilligHistory');
-		$history->addHistory($why,$initiator,$value);
+		$this->history->addHistory($why,$initiator,$value);
 
         return $value;
     }
@@ -169,9 +161,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     public function getData($clear=false,$filter = []){
         global $CACHE_MANAGER;
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 		
 		// make filter....
@@ -289,7 +279,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function lastMonthExpenses($project_id=0){
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // Начало следующего месяца
@@ -314,7 +304,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function actualMonthExpenses($project_id=0){
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // Начало следующего месяца
@@ -340,7 +330,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function actualMonthBudget($project_id=0){
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // Начало следующего месяца
@@ -367,7 +357,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     public function nextMonthExpenses($project_id=0){
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $taskManager = $sL->get('Kabinet.Task');
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // Начало следующего месяца
@@ -436,7 +426,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
             "d.m.Y H:i:s"
         ));
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         // ищем уже запланированные на в этом месяце
@@ -545,7 +535,7 @@ class Billing extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function createTransaction($sum){
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         $billing = datamanager\BillingTable::getListActive([

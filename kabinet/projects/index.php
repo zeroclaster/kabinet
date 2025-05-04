@@ -6,9 +6,9 @@ $context = \Bitrix\Main\Application::getInstance()->getContext();
 $server = $context->getServer();
 $request = $context->getRequest();
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-$projectManager = $sL->get('Kabinet.Project');
+$projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
 $projectData = $projectManager->getData();
 
 $order = $projectManager->orderData();

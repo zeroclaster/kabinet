@@ -35,4 +35,17 @@ $config = [
     ]
 ];
 
+$a = $GLOBALS["USER_FIELD_MANAGER"]->getUserFields('HLBLOCK_14',null,LANGUAGE_ID);
+$fields = array_keys($a);
+$fields[] = 'ID';
+
+// TODO AKULA подумать по поводу UF_ACTIVE
+$allowFileds = array_diff($fields,[
+    'UF_OPERATION',
+    'UF_SITE_SETUP',
+    'UF_ACTUAL_DATE',
+    //'UF_ACTIVE'
+]);
+
+$config['ALLOW_FIELDS'] = $allowFileds;
 return $config;

@@ -329,7 +329,7 @@ $APPLICATION->SetTitle("Пополнение баланса кабинета «�
 $context = \Bitrix\Main\Application::getInstance()->getContext();
 $request = $context->getRequest();
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID'));
 
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();

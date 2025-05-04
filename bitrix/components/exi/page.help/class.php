@@ -56,7 +56,7 @@ class pageHelpComponent extends \CBitrixComponent implements \Bitrix\Main\Engine
         $arParams = $this->arParams;
 
 
-        $HLBClass = (\KContainer::getInstance())->get('HELP_HL');
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('HELP_HL');
         $data = $HLBClass::getlist([
             'select'=>['*'],
             'filter'=>['UF_CODE'=>$arParams['CODE']]

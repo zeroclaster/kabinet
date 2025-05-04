@@ -4,8 +4,8 @@ $APPLICATION->SetTitle("Клиенты и проекты");
 ?>
 
 <?
-$siteuser = (\KContainer::getInstance())->get('siteuser');
-$user = (\KContainer::getInstance())->get('user');
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
 //\Dbg::var_dump($user->get('ID'));
 

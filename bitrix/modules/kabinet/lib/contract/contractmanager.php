@@ -37,13 +37,12 @@ class Contractmanager extends \Bitrix\Kabinet\container\Hlbase {
         "UF_ACTS"=>[1,2,3,4],
     ];
 
-    public function __construct(int $id, $HLBCClass)
+    protected $user;
+
+    public function __construct($user, $HLBCClass)
     {
-        global $USER;
-
-        if (!$USER->IsAuthorized()) throw new BankException("Сritical error! Registered users only.");
-
-        parent::__construct($id, $HLBCClass);
+        $this->user = $user;
+        parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Contract::OnBeforeAdd", [$this,"OnBeforeAdd"]);
     }
@@ -100,7 +99,7 @@ class Contractmanager extends \Bitrix\Kabinet\container\Hlbase {
     public function getData($clear=false){
         global $CACHE_MANAGER;
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = $this->user;
         $user_id = $user->get('ID');
 
         $requestURL = $user_id;

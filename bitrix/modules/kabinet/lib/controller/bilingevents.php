@@ -88,9 +88,8 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
     public function depositmoneyAction(){
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $billinkdata = $sL->get('Kabinet.Billing')->getData();
-        $user = (\KContainer::getInstance())->get('user');
+        $billinkdata = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing')->getData();
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
 
         if (!\PHelp::isAdmin()){
@@ -98,7 +97,7 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
             return null;
         }
 
-        $billing = $sL->get('Kabinet.Billing');
+        $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
         $billing->addMoney($post['summapopolneniya'], 0, $billing);
         if ($post['percentpopolneniya']>0) $billing->getMoney($post['sumpopolnenia'], 0, $billing, 'Комиссионный сбор');
 

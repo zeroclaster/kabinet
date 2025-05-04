@@ -63,7 +63,7 @@ class TaskListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $taskManager = $sL->get('Kabinet.Task');
         $messanger = $sL->get('Kabinet.Messanger');
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
         $saveData = $taskManager->getData();
 
@@ -94,7 +94,7 @@ class TaskListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine
         //$name = $this->arParams['QUERY_VARIABLE'];
         $output = "";
 
-        $user = (\KContainer::getInstance())->get('user');
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $proj = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getListActive([
             'select'=>['*','INFO','DETAILS','TARGETAUDIENCE'],
             'filter'=>['UF_AUTHOR_ID'=>$user->get('ID')],
