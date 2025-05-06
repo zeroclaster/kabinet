@@ -279,8 +279,17 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         if (!$res) return $this->arResult;
 
         $sqlfilter = array_column($res,'ID');
+        $select = $runnerManager->getSelectFields();
+        $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
+        $Queue = $HLBClass::getlist([
+            'select'=>$select,
+            'filter'=>$sqlfilter,
+            //'order' => ['ID'=>'DESC'],
+        ])->fetchAll();
 
-        $arResult["RUNNER_DATA"] = $runnerManager->getData([],true,$sqlfilter);
+        //$arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
+        $arResult["RUNNER_DATA"] = $runnerManager->getData([],true,$sqlfilter);;
+
         $arrayTaskID = array_unique(array_column($this->arResult["RUNNER_DATA"],'UF_TASK_ID'));
 		
 		// for debug

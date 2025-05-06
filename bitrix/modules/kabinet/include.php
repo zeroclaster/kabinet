@@ -57,7 +57,7 @@ $config = [
 AddEventHandler("main", "OnProlog", function(){
 	global $USER;
 
-    if (!$USER->IsAuthorized()) throw new \Bitrix\Main\SystemException("Сritical error! Registered users only.");
+    if (\CSite::InDir('/kabinet/') && (!$USER || !$USER->IsAuthorized())) LocalRedirect("/login/");
 
     $context = \PHelp::isAdmin() ? 'admin' : 'user';
     $loader = new   \Bitrix\Main\DI\ServiceLoader('bitrix/modules/kabinet/lib/services.php',$context);
@@ -68,11 +68,6 @@ AddEventHandler("main", "OnProlog", function(){
     var_dump($taskManager);
     exit();
 */
-
-	if (
-	    \CSite::InDir('/kabinet/') && (!$USER || !$USER->IsAuthorized())
-    )
-	    LocalRedirect("/login/");
 
     $locator = \Bitrix\Main\DI\ServiceLocator::getInstance();
     $bootService = \PHelp::isAdmin()

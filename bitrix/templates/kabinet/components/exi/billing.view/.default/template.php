@@ -23,7 +23,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
 [$nextMouthStart,$nextMouthEnd]  = \PHelp::nextMonth();
 ?>
 <!-- отображение -->
-<div id="billing-detalie" class="col-md-12" data-loadtable=""></div>
+<div id="billing-detalie" class="col-md-12" data-loadtable="" data-finance-history=""></div>
 
 <!-- шаблон -->
 <script type="text/html" id="kabinet-content">
@@ -77,7 +77,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                 <th scope="col" style="width: 10%">Дата</th>
                 <th scope="col">Проект</th>
                 <th scope="col">Операция</th>
-                <th scope="col">№</th>
+                <th scope="col"># исполнения</th>
                 <th scope="col" style="width: 5%">Сумма, руб.</th>
             </tr>
             </thead>
@@ -93,7 +93,7 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
                     {{history.UF_OPERATION_ORIGINAL}}
                     {{task(history).UF_NAME}}
                 </td>
-                <td>{{history.ID}}</td>
+                <td>{{history.UF_QUEUE_ID}}</td>
                 <td>{{history.UF_VALUE_ORIGINAL}}</td>
             </tr>
             </tbody>
@@ -128,7 +128,34 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
         state: () => ({historybillingdata:<?=CUtil::PhpToJSObject($arResult['HISTORY_DATA'], false, true)?>})
     });
 
+    components.financehistory = {
+        selector: '[data-finance-history]',
+        script: [
+            '../../kabinet/assets/js/kabinet/vue-componets/baselistapp.js',
+            '../../kabinet/components/exi/billing.view/.default/billingviewapp.js',
+        ],
+        init:null
+    }
+
     window.addEventListener("components:ready", function(event) {
+
+                new BillingViewApp(
+<?=CUtil::PhpToJSObject([
+                'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
+                'FILTER' => $arParams["FILTER"],
+                'CONTAINER' => '#billing-detalie',
+                'TEMPLATE' => '#kabinet-content',
+                "viewcount"=>$arParams["COUNT"],
+                "total"=>$arResult["TOTAL"],
+                "signedParameters"=>"",
+                "componentName"=>"exi:billing.view",
+                "actionName"=>"loadmore",
+                "container"=>"#billing-detalie"
+            ], false, true)?>
+        );
+
+
+/*
         billing_view.start(<?=CUtil::PhpToJSObject([
             'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
             'FILTER' => $arParams["FILTER"],
@@ -137,5 +164,6 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
             "viewcount"=>$arParams["COUNT"],
             "total"=>$arResult["TOTAL"],
         ], false, true)?>);
+*/
     });
 </script>

@@ -32,7 +32,7 @@ else{
     ShowError("Task data not found". "(".$taskdata['ID'].")");
 }
 
-$QueueStatistics = $taskManager->getQueueStatistics($taskdata);
+$QueueStatistics = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('queue.statistics')->getStatistics($taskdata);
 
 $runner = $runnerManager->getData($taskdata['ID']);
 

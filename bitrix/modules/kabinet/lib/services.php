@@ -105,8 +105,8 @@ return [
             'arguments' => [
                 '@user',
                 '@TASK_HL',
-                [],
-                '@Kabinet.Runner',
+                '%task.config%',
+                '@Kabinet.Project'
             ]
         ],
         'Kabinet.Project' => [
@@ -253,6 +253,12 @@ return [
             ]
         ],
 
+        'queue.statistics' => [
+            'class' => \Bitrix\Kabinet\taskrunner\Queuestatisticsservice::class,
+            'arguments' => [
+                '@Kabinet.Task'
+            ]
+        ],
     ],
 
     'parameters' => [
@@ -268,6 +274,7 @@ return [
         'states.config.xmlfile' => '/bitrix/modules/kabinet/lib/taskrunner/states/states.xml',
         'runner.config.user' => include __DIR__.'/taskrunner/config.php',
         'runner.config.admin' => include __DIR__.'/taskrunner/admin/config.php',
+        'task.config' => [],
         'billing.config.admin' => include __DIR__.'/billing/config.php',
         'billing.config.user' => include __DIR__.'/billing/config.php',
         'messanger.config.admin'=> include __DIR__.'/messanger/admin/config.php',

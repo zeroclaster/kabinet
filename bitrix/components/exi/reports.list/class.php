@@ -88,7 +88,8 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 
         return true;
     }
-	
+
+    // Согласовать все
 	public function greeeverything(){
 		$arParams = $this->arParams;
         $arResult = &$this->arResult;

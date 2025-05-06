@@ -208,7 +208,7 @@ $p = $request->get('p');
 
 
 					<div class="">
-                        <div class="row form-group" v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2) && CopyTask.UF_STATUS==0">
+                        <div class="row form-group" v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2 || CopyTask.UF_CYCLICALITY == 33) && CopyTask.UF_STATUS==0">
                             <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
                                 <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
                             </div>
@@ -219,13 +219,17 @@ $p = $request->get('p');
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
-                                    <div class="mr-3">
+                                    <div class="mr-3" v-if="CopyTask.UF_CYCLICALITY != 33">
                                         <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
                                             <option v-for="option in CopyTask.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
                                                 {{ option.VALUE }}
                                             </option>
                                         </select>
 
+                                    </div>
+
+                                    <div v-if="CopyTask.UF_CYCLICALITY == 33">
+                                        До: {{datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}
                                     </div>
 
                                     <div style="position: relative" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">

@@ -38,18 +38,19 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         'fb226d4fc4447d5c81e2a902042ffca3' =>[34],   //Ежемесячная услуга
     ];
     protected $user;
+    protected $ProjectManager;
 
-    public function __construct($user, $HLBCClass,$config=[],$runnermanager=null)
+    public function __construct($user, $HLBCClass,$config=[],$ProjectManager)
     {
         $this->config = $config;
         $this->user = $user;
+        $this->ProjectManager = $ProjectManager;
 
         parent::__construct($HLBCClass);
 
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
         AddEventHandler("", "\Task::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
-        AddEventHandler("", "\Task::OnAfterDelete", [$this,"OnAfterDeleteHandler"]);
 
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'ifChangeCycliality'],100);
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'checkBeforeUpdate'],200);
@@ -141,8 +142,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
     public function OnBeforeAddHandler($fields,$object)
     {
         \Bitrix\Main\Loader::includeModule("iblock");
-        $ProjectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
-
         $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('BRIEF_HL');
         $isExistsProject = $HLBClass::getById($fields["UF_PROJECT_ID"])->fetch();
         if (!$isExistsProject) throw new TaskException("Invalid field value UF_PROJECT_ID");
@@ -155,7 +154,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
         // устанавливаем цикличность задачи
         // если у задачи один вариант то сразу его выбираем!
-        $orders = $ProjectManager->orderData($fields['UF_AUTHOR_ID']);
+        $orders = $this->ProjectManager->orderData($fields['UF_AUTHOR_ID']);
         $PRODUCT = $orders[$isExistsProject['UF_ORDER_ID']][$fields["UF_PRODUKT_ID"]];
 
         // IBLOCK  TASK_CONTINUITY - Возможность непрерывности задачи
@@ -191,17 +190,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
     }
 
-    public function OnBeforeDeleteHandler($id, $primary, $oldFields)
-    {
-        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
-        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
-        $filter['UF_TASK_ID'] = $id;
-        $listdata = $HLBClass::getlist(['select' => ['*'], 'filter'=>$filter])->fetchAll();
-        foreach($listdata as $item){
-            $RunnerManager->delete($item['ID']);
-        }
-    }
-
     public function OnAfterDeleteHandler($id, $primary, $oldFields)
     {
     }
@@ -232,7 +220,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
 
             $listdata[$index]['FINALE_PRICE'] = $listdata[$index]['UF_NUMBER_STARTS'] * $PRODUCT['CATALOG_PRICE_1'];
 
-            $listdata[$index]['QUEUE_STATIST'] = $this->getQueueStatistics($task2);
+            $listdata[$index]['QUEUE_STATIST'] = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('queue.statistics')->getStatistics($task2);
             //$listdata[$index]['QUEUE_STATIST'] = [];
 
 
@@ -364,15 +352,12 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         // cache afect!
         //if ( isset($this->productList[$PRODUKT_ID]) ) return $this->productList[$PRODUKT_ID];
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $ProjectManager = $sL->get('Kabinet.Project');
-        $briefs =$ProjectManager->getData(false,$task['UF_AUTHOR_ID']);
-        $orders =$ProjectManager->orderData($task['UF_AUTHOR_ID']);
+        $briefs =$this->ProjectManager->getData(false,$task['UF_AUTHOR_ID']);
+        $orders =$this->ProjectManager->orderData($task['UF_AUTHOR_ID']);
 
         $key = array_search($task['UF_PROJECT_ID'], array_column($briefs, 'ID'));
         if ($key === false) throw new TaskException("Не найден проект с ID ".$task['UF_PROJECT_ID']);
         $UF_ORDER_ID = $briefs[$key]['UF_ORDER_ID'];
-
 
         if (empty($orders[$UF_ORDER_ID][$PRODUKT_ID])) {
             throw new TaskException("Не найден продукт с ID ".$PRODUKT_ID. ' в заказе '. $UF_ORDER_ID);
@@ -392,84 +377,6 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         if ($key === false) return false;
 
         return $collection[$key];
-    }
-
-    public function getQueueStatistics($task){
-        $ret = [];
-
-        $status = 0;
-        $dbArray = $this->FulfiCache($task);
-        $Queue = [];
-        foreach ($dbArray as $item)  if ($item['UF_STATUS']==$status) $Queue[]=$item;
-
-        $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) {
-            foreach ($Queue as $one) {
-                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
-                else $st['COUNT']++;
-            }
-        }
-        $ret[] = $st;
-
-        $status = [1,2,3,4,5,6,7,8];
-        $Queue = [];
-        foreach ($dbArray as $item)  if (in_array($item['UF_STATUS'],$status)) $Queue[]=$item;
-
-        $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) {
-            foreach ($Queue as $one) {
-                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
-                else $st['COUNT']++;
-            }
-        }
-
-        $ret[] = $st;
-
-        $status = 9;
-        $Queue = [];
-        foreach ($dbArray as $item)  if ($item['UF_STATUS']==$status) $Queue[]=$item;
-
-
-        $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) {
-            foreach ($Queue as $one) {
-                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
-                else $st['COUNT']++;
-            }
-        }
-        $ret[] = $st;
-
-        $status = 10;
-        $Queue = [];
-        foreach ($dbArray as $item)  if ($item['UF_STATUS']==$status) $Queue[]=$item;
-
-        $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) {
-            foreach ($Queue as $one) {
-                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
-                else $st['COUNT']++;
-            }
-        }
-        $ret[] = $st;
-
-
-        // 5 - На согласовании (у клиента)
-        // 8 - Отчет на проверке у клиента
-        $status = [5,8];
-        $Queue = [];
-        foreach ($dbArray as $item)  if (in_array($item['UF_STATUS'],$status)) $Queue[]=$item;
-
-        $st = ['STATUS'=>$status,'COUNT'=>0];
-        if ($Queue) {
-            foreach ($Queue as $one) {
-                if ($one['UF_ELEMENT_TYPE'] == 'multiple') $st['COUNT'] += $one['UF_NUMBER_STARTS'];
-                else $st['COUNT']++;
-            }
-        }
-
-        $ret[] = $st;
-
-        return $ret;
     }
 
     public function FulfiCache($task){

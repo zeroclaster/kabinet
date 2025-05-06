@@ -30,6 +30,18 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 		AddEventHandler("", "\Fulfillment::OnBeforeUpdate", [$this,'CommentifChange'],150);
         AddEventHandler("", "\Fulfillment::OnBeforeUpdate", [$this,'historyChangeStatus'],200);
         AddEventHandler("", "\Fulfillment::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
+
+        AddEventHandler("", "\Task::OnAfterDelete", [$this,"OnBeforeDeleteTaskHandler"]);
+    }
+
+    public function OnBeforeDeleteTaskHandler($id, $primary, $oldFields)
+    {
+        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
+        $filter['UF_TASK_ID'] = $id;
+        $listdata = $HLBClass::getlist(['select' => ['*'], 'filter'=>$filter])->fetchAll();
+        foreach($listdata as $item){
+            $this->delete($item['ID']);
+        }
     }
 
     public function AutoIncrementAddHandler($fields,$object)
@@ -258,6 +270,38 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 		return $list;
 	}
 
+    public function remakeFulfiData(array $Queue){
+        $listdata = [];
+        foreach ($Queue as $data) {
+            $c = $this->convertData($data, $this->getUserFields());
+            // используется в отоюражении календаря
+            $c['UF_STATUS_ORIGINAL'] = $this->currentStatus($c);
+
+            //$type = ($c['UF_ELEMENT_TYPE']=='')? $c['UF_ELEMENT_TYPE']:'review';
+            //$c['STATUSLIST'] = $this->getStatus($type);
+            $c['STATUSLIST'] = $this->allowStates($c);
+
+            // кастомезируем названия статусов доступные для клиента
+            if (!\PHelp::isAdmin()){
+                array_walk($c['STATUSLIST'],function (&$item, $key,$c){
+                    // 4 - В работе у специалиста
+                    if ($item['ID'] == 4 && $c['UF_STATUS'] != 3) $item['TITLE'] = 'Отклонить с комментарием';
+                    // 4 - Публикация
+                    if ($item['ID'] == 6) $item['TITLE'] = '<i class="fa fa-rocket" aria-hidden="true"></i>Отправить на публикацию';
+                    // 9 - Выполнена
+                    if ($item['ID'] == 9) $item['TITLE'] = 'Отчет принят';
+                },$c);
+            }
+
+            if ($c['UF_HISTORYCHANGE']) $c['UF_HISTORYCHANGE_ORIGINAL'] = unserialize($c['UF_HISTORYCHANGE']);
+            else $c['UF_HISTORYCHANGE_ORIGINAL'] = [];
+
+            $listdata[] = $c;
+        }
+
+        return $listdata;
+    }
+
     public function getData($task_id_list,$clear=false,$id=[],$filter=[]){
         global $CACHE_MANAGER;
 
@@ -306,37 +350,9 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
                 'filter'=>$filter,
                 //'order' => ['ID'=>'DESC'],
             ])->fetchAll();
-
-
+            
             //\Dbg::print_r($Queue);
-
-            $listdata = [];
-            foreach ($Queue as $data) {
-                $c = $this->convertData($data, $this->getUserFields());
-                // используется в отоюражении календаря
-                $c['UF_STATUS_ORIGINAL'] = $this->currentStatus($c);
-
-                //$type = ($c['UF_ELEMENT_TYPE']=='')? $c['UF_ELEMENT_TYPE']:'review';
-                //$c['STATUSLIST'] = $this->getStatus($type);
-                $c['STATUSLIST'] = $this->allowStates($c);
-
-                // кастомезируем названия статусов доступные для клиента
-                if (!\PHelp::isAdmin()){
-                        array_walk($c['STATUSLIST'],function (&$item, $key,$c){
-                            // 4 - В работе у специалиста
-                            if ($item['ID'] == 4 && $c['UF_STATUS'] != 3) $item['TITLE'] = 'Отклонить с комментарием';
-                            // 4 - Публикация
-                            if ($item['ID'] == 6) $item['TITLE'] = '<i class="fa fa-rocket" aria-hidden="true"></i>Отправить на публикацию';
-                            // 9 - Выполнена
-                            if ($item['ID'] == 9) $item['TITLE'] = 'Отчет принят';
-                        },$c);
-                }
-
-                if ($c['UF_HISTORYCHANGE']) $c['UF_HISTORYCHANGE_ORIGINAL'] = unserialize($c['UF_HISTORYCHANGE']);
-                else $c['UF_HISTORYCHANGE_ORIGINAL'] = [];
-
-                $listdata[] = $c;
-            }
+            $listdata = $this->remakeFulfiData($Queue);
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
             $cache->EndDataCache(array($listdata));

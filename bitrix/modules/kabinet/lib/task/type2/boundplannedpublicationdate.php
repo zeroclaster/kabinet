@@ -16,13 +16,14 @@ class Boundplannedpublicationdate{
         $dateStar = $this->parent->dateStartTask($task);
 
         $dateList = [\PHelp::BitrixdateNow($dateStar)];
+
         $UF_NUMBER_STARTS = $task['UF_NUMBER_STARTS'] - 1;
         if ($UF_NUMBER_STARTS == 0) return $dateList;
 
         $diffDays = $dateStar->getDiff(\Bitrix\Main\Type\DateTime::createFromTimestamp($task['UF_DATE_COMPLETION']))->format('%a');
 
         // округленный интервал в днях от сегоднешней до введенной пользователем даты завершения
-        $step = floor($diffDays * 24 / $task['UF_NUMBER_STARTS']);
+        $step = floor($diffDays * 24 / ($task['UF_NUMBER_STARTS']-1));
         $step = max($PRODUCT['MINIMUM_INTERVAL']['VALUE'], $step);
 
         for ($i = 0; $i < $UF_NUMBER_STARTS; $i++) {
