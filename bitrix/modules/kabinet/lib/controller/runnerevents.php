@@ -53,20 +53,13 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $RunnerManager = $sL->get('Kabinet.Runner');
         $billing = $sL->get('Kabinet.Billing');
-        $TaskManager = $sL->get('Kabinet.Task');
 
-        $odlData = $RunnerManager->getData([],false,$post['ID']);
-        $odlData = $odlData[0];
-
+        $odlData = $RunnerManager->getIDFulfiData($post['ID']);
         try {
             $upd_id = $RunnerManager->update(array_merge($post,$files));
         }catch (SystemException $exception){
-
             if ($exception->getCode() == self::END_WITH_SCRIPT){
-                $Data = $RunnerManager->getData([],false,$post['ID']);
-                foreach($Data as $current){
-                    if ($current['ID'] == $post['ID']) break;
-                }
+                $current = $RunnerManager->getIDFulfiData($post['ID']);
                 return [
                     'id'=> 0,
                     'runner'=>[],
@@ -79,17 +72,15 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
                 $this->addError(new Error($exception->getMessage(), 1));
                 return null;
             }
-
         }
 
-        $Data = $RunnerManager->getData([],false,$upd_id);
-        foreach($Data as $current){
-            if ($current['ID'] == $upd_id) break;
-        }
+        $current = $RunnerManager->getIDFulfiData($post['ID']);
 
-
-        $TaskData = $TaskManager->getData(true,[],['ID'=>$current['UF_TASK_ID']]);
-        $TaskData = $TaskData[0];
+        $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([
+            'select'=>['*'],
+            'filter'=>['ID'=>$current['UF_TASK_ID']],
+            'limit'=>1
+        ])->fetch();
         if (!$TaskData) {
             $this->addError(new Error("Задачи с ID ".$current['UF_TASK_ID']. ' не найдена!', 1));
             return null;
@@ -131,10 +122,7 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
         }catch (SystemException $exception){
 
             if ($exception->getCode() == self::END_WITH_SCRIPT){
-                $Data = $RunnerManager->getData([],false,$post['ID']);
-                foreach($Data as $current){
-                    if ($current['ID'] == $post['ID']) break;
-                }
+                $current = $RunnerManager->getIDFulfiData($post['ID']);
                 return [
                     'id'=> 0,
                     'runner'=>[],
@@ -150,11 +138,7 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
 
         }
 
-        $Data = $RunnerManager->getData([],false,$upd_id);
-        foreach($Data as $current){
-            if ($current['ID'] == $upd_id) break;
-        }
-
+        $current = $RunnerManager->getIDFulfiData($upd_id);
         return [
             'id'=> $upd_id,
             'runner'=>$current,
@@ -165,23 +149,9 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
     public function resetAction(){
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
-
-        // for debug!!
-        //AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
-
-        $upd_id = $post['ID'];
-
-        $Data = $RunnerManager->getData([],false,$upd_id);
-        foreach($Data as $current){
-            if ($current['ID'] == $upd_id) break;
-        }
-
+        $current = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->getIDFulfiData($post['ID']);
         return [
-            'id'=> $upd_id,
+            'id'=> $post['ID'],
             'runner'=>$current,
             'message'=>''
         ];
@@ -190,9 +160,6 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
     public function starttaskAction(){
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
-
-        //AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
 
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $TaskManager = $sL->get('Kabinet.Task');

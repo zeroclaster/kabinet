@@ -54,15 +54,10 @@ class Stage11 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
 
     // условия что бы включить этот статус
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
-
         }else{
-
         }
-
         return true;
     }
 
@@ -73,14 +68,10 @@ class Stage11 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
 
     // когда пришли на статус
     public function cameTo($object){
-
         $runnerFields = $this->runnerFields;
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
-        $billing = $sL->get('Kabinet.Billing');
-
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+        $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
         $task = $this->getTask();
-
         $billing->cachback($runnerFields['UF_MONEY_RESERVE'],$task['UF_AUTHOR_ID'],$this);
 
         $object->set('UF_MONEY_RESERVE',0);

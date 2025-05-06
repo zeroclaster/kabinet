@@ -226,7 +226,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		}
 
 		foreach($PR_DATA as $task){
-			$this->arResult["RUNNER_DATA"][$task['UF_AUTHOR_ID']][$task['ID']] = $runnerManager->getData($task['ID']);
+			$this->arResult["RUNNER_DATA"][$task['UF_AUTHOR_ID']][$task['ID']] = $runnerManager->getTaskFulfiData($task['ID']);
 		}
 
 		//\Dbg::var_dump($this->arResult["RUNNER_DATA"]);

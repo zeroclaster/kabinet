@@ -47,8 +47,7 @@ class Basestate{
     }
 	
 	public function getTask(){
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $TaskManager = $sL->get('Kabinet.Task');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
 		$runnerFields = $this->runnerFields;
 
         $dataSQL = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([

@@ -76,12 +76,9 @@ class Queue{
     }
 
     public function run(){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
-
         // Filter
-        $SQL_data = $HLBClass::getlist([
-            'select'=>['ID'],
+        $list = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
+            'select'=>['*'],
             'filter'=>[
                 'UF_ACTIVE'=>1,
                 '!UF_STATUS'=>[9,10],   // исключаем статус Выпонин и Отменен
@@ -90,19 +87,12 @@ class Queue{
             'limit'	=> 2
         ])->fetchAll();
 
-        if (!$SQL_data)
-            throw new SystemException("Отсутствует очередь.");
-
-        $idList = array_column($SQL_data, 'ID');
-
-        $runnerManager = $sL->get('Kabinet.Runner');
-        $list = $runnerManager->getData([],true,$id=$idList);
+        if (!$list) throw new SystemException("Отсутствует очередь.");
 
         foreach ($list as $fields) {			
-            $stage = $runnerManager->makeState($fields);			
+            $stage = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->makeState($fields);
             $stage->execute();
         }
-
     }
 
     public function goToEndLine($id){

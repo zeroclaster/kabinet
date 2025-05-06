@@ -59,13 +59,10 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     }
 
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
         }else{
         }
-
         return true;
     }
 

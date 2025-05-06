@@ -41,8 +41,7 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         $post = $request->getPostList()->toArray();
 		$files = $request->getFileList()->toArray();
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 
         $crearPOST = array_merge($post,$files);
         try {
@@ -78,8 +77,7 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 		
 		if ($post['ID'] == NULL || $post['ID'] == 0){
 			$this->addError(new Error("ID сообщения не найдено", 1));
@@ -104,8 +102,7 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         $post = $request->getPostList()->toArray();
         $files = $request->getFileList()->toArray();
 
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 
         $f = [];
         foreach ($post as $fieldName=>$value){

@@ -89,8 +89,7 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     // когда пришли на статус
     public function cameTo($object){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 
         $QUEUE_ID=$object->get('ID');
         $TASK_ID=$object->get('UF_TASK_ID');
@@ -106,16 +105,8 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $event->send();
 		$runnerFields = $this->runnerFields;
 
-        //echo "<pre>";
-        //print_r($runnerFields);
-       // echo "</pre>";
-	   
 	    $TASK = $this->getTask();
 
-        //echo "<pre>";
-        //print_r($TASK);
-        //echo "</pre>";
-		
 		//throw new SystemException("TEST STOP");
 		
 		// Отчетность
@@ -124,7 +115,7 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 			$this->goToState(9);		// Выполнена
 		}else{			   
 			$d = (new DateTime())->add("-72 hours");		
-			if ($d->getTimestamp() > $runnerFields['UF_CREATE_DATE']){
+			if ($d > $runnerFields['UF_CREATE_DATE']){
 				$this->goToState(9);		// Выполнена
 			}
 		}

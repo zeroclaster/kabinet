@@ -105,14 +105,12 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 	/*
 	Если пользователь отклоняет и пишет комментарий, то так же он отправляется в чат менеджеру
 	*/
-    public function CommentifChange($id,$primary,$fields,$object,$oldData){		
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $manager = $sL->get('Kabinet.Messanger');
+    public function CommentifChange($id,$primary,$fields,$object,$oldData){
+        $manager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 		
         $new = $fields['UF_COMMENT'];
         $old = $oldData['UF_COMMENT'];
 
-		
         if ($old == '' && $new != '') {
 		   
 		   $HLTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
@@ -302,6 +300,34 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         return $listdata;
     }
 
+    public function getTaskFulfiData(int $task){
+        $select = $this->getSelectFields();
+        $Queue = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
+            'select'=>$select,
+            'filter'=>['UF_TASK_ID'=>$task],
+            //'order' => ['ID'=>'DESC'],
+        ])->fetchAll();
+
+        //\Dbg::print_r($Queue);
+        $listdata = $this->remakeFulfiData($Queue);
+
+        return $listdata;
+    }
+
+    public function getIDFulfiData(int $id){
+        $select = $this->getSelectFields();
+        $Queue = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
+            'select'=>$select,
+            'filter'=>['ID'=>$id],
+            //'order' => ['ID'=>'DESC'],
+        ])->fetchAll();
+
+        //\Dbg::print_r($Queue);
+        $listdata = $this->remakeFulfiData($Queue);
+
+        return $listdata[0];
+    }
+
     public function getData($task_id_list,$clear=false,$id=[],$filter=[]){
         global $CACHE_MANAGER;
 
@@ -375,7 +401,6 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         if (!$fields['UF_ELEMENT_TYPE']) throw new FulfiException("Отсутствует тип. Невозможно создать стадию.");
         $type = $fields['UF_ELEMENT_TYPE'];
         $status = $fields['UF_STATUS'];
-        $ID = $fields['ID'];
         $list = $this->getStatus($type);
         $key = array_search($status, array_column($list, 'ID'));
         if ($key === false) throw new FulfiException("Ошибка при определение разрешенных статусов.");

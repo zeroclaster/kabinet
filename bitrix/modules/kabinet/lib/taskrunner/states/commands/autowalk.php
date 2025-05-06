@@ -13,13 +13,9 @@ class Autowalk extends Base implements \Bitrix\Kabinet\taskrunner\states\contrac
     }
 
     public function execute(array $params = []){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $runnerManager = $sL->get('Kabinet.Runner');
-
         $stage = $this->Object;
         $runnerFields = $stage->runnerFields;
-        $runnerFields['UF_STATUS'] = $this->status;
-        $runnerManager->update($runnerFields);
+        \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::update($runnerFields['ID'],['UF_STATUS'=>$this->status]);
 
         return true;
     }

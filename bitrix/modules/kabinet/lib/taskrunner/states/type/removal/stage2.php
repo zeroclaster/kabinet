@@ -61,12 +61,9 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
 
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
         }else{
-
         }
 
         return true;
@@ -82,20 +79,8 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     }
 
     public function execute(){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
-        $runnerFields = $this->runnerFields;
-
         $event = new Event("kabinet", "OnBeforeStartStage", ['id'=>$this->id,'name'=>$this->getName(),'title'=>$this->getTitle()]);
         $event->send();
-
-        $TASK = $this->getTask();
-
-        //echo "<pre>";
-        //print_r($TASK);
-        //echo "</pre>";
-	
-		$PRODUCT = $this->getProduct();
 
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);

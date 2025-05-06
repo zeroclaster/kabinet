@@ -51,15 +51,10 @@ class Stage10 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
     }
 
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
-
         }else{
-
         }
-
         return true;
     }
 

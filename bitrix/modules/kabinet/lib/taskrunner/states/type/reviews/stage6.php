@@ -94,8 +94,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     // когда пришли на статус
     public function cameTo($object){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
 
         $QUEUE_ID=$object->get('ID');
         $TASK_ID=$object->get('UF_TASK_ID');

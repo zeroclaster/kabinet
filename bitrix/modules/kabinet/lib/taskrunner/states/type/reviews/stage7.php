@@ -56,15 +56,9 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     }
 
     public function getRoutes(){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $taskManager = $sL->get('Kabinet.Task');
         $runnerFields = $this->runnerFields;
-
         if(\PHelp::isAdmin()) {
-            $UF_TASK_ID = $runnerFields['UF_TASK_ID'];
-            $TaskData = $taskManager->getData(true,[],['ID'=>$UF_TASK_ID]);
-            $TaskData = $TaskData[0];
-
+            $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($runnerFields['UF_TASK_ID'])->fetch();
             if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
                 return [1,2,3,4,5,6,7,8,9,10];
             else

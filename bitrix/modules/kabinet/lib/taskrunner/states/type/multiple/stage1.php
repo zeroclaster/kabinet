@@ -66,14 +66,10 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
 
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
         }else{
-
         }
-
         return true;
     }
 
@@ -117,7 +113,7 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $now = new DateTime();
 
 
-        if ($runnerFields['UF_PLANNE_DATE'] < $now->getTimestamp()) {
+        if ($runnerFields['UF_PLANNE_DATE'] < $now) {
             $task = $this->getTask();
             $user_id = $task['UF_AUTHOR_ID'];
 

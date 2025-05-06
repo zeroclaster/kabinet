@@ -94,23 +94,17 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 		$arParams = $this->arParams;
         $arResult = &$this->arResult;
 		$TASK_ID = $arParams['TASK_ID'];
-		
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-		$runnerManager = $sL->get('Kabinet.Runner');
+
+		$runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 		
 		// Требуют внимания
 		// [3,5,8]
 		$alert_status_client = $runnerManager->config('ALERT');
-		
-		$runner = $runnerManager->getData(
-		        $TASK_ID,
-				$clear=true,
-				$id=[],
-				$filter=['UF_STATUS'=>$alert_status_client]
-		);
 
+        $runner = $runnerManager->getTaskFulfiData($TASK_ID);
         try {
             foreach ($runner as $item) {
+                if (!in_array($item['UF_STATUS'],$alert_status_client)) continue;
                 $state = $runnerManager->makeState($item);
                 $state->runCommand("auto_walk");
             }
@@ -211,7 +205,14 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         if (!$res) return $this->arResult;
 
         $sqlfilter = array_column($res,'ID');
-        $arResult["RUNNER_DATA"] = $runnerManager->getData([],true,$sqlfilter);
+        $select = $runnerManager->getSelectFields();
+        $Queue = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
+            'select'=>$select,
+            'filter'=>['ID'=>$sqlfilter],
+            //'order' => ['ID'=>'DESC'],
+        ])->fetchAll();
+
+        $arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
 
         foreach($arResult["RUNNER_DATA"] as $item){
             $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(['UF_QUEUE_ID'=>$item['ID']],0,$arParams['MESSAGE_COUNT']);

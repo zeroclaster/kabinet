@@ -33,8 +33,7 @@ else{
 }
 
 $QueueStatistics = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('queue.statistics')->getStatistics($taskdata);
-
-$runner = $runnerManager->getData($taskdata['ID']);
+$runner = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->getTaskFulfiData($taskdata['ID']);
 
 $project_data = $projectManager->getData();
 $key = array_search($taskdata['UF_PROJECT_ID'], array_column($project_data, 'ID'));

@@ -58,11 +58,8 @@ class TaskListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine
 
     public function doitAction()
     {
-        // нужно только для отладки для измерения времени
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $taskManager = $sL->get('Kabinet.Task');
-        $messanger = $sL->get('Kabinet.Messanger');
+        $taskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
         $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         $user_id = $user->get('ID');
         $saveData = $taskManager->getData();

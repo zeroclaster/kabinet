@@ -41,8 +41,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 
     public function executeComponent()
     {
-		$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-		$runnerManager = $sL->get('Kabinet.Runner');
+		$runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 		
         $FILTER_NAME = $this->arParams['FILTER_NAME'];
 		$this->arResult['SEARCH_RESULT'] = [];
@@ -63,16 +62,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 		// Требуют внимания
 		// [3,5,8]
 		$alert_status_client = $runnerManager->config('ALERT');
-		
-		$runner = $runnerManager->getData(
-				$task_id,
-				$clear=true,
-				$id=[],
-				$filter=['UF_STATUS'=>$alert_status_client]
-		);
-
-
-
+        $runner = $runnerManager->getTaskFulfiData($task_id);
 
 		${$FILTER_NAME}['alert'] = [];
 		$this->arResult['count_alert'] = 0;
@@ -82,10 +72,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
             foreach ($runner as $item) {
                 if (in_array($item['UF_STATUS'], $alert_status_client)) $this->arResult['count_alert']++;
 
-                if (
-                    $post['alert'] &&
-                    in_array($item['UF_STATUS'], $alert_status_client)
-                ) {
+                if ($post['alert'] && in_array($item['UF_STATUS'], $alert_status_client)) {
                     $SEARCH_RESULT['alert'] = $post['alert'];
                     ${$FILTER_NAME}['statusfind'] = $alert_status_client;
                 }
