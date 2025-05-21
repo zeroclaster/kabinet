@@ -23,11 +23,6 @@ dogovor_creator = (function (){
                         }
                     }
                 },
-                created(){
-                },
-                mounted() {
-                },
-                // language=Vue
                 template: PHPPARAMS.TEMPLATE
             });
 

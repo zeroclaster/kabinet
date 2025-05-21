@@ -1,5 +1,100 @@
 <?php
 
+/*
+ * Использование
+1. Создание экземпляра
+php
+$loader = new \Bitrix\Main\DI\ServiceLoader(
+    '/path/to/config.php', // Путь к конфигурационному файлу
+    'admin' // Контекст (необязательно, по умолчанию 'user')
+);
+2. Регистрация сервисов
+php
+$loader->register();
+Формат конфигурационного файла
+Пример config.php:
+
+php
+<?php
+return [
+    'parameters' => [
+        'db.host' => 'localhost',
+        'db.name' => 'bitrix_db'
+    ],
+
+    'services' => [
+        'database.connection' => [
+            'class' => \Bitrix\Main\DB\Connection::class,
+            'arguments' => [
+                '%db.host%',
+                '%db.name%'
+            ]
+        ],
+
+        'logger' => [
+            'context' => 'admin', // Сервис только для админки
+            'class' => \Bitrix\Main\AdminLogger::class
+        ],
+
+        'cache.service' => [
+            'constructor' => '@cache.factory->create()'
+        ]
+    ]
+];
+Типы определений сервисов
+1. Простой сервис с классом
+php
+'service.id' => [
+    'class' => 'Full\Class\Name',
+    'arguments' => ['param1', '%parameter.name%', '@other.service']
+]
+2. Ленивая инициализация (lazy loading)
+php
+'service.id' => [
+    'constructor' => function() {
+        return new ServiceInstance();
+    }
+]
+3. Контекстные сервисы
+php
+'service.id' => [
+    'context' => 'admin', // или 'user'
+    'class' => 'Context\Specific\Class'
+]
+4. Вызов методов других сервисов
+php
+'service.id' => [
+    'constructor' => '@other.service->createInstance(param1, param2)'
+]
+Специальные синтаксисы
+Параметры: %parameter.name%
+
+Ищется в секции parameters конфига
+
+Поддерживает вложенность через точку: %db.host%
+
+Ссылки на сервисы: @service.id
+
+Получает сервис из Service Locator
+
+Вызов методов сервисов: @service->method(arg1, arg2)
+
+Вызывает метод у сервиса с указанными аргументами
+
+Обработка ошибок
+Класс выбрасывает исключения RuntimeException в случаях:
+
+Отсутствия конфигурационного файла
+
+Некорректного формата конфигурации
+
+Отсутствия требуемых классов
+
+Попытки доступа к несуществующим параметрам
+
+Попытки использования контекстного сервиса в неподходящем контексте
+ */
+
 namespace Bitrix\Main\DI;
 
 use Bitrix\Main\Application;

@@ -5,7 +5,6 @@ $APPLICATION->SetTitle("Бриф проекта");
 <?
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
-
     <section class="">
         <div class="container-fluid">
             <div class="d-flex justify-content-between">
@@ -22,11 +21,6 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
             );?>
         </div>
     </section>
-
-<section class="section-xs" style="position: relative">
-    <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr"></div>
-</section>
-
 
 <?$APPLICATION->IncludeComponent("exi:form.brief", "", Array(
 		"ID" => $_REQUEST['id'],
@@ -80,9 +74,5 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         "QUERYVARIABLE" => ["sourcehtml"],
     )
 );?>
-
-
-
-
 
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

@@ -1,4 +1,4 @@
-var profile_user = document.adminclient_list || {};
+var profile_user = document.profile_user || {};
 profile_user= (function (){
     return {
         start(PHPPARAMS){
@@ -73,23 +73,7 @@ profile_user= (function (){
                 template: '#kabinet-content'
             });
 
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            userProfileApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            userProfileApplication.config.globalProperties.$id = getId;
-
-            userProfileApplication.use(store);
-            userProfileApplication.mount('#kabinetcontent');
+            configureVueApp(userProfileApplication);
         }
     }
 }());

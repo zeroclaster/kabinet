@@ -39,63 +39,46 @@ $this->setFrameMode(true);
     </section>
 </script>
 
-
-<?
-(\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','userStore');
-$message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
-?>
+<?(\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','userStore'); ?>
 <script>
     components.messangerUserDashbord = {
         selector: "[data-usermessanger='dashbord']",
         script: [
             './js/kabinet/vue-componets/messanger/uploadfile.js',
             './js/kabinet/vue-componets/messanger/templates/user.dashbord.js',
-            './js/kabinet/vue-componets/messanger/messanger2.js',
+            './js/kabinet/vue-componets/messanger/messanger.factory.js'
         ],
         styles: './css/messanger.css',
         dependencies:'vuerichtext',
         init:null
     }
 
+    let messangerperformances;
+    window.addEventListener("components:ready", function(event) {
+        const messangerSystem2 = createMessangerSystem();
+        messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+            'VIEW_COUNT' => $arParams['COUNT'],
+            'NEW_RESET' => $arParams['NEW_RESET'],
+            'FILTER' => $arParams["FILTER"],
+            'TEMPLATE' => 'messangerTemplate'
+        ], false, true)?>);
+        messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
-</script>
-<?ob_start();?>
-    <script>
-        const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
-            state: () => ({datamessage:<?=$message_state?>}),
-        });
-    </script>
-
-    <script type="text/javascript" src="<?=$templateFolder?>/messanger.view.js"></script>
-
-    <script>
-        window.addEventListener("components:ready", function(event) {
-            var m = <?=CUtil::PhpToJSObject([
-                    'VIEW_COUNT' => $arParams['COUNT'],
-                'NEW_RESET' => $arParams['NEW_RESET'],
-                'FILTER' => $arParams["FILTER"],
-                ], false, true)?>;
-
-
-            m.TEMPLATE = messangerTemplate;
-            m.messageStoreInst = function(){
-                return function () {
-                    return messageStore();
+        const messangerViewApplication = BX.Vue3.BitrixVue.createApp({
+            data() {
+                return {
                 }
-            };
-            m.messageStore = messageStore;
-
-            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
-            messangerperformances = messanger_vuecomponent2_2.start(m);
-
-            messanger_view.start(<?=CUtil::PhpToJSObject([], false, true)?>);
+            },
+            computed: {
+                ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
+            },
+            components: {
+                messangerperformances
+            },
+            // language=Vue
+            template: '#messangerviewtemolate'
         });
-    </script>
-<?
-$addScriptinPage = trim(ob_get_contents());
-ob_end_clean();
-$addscript = (\KContainer::getInstance())->get('addscript');
-if (!$addscript) $addscript = [];
-$addscript[] = $addScriptinPage;
-(\KContainer::getInstance())->maked($addscript,'addscript');
-?>
+
+        configureVueApp(messangerViewApplication,'#messangerblock');
+    });
+</script>

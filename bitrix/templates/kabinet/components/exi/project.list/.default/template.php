@@ -166,46 +166,36 @@ CUtil::InitJSCore(array('window'));
         </div>
     </div>
 </div>
+
+    <button @click="aaa">test{{ gettestdataID(1) }}</button>
 </script>
 
 <?
 (\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','queueStore','billingStore','userStore');
 \Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/project.list/.default/brief_list.js");
 ?>
-<?
-$message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
-?>
 <script>
     components.projectlist22 = {
         selector: '[data-dashboardprojectlist]',
         script: [
             '../../kabinet/components/exi/task.list/.default/task_status.js',
-            '../../kabinet/assets/js/kabinet/vue-componets/messanger/messanger2.js',
+            './js/kabinet/vue-componets/messanger/templates/project.mainpage.js',
+            './js/kabinet/vue-componets/messanger/messanger.factory.js',
         ],
         init:null
     }
 
-
     const alert_project_count = <?=CUtil::PhpToJSObject($arResult['ALERT_PROJECT_COUNT'], false, true)?>;
     const task_alert = <?=CUtil::PhpToJSObject($arResult['TASK_ALERT'], false, true)?>;
 
-    const  messageStore2 = BX.Vue3.Pinia.defineStore('messagelist2', {
-        state: () => ({datamessage:<?=$message_state?>}),
-    });
-
+    let messangerperformances___;
     window.addEventListener("components:ready", function(event) {
-        var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT'],], false, true)?>;
-        m.TEMPLATE = messangerTemplate2;
-        m.messageStoreInst = function(){
-            return function () {
-                return messageStore2();
-            }
-        };
-        m.messageStore = messageStore2;
-
-        let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
-        messangerperformances___ = messanger_vuecomponent2_2.start(m);
-
+        const messangerSystem2 = createMessangerSystem();
+        messangerperformances___ = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+            'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
+            'TEMPLATE' => 'messangerTemplate2'
+        ], false, true)?>);
+        messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
         project_list.start(<?=CUtil::PhpToJSObject([
             'PROJECT_ID'=>0,
@@ -217,6 +207,5 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
             'LAST_MONTH_EXPENSES' => $arResult['LAST_MONTH_EXPENSES'],
             'FUTURE_SPENDING' => $arResult['FUTURE_SPENDING'],
         ], false, true)?>);
-
     });
 </script>

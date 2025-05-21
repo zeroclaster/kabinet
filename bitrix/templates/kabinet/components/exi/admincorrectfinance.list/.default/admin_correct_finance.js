@@ -327,23 +327,8 @@ admin_correct_finance = (function (){
                 template: '#kabinet-content'
             });
 
+            configureVueApp(adminCorrectFinanceApplication);
 
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            adminCorrectFinanceApplication.config.globalProperties.$href = function (indicator) {
-                 return `#${getId.call(this, indicator)}` }
-
-            adminCorrectFinanceApplication.config.globalProperties.$id = getId;
-
-            adminCorrectFinanceApplication.use(store);
-            adminCorrectFinanceApplication.mount('#kabinetcontent');
         }
     }
 }());

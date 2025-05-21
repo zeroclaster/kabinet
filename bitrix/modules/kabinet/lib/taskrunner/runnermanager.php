@@ -36,9 +36,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
     public function OnBeforeDeleteTaskHandler($id, $primary, $oldFields)
     {
-        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
         $filter['UF_TASK_ID'] = $id;
-        $listdata = $HLBClass::getlist(['select' => ['*'], 'filter'=>$filter])->fetchAll();
+        $listdata = $this->HLBCClass::getlist(['select' => ['*'], 'filter'=>$filter])->fetchAll();
         foreach($listdata as $item){
             $this->delete($item['ID']);
         }
@@ -46,8 +45,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 
     public function AutoIncrementAddHandler($fields,$object)
     {
-        $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('FULF_HL');
-        $last = $HLBClass::getlist([
+        $last = $this->HLBCClass::getlist([
             'select'=>['UF_EXT_KEY'],
             'order'=>['ID'=>"DESC"],
             'limit' =>1
@@ -112,11 +110,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $old = $oldData['UF_COMMENT'];
 
         if ($old == '' && $new != '') {
-		   
-		   $HLTask = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('TASK_HL');
-		   $task = $HLTask::getlist(['select'=>['*'],'filter'=>['ID'=>$oldData['UF_TASK_ID']],'limit'=>1])->fetch();
-		   
-		   // создать сообщение в чате
+            $task = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($oldData['UF_TASK_ID'])->fetch();
+           // создать сообщение в чате
 		   $manager->add([
 			   'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::USER_MESSAGE,
 			   'UF_TASK_ID'=>$oldData['UF_TASK_ID'],
@@ -126,9 +121,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
 			   'UF_MESSAGE_TEXT'=>"В задаче ".$task['UF_NAME']." пользователь отклонил с комментарием: ".$new,
 			   'UF_UPLOADFILE' => [],
 		   ]);
-		            
         }
-
         //throw new FulfiException("Test Stop1");
     }	
 
@@ -166,9 +159,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         $dateEnd = $TaskManager->getItem($task)->theorDateEnd($task);
 
 
-
         if (!$task['UF_TARGET_SITE'][0]['VALUE']) throw new FulfiException("Вы не заполнили обязательное поле Ссылка!");
-
         if (!$task['UF_CYCLICALITY']) throw new FulfiException("Вы не выбрали Цикличность задачи!");
         if ($task['UF_CYCLICALITY'] == 1 && empty($task['UF_DATE_COMPLETION'])) throw new FulfiException("Не выбрана дата завершения!");
 
@@ -179,13 +170,12 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
         //поскольку выбираем только день, то разница в минутах и секундах может быть,
         // при сравнении это влияет,
         // поэтому предполагаем что эта разница не больше 86300
-        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2) throw new FulfiException("Дата завершения не може быть меньше ".$dateEnd->format("d.m.Y"));
+        if ($interval < -86300 && $task['UF_CYCLICALITY'] !=2 && $task['UF_CYCLICALITY'] !=33) throw new FulfiException("Дата завершения не може быть меньше ".$dateEnd->format("d.m.Y"));
 
         if (!$task['UF_NUMBER_STARTS']) throw new FulfiException("Не выбранно количество!");
 
 
         // максимальное количество в месяц
-
         if (
             $task['UF_CYCLICALITY'] == 2 &&
             $PRODUCT['MAXIMUM_QUANTITY_MONTH']['VALUE'] &&
@@ -197,8 +187,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
             $PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE'] &&
             $task['UF_NUMBER_STARTS']<$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']
         ) throw new FulfiException("Минимальное количество для заказа ".$PRODUCT['MINIMUM_QUANTITY_MONTH']['VALUE']. ' ед.');
-
-
+        
 		/*
 		Наличее сретств проверяется сразу и не дает создать планирование
 		*/
@@ -213,7 +202,7 @@ class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
     // ищет все задачи с 'UF_CYCLICALITY' =>[2,34] и
     public function startTask($task){
 
-        //throw new FulfiException("Временно не доступно! В разработке!");
+        //throw new TestException("Временно не доступно! В разработке!");
 
         $this->taskFileds = $task;
         $this->checkTask($task);

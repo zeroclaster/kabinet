@@ -103,8 +103,16 @@ $this->setFrameMode(true);
                     <input type="hidden" name="clientidsearch" :value="client.ID">
                     <div class="form-group select-status" v-for="(TitleStatus,idStatus) in statusCatalog()">
                         <div class="form-check">
-                            <input @change="gotocearchstatus" name="statusexecutionsearch" class="form-check-input" :id="$id(idStatus)" type="radio" :value="idStatus">
-                            <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getExecutionStatusCount(client.ID,idStatus)}}</span></label>
+                            <input
+                                    @change="$event.target.form.submit()"
+                                    name="statusexecutionsearch"
+                                    class="form-check-input"
+                                    :id="$id(idStatus)"
+                                    type="radio"
+                                    :value="idStatus"
+                            >
+
+                            <label class="form-check-label text-primary" :for="$id(idStatus)">{{TitleStatus}} - <span class="badge badge-secondary">{{getClientExecution(client.ID).filter(execution => execution.UF_STATUS === idStatus).length}}</span></label>
                         </div>
                     </div>
                 </form>
@@ -126,42 +134,78 @@ $this->setFrameMode(true);
 </script>
 
 
-<?
-$client_state = CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true);
-$project_state = CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true);
-$task_state = CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true);
-$order_state = CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true);
-$runner_state = CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true);
-$filter1 = CUtil::PhpToJSObject($arParams["FILTER"], false, true);
-?>
-<?ob_start();?>
+<script type="text/javascript" src="<?=$templateFolder?>/adminclient_list.js"></script>
 <script>
-    const clientListStoreData = <?=$client_state?>;
-	const projectListStoreData = <?=$project_state?>;
-	const taskListStoreData = <?=$task_state?>;
-	const orderListStoreData = <?=$order_state?>;
-	const runnerListStoreData = <?=$runner_state?>;
-	const filterclientlist = <?=$filter1?>;
-</script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminclient.data.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminproject.data.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/admintask.data.js"></script>
-	<script type="text/javascript" src="<?=$templateFolder?>/adminorder.data.js"></script>
-	<script type="text/javascript" src="<?=$templateFolder?>/adminrunner.data.js"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminclient_list.js"></script>
+	const filterclientlist = <?=CUtil::PhpToJSObject($arParams["FILTER"], false, true)?>;
+    const PHPPARAMS = <?=CUtil::PhpToJSObject([
+        "viewcount"=>$arParams["COUNT"],
+        "total"=>$arResult["TOTAL"],
+        "statuslistdata" => $runnerManager->getStatusList(),
+    ], false, true)?>;
+    window.addEventListener("components:ready", function(event) {
+        const adminClientListApplication = BX.Vue3.BitrixVue.createApp(adminclient_list);
 
-    <script>
-        adminclient_list.start(<?=CUtil::PhpToJSObject([
-                "viewcount"=>$arParams["COUNT"],
-            "total"=>$arResult["TOTAL"],
-            "statuslistdata" => $runnerManager->getStatusList(),
-        ], false, true)?>);
-    </script>
-<?
-$addScriptinPage = trim(ob_get_contents());
-ob_end_clean();
-$addscript = (\KContainer::getInstance())->get('addscript');
-if (!$addscript) $addscript = [];
-$addscript[] = $addScriptinPage;
-(\KContainer::getInstance())->maked($addscript,'addscript');
-?>
+        adminClientListApplication._component.data = () => ({
+            countview: PHPPARAMS.viewcount,
+            total: PHPPARAMS.total,
+            showloadmore: true,
+            dataclient: <?=CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true)?>,
+            dataproject: <?=CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true)?>,
+            datatask: <?=CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true)?>,
+            dataorder: <?=CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true)?>,
+            datarunner: <?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>
+        });
+
+        adminClientListApplication.config.globalProperties.statusCatalog = () => PHPPARAMS['statuslistdata'];
+        configureVueApp(adminClientListApplication);
+    });
+
+
+    /*
+
+
+    const adminclient_list = {
+    data() {
+        return {
+            countview: PHPPARAMS.viewcount,
+            total: PHPPARAMS.total,
+            showloadmore: true,
+            // Инициализируем пустые структуры данных
+            dataclient: [],
+            dataproject: {},
+            datatask: {},
+            dataorder: {},
+            datarunner: {}
+        }
+    },
+    // ... остальные свойства компонента
+};
+
+window.addEventListener("components:ready", () => {
+    // Подготавливаем данные из PHP
+    const componentData = {
+        data() {
+            return {
+                dataclient: CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true)?>,
+                dataproject: CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true)?>,
+                datatask: CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true)?>,
+                dataorder: CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true)?>,
+                datarunner: CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>
+            }
+        }
+    };
+
+    // Создаем приложение
+    const adminClientListApplication = BX.Vue3.BitrixVue.createApp(adminclient_list);
+
+    // Мерджим данные в компонент
+    Object.assign(adminclient_list.data, componentData.data);
+
+    // Настраиваем глобальные свойства
+    adminClientListApplication.config.globalProperties.statusCatalog = () => PHPPARAMS.statuslistdata;
+
+    // Конфигурируем приложение
+    configureVueApp(adminClientListApplication);
+});
+     */
+</script>

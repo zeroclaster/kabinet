@@ -3,12 +3,9 @@
  * Suharkov Sergey (sexiterra@mail.ru)
  */
 
+
 const textInfoTask = BX.Vue3.BitrixVue.mutableComponent('text-Info-Task', {
     template: `
-                    
-                    
-
-
                     <!-- Одно исполнение -->
                     <template v-if="copytsk.UF_CYCLICALITY == 1">
                     <div class="mt-3 mb-3" v-if="tsk.UF_STATUS==0">

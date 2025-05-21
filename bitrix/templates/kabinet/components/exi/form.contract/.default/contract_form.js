@@ -1,10 +1,4 @@
-var form_contract = document.form_contract || {};
-form_contract = (function (){
-    return {
-        start(PHPPARAMS){
-			
-			
-const formApplication = BX.Vue3.BitrixVue.createApp({
+const form_contract = {
     data() {
         return {
             id:0,
@@ -36,14 +30,14 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
                 AgreementStore.fields2 = data.fields2;
             });
         },
-        isShowfield: function (type_view){
-            var ret = false;
-            if (!type_view) return true;
-            for(const val of type_view){
-                if (val == this.contracttype.value) ret = true;
-            }
-            return ret;
+        isShowfield(type_view) {
+            // Если type_view не передан или пуст, показываем поле (возвращаем true)
+            if (!type_view?.length) return true;
+
+            // Проверяем, содержится ли текущий contracttype.value в массиве type_view
+            return type_view.includes(this.contracttype.value);
         },
+        //bitrix/templates/kabinet/components/bitrix/main.field.string/main.edit/.default.php
         showlimitcount(settings){        
             if (typeof settings == 'undefined') return false;
 			if (parseInt(settings.MAX_LENGTH)==0) return false;
@@ -65,11 +59,6 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
     },
     // language=Vue
     template: '#kabinet-content'
-});
-formApplication.use(store);
-formApplication.mount('#kabinetcontent');
+};
 
 
-        }
-    }
-}());

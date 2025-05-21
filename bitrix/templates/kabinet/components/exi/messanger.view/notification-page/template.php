@@ -42,43 +42,45 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
     </section>
 </script>
 
-
 <?
 (\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','userStore');
-Asset::getInstance()->addJs($templateFolder."/messanger.view.js");
 ?>
-
 <script>
     components.messangerUsernotification = {
         selector: "[data-usermessanger='notification']",
         script: [
             './js/kabinet/vue-componets/messanger/uploadfile.js',
             './js/kabinet/vue-componets/messanger/templates/user.notification.js',
-            './js/kabinet/vue-componets/messanger/messanger2.js',
+            './js/kabinet/vue-componets/messanger/messanger.factory.js'
         ],
         styles: './css/messanger.css',
         dependencies:'vuerichtext',
         init:null
     }
-
-    const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
-        state: () => ({datamessage:<?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?>}),
-    });
-
+    var messangerperformances = null;
     window.addEventListener("components:ready", function(event) {
-        var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['COUNT']], false, true)?>;
-        m.TEMPLATE = messangerTemplate;
-        m.messageStoreInst = function(){
-            return function () {
-                return messageStore();
-            }
-        };
-        m.messageStore = messageStore;
+        const messangerSystem2 = createMessangerSystem();
+        messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+            'VIEW_COUNT' => $arParams['COUNT'],
+            'TEMPLATE' => 'messangerTemplate'
+        ], false, true)?>);
+        messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
-        let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
-        messangerperformances = messanger_vuecomponent2_2.start(m);
+        const messangerViewApplication = BX.Vue3.BitrixVue.createApp({
+            data() {
+                return {
+                }
+            },
+            computed: {
+                ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
+            },
+            components: {
+                messangerperformances
+            },
+            // language=Vue
+            template: '#messangerviewtemolate'
+        });
 
-
-        messanger_view.start(<?=CUtil::PhpToJSObject([], false, true)?>);
+        configureVueApp(messangerViewApplication,'#messangerblock');
     });
 </script>

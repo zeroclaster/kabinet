@@ -26,6 +26,13 @@ header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 31536000));
 
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 $projectManager = $sL->get('Kabinet.Project');
+
+//$result =$projectManager->getOrderList(905);
+
+//echo "<pre>";
+//print_r($result);
+//echo "</pre>";
+
 $data = $projectManager->orderData();
 $brief_state = CUtil::PhpToJSObject($data, false, true);
 ?>

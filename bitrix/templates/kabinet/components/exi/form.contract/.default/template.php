@@ -19,10 +19,10 @@ use Bitrix\Main\Page\Asset;
 Loc::loadMessages(__FILE__);
 //\Dbg::var_dump($arResult);
 
-$user = (\KContainer::getInstance())->get('user');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID'));
 ?>
-<div class="panel-body" id="kabinetcontent"></div>
+<div class="panel-body" id="kabinetcontent" data-contractform=""></div>
 
 <script type="text/html" id="kabinet-content">
 
@@ -78,30 +78,43 @@ $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID')
 
 </script>
 
-<?
-// for debug!
-//\Dbg::print_r($arResult['DATA']);
-?>
-<script>
-const  AgreementFormStore = BX.Vue3.Pinia.defineStore('agreementForm', {
-    state: () => ({
-		fields:<?=CUtil::PhpToJSObject($arResult['DATA'], false, true)?>,
-		contractsettings: <?=CUtil::PhpToJSObject($arResult['DATA_CONTRACT_SETTINGS'], false, true)?>,
-        fields2:<?=CUtil::PhpToJSObject($arResult['DATA2'], false, true)?>,
-        banksettings: <?=CUtil::PhpToJSObject($arResult['DATA_BANK_SETTINGS'], false, true)?>,
-        contracttype:{value:<?=CUtil::PhpToJSObject($usertype, false, true)?>},
-		})
-});
-</script>
-<?
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/addnewmethods.js");
-Asset::getInstance()->addJs($templateFolder."/contract_form.js");
-?>
-
 
 <script>
+    components.contractform = {
+        selector: '[data-contractform]',
+        script: (function() {
+            const basePath = './js/kabinet';
+            const vueExt = `${basePath}/vue-componets/extension`;
+            const taskDef = `../../kabinet/components/exi/form.contract/.default`;
+
+            return [
+                // Vue components
+                ...[
+                    'addnewmethods.js'
+                ].map(file => `${vueExt}/${file}`),
+
+                // Contract Form components
+                ...[
+                    'contract_form.js'
+                ].map(file => `${taskDef}/${file}`)
+            ];
+        })(),
+        init: null
+    };
+
+    const  AgreementFormStore = BX.Vue3.Pinia.defineStore('agreementForm', {
+        state: () => ({
+            fields:<?=CUtil::PhpToJSObject($arResult['DATA'], false, true)?>,
+            contractsettings: <?=CUtil::PhpToJSObject($arResult['DATA_CONTRACT_SETTINGS'], false, true)?>,
+            fields2:<?=CUtil::PhpToJSObject($arResult['DATA2'], false, true)?>,
+            banksettings: <?=CUtil::PhpToJSObject($arResult['DATA_BANK_SETTINGS'], false, true)?>,
+            contracttype:{value:<?=CUtil::PhpToJSObject($usertype, false, true)?>},
+        })
+    });
+
         window.addEventListener("components:ready", function(event) {
-            form_contract.start(<?=CUtil::PhpToJSObject([], false, true)?>);
+            const formApplication = BX.Vue3.BitrixVue.createApp(form_contract);
+            configureVueApp(formApplication);
         });
 </script>
 

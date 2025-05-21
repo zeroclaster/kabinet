@@ -249,11 +249,8 @@ $this->setFrameMode(true);
 </script>
 
 <?
-$message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
-
 (\KContainer::getInstance())->get('catalogStore');
 ?>
-<?ob_start();?>
 <script>
     const clientListStoreData = <?=CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true)?>;
 	const projectListStoreData = <?=CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true)?>;
@@ -261,7 +258,6 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 	const orderListStoreData = <?=CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true)?>;
 	const runnerListStoreData = <?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>;
 	const filterclientlist = <?=CUtil::PhpToJSObject($arParams["FILTER"], false, true)?>;
-
 
     const  clientlistStore = BX.Vue3.Pinia.defineStore('clientlist', {
         state: () => ({dataclient:clientListStoreData}),
@@ -279,47 +275,37 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
         state: () => ({datarunner:runnerListStoreData}),
     });
 
-
-    const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
-    state: () => ({datamessage:<?=$message_state?>}),
-    });
-
     // Заглушка, т.к. используется в клиентской части
     const  brieflistStore = BX.Vue3.Pinia.defineStore('brieflist', {
         state: () => ({data:[]}),
     });
 	
-</script>
-    <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/datepicker.js"></script>
-    <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/typeahead.js"></script>
-    <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/sharephoto.js"></script>
-    <script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/components/exi/profile.user/admin/user.data.php"></script>
-    <script type="text/javascript" src="<?=$templateFolder?>/adminexecution_list.js"></script>
-
-    <script>
 	    var messangerperformances = null;
-
         components.userreports = {
             selector: '[data-adminexecution]',
             script: [
-                '../../kabinet/assets/js/kabinet/vue-componets/messanger/messanger2.js',
+                './js/kabinet/vue-componets/datepicker.js',
+                './js/kabinet/vue-componets/typeahead.js',
+                './js/kabinet/vue-componets/sharephoto.js',
+                './js/kabinet/vue-componets/messanger/uploadfile.js',
+                './js/kabinet/vue-componets/messanger/templates/admin.performances.js',
+                './js/kabinet/vue-componets/messanger/messanger.factory.js',
+                '../../kabinet/components/exi/profile.user/admin/user.data.php',
+                '../../kabinet/components/exi/adminexecution.list/.default/adminexecution_list.js',
             ],
+            styles: './css/messanger.css',
+            dependencies:'vuerichtext',
             init:null
         }
 
+
         window.addEventListener("components:ready", function(event) {
-            var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT']], false, true)?>;
-            m.TEMPLATE = messangerTemplate;
-            m.messageStoreInst = function(){
-                return function () {
-                    return messageStore();
-                }
-            };
-            m.messageStore = messageStore;
-
-            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
-            messangerperformances = messanger_vuecomponent2_2.start(m);
-
+            const messangerSystem2 = createMessangerSystem();
+            messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+                'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
+                'TEMPLATE' => 'messangerTemplate'
+            ], false, true)?>);
+            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
             adminexecution_list.start(<?=CUtil::PhpToJSObject([
 						"viewcount"=>$arParams["COUNT"],
@@ -327,11 +313,3 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 				], false, true)?>);
         });
     </script>
-<?
-$addScriptinPage = trim(ob_get_contents());
-ob_end_clean();
-$addscript = (\KContainer::getInstance())->get('addscript');
-if (!$addscript) $addscript = [];
-$addscript[] = $addScriptinPage;
-(\KContainer::getInstance())->maked($addscript,'addscript');
-?>

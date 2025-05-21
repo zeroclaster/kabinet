@@ -1,39 +1,4 @@
-const  projectFormStore = BX.Vue3.Pinia.defineStore('projectForm', {
-    state: () => ({
-        fields:projectFormStoreData,
-        projectsettings: projectSettingsStoreData,
-    })
-});
-
-const  infoFormStore = BX.Vue3.Pinia.defineStore('infodataForm', {
-    state: () => ({
-        fields2:infoFormStoreData,
-        infosettings:infoSettingsStoreData,
-    })
-});
-
-const  detailsFormStore = BX.Vue3.Pinia.defineStore('detailsForm', {
-    state: () => ({
-        fields3:detailsFormStoreData,
-        detailssettings:detailsSettingsStoreData,
-    })
-});
-
-const  targerFormStore = BX.Vue3.Pinia.defineStore('targerForm', {
-    state: () => ({
-        fields4:targetFormStoreData,
-        targetsettings:targetSettingsStoreData,
-    })
-});
-
-var form_brief = document.form_brief || {};
-form_brief = (function (){
-    return {
-        start(PHPPARAMS){
-
-
-
-const formApplication = BX.Vue3.BitrixVue.createApp({
+const form_brief = {
     data() {
         return {
 			PROJECT_ID:PHPPARAMS.PROJECT_ID,
@@ -113,9 +78,6 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
 						
 			return '';
 		},
-		showRequire(e){
-			this.filterView = 'showRequire';
-		},
         isViewGroupTitle(groupFields){
             const RequireFields = this.getRequireFields(this.fields.UF_ORDER_ID);
             let count = 0;
@@ -127,9 +89,6 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
 
             return '';
         },
-		showAll(e){		
-			this.filterView = 'showAll';
-		},		
         moreitems(field){
             const kabinetStore = usekabinetStore();
             if (field.length > 19){
@@ -256,26 +215,4 @@ const formApplication = BX.Vue3.BitrixVue.createApp({
     },
     // language=Vue
     template: '#kabinet-content'
-});
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            formApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            formApplication.config.globalProperties.$id = getId;
-
-
-            formApplication.use(store);
-            formApplication.mount('#kabinetcontent');
-
-        }
-    }
-}());
+};

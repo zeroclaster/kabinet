@@ -1,4 +1,4 @@
-const messangerTemplate =  `
+window['messangerTemplate'] = `
 <div :id="$id('messangerBlock')" class="messanger-block message-dashboard">  
     <div ref="messagelist" class="messange-list p-2">
     

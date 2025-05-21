@@ -39,28 +39,6 @@ components.vuetypeahead = {
     init:null
 }
 
-components.messangerAdmin = {
-    selector: '[data-adminmessanger]',
-    script: [
-        './js/kabinet/vue-componets/messanger/uploadfile.js',
-        './js/kabinet/vue-componets/messanger/templates/admin.performances.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    styles: './css/messanger.css',
-    dependencies:'vuerichtext',
-    init:null
-}
-
-
-components.messangerForProjectmainPage = {
-    selector: "[data-usermessangerr='projectmainpage']",
-    script: [
-        './js/kabinet/vue-componets/messanger/templates/project.mainpage.js',
-        './js/kabinet/vue-componets/messanger/messanger.js',
-    ],
-    init:null
-}
-
 components.vuerichtext = {
     selector: '[data-vuerichtext]',
     script: [

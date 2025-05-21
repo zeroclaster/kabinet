@@ -1,4 +1,4 @@
-const messangerTemplate =  `
+window['messangerTemplate'] = `
 <div :id="$id('messangerBlock')" class="messanger-block mt-5" v-if="typeof datamessage[queue_id] != 'undefined'">  
     <div ref="messagelist" class="messange-list p-2" v-if="datamessage[queue_id].length>0">
     

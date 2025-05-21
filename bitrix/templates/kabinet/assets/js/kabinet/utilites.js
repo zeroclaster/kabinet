@@ -48,3 +48,37 @@ const kabinet = {
 		});
 	}
 }
+
+// Общие утилиты
+const commonUtils = {
+	getId(component, indicator = '') {
+		const componentCounters = new WeakMap();
+		if (!componentCounters.has(component)) {
+			componentCounters.set(component, kabinet.uniqueId());
+		}
+		const componentCounter = componentCounters.get(component);
+		return `uid-${componentCounter}${indicator ? `-${indicator}` : ''}`;
+	}
+};
+
+/**
+ * Настраивает общие свойства и методы для Vue приложения
+ * @param {Vue.App} app - Экземпляр Vue приложения
+ */
+function configureVueApp(app, contianerId = '#kabinetcontent') {
+	// Добавляем метод $id для генерации уникальных идентификаторов
+	app.config.globalProperties.$id = function(indicator) {
+		return commonUtils.getId(this, indicator);
+	};
+
+	// Добавляем метод $href для генерации ссылок с хэшем
+	app.config.globalProperties.$href = function(indicator) {
+		return `#${this.$id(indicator)}`;
+	};
+
+	// Подключаем хранилище Pinia
+	app.use(store);
+
+	// Монтируем приложение в указанный элемент
+	app.mount(contianerId);
+}

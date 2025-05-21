@@ -29,7 +29,7 @@ project_list = (function (){
                     ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['data2']),
                     ...BX.Vue3.Pinia.mapState(cataloglistStore, ['data3','message']),
-                    ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
+                    ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask','testdata','gettestdataID']),
                     ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
                     ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
                     ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
@@ -47,7 +47,14 @@ project_list = (function (){
                 methods: {
                     ...helperVueComponents(),
                     ...BX.Vue3.Pinia.mapActions(brieflistStore, ['getRequireFields']),
-					getTaskID(PROJECT_ID,PRODUKT_ID){					
+                    aaa(){
+                        this.testdata[0].TITLE='33333';
+                        var t =this.gettestdataID();
+                        const store = tasklistStore(); // Получаем экземпляр хранилища
+                        const taskID = store.gettestdataID(1); // Вызываем геттер
+                        console.log(taskID.TITLE);
+                    },
+                    getTaskID(PROJECT_ID,PRODUKT_ID){
 						for(task of this.datatask){						
                             if (task.UF_PROJECT_ID == PROJECT_ID && task.UF_PRODUKT_ID == PRODUKT_ID) {					
 								return task.ID;
@@ -239,9 +246,6 @@ project_list = (function (){
 
                     },
                     removeproductorder(ID,ORDER_ID,modal){
-                        console.log([ID,ORDER_ID]);
-                        console.log('remove product order!');
-
                         var cur = this;
 
                         let formData = new FormData();
@@ -286,26 +290,7 @@ project_list = (function (){
                 template: PHPPARAMS.TEMPLATE
             });
 
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            briefApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            briefApplication.config.globalProperties.$id = getId;
-
-
-
-            briefApplication.use(store);
-            briefApplication.mount(PHPPARAMS.CONTAINER);
-
+            configureVueApp(briefApplication,PHPPARAMS.CONTAINER);
         }
     }
 }());

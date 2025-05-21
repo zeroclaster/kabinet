@@ -19,3 +19,26 @@
 .task-title-view{
 	margin: 0!important;
 }
+
+.numerator-range{
+	position: relative;
+}
+
+.numerator-range button{
+	position: absolute;
+	border: 1px solid #CCC;
+	background: none;
+	font-size: 18px;
+	width: 20px;
+	height: 25px;
+	left: 79px;
+	line-height: 1;
+}
+
+.numerator-range button.button-minus{
+	top: 0;
+}
+
+.numerator-range button.button-plus{
+	top: 25px;
+}

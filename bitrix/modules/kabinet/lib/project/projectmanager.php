@@ -129,7 +129,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $listdata;
     }
 
-    public function getOrderList(int $ID){
+    public function getOrderList_(int $ID){
         $Products = [];
         $fieldsElement = [];
 
@@ -226,6 +226,122 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         return $Products;
     }
 
+    public function getOrderList(int $ID) {
+        \Bitrix\Main\Loader::includeModule("catalog");
+        \Bitrix\Main\Loader::includeModule("sale");
+
+        $order = \Bitrix\Sale\Order::load($ID);
+        $basket = $order->getBasket();
+
+        $result = [];
+
+        foreach ($basket as $basketItem) {
+            $productId = $basketItem->getProductId();
+
+            // Получаем данные о товаре с индивидуальным кешированием
+            $productData = $this->getProductData($productId);
+
+            if ($productData) {
+                $productData['BASKET_ID'] = $basketItem->getId();
+                $productData['ORDER_ID'] = $ID;
+                $productData['FINALPRICE'] = $basketItem->getFinalPrice();
+                $productData['QUANTITY'] = $basketItem->getQuantity();
+                $productData['PRICE'] = $basketItem->getPrice();
+                $productData['MEASURE_NAME'] = $basketItem->getField("MEASURE_NAME");
+
+                $result[$productId] = $productData;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Получает данные о конкретном товаре с кешированием
+     *
+     * @param int $productId ID товара
+     * @return array Данные о товаре
+     */
+    public function getProductData(int $productId) {
+        global $CACHE_MANAGER;
+
+        $cache = new \CPHPCache;
+        $cacheTime = 3600; // Время жизни кеша - 1 час
+        //$cacheTime = 0;
+        $cacheId = 'product_data_' . $productId;
+        $cacheDir = '/kabinet/order_products/';
+
+        if ($cache->InitCache($cacheTime, $cacheId, $cacheDir)) {
+            return $cache->GetVars();
+        }
+
+        $cache->StartDataCache();
+
+        // Получаем данные о товаре
+        $res = \CIBlockElement::GetList(
+            [],
+            [
+                "IBLOCK_ID" => 1,
+                "ID" => $productId,
+            ],
+            false,
+            false,
+            [
+                'ID',
+                'NAME',
+                'CODE',
+                'IBLOCK_SECTION',
+                'PREVIEW_PICTURE',
+                'PROPERTY_*',
+                'CATALOG_PRICE_1',
+            ]
+        );
+
+        if ($fields = $res->GetNext()) {
+            $fieldsElement[(int)$fields['ID']] = $fields;
+            $product[(int)$fields['ID']] = $fields;
+            // Получаем свойства товара
+            \CIBlockElement::GetPropertyValuesArray($product, 1,["IBLOCK_ID"=>1]);
+
+            foreach ($product as $key => $item) {
+                foreach ($item as $key2 => $item2) {
+                    foreach ($item2 as $key3 => $item3) {
+                        if (!in_array($key3, ['NAME', 'ID', 'CODE', 'VALUE','MULTIPLE','~VALUE','PROPERTY_TYPE','VALUE_XML_ID']))
+                            unset($product[$key][$key2][$key3]);
+                    }
+                }
+            }
+
+
+            $product_ = [];
+            foreach ($product as $key=>$itm){
+                $picture = $fieldsElement[$key]['PREVIEW_PICTURE'];
+                $arFileTmp = \CFile::ResizeImageGet(
+                    $picture,
+                    array("width" => 250, "height" => 127),
+                    BX_RESIZE_IMAGE_PROPORTIONAL
+                );
+                $fieldsElement[$key]['PREVIEW_PICTURE_SRC'] = $arFileTmp['src'];
+                $product_ = array_merge($itm,$fieldsElement[$key]);
+            }
+
+
+            // Устанавливаем тег для управления кешем
+            if (defined("BX_COMP_MANAGED_CACHE")) {
+                $CACHE_MANAGER->StartTagCache($cacheDir);
+                $CACHE_MANAGER->RegisterTag("iblock_id_1_product_" . $productId);
+                $CACHE_MANAGER->EndTagCache();
+            }
+
+            $cache->EndDataCache($product_);
+            return $product_;
+        }
+
+        $cache->AbortDataCache();
+        return false;
+    }
+
+
     public function orderData($user_id = 0, $clear=false){
         global $CACHE_MANAGER;
 
@@ -252,6 +368,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
         // сколько времени кешировать
         $ttl = 14400;
         // hack: $ttl = 0 то не кешировать
+        //$ttl = 0;
 
         if ($cache->StartDataCache($ttl, $cacheId, "kabinet/userorder")) {
 

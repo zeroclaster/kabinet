@@ -17,6 +17,11 @@ use Bitrix\Main\Page\Asset;
 Loc::loadMessages(__FILE__);
 
 ?>
+<section class="section-xs" style="position: relative">
+    <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr" data-formbrief=""></div>
+</section>
+
+
 <script type="text/html" id="kabinet-content">
 
     <section class="">
@@ -42,8 +47,8 @@ Loc::loadMessages(__FILE__);
 	<div class="brief-field-filter">
 		<div class="d-flex justify-content-center">
 		<div class="mr-3 d-flex align-items-center">Показать:</div>
-		<div class="mr-3"><button :class="'btn btn-link' + (filterView == 'showRequire'? ' disabled':'')" @click="showRequire" type="button">обязательные поля <?/*({{getRequireFields(fields.UF_ORDER_ID).length}} заполнить)*/?></button></div>
-		<div><button :class="'btn btn-link' + (filterView == 'showAll'? ' disabled':'')" type="button" @click="showAll">все поля</button></div>
+		<div class="mr-3"><button :class="'btn btn-link' + (filterView == 'showRequire'? ' disabled':'')" @click="filterView='showRequire'" type="button">обязательные поля <?/*({{getRequireFields(fields.UF_ORDER_ID).length}} заполнить)*/?></button></div>
+		<div><button :class="'btn btn-link' + (filterView == 'showAll'? ' disabled':'')" type="button" @click="filterView='showAll'">все поля</button></div>
 		</div>
 	</div>
 	
@@ -85,11 +90,8 @@ Loc::loadMessages(__FILE__);
     </div>
 </div>
 </script>
-<?
-(\KContainer::getInstance())->get('orderStore');
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/addnewmethods.js");
-?>
-<?ob_start();?>
+<? (\KContainer::getInstance())->get('orderStore'); ?>
+
 <script>
 const projectFormStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_PROJECT'], false, true)?>;
 const infoFormStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_INFOPROJECT'], false, true)?>;
@@ -100,24 +102,50 @@ const projectSettingsStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_PROJECT
 const infoSettingsStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_INFOPROJECT_SETTINGS'], false, true)?>;
 const detailsSettingsStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_DETAILSPROJECT_SETTINGS'], false, true)?>;
 const targetSettingsStoreData = <?=CUtil::PhpToJSObject($arResult['DATA_TARGETPROJECT_SETTINGS'], false, true)?>;
-</script>
-<script type="text/javascript" src="/bitrix/templates/kabinet/assets/js/kabinet/vue-componets/richtext.js"></script>
-<script type="text/javascript" src="/bitrix/templates/kabinet/assets/js/kabinet/vue-componets/customoption.js"></script>
-<script type="text/javascript" src="/bitrix/templates/kabinet/assets/js/kabinet/vue-componets/photoload.js"></script>
-<script type="text/javascript" src="<?=$templateFolder?>/brief_form.js"></script>
 
-<script>
+    components.formbrief = {
+        selector: '[data-formbrief]',
+        script: [
+            './js/kabinet/vue-componets/extension/addnewmethods.js',
+            './js/kabinet/vue-componets/richtext.js',
+            './js/kabinet/vue-componets/customoption.js',
+            './js/kabinet/vue-componets/photoload.js',
+            '../../kabinet/components/exi/form.brief/.default/brief_form.js'
+        ],
+        init:null
+    }
+
+const  projectFormStore = BX.Vue3.Pinia.defineStore('projectForm', {
+    state: () => ({
+        fields:projectFormStoreData,
+        projectsettings: projectSettingsStoreData,
+    })
+});
+
+const  infoFormStore = BX.Vue3.Pinia.defineStore('infodataForm', {
+    state: () => ({
+        fields2:infoFormStoreData,
+        infosettings:infoSettingsStoreData,
+    })
+});
+
+const  detailsFormStore = BX.Vue3.Pinia.defineStore('detailsForm', {
+    state: () => ({
+        fields3:detailsFormStoreData,
+        detailssettings:detailsSettingsStoreData,
+    })
+});
+
+const  targerFormStore = BX.Vue3.Pinia.defineStore('targerForm', {
+    state: () => ({
+        fields4:targetFormStoreData,
+        targetsettings:targetSettingsStoreData,
+    })
+});
+
+        const PHPPARAMS = <?=CUtil::PhpToJSObject(["PROJECT_ID"=>$arParams["ID"],], false, true)?>;
         window.addEventListener("components:ready", function(event) {
-            form_brief.start(<?=CUtil::PhpToJSObject([
-                "PROJECT_ID"=>$arParams["ID"],
-            ], false, true)?>);
+            const formApplication = BX.Vue3.BitrixVue.createApp(form_brief);
+            configureVueApp(formApplication);
         });
 </script>
-<?
-$addScriptinPage = trim(ob_get_contents());
-ob_end_clean();
-$addscript = (\KContainer::getInstance())->get('addscript');
-if (!$addscript) $addscript = [];
-$addscript[] = $addScriptinPage;
-(\KContainer::getInstance())->maked($addscript,'addscript');
-?>		

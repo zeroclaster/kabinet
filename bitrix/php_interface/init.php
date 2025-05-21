@@ -275,11 +275,12 @@ function customOrderEmail($orderID, &$eventName, &$arFields)
 	}
 }
 
-
-AddEventHandler("sale", 'OnSaleOrderSaved', "OnSaleOrderSaved");
-
-
-
+/*
+ * отключено 07.05.2025
+ * на форму $FORM_ID = 5 (ORDER) когда делается заказ создается навыя запись и отправляется в CRM
+ * бесплатный вариант интеграции с CMR
+ */
+//AddEventHandler("sale", 'OnSaleOrderSaved', "OnSaleOrderSaved");
 function OnSaleOrderSaved($order){
 		
 	\CModule::IncludeModule('sale');
@@ -356,17 +357,11 @@ function OnSaleOrderSaved($order){
 	}else{
 		$error = $GLOBALS["strError"];
 		
-	}	
-	
+	}
 }
 
 
-
-
-
 $eventManager = \Bitrix\Main\EventManager::getInstance();
-
-
 \Bitrix\Main\Loader::registerAutoloadClasses(
     null,
     array(

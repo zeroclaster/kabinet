@@ -107,23 +107,7 @@ billing_view = (function (){
                 template: PHPPARAMS.TEMPLATE
             });
 
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            billingViewApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            billingViewApplication.config.globalProperties.$id = getId;
-
-            billingViewApplication.use(store);
-            billingViewApplication.mount(PHPPARAMS.CONTAINER);
+            configureVueApp(billingViewApplication,PHPPARAMS.CONTAINER);
         }
     }
 }());

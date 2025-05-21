@@ -27,239 +27,6 @@ task_list = (function (){
                 throw "Field PROJECT_ID not found!";
 
 
-// https://getdatepicker.com/4/
-// Set datepicker's value to initial date
-//const newDate = moment(this.original, "DD.MM.YYYY");
-//$(this.$refs.input).data('DateTimePicker').date(newDate);
-
-//https://momentjs.com/docs/#/displaying/
-            //https://sky.pro/wiki/html/raschyot-kolichestva-dney-mezhdu-datami-v-java-script/
-            //https://sky.pro/wiki/javascript/sravnenie-daty-i-vremeni-v-moment-js-ispolzovanie-is-after/
-/*
-moment().day(-7); // last Sunday (0 - 7)
-moment().day(0); // this Sunday (0)
-moment().day(7); // next Sunday (0 + 7)
-moment().day(10); // next Wednesday (3 + 7)
-moment().day(24); // 3 Wednesdays from now (3 + 7 + 7 + 7)
- */
-const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
-    template: `
-<input ref="input" :id="id_input" :data-mind="mindd" type="text" @change="sendvalinput" v-model="localModelValue" class="form-control"/>
-<div class="input-group-append">
-    <label class="input-group-text" :for="id_input"><span class="fa fa-calendar"></span></label>
-</div>
-`,	data(){
-        return{
-            datechenge: {},
-			id_input:'#inpid'+kabinet.uniqueId()
-        }
-    },
-    props: [
-        'modelValue',   // значение даты из базы
-        'tindex',
-        'mindd',        // минимальная дата
-        'maxd',         // максимальная дата
-        'original'      // значение из базы в формате FORMAT1
-    ],
-    computed: {
-        localModelValue: {
-            /* liveHack
-             нужна что бы можно было обновлять modelValue, и не возникала ошибка modelValue только для чтения
-             тут v-model приходит в переменной props: ['modelValue'
-            <mytypeahead v-model="runner.UF_LINK" ....
-            и ее же помещаем в
-            <input v-model="modelValue" ....
-            для обновления сохраненного значения, но при изменении идет обращение к modelValue, но она только для чтения
-             */
-            get() {
-                if (typeof this.modelValue != "undefined" &&  this.modelValue != "") {
-                    return moment.unix(this.modelValue).format("DD.MM.YYYY");
-                }else
-                    return '';
-            },
-            set(newValue) {
-                const newDate = moment(newValue, "DD.MM.YYYY");
-                this.$emit('update:modelValue', parseInt(newDate.unix())+10800)
-            },
-        },
-    },
-	watch:{
-        mindd: {
-            handler(mind, oldVal) {
-					if (mind) {
-                                this.datechenge.options({
-                                    minDate: moment.unix(mind).toDate(),     //new Date()
-                                    maxDate: moment.unix(this.maxd).toDate(),
-                                    disabledDates: [moment.unix(mind)]
-                                });
-					}
-            },
-            deep: true
-        },
-    },
-    mounted () {
-        // Add event handler
-
-		let inp = $(this.$refs.input);
-		let mind = $(this.$refs.input).data("mind");
-        let mindate = false;
-        let dateDEsable = false;
-
-		if (mind) {
-            let mindateObj = moment.unix(mind);
-            // Если в календаре выставиться из базы минимальная дата, то переключившись на другую дату, потом нельзя выбрать обратно
-            //минимальну дату, но она висит активной, добавляем ее в исключения dateDEsable
-            dateDEsable = mindateObj;
-            mindate = mindateObj.toDate();
-        }
-
-        //console.log([mindate,this.$root.datatask[this.tindex]]);
-
-        let maxdateObj = moment.unix(this.maxd);
-        let maxdate = maxdateObj.toDate();
-
-        $(this.$refs.input).datetimepicker({
-            locale: moment.locale('ru'),
-            format: 'DD.MM.YYYY',
-           // minDate: mindate,     //new Date()
-            maxDate: maxdate
-        })
-            .on('dp.show',(event) => {
-                //debugger
-            })
-            .on('dp.change', (event) => {
-
-				const originalDate = moment(this.original, "DD.MM.YYYY");
-
-				if (originalDate.format("X") != event.date.format("X"))
-						this.updateValue(event.date);
-            });
-
-        $(this.$refs.input).data('DateTimePicker').options({
-            minDate: mindate,
-            disabledDates: [dateDEsable]
-        });
-        this.datechenge = $(this.$refs.input).data('DateTimePicker');
-
-    },
-    methods: {
-        updateValue (value) {
-            this.$emit('update:modelValue', parseInt(value.format('X'))+10800);
-            // отключаем изменение даты на каждую выбранную дату
-            //this.$root.savetask(this.tindex);
-        },
-        sendvalinput(event){
-            const inp = event.target;
-            if(moment(inp.value, "DD.MM.YYYY",true).isValid()){
-                //console.log(['update input']);
-
-                // отключаем изменение даты на каждую выбранную дату
-				//this.$root.savetask(this.tindex);
-            }
-        }
-    }
-
-});
-
-
-const myInputFileComponent = BX.Vue3.BitrixVue.mutableComponent('myInputFileComponent', {
-	data(){
-	    return{
-            previmg:[],
-            addtext:"Добавить фото"
-        }
-    },
-    props: ['tindex'],
-    computed: {
-	    showtext(){
-            if (this.previmg.length==0){
-                return "Добавить фото";
-            }else
-                return "Заменить фото";
-        },
-        statsize(){
-            var size = 0;
-            for(UF_PHOTO_ORIGINAL of this.$root.datatask[this.tindex].UF_PHOTO_ORIGINAL){
-                    size = size + parseInt(UF_PHOTO_ORIGINAL.FILE_SIZE);
-            }
-
-            return this.bytesToSize(size,1);
-        },
-        statcount(){
-	        return "Всего: "+this.$root.datatask[this.tindex]['UF_PHOTO_ORIGINAL'].length;
-        }
-    },
-    methods: {
-	    bytesToSize(bytes, precision = 2) {
-            if (bytes === 0) return '0 Байт';
-            const units = ['Байт', 'КБ', 'МБ', 'ГБ', 'ТБ'];
-            const index = Math.floor(Math.log(bytes) / Math.log(1024));
-            return (bytes / Math.pow(1024, index)).toFixed(precision) + ' ' + units[index];
-        },
-		onChangeFile(event) {
-            console.log(event.target.files);
-            var cur = this;
-            const kabinetStore = usekabinetStore();
-
-            this.previmg = [];
-
-		    for (let file of event.target.files){
-                if ((typeof file.type !== "undefined" ? file.type.match('image.*') : file.name.match('\\.(gif|png|jpe?g)$')) && typeof FileReader !== "undefined") {
-                    /*
-					var reader = new FileReader();               
-                    reader.onload = function(e) {
-                        cur.previmg.push({src:e.target.result,name:file.name});
-                    }
-
-                    reader.readAsDataURL(file)
-					*/
-                }else{
-                    kabinetStore.Notify = "Error file type";
-                    event.target.value = '';
-                    return false;
-                }
-            }
-
-		  this.$emit('update:modelValue', event.target.files);
-		  this.$root.savetask(this.tindex);
-		
-		},
-        removeimg(index){
-            console.log(index);
-            console.log(this.previmg);
-            var cur = this;
-            var newFileList = Array.from(this.$root.datatask[this.tindex].UF_PHOTO);
-            var findindex = null;
-            newFileList.forEach(function (file,index) {
-                if (file.name = cur.previmg.name){
-                    findindex = index;
-                }
-            });
-            newFileList.splice(findindex,1);
-            console.log(newFileList);
-            this.$root.datatask[this.tindex].UF_PHOTO = newFileList;
-
-            this.previmg.splice(index, 1);
-            console.log(this.$root.datatask[this.tindex].UF_PHOTO);
-
-        },
-        savetask:function (tindex) {
-            this.$root.savetask(tindex);
-        }
-	},
-	template:`<div class="preview-img-block-1 addbutton d-flex justify-content-center align-items-center">
-<div class="text-center">
-<span class="add-images-marker-1"><i class="fa fa-cloud-download" aria-hidden="true"></i></span>
-<div style="position: absolute;bottom: 0;left: 27%;font-size: 12px;">{{statcount}}</div>
-<!--
-<div>({{statsize}})</div>
--->
-</div>
-<input type="file" @change="onChangeFile" name="file"  multiple/>
-</div>
-`
-});
-
 // TODO убрать тестовые методы
 const taskApplication = BX.Vue3.BitrixVue.createApp({
     data() {
@@ -305,21 +72,47 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
         const datataskCopy = BX.Vue3.ref(makedatataskCopy(tasklistS.datatask));
 
-        const is_required_field = function (task,field_name){
+        /**
+         * Проверяет, является ли поле обязательным и пустым
+         * @param {Object} task - Объект с данными задачи
+         * @param {string} field_name - Имя проверяемого поля
+         * @returns {boolean} Возвращает true если поле пустое (невалидное), false если поле заполнено (валидное)
+         */
+        const is_required_field = function(task, field_name) {
+            const fieldValue = task[field_name];
 
-            if (typeof task[field_name] == 'string') {
-                if (task[field_name] == '')
-                    return 'it-required_field';
+            // Проверка на null/undefined
+            if (fieldValue == null) {
+                return true;
             }
-            if (typeof task[field_name] == 'object' && task[field_name].length>0)
-                for (k in task[field_name])
-                    if (typeof task[field_name][k].VALUE != "undefined") {
-                        if (task[field_name][k].VALUE == '')
-                            return 'it-required_field';
-                    }
 
-            return '';
-        }
+            // Проверка строки
+            if (typeof fieldValue === 'string') {
+                return fieldValue.trim() === '';
+            }
+
+            // Проверка массива
+            if (Array.isArray(fieldValue)) {
+                if (fieldValue.length === 0) return true;
+
+                // Проверка массива объектов с полем VALUE
+                return fieldValue.some(item =>
+                    item && typeof item.VALUE !== 'undefined' && item.VALUE.toString().trim() === ''
+                );
+            }
+
+            // Проверка числа
+            if (typeof fieldValue === 'number') {
+                return isNaN(fieldValue);
+            }
+
+            // Проверка объекта (не массива)
+            if (typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
+                return Object.keys(fieldValue).length === 0;
+            }
+
+            return false;
+        };
 
         return {
             taskStatus_m,
@@ -332,7 +125,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             is_required_field,
             makedatataskCopy,
             projectOrder,
-            projectTask
+            projectTask,
+            frequencyCyclicality,
+            frequency
         };
     },
     computed: {
@@ -532,9 +327,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             return ret;
         },
-        showall: function (task) {
-            task.LIMIT = 1000;
-        },
         inpsave: function (task_index){
 
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
@@ -545,99 +337,24 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
             this.$root.inpSaveTimer = setTimeout(()=>{this.savetaskCopy(task_index);},2000);
         },
-        test: function (task){
-            console.log(task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1);
-            task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1 = '11.07.2024';
-        },
-		getProductByIndexTask: function(index){
-			const task = this.datatask[index];			
-			const UF_PRODUKT_ID = task['UF_PRODUKT_ID'];
-			const UF_PROJECT_ID = task['UF_PROJECT_ID'];
-			var product = [];
-			var order = [];
-			var orderID = 0;
-				
-			for(let breif of this.data){
-				if (breif['ID'] == UF_PROJECT_ID){					
-					orderID = breif['UF_ORDER_ID'];
-					order = this.data2[orderID];
-					product = order[UF_PRODUKT_ID];
-					break;
-				}
-			}
+        getProductByIndexTask(index) {
+            // 1. Достаём исходные данные задачи (без реактивной обёртки)
+            const rawTask = BX.Vue3.toRaw(this.datatask[index]);
 
-			return product;	
-		},
-		frequency: function (index){
-			var interval = 0;
-			const product = this.getProductByIndexTask(index);
-			if (product) {
-                // Минимальный интервал планирования (Ограничение в скорости исполнения.)
-				interval = product['MINIMUM_INTERVAL']['VALUE'];
-			}
-				
-			let ret = '';			
-			$interval_ = kabinet.timeConvert(interval,'days');
-			$ret = $interval_+' дня.'
-			if ($interval_ < 1) {
-				$interval_ = kabinet.timeConvert(interval,'hours');
-				$ret = $interval_+' часов.'
-			}
-					
-			return $ret;
-		},
-        frequencyCyclicality: function (index){
-
-            let ret = '';
-
-           // unix(this.modelValue)
-
-            const task = this.datatask[index];
-
-            const product = this.getProductByIndexTask(index);
-            const MEASURE_NAME = product.MEASURE_NAME;
-            console.log(MEASURE_NAME);
-            if (product.ELEMENT_TYPE.VALUE == 'multiple' || task.UF_NUMBER_STARTS == 1) return '1 '+MEASURE_NAME+'/мес.';
-
-            const startOfMonth = moment().startOf('month');
-            const endOfMonth   = moment().endOf('month');
-            var queue_list = [];
-            var S = 0;
-            for(queue of this.datacalendarQueue){
-                if (queue.UF_TASK_ID == task.ID) {
-
-                    //console.log([endOfMonth.isAfter(moment.unix(queue.UF_PLANNE_DATE)),moment.unix(queue.UF_PLANNE_DATE).format("DD.MM.YYYY")]);
-
-                    if (
-                        endOfMonth.isAfter(moment.unix(queue.UF_PLANNE_DATE)) &&
-                        startOfMonth.isBefore(moment.unix(queue.UF_PLANNE_DATE))
-                    )
-                        queue_list.push(queue);
-                }
+            // 2. Проверка наличия обязательных полей
+            if (!rawTask?.UF_PRODUKT_ID || !rawTask?.UF_PROJECT_ID) {
+                return null;
             }
 
-            if (queue_list.length>0){
-                const first = queue_list[0];
-                const last = queue_list[queue_list.length-1];
+            // 3. Поиск по исходному массиву проектов (не реактивному)
+            const rawData = BX.Vue3.toRaw(this.data);
+            const project = rawData.find(p => p.ID === rawTask.UF_PROJECT_ID);
 
-                const diffInDays = moment.unix(last.UF_PLANNE_DATE).diff(moment.unix(first.UF_PLANNE_DATE), 'days');
+            // 4. Доступ к исходному объекту заказов
+            const rawOrder = BX.Vue3.toRaw(this.data2)[project?.UF_ORDER_ID];
 
-                if (diffInDays <=0){
-                    S = 1;
-                    ret += S + " "+MEASURE_NAME+"/день."
-                }else {
-                    var S = (task.UF_NUMBER_STARTS - 1) / diffInDays;
-                    if (S >= 1) {
-                        S = Math.round(S);
-                        ret += S + " "+MEASURE_NAME+"/день."
-                    } else {
-                        const D = Math.round(1 / S);
-                        ret += "1 "+MEASURE_NAME+"/" + D + " дн.";
-                    }
-                }
-            }
-
-            return ret;
+            // 5. Возвращаем продукт (или null) без реактивной обёртки
+            return rawOrder?.[rawTask.UF_PRODUKT_ID] ?? null;
         },
         runCommand:function(task,action){
             var cur = this;
@@ -701,14 +418,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 if (queue.UF_TASK_ID == task.ID) countTaskQueue++;
             }
             return countTaskQueue;
-        },
-        viewTaskAlert(task_id){
-            const task_alert = PHPPARAMS.TASK_ALERT;
-            for(id in task_alert){
-                if (task_id == id) return task_alert[id];
-            }
-
-            return '';
         },
         viewTask(TASK_ID){
             const block = document.querySelector('#produkt'+TASK_ID);
@@ -853,10 +562,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         // language=Vue
     template: '#kabinet-content'
 });
-taskApplication.use(store);
 
-taskApplication.mount('#kabinetcontent');
-
+            taskApplication.config.globalProperties.PHPPARAMS = PHPPARAMS;
+            configureVueApp(taskApplication);
         }
     }
 }());

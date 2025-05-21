@@ -18,9 +18,7 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 Loc::loadMessages(__FILE__);
 $this->setFrameMode(true);
 
-$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-$runnerManager = $sL->get('Kabinet.Runner');
-
+$runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 ?>
 
 <div id="kabinetcontent" data-typehead="" data-vuetypeahead="" data-datetimepicker="" data-loadtable="" data-modalload="" data-ckeditor="" data-vuerichtext="" data-usermessanger="report" data-userreports=""></div>
@@ -178,37 +176,24 @@ $runnerManager = $sL->get('Kabinet.Runner');
     <shownote />
 </script>
 
-<?
-$runner_state = CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true);
-$message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
-
-(\KContainer::getInstance())->get('orderStore','briefStore','taskStore');
-?>
-<?ob_start();?>
+<? (\KContainer::getInstance())->get('orderStore','briefStore','taskStore'); ?>
 <script>
-    const runnerListStoreData = <?=$runner_state?>;
     const  runnerlistStore = BX.Vue3.Pinia.defineStore('runnerlist', {
-        state: () => ({datarunner:runnerListStoreData}),
+        state: () => ({datarunner:<?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>}),
     });
 
-    const  messageStore = BX.Vue3.Pinia.defineStore('messagelist', {
-        state: () => ({datamessage:<?=$message_state?>}),
-    });
-</script>
-<script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/datepicker.js"></script>
-<script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/assets/js/kabinet/vue-componets/sharephoto.js"></script>
-<script type="text/javascript" src="<?=SITE_TEMPLATE_PATH?>/components/exi/profile.user/.default/user.data.php"></script>
-<script type="text/javascript" src="<?=$templateFolder?>/reports.list.js"></script>
-
-<script>
     var shownote = null;
-
     components.messangerUser = {
         selector: "[data-usermessanger='report']",
         script: [
+            './js/kabinet/vue-componets/datepicker.js',
+            './js/kabinet/vue-componets/sharephoto.js',
+            '../../kabinet/components/exi/profile.user/.default/user.data.php',
+            '../../kabinet/components/exi/reports.list/.default/reports.list.js',
+
             './js/kabinet/vue-componets/messanger/uploadfile.js',
             './js/kabinet/vue-componets/messanger/templates/user.report.js',
-            './js/kabinet/vue-componets/messanger/messanger2.js'
+            './js/kabinet/vue-componets/messanger/messanger.factory.js',
         ],
         styles: './css/messanger.css',
         dependencies:'vuerichtext',
@@ -227,23 +212,14 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
 
         window.addEventListener("components:ready", function(event) {
 
-        shownote = showmessage_vuecomponent.start(<?=CUtil::PhpToJSObject([
-                "note" => $arResult['note'],
+            const messangerSystem2 = createMessangerSystem();
+            messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+                'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
+                'TEMPLATE' => 'messangerTemplate'
             ], false, true)?>);
+            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
-
-            var m = <?=CUtil::PhpToJSObject(['VIEW_COUNT' => $arParams['MESSAGE_COUNT']], false, true)?>;
-            m.TEMPLATE = messangerTemplate;
-            m.messageStoreInst = function(){
-                return function () {
-                    return messageStore();
-                }
-            };
-            m.messageStore = messageStore;
-
-            let messanger_vuecomponent2_2 = { ...messanger_vuecomponent2 }
-            messangerperformances = messanger_vuecomponent2_2.start(m);
-
+        shownote = showmessage_vuecomponent.start(<?=CUtil::PhpToJSObject(["note" => $arResult['note'],], false, true)?>);
 
         reports_list.start(<?=CUtil::PhpToJSObject([
             "TASK_ID"=>$arParams['TASK_ID'],
@@ -254,13 +230,5 @@ $message_state = CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true);
         ], false, true)?>,'<?= $this->getComponent()->getSignedParameters() ?>');
     });
 </script>
-<?
-$addScriptinPage = trim(ob_get_contents());
-ob_end_clean();
-$addscript = (\KContainer::getInstance())->get('addscript');
-if (!$addscript) $addscript = [];
-$addscript[] = $addScriptinPage;
-(\KContainer::getInstance())->maked($addscript,'addscript');
-?>
 
 

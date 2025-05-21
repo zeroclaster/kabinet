@@ -34,7 +34,15 @@ $task_state = CUtil::PhpToJSObject($data, false, true);
 ?>
     const taskListStoreData = <?=$task_state?>;
     const  tasklistStore = BX.Vue3.Pinia.defineStore('tasklist', {
-    state: () => ({datatask:taskListStoreData}),
+    state: () => (
+            {datatask:taskListStoreData,
+            testdata:[{ID:1,TITLE:'1111'},{ID:2,TITLE:'2222'}]
+            }),
+    getters: {
+    gettestdataID: (state) => {
+    return (ID) => state.testdata.find(item => item.ID === ID);  // ✅ Вернет элемент или undefined
+    }
+    }
     });
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php");

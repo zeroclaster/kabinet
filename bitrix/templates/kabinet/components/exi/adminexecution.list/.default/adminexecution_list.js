@@ -400,23 +400,8 @@ adminexecution_list = (function (){
                 template: '#kabinet-content'
             });
 
+            configureVueApp(adminClientListApplication);
 
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            adminClientListApplication.config.globalProperties.$href = function (indicator) {
-                 return `#${getId.call(this, indicator)}` }
-
-            adminClientListApplication.config.globalProperties.$id = getId;
-
-            adminClientListApplication.use(store);
-            adminClientListApplication.mount('#kabinetcontent');
         }
     }
 }());

@@ -6,11 +6,11 @@ $APPLICATION->SetTitle("Поддержка");
 
 <?
 
-$billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
-
-$a = $billing->actualMonthExpenses(5);
-
-var_dump($a);
+echo "start";
+$projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
+//$order_id = $projectManager->addproductNewOrder($fields['id'], $fields['count']);
+$projectManager->addproductToOrder(905, 2870, 1);
+echo "stop";
 
 ?>
 

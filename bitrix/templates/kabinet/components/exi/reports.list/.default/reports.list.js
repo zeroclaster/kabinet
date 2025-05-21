@@ -519,23 +519,7 @@ reports_list = (function (){
                 template: '#kabinet-content'
             });
 
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            reportsListApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            reportsListApplication.config.globalProperties.$id = getId;
-
-            reportsListApplication.use(store);
-            reportsListApplication.mount('#kabinetcontent');
+            configureVueApp(reportsListApplication);
         }
     }
 }());

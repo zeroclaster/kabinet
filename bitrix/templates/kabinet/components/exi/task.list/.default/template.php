@@ -175,7 +175,12 @@ $p = $request->get('p');
                 </div>
                 <div class="col-md-9">
 
-                    <div class="h3 task-title-view" :id="'task'+task.ID">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
+                    <div
+                            class="h3 task-title-view"
+                            :id="'task'+task.ID"
+                            :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
+                            :data-cyclicality="task.UF_CYCLICALITY"
+                    >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
 					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
 
                     <div class="d-flex" v-if="task.UF_STATUS>0">
@@ -188,14 +193,13 @@ $p = $request->get('p');
 
                     <template v-if="CopyTask.UF_STATUS>0">
                         <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 {{PRODUCT.MEASURE_NAME}} в {{frequency(taskindex)}}</div>
-                        <div v-if="CopyTask.UF_CYCLICALITY == 2">Примерная частота исполнений: {{frequencyCyclicality(taskindex)}}</div>
                     </template>
 
                     <!-- Только для работающих задач -->
                     <template v-if="task.UF_STATUS>0">
                         <div v-if="CopyTask.UF_CYCLICALITY == 1">Завершится: {{task.RUN_DATE}}</div>
 
-                        <div v-if="CopyTask.UF_CYCLICALITY == 2 && task.UF_STATUS == <?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">Непрерывная задача</div>
+                    
                         <div v-if="CopyTask.UF_CYCLICALITY == 2 && task.UF_STATUS == <?=\Bitrix\Kabinet\task\Taskmanager::STOPPED?>">Завершится: {{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</div>
                         <!-- Одно исполнение -->
                         <div v-if="CopyTask.UF_CYCLICALITY == 33">Завершится: {{task.RUN_DATE}}</div>
@@ -208,7 +212,9 @@ $p = $request->get('p');
 
 
 					<div class="">
-                        <div class="row form-group" v-if="(CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2 || CopyTask.UF_CYCLICALITY == 33) && CopyTask.UF_STATUS==0">
+                        <template v-if="CopyTask.UF_STATUS==0">
+
+                        <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2">
                             <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
                                 <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
                             </div>
@@ -219,17 +225,12 @@ $p = $request->get('p');
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
-                                    <div class="mr-3" v-if="CopyTask.UF_CYCLICALITY != 33">
+                                    <div class="mr-3">
                                         <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
                                             <option v-for="option in CopyTask.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
                                                 {{ option.VALUE }}
                                             </option>
                                         </select>
-
-                                    </div>
-
-                                    <div v-if="CopyTask.UF_CYCLICALITY == 33">
-                                        До: {{datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}
                                     </div>
 
                                     <div style="position: relative" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">
@@ -240,6 +241,39 @@ $p = $request->get('p');
                                 </div>
                             </div>
                         </div>
+
+                            <template v-if="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE=='multiple'">
+                            <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 33">
+                                <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
+                                    <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                                </div>
+
+                                <div class="col-sm-10" style="position: relative;">
+                                    <div class="d-flex">
+                                        <div>
+                                            <input
+                                                    :id="'kolichestvo'+task.ID"
+                                                    type="text"
+                                                    class="form-control"
+                                                    style="width: 100px;"
+                                                    size="2"
+                                                    v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
+                                                    @input="inpsaveCopy(taskindex)"
+                                            >
+                                        </div>
+                                        <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
+
+                                        <div>
+                                            До: {{datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </template>
+
+
+                        </template>
 
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">
                             <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
@@ -272,8 +306,18 @@ $p = $request->get('p');
 
                             <div class="col-sm-10" style="position: relative;">
                                 <div class="d-flex">
-                                    <div>
-                                        <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                    <div class="numerator-range">
+                                        <input
+                                                :id="'kolichestvo'+task.ID"
+                                                type="text"
+                                                class="form-control"
+                                                style="width: 100px;"
+                                                size="2"
+                                                v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
+                                                @input="inpsaveCopy(taskindex)"
+                                        >
+                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                        <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
                                     </div>
                                     <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>
@@ -349,7 +393,13 @@ $p = $request->get('p');
 
 								<div class="col-sm-6" style="position: relative;">
 									<div class="mt-3" v-for="inplist in task.UF_TARGET_SITE">
-                                    <input :class="'form-control '+is_required_field(task,'UF_TARGET_SITE')" :id="'linkInputLink'+task.ID" type="text" placeholder="https://site.ru" v-model="inplist.VALUE">
+                                    <input
+                                            :class="['form-control', { 'it-required_field': is_required_field(task, 'UF_TARGET_SITE') }]"
+                                            :id="'linkInputLink'+task.ID"
+                                            type="text"
+                                            placeholder="https://site.ru"
+                                            v-model="inplist.VALUE"
+                                    >
                                     </div>
                                     <div class="" style="position: relative;">
                                         <button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button>
@@ -378,7 +428,7 @@ $p = $request->get('p');
 
 												<div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
                                         <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
-                                            <button class="btn btn-secondary show-all-butt" type="button" @click="showall(task)">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
+                                            <button class="btn btn-secondary show-all-butt" type="button" @click="task.LIMIT = 1000">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
                                         </div>
                                         <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
 									</div>
@@ -426,7 +476,7 @@ $p = $request->get('p');
                 </div>
                 <div class="col">
 					<ul class="list-unstyled task-aciont-list-1">
-						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{viewTaskAlert(task.ID)}}</span></a></li>
+						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></li>
 
                         <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
 
@@ -477,24 +527,41 @@ $p = $request->get('p');
 
 <?
 (\KContainer::getInstance())->get('catalogStore','orderStore','briefStore','taskStore','queueStore');
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/task.js");
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/vue-componets/extension/addnewmethods.js");
-Asset::getInstance()->addJs($templateFolder."/task_list.js");
 ?>
 
 <script>
     components.tasklist22 = {
         selector: '[data-tasklist]',
-        script: [
-            '../../kabinet/components/exi/task.list/.default/scrt.js',
-            '../../kabinet/components/exi/task.list/.default/task_status.js',
-            '../../kabinet/components/exi/task.list/.default/canbesaved.js',
-            '../../kabinet/components/exi/task.list/.default/text_info.js',
-            '../../kabinet/components/exi/task.list/.default/data_helper.js',
-            '../../kabinet/components/exi/task.list/.default/js/timelinetask2.js',
-        ],
-        init:null
-    }
+        script: (function() {
+            const basePath = './js/kabinet';
+            const vueExt = `${basePath}/vue-componets/extension`;
+            const taskDef = `../../kabinet/components/exi/task.list/.default`;
+
+            return [
+                // Vue components
+                ...[
+                    'task.js',
+                    'addnewmethods.js'
+                ].map(file => `${vueExt}/${file}`),
+
+                // Task list components
+                ...[
+                    'scrt.js',
+                    'task_status.js',
+                    'canbesaved.js',
+                    'js/text_info.js',
+                    'data_helper.js',
+                    'js/timelinetask2.js',
+                    'js/mydatepicker.js',
+                    'js/myinputfilecomponent.js',
+                    'js/frequencycyclicality.js',
+                    'js/frequency.js',
+                    'task_list.js'
+                ].map(file => `${taskDef}/${file}`)
+            ];
+        })(),
+        init: null
+    };
 
 
     var questiona_ctivity_component = null;
