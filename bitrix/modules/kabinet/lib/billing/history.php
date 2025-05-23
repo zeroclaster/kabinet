@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\BillingException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class History extends \Bitrix\Kabinet\container\Hlbase {
+class History extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
@@ -108,7 +108,7 @@ class History extends \Bitrix\Kabinet\container\Hlbase {
             $fields['UF_AUTHOR_ID'] = $user->get('ID');
         }
 
-        if ($initiator instanceof \Bitrix\Kabinet\container\Hlbase && get_class($initiator) == 'Bitrix\Kabinet\billing\Billing'){
+        if ($initiator instanceof \Bitrix\Kabinet\container\Abstracthighloadmanager && get_class($initiator) == 'Bitrix\Kabinet\billing\Billing'){
             $fields['UF_AUTHOR_ID'] = $user->get('ID');
         }
 

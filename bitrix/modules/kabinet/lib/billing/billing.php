@@ -6,7 +6,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\TestException,
     \Bitrix\Kabinet\billing\datamanager\TransactionTable;
 
-class Billing extends \Bitrix\Kabinet\container\Hlbase {
+class Billing extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],
     public $fieldsType = [];

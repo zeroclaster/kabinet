@@ -11,7 +11,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\Exceptions\TestException,
     \Bitrix\Main\Entity;
 
-class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
+class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
     const NO_APPROVAL_REQUIRED = 9;
     const LINK_SCREENHOT = 10;
@@ -198,6 +198,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Hlbase {
         $listdata = [];
         foreach ($source as $data) {
             $dataconvert = $this->convertData($data, $this->getUserFields());
+
+            // Инициализируем массив, если его нет
+            if (!isset($dataconvert['UF_DATE_COMPLETION_ORIGINAL'])) {
+                $dataconvert['UF_DATE_COMPLETION_ORIGINAL'] = [];
+            }
 
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $dataconvert['UF_DATE_COMPLETION'];
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();

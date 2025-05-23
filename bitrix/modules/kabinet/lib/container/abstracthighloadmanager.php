@@ -4,7 +4,7 @@ namespace Bitrix\Kabinet\container;
 use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\KabinetException;
 
-class Hlbase extends Base {
+class Abstracthighloadmanager extends Base {
     protected $RESTRICT_TIME = 180; // sec.
     protected $selectFields = [];
     protected $config = [];
@@ -198,16 +198,19 @@ class Hlbase extends Base {
                     }
                 }
 
-                if($HL_TASK[$fieldName]["USER_TYPE_ID"]=='datetime' && $value)
-                        $value = [
-                            'FORMAT1'=>\Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("d.m.Y"),
-                            'FORMAT2'=>\Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("Y-m-d"),
-                            'FORMAT3'=>\Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("d.m.Y H:i"),
-                            'TIMESTAMP'=>$value,
-                            'MINDATE'=>(new \Bitrix\Main\Type\DateTime())->getTimestamp()
+                if($HL_TASK[$fieldName]["USER_TYPE_ID"]=='datetime') {
+                    if ($value)
+                            $value = [
+                                'FORMAT1' => \Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("d.m.Y"),
+                                'FORMAT2' => \Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("Y-m-d"),
+                                'FORMAT3' => \Bitrix\Main\Type\DateTime::createFromTimestamp($value)->format("d.m.Y H:i"),
+                                'TIMESTAMP' => $value,
+                                'MINDATE' => (new \Bitrix\Main\Type\DateTime())->getTimestamp()
 
-                        ];
-
+                            ];
+                    else
+                        $value = [];
+                }
 
                 if($HL_TASK[$fieldName]["USER_TYPE_ID"]=='enumeration'){
                     $userFieldEnum = new \CUserFieldEnum();

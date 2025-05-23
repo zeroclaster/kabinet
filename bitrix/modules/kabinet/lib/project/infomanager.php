@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\ProjectException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Infomanager extends \Bitrix\Kabinet\container\Hlbase {
+class Infomanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     public $fieldsType = [
         "UF_TOPICS_LIST"=>1,
         "UF_PROJECT_GOAL"=>1,

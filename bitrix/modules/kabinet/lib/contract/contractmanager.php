@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\BankException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Contractmanager extends \Bitrix\Kabinet\container\Hlbase {
+class Contractmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
     // поля для проверки на обязательное заполненние
     protected $comp_required = [

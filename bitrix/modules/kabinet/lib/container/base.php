@@ -20,20 +20,31 @@ abstract class Base{
 		$this->HLBCClass = $HLBCClass;
     }
 
-    public function retrieveOriginalFields(array $fields){
-        $ret = array();
+    /**
+     * Извлекает оригинальные поля HL-блока из массива данных
+     *
+     * @param array $fields Входной массив данных (обычно $_POST или $_REQUEST)
+     * @return array Ассоциативный массив только с полями текущего HL-блока
+     */
+    public function retrieveOriginalFields(array $fields): array
+    {
+        $result = [];
+        $prefix = "HLBLOCK_{$this->HB_ID}_";
 
-        foreach($fields as $f => $v){
-            // НЕ ПРИНАДЛЕЖИТ ОБЪЕКТУ
-            if  (strpos($f,"HLBLOCK_".$this->HB_ID) === false) continue;
+        foreach ($fields as $field => $value) {
+            // Пропускаем поля не из этого HL-блока
+            if (strpos($field, $prefix) !== 0) {
+                continue;
+            }
 
-            $f = str_replace("HLBLOCK_".$this->HB_ID."_","",$f);
-            if (strpos($f,'UF_') === 0) {
-                $ret[$f] = $v;
+            // Удаляем префикс и проверяем что поле начинается с UF_
+            $cleanField = substr($field, strlen($prefix));
+            if (strpos($cleanField, 'UF_') === 0) {
+                $result[$cleanField] = $value;
             }
         }
 
-        return $ret;
+        return $result;
     }
 	
 	public function retrieveAdditionalsFields(array $fields,int $HB_ID=0){

@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\ProjectException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Projectmanager extends \Bitrix\Kabinet\container\Hlbase {
+class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     public $fieldsType___ = [
         "HLBLOCK_4_UF_NAME"=>1,
         "HLBLOCK_8_UF_TOPICS_LIST"=>1,

@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\ProjectException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Detailsmanager extends \Bitrix\Kabinet\container\Hlbase {
+class Detailsmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     public $fieldsType = [
         "UF_ABOUT_REVIEW"=>1,
         "UF_POSITIVE_SIDES"=>1,

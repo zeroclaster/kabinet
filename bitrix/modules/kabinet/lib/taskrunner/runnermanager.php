@@ -11,7 +11,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\Exceptions\TestException,
     \Bitrix\Main\Type\Datetime;
 
-class Runnermanager extends \Bitrix\Kabinet\container\Hlbase{
+class Runnermanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager{
     public $taskFileds = [];
     protected $user;
 

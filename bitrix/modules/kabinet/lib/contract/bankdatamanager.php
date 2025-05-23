@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\BankException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Bankdatamanager extends \Bitrix\Kabinet\container\Hlbase {
+class Bankdatamanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
     // поля которые выводятся при выборе в селекте
     // например "UF_NAME"=>[1],

@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\ProjectException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Targetmanager extends \Bitrix\Kabinet\container\Hlbase {
+class Targetmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     public $fieldsType = [
         "UF_TARGET_AUDIENCE"=>1,
         "UF_COUNTRY"=>1,

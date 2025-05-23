@@ -215,11 +215,32 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		}
 
 
-		$PR_DATA = $taskManager->getData(false,$arrayUserID,['UF_AUTHOR_ID'=>$arrayUserID,'!UF_STATUS'=>[0,9,10]]);
-		foreach($PR_DATA as $task){
+        $Tasklist = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([
+            'select'=>['*'],
+            'filter'=>[
+                '!UF_STATUS'=>[
+                    0,  // не запланированные
+                    9, //завершеннык
+                    10 //отмененные
+                ],
+                'UF_AUTHOR_ID'=>$arrayUserID
+            ],
+            'order' => ['UF_RUN_DATE'=>'ASC'],
+        ])->fetchAll();
+        foreach ($Tasklist as $key => $data) {
+            $Tasklist[$key]['UF_DATE_COMPLETION'] = $taskManager->getItem($data)->theorDateEnd($data);
+        }
+		foreach($taskManager->remakeData($Tasklist) as $task){
 			$this->arResult["TASK_DATA"][$task["UF_AUTHOR_ID"]][] = $task;
 		}
 
+
+    /*
+        $PR_DATA = $taskManager->getData(false,$arrayUserID,['UF_AUTHOR_ID'=>$arrayUserID,'!UF_STATUS'=>[0,9,10]]);
+        foreach($PR_DATA as $task){
+            $this->arResult["TASK_DATA"][$task["UF_AUTHOR_ID"]][] = $task;
+        }
+    */
 
 		foreach($arrayUserID as $id_){
 			$this->arResult["ORDER_DATA"][$id_] = $projectManager->orderData($id_);

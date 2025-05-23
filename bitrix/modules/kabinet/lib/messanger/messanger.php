@@ -5,7 +5,7 @@ use \Bitrix\Main\SystemException,
     \Bitrix\Kabinet\exceptions\MessangerException,
     \Bitrix\Kabinet\exceptions\TestException;
 
-class Messanger extends \Bitrix\Kabinet\container\Hlbase {
+class Messanger extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
     // статусы сообщений
     const NEW_MASSAGE = 5;  //Новое
@@ -102,10 +102,6 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
     }
 
     public function sendSystemMessage($message,$QUEUE_ID=0,$TASK_ID=0,$PROJECT_ID=0,$TARGET_USER_ID=0){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $taskManager = $sL->get('Kabinet.Task');
-        $projectManager = $sL->get('Kabinet.Project');
-
         $fields = [
             'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
             'UF_UPLOADFILE' => [],
@@ -117,20 +113,16 @@ class Messanger extends \Bitrix\Kabinet\container\Hlbase {
         ];
 
         if ($TASK_ID && !$PROJECT_ID) {
-            $taskData = $taskManager->getData($cache=true,$user_id = [],$filter=['ID'=>$TASK_ID]);
+            $taskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($TASK_ID)->fetch();
             if (!$taskData) throw new MessangerException("При отправки сообщения не найдена задача с ID:".$TASK_ID);
-            $taskData = $taskData[0];
-
             $fields['UF_TASK_ID'] = $taskData['ID'];
             $fields['UF_PROJECT_ID'] = $taskData['UF_PROJECT_ID'];
             $fields['UF_TARGET_USER_ID'] = $taskData['UF_AUTHOR_ID'];
         }
 
         if (!$TASK_ID && $PROJECT_ID){
-            $projectData = $projectManager->getData($cache=true,$user_id = [],$filter=['ID'=>$PROJECT_ID]);
+            $projectData = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getById($PROJECT_ID)->fetch();
             if (!$projectData) throw new MessangerException("При отправки сообщения не найден проект с ID:".$PROJECT_ID);
-            $projectData = $projectData[0];
-
             $fields['UF_PROJECT_ID'] = $projectData['ID'];
             $fields['UF_TARGET_USER_ID'] = $projectData['UF_AUTHOR_ID'];
         }
