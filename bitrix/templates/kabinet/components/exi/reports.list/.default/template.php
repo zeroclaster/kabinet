@@ -114,7 +114,7 @@ $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Run
                                     <div class="preview-img-block-2" v-if="runner.UF_PIC_REVIEW_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
 
                                     <div class="preview-img-block-2 d-flex justify-content-center align-items-center" v-if="runner.UF_PIC_REVIEW_ORIGINAL.length>limitpics && runner.LIMIT==limitpics">
-                                        <button class="btn btn-secondary show-all-butt" type="button" @click="showall(runner)">...еще {{runner.UF_PIC_REVIEW_ORIGINAL.length}}</button>
+                                        <button class="btn btn-secondary show-all-butt" type="button" @click="runner.LIMIT = 1000">...еще {{runner.UF_PIC_REVIEW_ORIGINAL.length}}</button>
                                     </div>
 
                                     <sharephoto :tindex="runnerindex" :catalog="TaskByIdKey[runner.UF_TASK_ID].UF_PHOTO_ORIGINAL" v-model="runner.UF_PIC_REVIEW"/>
@@ -169,7 +169,7 @@ $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Run
         показать по: <input name="viewcount" type="text" v-model="countview" style="width: 35px;">
     </div>
     <div class="d-flex justify-content-center">
-        <div class="d-flex align-items-center">Найдено {{total}}, показано {{viewedcount}}</div>
+        <div class="d-flex align-items-center">Найдено {{total}}, показано {{datarunner.length}}</div>
         <div v-if="showloadmore" class="ml-3"><button class="btn btn-primary" type="button" @click="moreload">Показать еще +{{countview}}</button></div>
     </div>
 
@@ -182,15 +182,29 @@ $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Run
         state: () => ({datarunner:<?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>}),
     });
 
-    var shownote = null;
+    var messangerperformances = {}
+    var shownote = {};
+
+    components.userreports = {
+        selector: '[data-userreports]',
+        script: [
+            './js/kabinet/vue-componets/datepicker.js',
+            './js/kabinet/vue-componets/messanger/uploadfile.js',
+            './js/kabinet/vue-componets/sharephoto.js',
+            '../../kabinet/assets/js/kabinet/vue-componets/show.note.js',
+            '../../kabinet/components/exi/task.list/.default/data_helper.js',
+            '../../kabinet/components/exi/reports.list/.default/js/hiddenCommentBlock.js',
+            '../../kabinet/components/exi/reports.list/.default/js/commentwrite.js',
+            '../../kabinet/components/exi/reports.list/.default/js/changestatus.js',
+            '../../kabinet/components/exi/reports.list/.default/reports.list.js',
+        ],
+        init:null
+    }
+
     components.messangerUser = {
         selector: "[data-usermessanger='report']",
         script: [
-            './js/kabinet/vue-componets/datepicker.js',
-            './js/kabinet/vue-componets/sharephoto.js',
             '../../kabinet/components/exi/profile.user/.default/user.data.php',
-            '../../kabinet/components/exi/reports.list/.default/reports.list.js',
-
             './js/kabinet/vue-componets/messanger/uploadfile.js',
             './js/kabinet/vue-componets/messanger/templates/user.report.js',
             './js/kabinet/vue-componets/messanger/messanger.factory.js',
@@ -200,34 +214,44 @@ $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Run
         init:null
     }
 
-    components.userreports = {
-        selector: '[data-userreports]',
-        script: [
-            '../../kabinet/assets/js/kabinet/vue-componets/show.note.js',
-            '../../kabinet/components/exi/task.list/.default/data_helper.js',
-            '../../kabinet/components/exi/reports.list/.default/js/hiddenCommentBlock.js'
-        ],
-        init:null
-    }
 
-        window.addEventListener("components:ready", function(event) {
-
-            const messangerSystem2 = createMessangerSystem();
-            messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
-                'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
-                'TEMPLATE' => 'messangerTemplate'
-            ], false, true)?>);
-            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
-
-        shownote = showmessage_vuecomponent.start(<?=CUtil::PhpToJSObject(["note" => $arResult['note'],], false, true)?>);
-
-        reports_list.start(<?=CUtil::PhpToJSObject([
+        const PHPPARAMS = <?=CUtil::PhpToJSObject([
             "TASK_ID"=>$arParams['TASK_ID'],
             "FILTER"=>$arParams["FILTER"],
             "viewcount"=>$arParams["COUNT"],
             "total"=>$arResult["TOTAL"],
             "statuslistdata" => $runnerManager->getStatusList()
-        ], false, true)?>,'<?= $this->getComponent()->getSignedParameters() ?>');
+        ], false, true)?>;
+
+        var filterclientlist = PHPPARAMS.FILTER;
+
+        const signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>';
+
+        var messageStore = null;
+
+        window.addEventListener("components:ready", function(event) {
+
+            const messangerSystem2 = createMessangerSystem();
+            reportsListApplicationConfig.components.messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
+                'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
+                'TEMPLATE' => 'messangerTemplate'
+            ], false, true)?>);
+            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
+
+            messageStore = messangerSystem2.store();
+
+                reportsListApplicationConfig.components.shownote = showmessage_vuecomponent.start(<?=CUtil::PhpToJSObject(["note" => $arResult['note'],], false, true)?>);
+
+            /*
+            Object.assign(reportsListApplicationConfig.components, {
+                sizeBuy,
+                OrderBuy
+            });
+
+             */
+
+            const reportsListApplication = BX.Vue3.BitrixVue.createApp(reportsListApplicationConfig);
+            configureVueApp(reportsListApplication);
     });
 </script>
 

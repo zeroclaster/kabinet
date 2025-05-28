@@ -18,6 +18,7 @@ Bitrix\Main\Loader::registerAutoloadClasses(
     "Bitrix\Kabinet\Exceptions\MessangerException" => "lib/exceptions/exceptions.php",
     "Bitrix\Kabinet\Exceptions\BillingException" => "lib/exceptions/exceptions.php",
     "Bitrix\Kabinet\Exceptions\TestException" => "lib/exceptions/exceptions.php",
+    "Bitrix\Kabinet\Exceptions\KabinetException" => "lib/exceptions/exceptions.php",
 ));
 
 CModule::IncludeModule('highloadblock');

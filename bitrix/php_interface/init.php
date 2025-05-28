@@ -159,7 +159,7 @@ AddEventHandler("iblock", "OnAfterIBlockElementUpdate", array("MyClass", "OnAfte
 
 class MyClass
 {
-	function createTagElement($tag_)
+	public static function createTagElement($tag_)
 	{
 		global $USER;
 
@@ -192,7 +192,7 @@ class MyClass
 	}
 
 
-	function createNewTags($arFields)
+    public static function createNewTags($arFields)
 	{
 
 		$tags = $arFields['TAGS'];

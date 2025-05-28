@@ -62,25 +62,30 @@ class Basestate{
 	}
 
     public function goToState($id){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 
         $runnerFields = $this->runnerFields;
-        \utilCron1::addlog("Автоматический переход на следующую стадию");
-
         $runnerFields['UF_STATUS'] = $id;
-        $upd_id = $RunnerManager->update($runnerFields);
+
+        $convertdata = $RunnerManager->remakeFulfiData([$runnerFields]);
+        $updateFileds = $convertdata[0];
+
+        \utilCron1::addlog("Автоматический переход на следующую стадию");
+        $upd_id = $RunnerManager->update($updateFileds);
     }
 
     public function isFixHitch($hour){
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 
         $runnerFields = $this->runnerFields;
         $d = (new DateTime())->add("-".$hour." hours");
         if ($d->getTimestamp() > $runnerFields['UF_CREATE_DATE']){
             $this->runnerFields['UF_HITCH'] = 1;
-            $RunnerManager->update($this->runnerFields);
+
+            $convertdata = $RunnerManager->remakeFulfiData([$this->runnerFields]);
+            $updateFileds = $convertdata[0];
+
+            $RunnerManager->update($updateFileds);
         }
     }
 }

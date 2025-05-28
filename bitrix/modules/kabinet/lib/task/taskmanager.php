@@ -204,6 +204,11 @@ class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
                 $dataconvert['UF_DATE_COMPLETION_ORIGINAL'] = [];
             }
 
+            if ($dataconvert['ID'] == 42){
+                //AddMessage2Log(print_r($dataconvert,true));
+            }
+
+
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MINDATE'] = $dataconvert['UF_DATE_COMPLETION'];
             $dataconvert['UF_DATE_COMPLETION_ORIGINAL']['MAXDATE'] = (new \Bitrix\Main\Type\DateTime())->add("+1 year")->getTimestamp();
 

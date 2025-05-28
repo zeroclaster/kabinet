@@ -8,8 +8,8 @@ adminexecution_list = (function (){
                     <div class="h4">Сменить статус:</div>
                     <div class="form-group select-status" v-for="Status in catalog">
                         <div class="form-check">
-                          <input @change="saveStatus" :name="$id('name')" class="form-check-input" :id="$id(Status.ID)" v-model="localModelValue" type="radio" :value="Status.ID">
-                          <label class="form-check-label text-primary" :for="$id(Status.ID)">{{Status.TITLE}}</label>
+                          <input @change="saveStatus" :name="$id('name')" class="form-check-input" :id="'status-'+Status.ID+'-'+tindex" v-model="localModelValue" type="radio" :value="Status.ID">
+                          <label class="form-check-label text-primary" :for="'status-'+Status.ID+'-'+tindex">{{Status.TITLE}}</label>
                         </div>
                     </div>
                 </div>

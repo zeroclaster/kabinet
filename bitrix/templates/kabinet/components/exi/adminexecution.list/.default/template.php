@@ -185,8 +185,8 @@ $this->setFrameMode(true);
                 <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
 
                 <div class="history-change-block mt-4" v-if="runner.UF_HISTORYCHANGE_ORIGINAL.length>0">
-                    <input :id="$id('historystatus'+runner.ID)" type="checkbox" @change="showhidehistory">
-                    <label class="btn btn-primary" :for="$id('historystatus'+runner.ID)">История статусов</label>
+                    <input :id="'historystatus'+runner.ID+'history'" type="checkbox" @change="showhidehistory">
+                    <label class="btn btn-primary" :for="'historystatus'+runner.ID+'history'">История статусов</label>
                     <div class="history-list mt-3 p-3">
                         <div class="mb-2" v-for="status_history in runner.UF_HISTORYCHANGE_ORIGINAL">
                                 <b>{{status_history.DATE_CHANGE}}</b>
