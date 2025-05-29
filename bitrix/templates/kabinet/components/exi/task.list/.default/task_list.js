@@ -44,7 +44,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     setup(){
 
         const {projectOrder, projectTask} = data_helper();
-        const {countQueu,taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+        const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
         const tasklistS = tasklistStore();
         const {makeData,canBeSaved_} = canbesaved__();
         makeData(tasklistS.datatask);
@@ -151,7 +151,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         // bitrix/templates/kabinet/assets/js/kabinet/vue-componets/extension/task.js
         ...taskMethods(),
         ...addNewMethods(),
-        ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare']),
+        ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare','getEventsByTaskId']),
         ...BX.Vue3.Pinia.mapActions(brieflistStore, ['getRequireFields']),
         starttask(index){
             var cur = this;
@@ -183,7 +183,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 }
 
 
-                cur.animatedCounter(index);
+                cur.animatedCounter(taskStory.datatask[index].ID);
 
             });
         },
@@ -411,14 +411,6 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 });
 
         },
-        countQueu(index){
-            const task = this.datatask[index];
-            var countTaskQueue = 0;
-            for(queue of this.datacalendarQueue){
-                if (queue.UF_TASK_ID == task.ID) countTaskQueue++;
-            }
-            return countTaskQueue;
-        },
         viewTask(TASK_ID){
             const block = document.querySelector('#produkt'+TASK_ID);
             if (block) document.querySelector('#produkt'+TASK_ID).scrollIntoView({behavior: 'smooth'});
@@ -453,17 +445,15 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         dateEndNextMounth(){
             return moment().add(1, 'months').endOf('month');
         },
-        animatedCounter(taskindex){
-            const c = this.taskStatus_v(taskindex)['stopwark'];
+        animatedCounter(task_id){
+            const c = this.taskStatus_v(task_id)['stopwark'];
              setTimeout(()=> {
-                 if (this.anim_counter[taskindex] < c) {
-                     this.anim_counter[taskindex] = this.anim_counter[taskindex] + 1;
-                     this.animatedCounter(taskindex);
+                 if (this.anim_counter[task_id] < c) {
+                     this.anim_counter[task_id] = this.anim_counter[task_id] + 1;
+                     this.animatedCounter(task_id);
                  }
              },200);
         }
-    },
-    created(){
     },
     mounted() {
         $('.external-events .fc-event').each(function() {
@@ -546,11 +536,20 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             this.listprd.push(this.data3[index]);
         }
 
+        /*
         var c;
         for(index in this.datatask) {
             c = this.taskStatus_v(index)['stopwark'];
             this.anim_counter[index] = c;
         }
+         */
+
+
+        this.anim_counter = this.datatask.reduce((acc, task) => {
+            acc[task.ID] = this.taskStatus_v(task.ID).stopwark;
+            return acc;
+        }, {});
+        console.log(this.anim_counter);
     },
 	components: {
 			myInputFileComponent,

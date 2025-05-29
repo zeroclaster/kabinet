@@ -9,7 +9,7 @@ task_info = (function (){
                     }
                 },
                 setup(){
-                    const {countQueu,taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+                    const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
 
                     return {
                         taskStatus_m,
@@ -25,12 +25,6 @@ task_info = (function (){
                 methods: {
                     ...helperVueComponents()
                 },
-                created(){
-                },
-                // после отрисовки всех представлений
-                mounted() {
-                },
-                // language=Vue
                 template: '#task-info-template'
             });
 

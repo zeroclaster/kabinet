@@ -111,11 +111,10 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
                 'order'=>["UF_PUBLISH_DATE"=>'DESC']
             ])->fetchAll();
 
-            foreach ($projects as $data) {
-                $c = $this->convertData($data, $this->getUserFields());
-                // используется в отоюражении календаря
-                $listdata[] = $c;
-            }
+            $listdata = array_map(
+                fn($data) => $this->convertData($data, $this->getUserFields()),
+                $projects
+            );
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
             $cache->EndDataCache(array($listdata));

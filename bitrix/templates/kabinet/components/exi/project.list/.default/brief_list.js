@@ -16,10 +16,9 @@ project_list = (function (){
                     }
                 },
                 setup(){
-                    const {countQueu,taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+                    const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
 
                     return {
-                        countQueu,
                         taskStatus_m,
                         taskStatus_v,
                         taskStatus_b

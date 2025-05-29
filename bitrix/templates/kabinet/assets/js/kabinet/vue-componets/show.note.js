@@ -22,15 +22,7 @@ showmessage_vuecomponent = (function (){
                         ModalID:'modale'+kabinet.uniqueId(),
                     }
                 },
-                props: [],
-                computed: {
-                },
-                watch:{
-                },
                 mounted () {
-                    // Add event handler
-                    const this_ = this;
-
                     if (this.note) this.showmodale();
                 },
                 methods: {
@@ -44,8 +36,6 @@ showmessage_vuecomponent = (function (){
                             this.$.myModal = new bootstrap.Modal(document.getElementById(this.ModalID), {});
                         this.$.myModal.show();
                     },
-                },
-                components: {
                 }
             });
         }

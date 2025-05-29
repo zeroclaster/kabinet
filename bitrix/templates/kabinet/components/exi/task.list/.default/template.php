@@ -165,6 +165,7 @@ $p = $request->get('p');
     </div>
 
     <template v-for="(task,taskindex) in datatask">
+
         {{(CopyTask = getCopyTask(task),null)}}
     <div :id="'produkt'+task.ID" :data-cyclicality="task.UF_CYCLICALITY" :data-status="task.UF_STATUS" class="panel task-list-block1 mb-5" v-if="task.UF_PROJECT_ID == project_id">
         <div class="panel-body">
@@ -184,9 +185,7 @@ $p = $request->get('p');
 					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
 
                     <div class="d-flex" v-if="task.UF_STATUS>0">
-                        <div>Запланированы: {{anim_counter[taskindex]}}</div>
-                        <div class="ml-3">Выполняются: {{taskStatus_v(taskindex)['work']}}</div>
-                        <div class="ml-3">Выполнено: {{taskStatus_v(taskindex)['endwork']}}</div>
+                        <div>Запланированы: {{anim_counter[task.ID]}}</div><div class="ml-3">Выполняются: {{taskStatus_v(task.ID)['work']}}</div><div class="ml-3">Выполнено: {{taskStatus_v(task.ID)['endwork']}}</div>
                     </div>
 
                     <timeLineTask :taskindex="taskindex"/>
@@ -363,18 +362,18 @@ $p = $request->get('p');
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
                                     <?/* 33 Одно исполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length == 0 && CopyTask.UF_CYCLICALITY==33" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                     <?/* 1 Однократное выполнение */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length == 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length > 0 && CopyTask.UF_CYCLICALITY==1" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Заказать ещё {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} «{{task.UF_NAME}}»</button>
 
                                     <?/* 2 Повторяется ежемесячно */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}»</button>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length == 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length > 0 && CopyTask.UF_CYCLICALITY==2" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-forward" aria-hidden="true"></i>&nbsp;Применить {{CopyTask.UF_NUMBER_STARTS}} {{PRODUCT.MEASURE_NAME}} в мес. «{{task.UF_NAME}}» с {{CopyTask.RUN_DATE}}</button>
 
                                     <?/* 34 Ежемесячная услуга */?>
-                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="countQueu(taskindex) == 0 && CopyTask.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
+                                    <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length == 0 && CopyTask.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
                                 </div>
                             </div>
@@ -476,7 +475,7 @@ $p = $request->get('p');
                 </div>
                 <div class="col">
 					<ul class="list-unstyled task-aciont-list-1">
-						<li v-if="countQueu(taskindex) > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></li>
+						<li v-if="getEventsByTaskId(task.ID).length > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></li>
 
                         <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
 
@@ -487,20 +486,20 @@ $p = $request->get('p');
 
                                 <?/* 2 Повторяется ежемесячно */?>
                                 <template v-if="task.UF_CYCLICALITY == 2">
-                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
                                 </template>
 
                                 <?/* 33 Одно исполнение */?>
                                 <template v-if="task.UF_CYCLICALITY == 33">
-                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
 
                                 </template>
 
                                 <?/* 34 Ежемесячная услуга */?>
                                 <template v-if="task.UF_CYCLICALITY == 34">
-                                    <li v-if="taskStatus_v(taskindex)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                    <li v-if="taskStatus_v(taskindex)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                    <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
                                 </template>
                         </template>
 

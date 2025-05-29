@@ -75,10 +75,6 @@ deposit_form = (function (){
                     },
                     toemail(e){
                         const form = e.target.form;
-
-                        //e.preventDefault();
-                        //e.stopPropagation();
-                        //return false;
                         var formData = new FormData(form);
                         formData.append('sendemail',1);
                         const kabinetStore = usekabinetStore();

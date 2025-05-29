@@ -84,7 +84,7 @@ class Basestate{
 
             $convertdata = $RunnerManager->remakeFulfiData([$this->runnerFields]);
             $updateFileds = $convertdata[0];
-
+            
             $RunnerManager->update($updateFileds);
         }
     }

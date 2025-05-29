@@ -10,13 +10,10 @@ const data_helper = function () {
 
         return findOrder;
     };
-    const projectTask = function (project_id){
-        let task = [];
-        for(index in  this.datatask){
-            if (this.datatask[index]['UF_PROJECT_ID'] == project_id) task.push(this.datatask[index]);
-        }
 
-        return task;
+    const projectTask = function(project_id) {
+        if (!this.datatask || !Array.isArray(this.datatask)) return [];
+        return this.datatask.filter(task => task.UF_PROJECT_ID == project_id);
     }
 
     return {projectOrder, projectTask};

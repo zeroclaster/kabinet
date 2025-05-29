@@ -25,14 +25,7 @@ questionactivity_vuecomponent = (function (){
                     }
                 },
                 props: ['question'],
-                computed: {
-                },
-                watch:{
-                },
                 mounted () {
-                    // Add event handler
-                    const this_ = this;
-
                     if (this.note) this.showmodale();
                 },
                 methods: {
@@ -55,8 +48,6 @@ questionactivity_vuecomponent = (function (){
                             this.$.myModal = new bootstrap.Modal(document.getElementById(this.ModalID), {});
                         this.$.myModal.show();
                     },
-                },
-                components: {
                 }
             });
         }
