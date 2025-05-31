@@ -38,7 +38,6 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                             )
                         );?>
 
-
                         <?
                         global $clientfilter1;
 
@@ -46,16 +45,11 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                         ?>
                     </div>
                 </div>
-
-
                         <?$APPLICATION->IncludeComponent("exi:adminclient.list", "", Array(
                                 'FILTER_NAME' => 'clientfilter1',
                                 'COUNT' => $_REQUEST['viewcount'],
                             )
                         );?>
-
-
-
             </div>
 
         </div>

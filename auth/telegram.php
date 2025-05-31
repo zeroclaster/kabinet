@@ -2,7 +2,7 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
 define("BOT_TOKEN", "6693650729:AAGpdYX9_q7IltFBNtjGLmZ7GNATMVYcM3I");
-
+CModule::IncludeModule('telegram');
 if ($_GET['hash']) {
     $auth_data = $_GET;
     $check_hash = $auth_data['hash'];
@@ -66,6 +66,13 @@ if ($_GET['hash']) {
 
         // Получаем данные только что созданного пользователя
         $user = CUser::GetByID($ID)->Fetch();
+
+        $botToken = "6693650729:AAGpdYX9_q7IltFBNtjGLmZ7GNATMVYcM3I";
+        $bot = new \Bitrix\telegram\Telegrambothandler($botToken);
+        $bot->sendMessage(
+            $auth_data['id'],
+            "Нажмите /start в чате с ботом, чтобы активировать уведомления"
+        );
     }
 
     // После авторизации сохраняем telegram_id в профиль пользователя
@@ -76,6 +83,8 @@ if ($_GET['hash']) {
 
     // Авторизация пользователя
     $USER->Authorize($user['ID']);
+
+
 
     LocalRedirect('/kabinet');
 }

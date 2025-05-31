@@ -17,6 +17,43 @@ if ($_COOKIE["BITRIX_SM_TESTRUN"])
 else
     define("AKULA", 0);
 
+
+
+AddEventHandler('main', 'OnBeforeProlog', function() {
+    global $APPLICATION;
+    $token = $_GET['token'] ?? '';
+
+    if ($token) {
+        $connection = \Bitrix\Main\Application::getConnection();
+        $sqlHelper = $connection->getSqlHelper();
+
+        $connection->queryExecute("DELETE FROM b_auth_tokens WHERE expire_time < " . time());
+
+        $res = $connection->query("
+        SELECT user_id 
+        FROM b_auth_tokens 
+        WHERE token = '".$sqlHelper->forSql($token)."' 
+        AND expire_time > ".time()." 
+        AND is_used = 0
+    ");
+
+        if ($row = $res->fetch()) {
+            $USER = new \CUser;
+            if ($USER->Authorize($row['user_id'])) {
+                // Помечаем токен как использованный
+                $connection->queryExecute("
+                UPDATE b_auth_tokens 
+                SET is_used = 1 
+                WHERE token = '".$sqlHelper->forSql($token)."'
+            ");
+
+                // Перенаправляем без токена в URL
+                LocalRedirect($APPLICATION->GetCurPageParam("", ["token"]));
+            }
+        }
+    }
+});
+
 /*
 * KABINET_SCRIPT - необходим для javascript data файлов
 */

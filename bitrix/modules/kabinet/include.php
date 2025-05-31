@@ -22,6 +22,8 @@ Bitrix\Main\Loader::registerAutoloadClasses(
 ));
 
 CModule::IncludeModule('highloadblock');
+CModule::IncludeModule('telegram');
+
 
 define("BRIEF", 4);
 define("BRIEFFIELDS", 5);
@@ -54,9 +56,9 @@ $config = [
 
 (\KContainer::getInstance())->maked($config,'config');
 
-// Запуск модуля!
-AddEventHandler("main", "OnProlog", function(){
-	global $USER;
+
+function onPrologBootstrape(){
+    global $USER;
 
     if (\CSite::InDir('/kabinet/') && (!$USER || !$USER->IsAuthorized())) LocalRedirect("/login/");
 
@@ -64,11 +66,11 @@ AddEventHandler("main", "OnProlog", function(){
     $loader = new   \Bitrix\Main\DI\ServiceLoader('bitrix/modules/kabinet/lib/services.php',$context);
     $loader->register();
 
-/*
-    $taskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
-    var_dump($taskManager);
-    exit();
-*/
+    /*
+        $taskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+        var_dump($taskManager);
+        exit();
+    */
 
     $locator = \Bitrix\Main\DI\ServiceLocator::getInstance();
     $bootService = \PHelp::isAdmin()
@@ -77,7 +79,10 @@ AddEventHandler("main", "OnProlog", function(){
 
     $bootService->run();
 
-}, 60);
+}
+
+// Запуск модуля!
+AddEventHandler("main", "OnProlog", "onPrologBootstrape", 60);
 
 
 
