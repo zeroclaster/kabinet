@@ -20,6 +20,24 @@ if($arResult["SHOW_SMS_FIELD"] == true)
 {
 	CJSCore::Init('phone_auth');
 }
+
+$arResult["USER_LOGIN"] = 'user_'.uniqid();
+
+// В начале скрипта регистрации
+if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) {
+    $telegramData = $_SESSION['TELEGRAM_REGISTER_DATA'];
+
+    // Автозаполнение полей формы
+    $arResult["USER_NAME"] = htmlspecialcharsbx($telegramData['first_name']);
+    $arResult["USER_LAST_NAME"] = htmlspecialcharsbx($telegramData['last_name']);
+    $arResult["USER_LOGIN"] = htmlspecialcharsbx($telegramData['username'] ?: 'tg_' . $telegramData['telegram_id']);
+
+    // Можно добавить скрытое поле с telegram_id
+    $telegramIdField = '<input type="hidden" name="UF_TELEGRAM_ID" value="' . $telegramData['telegram_id'] . '">';
+}
+
+
+
 ?>
 <div class="bx-auth">
 
@@ -40,6 +58,24 @@ if($arResult["SHOW_SMS_FIELD"] == true)
                         <h2>Регистрация</h2>
                     </div>
                     <div class="panel-body">
+
+                        <?if(!isset($telegramData)):?>
+                        <div id="telegram-login-btn" style="margin: 20px;margin-bottom: 0px;"></div>
+
+                        <script>
+                            BX.ready(function() {
+                                var script = document.createElement('script');
+                                script.async = true;
+                                script.src = "https://telegram.org/js/telegram-widget.js?22";
+                                script.setAttribute('data-telegram-login', 'kupiotziv_bot');
+                                script.setAttribute('data-size', 'large');
+                                script.setAttribute('data-auth-url', '/auth/telegram.php');
+                                script.setAttribute('data-request-access', 'write');
+                                script.setAttribute('data-userpic', 'true'); // Отключаем аватарку
+                                document.getElementById('telegram-login-btn').appendChild(script);
+                            });
+                        </script>
+                        <?endif;?>
 
                         <?
                         if (!empty($arParams["~AUTH_RESULT"]))
@@ -66,6 +102,7 @@ if(
 
 <form method="post" action="<?=$arResult["AUTH_URL"]?>" name="regform">
 <input type="hidden" name="SIGNED_DATA" value="<?=htmlspecialcharsbx($arResult["SIGNED_DATA"])?>" />
+
 <table class="data-table bx-registration-table">
 	<tbody>
 		<tr>
@@ -111,15 +148,13 @@ new BX.PhoneAuth({
 <div id="bx_register_resend"></div>
 <?/*----------------------------------------------------------------------------------------------------------------*/?>
 
-
-
-
-
 <?elseif(!$arResult["SHOW_EMAIL_SENT_CONFIRMATION"]):?>
 
 <form method="post" action="<?=$arResult["AUTH_URL"]?>" name="bform" enctype="multipart/form-data">
 	<input type="hidden" name="AUTH_FORM" value="Y" />
 	<input type="hidden" name="TYPE" value="REGISTRATION" />
+    <?if(isset($telegramData)) echo $telegramIdField;?>
+    <?if(isset($telegramData)) echo '<input type="hidden" name="FROM_TELEGRAM" value="1">';?>
 
     <?if($arResult["EMAIL_REGISTRATION"]):?>
     <div class="row form-group">
@@ -173,7 +208,7 @@ new BX.PhoneAuth({
         </div>
     </div>
 
-    <input id="USER_LOGIN" type="hidden" name="USER_LOGIN" value="user_<?=uniqid()?><?//=$arResult["USER_LOGIN"]?>">
+    <input id="USER_LOGIN" type="hidden" name="USER_LOGIN" value="<?=$arResult["USER_LOGIN"]?>">
     <?/*
     <div class="row form-group">
         <div class="col-sm-3 text-sm-right">

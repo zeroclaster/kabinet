@@ -4,7 +4,7 @@ require_once 'include/smtp/yandex.php';
 function custom_mail($to, $subject, $message, $additional_headers, $additional_parameters)
 {
 	AddMessage2Log($to . '|' . $subject. '|' .$message. '|' .$additional_headers. '|' .$additional_parameters, "my_module_id");
-				mail_cast($to, $subject, $message, $additional_headers, $additional_parameters);
+				//mail_cast($to, $subject, $message, $additional_headers, $additional_parameters);
 	//return  @mail($to, $subject, $message, $additional_headers, $additional_parameters);
 	return true;
 }
@@ -17,7 +17,21 @@ if ($_COOKIE["BITRIX_SM_TESTRUN"])
 else
     define("AKULA", 0);
 
+\Bitrix\Main\EventManager::getInstance()->addEventHandler(
+    'main',
+    'OnBeforeEventSend',
+    function(array &$arFields, array &$arTemplate) {
+        // Проверяем email получателя
+        $email = $arFields['EMAIL'] ?? '';
 
+        // Если email содержит @telegram.user - отменяем отправку
+        if (strpos($email, '@telegram.user') !== false) {
+            return false;
+        }
+
+        return true;
+    }
+);
 
 AddEventHandler('main', 'OnBeforeProlog', function() {
     global $APPLICATION;
@@ -33,19 +47,29 @@ AddEventHandler('main', 'OnBeforeProlog', function() {
         SELECT user_id 
         FROM b_auth_tokens 
         WHERE token = '".$sqlHelper->forSql($token)."' 
-        AND expire_time > ".time()." 
-        AND is_used = 0
+        AND expire_time > ".time()."
     ");
 
+        /*
+        AddMessage2Log(print_r(["
+        SELECT user_id 
+        FROM b_auth_tokens 
+        WHERE token = '".$sqlHelper->forSql($token)."' 
+        AND expire_time > ".time()." 
+    "],true), "my_module_id");
+*/
         if ($row = $res->fetch()) {
             $USER = new \CUser;
             if ($USER->Authorize($row['user_id'])) {
+
+                /*
                 // Помечаем токен как использованный
                 $connection->queryExecute("
-                UPDATE b_auth_tokens 
-                SET is_used = 1 
+                UPDATE b_auth_tokens
+                SET is_used = 1
                 WHERE token = '".$sqlHelper->forSql($token)."'
             ");
+                */
 
                 // Перенаправляем без токена в URL
                 LocalRedirect($APPLICATION->GetCurPageParam("", ["token"]));

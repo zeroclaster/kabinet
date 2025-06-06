@@ -14,6 +14,7 @@ class Clientmanager {
         'ID','TIMESTAMP_X','LOGIN','NAME','LAST_NAME','EMAIL','DATE_REGISTER','SECOND_NAME',
         'PERSONAL_PHOTO','PERSONAL_PHONE','PERSONAL_PROFESSION','PERSONAL_WWW','PASSWORD'
     ];
+    public $updateUserFields = ['UF_EMAIL_NOTIFI','UF_TELEGRAM_NOTFI','UF_TELEGRAM_ID'];
     public $defFiltere = [];
     protected $user;
 
@@ -27,12 +28,13 @@ class Clientmanager {
 
     public function retrieveAdditionalsFields(array $fields){
         $ret = array();
-        foreach($this->updateFields as $name){
+        $updateFields = array_merge($this->updateFields,$this->updateUserFields);
+        foreach($updateFields as $name){
 			if (isset($fields[$name])) $ret[$name] = $fields[$name];
 			
 			// пароль нельзя сохранять пустым
 			if (empty($ret['PASSWORD'])) unset($ret['PASSWORD']);
-		}	
+		}
         
         return $ret;
     }
@@ -48,6 +50,8 @@ class Clientmanager {
 
         $user = new \CUser;
 
+        //$editFields['UF_TELEGRAM_NOTFI'] = 0;
+
         $user->Update($ID, $editFields);
         if ($user->LAST_ERROR) throw new ClientException($user->LAST_ERROR);
 
@@ -55,6 +59,7 @@ class Clientmanager {
     }
 
     public function getData($id=[],$filter=[],$runtime=[],$limit=20000000,$offset=0){
+        global $USER_FIELD_MANAGER;
 
         if (!$filter){
             $user = $this->user;
@@ -139,6 +144,32 @@ class Clientmanager {
                 $fields['LOGIN']
             ]));
 
+        }
+
+        // Add User fields
+        foreach ($listdata as $index => $fields){
+            $arUF = $GLOBALS["USER_FIELD_MANAGER"]->GetUserFields("USER", $fields['ID']);
+            foreach ($arUF as $name=>$params){
+                $listdata[$index][$name] = $params["VALUE"]?? 0;
+                if ($params["USER_TYPE_ID"] == 'enumeration'){
+                    $userFieldEnum = new \CUserFieldEnum();
+                    $vallist = $userFieldEnum->GetList([], ['USER_FIELD_ID' => $params['ID']]);
+                    $value = [];
+                    while($item = $vallist->Fetch())
+                    {
+                        $value[] = $item;
+                    }
+
+                    $listdata[$index][$name. '_ORIGINAL'] =  $value;
+                }
+                elseif ($params["USER_TYPE_ID"]=="boolean"){
+                    if($params["VALUE"] == "1") $listdata[$index][$name] = true;
+                    else $listdata[$index][$name] = false;
+                }
+                else{
+                    $listdata[$index][$name. '_ORIGINAL'] =  $params["VALUE"]?? 0;
+                }
+            }
         }
 
 

@@ -136,7 +136,7 @@ class ProjectsTable extends DataManager
             ),
             (new Reference(
                 'USER',
-                \Bitrix\Kabinet\UserTable::class,
+                \Bitrix\Main\UserTable::class,
                 Join::on('this.UF_AUTHOR_ID', 'ref.ID')
             ))->configureJoinType('inner'),
 			(new Reference(
@@ -153,7 +153,8 @@ class ProjectsTable extends DataManager
                 'TARGETAUDIENCE',
                 TargetAudienceTable::class,
                 Join::on('this.ID', 'ref.UF_PROJECT_ID')
-            ))->configureJoinType('inner'),				
+            ))->configureJoinType('inner'),
+            (new OneToMany('TASK', \Bitrix\Kabinet\task\datamanager\TaskTable::class, 'TASK'))->configureJoinType('inner'),
 		];
 	}
 	

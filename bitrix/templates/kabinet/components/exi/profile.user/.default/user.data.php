@@ -20,12 +20,10 @@ header('Content-type: application/javascript; charset=utf-8');
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 
-$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-$ClientManager = $sL->get('Kabinet.Client');
-$dataArray = $ClientManager->getData();
+$dataArray = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Client')->getData();
 $currentUser = $dataArray[0];
 //echo "<pre>";
-//var_dump($data);
+//var_dump($currentUser);
 //echo "</pre>";
 
 $user_state = CUtil::PhpToJSObject($currentUser, false, true);

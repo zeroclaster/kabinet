@@ -6,7 +6,7 @@ profile_user= (function (){
             const userProfileApplication = BX.Vue3.BitrixVue.createApp({
                 data() {
                     return {
-                        password:{one:'',two:''}				
+                        password:{one:'',two:''}
                     }
                 },
                 computed: {				
@@ -16,6 +16,11 @@ profile_user= (function (){
                 methods: {
                     // bitrix/templates/kabinet/assets/js/kabinet/vue-componets/extension/addnewmethods.js
 					...addNewMethods(),
+                    UnlinkTelegram(){
+                        this.datauser.UF_TELEGRAM_ID = 0;
+                        this.savefields();
+                        this.loadTelegramWidget();
+                    },
                     savepassword() {
                         var cur = this;
                         const kabinetStore = usekabinetStore();
@@ -67,9 +72,26 @@ profile_user= (function (){
                    
                         this.datauser ["PERSONAL_PHOTO"] = event.target.files;
                         this.savefields();
+                    },
+                    loadTelegramWidget() {
+                        const script = document.createElement('script');
+                        script.async = true;
+                        script.src = "https://telegram.org/js/telegram-widget.js?22";
+                        script.setAttribute('data-telegram-login', 'kupiotziv_bot');
+                        script.setAttribute('data-size', 'large');
+                        script.setAttribute('data-auth-url', '/auth/telegram.php');
+                        script.setAttribute('data-request-access', 'write');
+                        script.setAttribute('data-userpic', 'false');
+
+                        const container = document.getElementById('telegram-login-btn');
+                        if (container) {
+                            container.appendChild(script);
+                        }
                     }
                 },
-                // language=Vue
+                mounted() {
+                    this.loadTelegramWidget();
+                },
                 template: '#kabinet-content'
             });
 

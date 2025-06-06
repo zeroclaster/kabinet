@@ -37,3 +37,12 @@ class TelegramMiddlewareException extends SystemException
         parent::__construct($message, 800, '', 0, $previous);
     }
 }
+
+class NotificationException extends SystemException
+{
+    public function __construct($message = "", \Exception $previous = null)
+    {
+        parent::__construct($message, 800, '', 0, $previous);
+    }
+}
+

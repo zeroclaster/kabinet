@@ -110,6 +110,44 @@ $ClientManager = $sL->get('Kabinet.Client');
                            </div>
                        </div>
 
+                       <div class="mt-5">
+                           <div class="h3">Уведомления</div>
+                           <div class="row form-group">
+                               <div class="col-sm-3 text-sm-right">
+                                   <label class="col-form-label" :for="$id('emailnotifi')">Получать уведомления по email</label>
+                               </div>
+                               <div class="col-sm-9">
+                                   <select class="form-control" :id="$id('emailnotifi')" v-model="datauser.UF_EMAIL_NOTIFI">
+                                       <option v-for="option in datauser.UF_EMAIL_NOTIFI_ORIGINAL" :value="option.ID">
+                                           {{ option.VALUE }}
+                                       </option>
+                                   </select>
+                               </div>
+                           </div>
+
+                           <div class="row form-group" v-if="datauser.UF_TELEGRAM_ID>0">
+                               <div class="col-sm-3 text-sm-right">
+                                   <label class="col-form-label" :for="$id('telegramnotifi')">Получать уведомления в Telegram</label>
+                               </div>
+                               <div class="col-sm-1">
+                                   <input class="form-control" style="width: 50%;" type="checkbox" :id="$id('telegramnotifi')" v-model="datauser.UF_TELEGRAM_NOTFI"/>
+                               </div>
+                               <div class="col-sm-3">
+                                   <button class="btn btn-primary" type="button" @click="UnlinkTelegram">Отвязать Telegram</button>
+                               </div>
+                           </div>
+                           <div class="row form-group" v-else>
+                               <div class="col-sm-3 text-sm-right">
+                                   <label class="col-form-label" :for="$id('telegramnotifi')">Добавить аккаунт в Telegram</label>
+                               </div>
+                               <div class="col-sm-9" id="telegram-login-btn"></div>
+                           </div>
+
+                           <div class="form-group text-center">
+                               <button type="button" class="btn btn-primary" @click="savefields">Сохранить</button>
+                           </div>
+                       </div>
+
 <?//-------------------------------------------------------------------------------------------------------?>
                        <div class="mt-5">
                            <div class="h3">Изменить пароль</div>

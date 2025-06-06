@@ -32,7 +32,7 @@ class Kabinetcommand implements Telegramcommandinterface
             $response = "У Вас пока нет проектов.\n";
         }
 
-        $response .= "Посмотреть все проекты по ссылке https://kupi-otziv.ru/kabinet/{$authLink}";
+        $response .= "Посмотреть все проекты по ссылке <a href='https://kupi-otziv.ru/kabinet/{$authLink}'>https://kupi-otziv.ru/kabinet/</a>";
         $this->bot->sendMessage($message['chat']['id'], $response);
     }
 }

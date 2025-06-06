@@ -5,7 +5,11 @@ use Bitrix\Main\Localization\Loc,
     Bitrix\Main\ORM\Data\DataManager,
     Bitrix\Main\ORM\Fields\DatetimeField,
     Bitrix\Main\ORM\Fields\IntegerField,
-    Bitrix\Main\ORM\Fields\TextField;
+    Bitrix\Main\ORM\Fields\TextField,
+    Bitrix\Main\ORM\Fields\Relations\Reference,
+    Bitrix\Main\ORM\Query,
+    Bitrix\Main\ORM\Query\Join,
+    Bitrix\Main\ORM\Fields\Relations\OneToMany;
 
 Loc::loadMessages(__FILE__);
 
@@ -153,6 +157,24 @@ class LmessangerTable extends DataManager
                     'title' => Loc::getMessage('LMESSANGER_ENTITY_UF_TARGET_USER_ID_FIELD')
                 ]
             ),
+            (new Reference(
+                'FULFI',
+                \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class,
+                Join::on('this.UF_QUEUE_ID', 'ref.ID')
+            ))
+                ->configureJoinType('left'),
+            (new Reference(
+                'TASK',
+                \Bitrix\Kabinet\task\datamanager\TaskTable::class,
+                Join::on('this.UF_TASK_ID', 'ref.ID')
+            ))
+                ->configureJoinType('left'),
+            (new Reference(
+                'PROJECT',
+                \Bitrix\Kabinet\project\datamanager\ProjectsTable::class,
+                Join::on('this.UF_PROJECT_ID', 'ref.ID')
+            ))
+                ->configureJoinType('left'),
         ];
     }
 

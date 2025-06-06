@@ -82,7 +82,18 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     // когда пришли на статус
     public function cameTo($object){
+        $QUEUE_ID = $object->get('ID');
+        $TASK_ID = $object->get('UF_TASK_ID');
 
+        /*
+        // отправить сообщение в чат
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+        $upd_id = $messanger->sendSystemMessage(
+            "Тест системного сообщения!",
+            $QUEUE_ID,
+            $TASK_ID
+        );
+        */
     }
 
     public function execute(){

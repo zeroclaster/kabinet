@@ -8,7 +8,11 @@ use Bitrix\Main\Localization\Loc,
     Bitrix\Main\ORM\Fields\FloatField,
     Bitrix\Main\ORM\Fields\StringField,
     Bitrix\Main\ORM\Fields\TextField,
-    Bitrix\Main\ORM\Fields\Validators\LengthValidator;
+    Bitrix\Main\ORM\Fields\Validators\LengthValidator,
+    Bitrix\Main\ORM\Fields\Relations\Reference,
+    Bitrix\Main\ORM\Query,
+    Bitrix\Main\ORM\Query\Join,
+    Bitrix\Main\ORM\Fields\Relations\OneToMany;
 
 Loc::loadMessages(__FILE__);
 
@@ -59,6 +63,11 @@ class FulfillmentTable extends DataManager
     public static function getTableName()
     {
         return 'b_kabinet_fulfillment';
+    }
+
+    public static function getObjectClass()
+    {
+        return Fulfillment::class;
     }
 
     /**
@@ -242,6 +251,12 @@ class FulfillmentTable extends DataManager
                     'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_EXT_KEY_FIELD')
                 ]
             ),
+            (new Reference(
+                'TASK',
+                \Bitrix\Kabinet\task\datamanager\TaskTable::class,
+                Join::on('this.UF_TASK_ID', 'ref.ID')
+            ))
+                ->configureJoinType('inner'),
         ];
     }
 

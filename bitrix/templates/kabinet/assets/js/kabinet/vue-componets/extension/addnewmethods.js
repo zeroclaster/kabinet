@@ -50,8 +50,14 @@ var addNewMethods = function(){
 								else
 									form_data.append(prefix+key + '[]', item);
 							});
-						}else
-							form_data.append(prefix+key, instance[key]);
+						}else {
+							if (typeof instance[key] == "boolean"){
+								if (instance[key]) form_data.append(prefix + key, "1");
+								else  form_data.append(prefix + key, "0");
+							}
+							else
+								form_data.append(prefix + key, instance[key]);
+						}
 				}	
 
 				return form_data;		

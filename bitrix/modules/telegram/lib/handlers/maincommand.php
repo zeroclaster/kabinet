@@ -19,6 +19,6 @@ class Maincommand implements Telegramcommandinterface
 
         $authLink = $this->bot->generateAuthLink($telegramId);
 
-        $this->bot->sendMessage($message['chat']['id'], "Перейти на главную страницу https://kupi-otziv.ru/kabinet/{$authLink}");
+        $this->bot->sendMessage($message['chat']['id'], "Перейти на главную страницу https://kupi-otziv.ru/{$authLink}");
     }
 }

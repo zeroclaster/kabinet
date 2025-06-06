@@ -95,12 +95,20 @@ class Telegrambothandler
         $this->sendMessage($chatId, $message);
     }
 
+    // Функция для преобразования HTML в Telegram-совместимый формат
+    public function convertHtmlToTelegram($html) {
+        $html = str_replace(['<p>', '</p>'], "\n", $html);
+        $html = strip_tags($html, '<b><i><u><s><a><code><pre>');
+        return trim($html);
+    }
+
     public function sendMessage(int $chatId, string $text): void
     {
         $url = "https://api.telegram.org/bot" . $this->botToken . "/sendMessage";
+
         $params = [
             'chat_id' => $chatId,
-            'text' => $text,
+            'text' => $this->convertHtmlToTelegram($text),
             'parse_mode' => 'HTML'
         ];
 

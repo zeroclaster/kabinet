@@ -334,14 +334,25 @@ function ShowNavChain($template = '.default')
 	);
 }
 
+AddEventHandler("main", "OnAfterUserRegister", "OnAfterUserRegisterHandler");
+function OnAfterUserRegisterHandler(&$arFields)
+{
+    if ($arFields["RESULT_MESSAGE"] && $arFields["RESULT_MESSAGE"]["TYPE"] == "ERROR") return;
 
+    $userObj = new CUser;
+    $userObj->Update($arFields['USER_ID'], ['UF_TELEGRAM_NOTFI' => "1"]);
 
+    if ($_POST['FROM_TELEGRAM'] == '1' && !empty($_POST['UF_TELEGRAM_ID'])) {
+        $userObj->Update($arFields['USER_ID'], ['UF_TELEGRAM_ID' => $_POST['UF_TELEGRAM_ID']]);
 
+        // Обработка фото, если нужно
+        if (!empty($_SESSION['TELEGRAM_REGISTER_DATA']['photo_url'])) {
+            $photoPath = $_SESSION['TELEGRAM_REGISTER_DATA']['photo_url'];
 
+            $userObj->Update($arFields['USER_ID'], ['PERSONAL_PHOTO' => CFile::MakeFileArray($photoPath)]);
+            unlink($photoPath);
+        }
 
-
-
-
-
-
-
+        unset($_SESSION['TELEGRAM_REGISTER_DATA']);
+    }
+}

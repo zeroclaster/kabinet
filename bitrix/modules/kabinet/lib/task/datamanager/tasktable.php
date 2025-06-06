@@ -8,7 +8,9 @@ use Bitrix\Main\Localization\Loc,
 	Bitrix\Main\ORM\Fields\TextField,
     Bitrix\Main\ORM\Fields\Relations\Reference,
     Bitrix\Main\ORM\Query,
-    Bitrix\Main\ORM\Query\Join;
+    Bitrix\Main\ORM\Query\Join,
+    Bitrix\Main\ORM\Fields\Relations\OneToMany;
+
 
 Loc::loadMessages(__FILE__);
 
@@ -209,7 +211,13 @@ class TaskTable extends DataManager
                 'PROJECT',
                 \Bitrix\Kabinet\project\datamanager\ProjectsTable::class,
                 Join::on('this.UF_PROJECT_ID', 'ref.ID')
-            ))->configureJoinType('inner')
+            ))->configureJoinType('inner'),
+            (new OneToMany('FULFILLMENT', \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class, 'FULFILLMENT'))->configureJoinType('inner'),
+            (new Reference(
+                'USER',
+                \Bitrix\Main\UserTable::class,
+                Join::on('this.UF_AUTHOR_ID', 'ref.ID')
+            ))->configureJoinType('inner'),
 		];
 	}
 
