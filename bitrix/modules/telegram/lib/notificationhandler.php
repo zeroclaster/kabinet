@@ -47,7 +47,7 @@ class Notificationhandler
             }
 
             $message = $this->prepareMessageContent(
-                $messageData['UF_MESSAGE_TEXT'],
+                $messageData,
                 $messageType['isForUser'],
                 $recipientData
             );
@@ -89,7 +89,7 @@ class Notificationhandler
     /**
      * Получает данные пользователя (включая email)
      */
-    private function getUserData(int $userId): array
+    private function getUserData(int $userId)
     {
         $user = \Bitrix\Main\UserTable::getList([
             'select' => ['*','UF_TELEGRAM_ID'],
@@ -168,11 +168,14 @@ class Notificationhandler
     /**
      * Подготавливает текст сообщения
      */
-    private function prepareMessageContent(string $text, bool $isForUser, $recipientData): string
+    private function prepareMessageContent($messageData, bool $isForUser, $recipientData): string
     {
-        $cleaned = trim(strip_tags($text));
+        $cleaned = trim(strip_tags($messageData['UF_MESSAGE_TEXT']));
         $message = mb_substr($cleaned, 0, 4096);
 
+        if ($isForUser){
+            $message_auther = $this->getUserData($messageData['UF_AUTHOR_ID']);
+        }
 
         if ($this->getRecipientSource($recipientData) == 'FulfillmentTable') $userParams = $recipientData->get('TASK')->get("USER");
         if ($this->getRecipientSource($recipientData) == 'TaskTable') $userParams = $recipientData->get("USER");
@@ -180,8 +183,8 @@ class Notificationhandler
         if ($this->getRecipientSource($recipientData) == 'UserTable') $userParams = $recipientData;
 
         $fullUserName = current(array_filter([
-            trim(implode(" ", [$userParams['LAST_NAME'], $userParams['NAME'], $userParams['SECOND_NAME']])),
-            $userParams['LOGIN']
+            trim(implode(" ", [$message_auther['LAST_NAME'], $message_auther['NAME'], $message_auther['SECOND_NAME']])),
+            $message_auther['LOGIN']
         ]));
 
             return $isForUser

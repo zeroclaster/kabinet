@@ -105,17 +105,15 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
         ];
     }
 
+    /*
+     * при нажатии на статусы, при заполнении полей
+     */
     public function editeAction(){
         $request = $this->getRequest();
         $post = $request->getPostList()->toArray();
         $files = $request->getFileList()->toArray();
 
-        // for debug!!
-        //AddMessage2Log([$post], "my_module_id");
-        //AddMessage2Log($files, "my_module_id");
-
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $RunnerManager = $sL->get('Kabinet.Runner');
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 
         try {
             $upd_id = $RunnerManager->update(array_merge($post,$files));
@@ -135,7 +133,6 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
                 $this->addError(new Error($exception->getMessage(), 1));
                 return null;
             }
-
         }
 
         $current = $RunnerManager->getIDFulfiData($upd_id);

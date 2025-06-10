@@ -136,7 +136,9 @@ class Telegrambothandler
         curl_close($ch);
 
         if ($httpCode !== 200) {
-            throw new TelegramException('Telegram API error. HTTP code: ' . $httpCode);
+            $responseData = json_decode($response, true);
+            $errorDescription = $responseData['description'] ?? 'No description provided';
+            throw new TelegramException('Telegram API error. HTTP code: ' . $httpCode. ', Description: ' . $errorDescription);
         }
     }
 

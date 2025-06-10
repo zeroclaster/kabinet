@@ -45,4 +45,4 @@ $configadmin['ALLOW_FIELDS'] = $allowFileds;
 
 $c1 = include __DIR__ . '/../config.php';
 $config = array_merge($c1,$configadmin);
-return $configadmin;
+return $config;

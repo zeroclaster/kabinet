@@ -80,15 +80,13 @@ class Abstracthighloadmanager extends Base {
     }
 
     public function update(array $fields){
-        $HLBClass = $this->getHLBClass();
-
         if (empty($fields['ID'])) throw new KabinetException("You can't edit an object without ID");
         $id = $fields['ID'];
 
         $fullFields = $this->preparationUpdate($fields);
 
         //AddMessage2Log([$fullFields], "my_module_id");
-        $obResult = $HLBClass::update($id, $fullFields);
+        $obResult = $this->getHLBClass()::update($id, $fullFields);
         if (!$obResult->isSuccess()){
             $err = $obResult->getErrors();
             $mess = $err[0]->getMessage();
