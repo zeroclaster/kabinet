@@ -21,5 +21,19 @@ $aMenuLinks = Array(
         Array("ICON"=>"mdi-border-all"),
         ""
     ),
+    Array(
+        "Пользователи",
+        "/kabinet/admin/users/",
+        Array(),
+        Array("ICON"=>"mdi-border-all"),
+        ""
+    ),
+    Array(
+        "Рассылка",
+        "/kabinet/admin/malling/",
+        Array(),
+        Array("ICON"=>"mdi-border-all"),
+        ""
+    ),
 );
 ?>

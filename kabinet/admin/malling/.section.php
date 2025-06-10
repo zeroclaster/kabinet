@@ -1,0 +1,6 @@
+<?
+$sSectionName = "Рассылка";
+$arDirProperties = array(
+
+);
+?>
