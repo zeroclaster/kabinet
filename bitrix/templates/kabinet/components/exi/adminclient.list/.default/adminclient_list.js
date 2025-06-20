@@ -3,96 +3,39 @@ const adminclient_list = {
         return {
         }
     },
-
     computed: {
-        isViewMore() {
-            return this.total > this.countview && this.showloadmore;
+        showloadmore() {
+            // Если telegramusers пуст или достигнут total — скрываем кнопку
+            return !(
+                (this.dataclient && this.dataclient.length === 0) ||
+                this.dataclient?.length >= this.total
+            );
         },
-
-        viewedcount() {
-            return this.dataclient?.length || 0;
-        }
     },
-
     methods: {
         ...helperVueComponents(),
-
         async moreload(e) {
             e.preventDefault();
-            const kabinetStore = usekabinetStore();
-
-            try {
-                kabinet.loading();
-                this.$root.offset = (this.$root.offset || 0) + 2;
-
-                const formData = new FormData();
-                formData.append("OFFSET", this.$root.offset);
-                formData.append("countview", this.countview);
-
-                // Добавляем поля фильтра
-                Object.entries(filterclientlist).forEach(([key, value]) => {
-                    formData.append(key, value);
-                });
-
-                const response = await BX.ajax.runComponentAction(
-                    "exi:adminclient.list",
-                    "loadmore",
-                    {
-                        mode: 'class',
-                        data: formData,
-                        timeout: 300
-                    }
-                );
-
-                kabinet.loading(false);
-                this.processResponseData(response.data);
-
-            } catch (error) {
-                kabinet.loading(false);
-                this.handleLoadError(error, kabinetStore);
-            }
-
-            return false;
+            await loadMoreDataExtended({
+                componentName: "exi:adminclient.list",
+                context: this,
+                stores: {
+                    dataclient: "CLIENT_DATA",
+                    dataproject: "PROJECT_DATA",
+                    datatask: "TASK_DATA",
+                    dataorder: "ORDER_DATA",
+                    datarunner: "RUNNER_DATA",
+                },
+                filter: filterclientlist,
+            });
         },
-
-        processResponseData(data) {
-            // Обработка клиентов
-            if (data.CLIENT_DATA?.length) {
-                this.dataclient.push(...data.CLIENT_DATA);
-                this.showloadmore = data.CLIENT_DATA.length < this.total;
-            } else {
-                this.showloadmore = false;
-            }
-
-            // Обработка проектов
-            if (data.PROJECT_DATA) {
-                Object.assign(this.dataproject, data.PROJECT_DATA);
-            }
-
-            // Обработка задач
-            if (data.TASK_DATA) {
-                Object.assign(this.datatask, data.TASK_DATA);
-            }
-
-            // Обработка заказов
-            if (data.ORDER_DATA) {
-                Object.assign(this.dataorder, data.ORDER_DATA);
-            }
-
-            // Обработка исполнений
-            if (data.RUNNER_DATA) {
-                Object.assign(this.datarunner, data.RUNNER_DATA);
-            }
+        gotocearchstatus(event){
+            event.target.form.submit();
         },
-
-        handleLoadError(error, kabinetStore) {
-            const message = error.errors?.[0]?.code !== 0
-                ? error.errors[0].message
-                : "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
-
-            kabinetStore.Notify = message;
+        getClientExecution2(id_client,taskID){
+            if (typeof this.datarunner[id_client][taskID] != 'undefined') return this.datarunner[id_client][taskID];
+            return [];
         },
-
         getClientExecution(clientId) {
             if (!this.datatask[clientId] || !Array.isArray(this.datatask[clientId])) {
                 return [];
@@ -105,17 +48,32 @@ const adminclient_list = {
                         : []
                 );
         },
+        getExecutionStatusCount(id_client,id_status){
+            let count = 0;
+            let data = this.getClientExecution(id_client);
 
+            for (index in data){
+                if (data[index].UF_STATUS == id_status) count = count + 1;
+            }
+
+            return count;
+        },
+        getExecutionStatusCount2(id_client,taskID,id_status){
+
+            let count = 0;
+            let data = this.getClientExecution2(id_client,taskID);
+
+            for (index in data){
+                if (data[index].UF_STATUS == id_status) count = count + 1;
+            }
+
+            return count;
+        },
         badTask(task_id, client_id, order_id, product_id) {
             if (!this.dataorder[client_id]?.[order_id]?.[product_id]) {
                 console.warn(`Ошибка в задаче (${task_id})! В проекте нет услуги (${product_id}) из задачи.`);
             }
         }
-    },
-
-    mounted() {
-        this.$root.offset = 0;
-        this.showloadmore = this.total > this.countview;
     },
 
     template: '#kabinet-content'
