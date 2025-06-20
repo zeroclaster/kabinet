@@ -22,7 +22,7 @@ class Authmiddleware implements Middlewareinterface
         $user = $this->bot->getUserByTelegramId($telegramId);
 
         if (!$user) {
-            throw new TelegramAuthException(
+            throw new \Bitrix\telegram\exceptions\TelegramException(
                 "Пользователь не привязан к аккаунту. Используйте /start для авторизации.",
                 $message['chat']['id']
             );

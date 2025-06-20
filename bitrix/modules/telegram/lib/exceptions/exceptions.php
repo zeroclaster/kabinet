@@ -8,9 +8,17 @@ use \Bitrix\Main\SystemException;
  */
 class TelegramException extends SystemException
 {
-    public function __construct($message = "", \Exception $previous = null)
+    private ?int $chatId;
+
+    public function __construct(string $message, ?int $chatId = null)
     {
-        parent::__construct($message, 800, '', 0, $previous);
+        parent::__construct($message);
+        $this->chatId = $chatId;
+    }
+
+    public function getChatId(): ?int
+    {
+        return $this->chatId;
     }
 }
 

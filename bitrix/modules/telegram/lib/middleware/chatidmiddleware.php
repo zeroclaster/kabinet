@@ -21,13 +21,13 @@ class Chatidmiddleware implements Middlewareinterface
     {
         // Проверяем, что это сообщение от пользователя (не канал/группа)
         if (!isset($message['from']['id']) || !isset($message['chat']['id'])) {
-            throw new TelegramMiddlewareException('Invalid message format for chat ID processing');
+            throw new \Bitrix\telegram\exceptions\TelegramException('Invalid message format for chat ID processing');
         }
 
         $telegramUserId = $message['from']['id'];
         $chatId = $message['chat']['id'];
 
-        try {
+
             Loader::includeModule('main');
 
             // Ищем пользователя по telegram_id
@@ -44,7 +44,7 @@ class Chatidmiddleware implements Middlewareinterface
                 ]);
 
                 if (!$result) {
-                    throw new TelegramMiddlewareException(
+                    throw new \Bitrix\telegram\exceptions\TelegramException(
                         'Failed to save chat ID: ' . implode(', ', $result->getErrorMessages())
                     );
                 }
@@ -53,10 +53,10 @@ class Chatidmiddleware implements Middlewareinterface
                 $this->bot->log("Updated chat ID for user {$user['ID']}: {$chatId}");
             }
 
+        try {
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
             $this->bot->log("Chatidmiddleware error: " . $e->getMessage());
-            throw new TelegramMiddlewareException('Chat ID processing failed');
+            throw new \Bitrix\telegram\exceptions\TelegramException('Chat ID processing failed');
         }
 
         // Передаем сообщение дальше по цепочке middleware

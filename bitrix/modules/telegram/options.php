@@ -74,7 +74,11 @@ $tabControl->Begin();
         $val = COption::GetOptionString("telegram", $arOption[0], $arOption[2]);
 
 		$type = $arOption[3];
-		?>
+
+        if ($arOption[0] == "bottoken")
+            echo  "<tr><td colspan=\"2\">Для подключения обработчика Telegram: <a target='_blank' href='https://api.telegram.org/bot{$val}/setWebhook?url=https://kupi-otziv.ru/telegram_bot_handler.php'>https://api.telegram.org/bot{$val}/setWebhook?url=https://kupi-otziv.ru/telegram_bot_handler.php</a></td></tr>";
+        echo  "<tr><td colspan=\"2\">Узнать ссылку обработчика Telegram Битрикс24: <a target='_blank' href='https://api.telegram.org/bot{$val}/getWebhookInfo'>https://api.telegram.org/bot{$val}/getWebhookInfo</a></td></tr>";
+        ?>
 		<tr>
 			<td width="40%" nowrap <?if($type[0]=="textarea") echo 'class="adm-detail-valign-top"'?>>
 				<label for="<?echo htmlspecialcharsbx($arOption[0])?>"><?echo $arOption[1]?>:</label>

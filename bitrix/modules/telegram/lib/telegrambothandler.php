@@ -142,7 +142,7 @@ class Telegrambothandler
         }
     }
 
-    public function getUserByTelegramId(int $telegramId): ?array
+    public function getUserByTelegramId(int $telegramId)
     {
         if (!\CModule::IncludeModule("main")) {
             throw new TelegramException('Main module not available');

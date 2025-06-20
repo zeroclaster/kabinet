@@ -19,6 +19,6 @@ class Depositcommand implements Telegramcommandinterface
 
         $authLink = $this->bot->generateAuthLink($telegramId);
 
-        $this->bot->sendMessage($message['chat']['id'], "Пополнить баланс https://kupi-otziv.ru/kabinet/deposit/{$authLink}");
+        $this->bot->sendMessage($message['chat']['id'], "Пополнить баланс https://kupi-otziv.ru/kabinet/finance/deposit/{$authLink}");
     }
 }
