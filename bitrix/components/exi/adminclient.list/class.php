@@ -230,7 +230,10 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         foreach ($Tasklist as $key => $data) {
             $Tasklist[$key]['UF_DATE_COMPLETION'] = $taskManager->getItem($data)->theorDateEnd($data);
         }
-		foreach($taskManager->remakeData($Tasklist) as $task){
+
+        $taskL = $taskManager->remakeData($Tasklist);
+
+		foreach($taskL as $task){
 			$this->arResult["TASK_DATA"][$task["UF_AUTHOR_ID"]][] = $task;
 		}
 
@@ -246,7 +249,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 			$this->arResult["ORDER_DATA"][$id_] = $projectManager->orderData($id_);
 		}
 
-		foreach($PR_DATA as $task){
+		foreach($taskL as $task){
 			$this->arResult["RUNNER_DATA"][$task['UF_AUTHOR_ID']][$task['ID']] = $runnerManager->getTaskFulfiData($task['ID']);
 		}
 
