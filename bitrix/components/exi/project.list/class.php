@@ -118,32 +118,62 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
 
         }
 
-        $arResult['TASK_ALERT'] = [];
-        foreach ($saveData as $key => $item) {
-            $userMessage = $messanger->getData(
-                $filter = [
-                    'UF_PROJECT_ID' => $item['ID'],
-                    'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
-                    'UF_STATUS' => \Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE,
-                    'UF_TARGET_USER_ID' => $user_id,
-                ],
-                $offset = 0,
-                $limit = 5000,
-                $clear = false,
-                $new_reset = 'n'
+
+            // Инициализация сервисов и данных
+            $projectIds = array_column($saveData, 'ID');
+            $messageFilter = [
+                'UF_PROJECT_ID' => $projectIds,
+                'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
+                'UF_STATUS' => \Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE,
+                'UF_TARGET_USER_ID' => $user_id,
+                '=UF_ACTIVE' => true
+            ];
+
+            // 1. Подсчет уведомлений по проектам
+            $projectAlertsQuery = new \Bitrix\Main\Entity\Query(
+                \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::getEntity()
             );
+            $projectAlertsQuery
+                ->setSelect([
+                    'UF_PROJECT_ID',
+                    'CNT' => new \Bitrix\Main\Entity\ExpressionField('CNT', 'COUNT(*)')
+                ])
+                ->setFilter($messageFilter)
+                ->setGroup(['UF_PROJECT_ID'])
+                ->setCacheTtl(3600);
 
-
-
-            $arResult['ALERT_PROJECT_COUNT'][] = ['PROJECT_ID'=>$item['ID'], 'ALERT_COUNT'=>count($userMessage)];
-
-            //групперуем по задачам для вывода у каждой задачи
-            foreach ($userMessage as $m){
-                $task_id = $m['UF_TASK_ID'];
-                if (!$arResult['TASK_ALERT'][$task_id]) $arResult['TASK_ALERT'][$task_id] = 1;
-                else $arResult['TASK_ALERT'][$task_id] = $arResult['TASK_ALERT'][$task_id] + 1;
+            $arResult['ALERT_PROJECT_COUNT'] = array_fill_keys($projectIds, 0);
+            $projectAlertsResult = $projectAlertsQuery->exec();
+            while ($row = $projectAlertsResult->fetch()) {
+                $arResult['ALERT_PROJECT_COUNT'][$row['UF_PROJECT_ID']] = (int)$row['CNT'];
             }
 
+            // 2. Подсчет уведомлений по задачам
+            $taskAlertsQuery = new \Bitrix\Main\Entity\Query(
+                \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::getEntity()
+            );
+            $taskAlertsQuery
+                ->setSelect([
+                    'UF_TASK_ID',
+                    'CNT' => new \Bitrix\Main\Entity\ExpressionField('CNT', 'COUNT(*)')
+                ])
+                ->setFilter($messageFilter)
+                ->setGroup(['UF_TASK_ID'])
+                ->setCacheTtl(3600);
+
+            $arResult['TASK_ALERT'] = [];
+            $taskAlertsResult = $taskAlertsQuery->exec();
+            while ($row = $taskAlertsResult->fetch()) {
+                $arResult['TASK_ALERT'][$row['UF_TASK_ID']] = (int)$row['CNT'];
+            }
+
+            // 3. Инициализация нулевых значений для задач
+            foreach ($saveData as $item) {
+                $arResult['TASK_ALERT'][$item['ID']] = $arResult['TASK_ALERT'][$item['ID']] ?? 0;
+            }
+
+
+        foreach ($saveData as $key => $item) {
             [$mouthStart,$mouthEnd] = \PHelp::nextMonth();
             $arResult['NEXT_MONTH_EXPENSES'][] = [
                 'PROJECT_ID'=>$item['ID'],
@@ -181,9 +211,12 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $arResult['MESSAGE_DATA'] = [];
         foreach ($saveData as $key => $item) {
             $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(
-                $filter = ['UF_PROJECT_ID' => $item['ID']],
+                $filter = [
+                    'UF_PROJECT_ID' => $item['ID'],
+                    '!UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
+                ],
                 $offset = 0,
-                $limit = 5000,
+                $limit = 5,
                 $clear = false,
                 $new_reset = 'n'
             );
