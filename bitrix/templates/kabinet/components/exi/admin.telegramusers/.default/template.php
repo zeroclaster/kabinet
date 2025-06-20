@@ -65,7 +65,7 @@ $this->setFrameMode(true);
         показать по: <input name="viewcount" type="text" v-model="countview" style="width: 35px;">
     </div>
     <div class="d-flex justify-content-center">
-        <div class="d-flex align-items-center">Найдено {{total}}, показано {{viewedcount}}</div>
+        <div class="d-flex align-items-center">Найдено {{total}}, показано {{telegramusers?.length || 0}}</div>
         <div v-if="showloadmore" class="ml-3"><button class="btn btn-primary" type="button" @click="moreload">Показать еще +{{countview}}</button></div>
     </div>
 
@@ -107,8 +107,7 @@ $this->setFrameMode(true);
                 return <?=CUtil::PhpToJSObject([
                     "telegramusers" => $arResult['DATA'],
                     "countview" => $arParams["COUNT"],
-                    "total" => $arResult["TOTAL"],
-                    "showloadmore"=>true
+                    "total" => $arResult["TOTAL"]
                 ], false, true)?>;
             }
         });

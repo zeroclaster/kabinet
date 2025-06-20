@@ -76,6 +76,10 @@ function configureVueApp(app, contianerId = '#kabinetcontent') {
 		return `#${this.$id(indicator)}`;
 	};
 
+	app.config.globalProperties.$root = {
+		offset: 0
+	};
+
 	// Подключаем хранилище Pinia
 	app.use(store);
 
