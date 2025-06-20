@@ -55,9 +55,6 @@ class BaseListApp {
                 ...BX.Vue3.Pinia.mapState(brieflistStore, ['data']),
                 ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
                 ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
-                isViewMore() {
-                    return this.total > this.countview && this.showloadmore;
-                },
                 ...this.getDefaultComputed(),
                 ...this.getAdditionalComputed()
             },
