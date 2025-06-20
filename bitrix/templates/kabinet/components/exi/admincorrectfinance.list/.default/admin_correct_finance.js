@@ -72,10 +72,6 @@ admin_correct_finance = (function (){
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['dataorder']),
                     ...BX.Vue3.Pinia.mapState(runnerlistStore, ['datarunner']),
                     ...BX.Vue3.Pinia.mapState(cataloglistStore, ['data3']),
-                    isViewMore(){
-                        if(this.total <= this.countview || !this.showloadmore) return false;
-                        return true;
-                    },
                     viewedcount(){
                         return this.datarunner.length;
                     },

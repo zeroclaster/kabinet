@@ -4,10 +4,6 @@ const telegram_users = {
         }
     },
     computed: {
-        isViewMore(){
-            if(this.total <= this.countview || !this.showloadmore) return false;
-            return true;
-        },
         viewedcount(){
             return this.telegramusers.length;
         }
@@ -34,14 +30,11 @@ const telegram_users = {
                 const data = response.data;
 
                 if (typeof data.DATA != "undefined" && data.DATA.length == 0) this_.showloadmore = false;
-
                 if (this_.telegramusers.length == this_.total) this_.showloadmore = false;
 
                 // исполнения
                 if (typeof data.DATA != "undefined"){ data.DATA.forEach((elm)=>{this_.telegramusers.push(elm)});
                 }
-
-
             }, function (response) {
                 kabinet.loading(false);
                 if (response.errors[0].code != 0) {

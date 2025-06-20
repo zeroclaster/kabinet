@@ -150,10 +150,6 @@ adminexecution_list = (function (){
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['dataorder']),
                     ...BX.Vue3.Pinia.mapState(runnerlistStore, ['datarunner']),
                     ...BX.Vue3.Pinia.mapState(cataloglistStore, ['data3']),
-                    isViewMore(){
-                        if(this.total <= this.countview || !this.showloadmore) return false;
-                        return true;
-                    },
                     viewedcount(){
                         return this.datarunner.length;
                     },
@@ -188,12 +184,7 @@ adminexecution_list = (function (){
                             kabinet.loading(false);
                             const data = response.data;
 
-                            if (
-                                typeof data.RUNNER_DATA != "undefined" &&
-                                data.RUNNER_DATA.length == 0
-                            )
-                                this_.showloadmore = false;
-
+                            if (typeof data.RUNNER_DATA != "undefined" && data.RUNNER_DATA.length == 0) this_.showloadmore = false;
                             if (this_.dataclient.length == this_.total) this_.showloadmore = false;
                             //if (Object.keys(data.RUNNER_DATA).length == this_.total) this_.showloadmore = false;
 
@@ -379,8 +370,6 @@ adminexecution_list = (function (){
                             if (element.ID == PRODUCT_ID) return element;
                         }
                     },
-                },
-                created(){
                 },
                 mounted() {
                     var cur = this;

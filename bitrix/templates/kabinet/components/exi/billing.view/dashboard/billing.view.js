@@ -19,10 +19,6 @@ billing_view = (function (){
                     ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
                     ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
                     ...BX.Vue3.Pinia.mapState(historylistStore, ['historybillingdata']),
-                    isViewMore(){
-                        if(this.total <= this.countview || !this.showloadmore) return false;
-                        return true;
-                    },
                     viewedcount(){
                         return this.historybillingdata.length;
                     },

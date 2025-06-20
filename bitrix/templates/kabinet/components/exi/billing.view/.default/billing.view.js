@@ -20,10 +20,6 @@ billing_view = (function (){
                     ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
                     ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
                     ...BX.Vue3.Pinia.mapState(historylistStore, ['historybillingdata']),
-                    isViewMore(){
-                        if(this.total <= this.countview || !this.showloadmore) return false;
-                        return true;
-                    },
                     viewedcount(){
                         return this.historybillingdata.length;
                     },
@@ -67,16 +63,13 @@ billing_view = (function (){
                             const data = response.data;
 
                             if (typeof data.HISTORY_DATA != "undefined" && data.HISTORY_DATA.length == 0) this_.showloadmore = false;
-
+                            if (this_.historybillingdata.length == this_.total) this_.showloadmore = false;
 
                             // клиенты
                             if (typeof data.HISTORY_DATA != "undefined")
                                 for(element of data.HISTORY_DATA) {
                                     this_.historybillingdata.push(element);
                                 }
-
-                            if (this_.historybillingdata.length == this_.total) this_.showloadmore = false;
-
                         }, function (response) {
                             kabinet.loading(false);
                             if (response.errors[0].code != 0) {

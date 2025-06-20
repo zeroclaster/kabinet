@@ -22,10 +22,6 @@ computed: {
     ...BX.Vue3.Pinia.mapState(orderlistStore, ['data2']),
     ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
     ...BX.Vue3.Pinia.mapState(runnerlistStore, ['datarunner']),
-    isViewMore(){
-        if(this.total <= this.countview || !this.showloadmore) return false;
-        return true;
-    },
     TaskByIdKey(){
         let ret = {};
         for (index in this.datatask){
@@ -67,12 +63,7 @@ methods: {
                     message_store.datamessage[index] = data.MESSAGE_DATA[index];
             }
 
-            if (
-                typeof data.RUNNER_DATA != "undefined" &&
-                data.RUNNER_DATA.length == 0
-            )
-                this_.showloadmore = false;
-
+            if (typeof data.RUNNER_DATA != "undefined" && data.RUNNER_DATA.length == 0) this_.showloadmore = false;
             if (this_.datarunner.length == this_.total) this_.showloadmore = false;
             //if (Object.keys(data.RUNNER_DATA).length == this_.total) this_.showloadmore = false;
 
