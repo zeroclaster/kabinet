@@ -7,13 +7,13 @@ var task_status = function (){
     const calendarStore_ = calendarStore();
     const datatask_ = tasklistStore();
 
-    // Общие константы статусов для всех функций
+    // Общие константы статусов для всех функций (теперь как строки)
     const STATUS = {
-        STOPPED: [9, 10],      // Остановленные/отмененные статусы
-        PLANNED: [0],           // Запланированные статусы
-        ACTIVE: [1, 2, 3, 4, 5, 6, 7, 8], // Активные статусы (все кроме 0,9,10)
-        COMPLETED: [9],         // Завершенные статусы (часть STOPPED)
-        INACTIVE: [10]         // Неактивные статусы (часть STOPPED)
+        STOPPED: ['9', '10'],      // Остановленные/отмененные статусы
+        PLANNED: ['0'],           // Запланированные статусы
+        ACTIVE: ['1', '2', '3', '4', '5', '6', '7', '8'], // Активные статусы
+        COMPLETED: ['9'],         // Завершенные статусы (часть STOPPED)
+        INACTIVE: ['10']         // Неактивные статусы (часть STOPPED)
     };
 
     // Общие HTML-шаблоны для отображения статусов
@@ -39,7 +39,7 @@ var task_status = function (){
         // Получаем все статусы событий задачи
         const statuses = taskEvents.map(q => q.UF_STATUS);
         // Проверяем, остановлена ли задача (статус 14 или все события в STOPPED)
-        const isStopped = (task && task.UF_STATUS === 14) ||
+        const isStopped = (task && task.UF_STATUS === '14') ||
             statuses.every(s => STATUS.STOPPED.includes(s));
         // Проверяем, есть ли запланированные события
         const isPlanned = statuses.some(s => STATUS.PLANNED.includes(s));
@@ -78,6 +78,7 @@ var task_status = function (){
     // Функция для получения статистики по статусам событий задачи
     const taskStatus_v = function(task_id) {
         const taskEvents = calendarStore_.getEventsByTaskId(task_id);
+
         // Если нет событий, возвращаем нулевые значения
         if (taskEvents.length === 0) {
             return {
@@ -105,6 +106,7 @@ var task_status = function (){
 
             return acc;
         }, { stopwark: 0, work: 0, endwork: 0 });
+
 
         // Определяем общий статус на основе подсчетов
         counts.status = counts.endwork > 0 ? 'completed' :
