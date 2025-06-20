@@ -64,12 +64,11 @@ CUtil::InitJSCore(array('window'));
                         <div class="d-flex flex-wrap" v-if="value.UF_ORDER_ID">
                             <div v-for="task in datatask" class="order-item-block">
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
-                                <a v-if="task.UF_PROJECT_ID == value.ID" :href="'/kabinet/projects/reports/?t='+task.ID">
-                                <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']">
-                                </a>
-
-                                <template v-if="task.UF_PROJECT_ID == value.ID"><div v-html="taskStatus_b(task.ID)"></div></template>
-                                <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(getTaskID(value.ID,order.ID))}}</div>
+                                <template v-if="task.UF_PROJECT_ID == value.ID && task.UF_PRODUKT_ID == order.ID">
+                                <a :href="'/kabinet/projects/reports/?t='+task.ID"><img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']"></a>
+                                <div v-html="taskStatus_b(task.ID)"></div>
+                                <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(task.ID)}}</div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -167,7 +166,7 @@ CUtil::InitJSCore(array('window'));
     </div>
 </div>
 
-    <button @click="aaa">test{{ gettestdataID(1) }}</button>
+
 </script>
 
 <?

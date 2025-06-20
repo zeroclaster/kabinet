@@ -95,48 +95,49 @@ project_list = (function (){
                             if (element.PROJECT_ID == PROJECT_ID) return 'с '+element.MONTH_START + ' по '+ element.MONTH_END;
                         }
                     },
-                    projectStatus(project){
-                        let all = 0;
-                        let stoped = 0;
-                        let worked = 0;
-                        let planed = 0;
-                        let complited = 0;
-                        for(task of this.datatask){
-                            if (task.UF_PROJECT_ID == project.ID){
-                                for(queue of this.datacalendarQueue){
-                                    if(queue.UF_TASK_ID == task.ID){
-                                        all++;
-                                        if (queue.UF_STATUS == 10 || queue.UF_STATUS == 0 || queue.UF_STATUS == 9) complited++;
-                                        if (queue.UF_STATUS == 0) planed++;
-                                        if (queue.UF_STATUS != 10 && queue.UF_STATUS != 0 && queue.UF_STATUS != 9) worked++;
-                                        if (queue.UF_STATUS == 10) stoped++;
-                                    }
-                                }
-                            }
+                    projectStatus(project) {
+                        const task = tasklistStore();
+                        const tasklist = task.getTaskByProjectId(project.ID);
+
+                        // Если нет задач - считаем проект остановленным
+                        if (tasklist.length === 0) {
+                            return '<div class="text-secondary">Остановлена</div>';
                         }
 
-                        if (!all) return "";
-                        if (worked > 0) return '<div class="text-success">Выполняется</div>';
-                        if (stoped == all) return '<div class="text-secondary">Остановлена</div>';
-                        if (planed == all) return '<div class="text-warning">Запустится автоматически</div>';
-                        if (complited == all) return '<div class="text-secondary">Завершена</div>';
+                        let hasWork = false;
+                        let allStopwark = true;
+                        let allEndwork = true;
 
-                        return '';
+                        // Анализируем все задачи проекта
+                        tasklist.forEach(val => {
+                            const s = this.taskStatus_v(val.ID);
+
+                            if (s.work > 0) hasWork = true;
+                            if (s.stopwark <= 0) allStopwark = false;
+                            if (s.endwork <= 0) allEndwork = false;
+                        });
+
+                        // Определяем статус по приоритетам
+                        if (hasWork) {
+                            return '<div class="text-success">Выполняется</div>';
+                        }
+                        if (allStopwark) {
+                            return '<div class="text-warning">Запустится автоматически</div>';
+                        }
+                        if (allEndwork) {
+                            return '<div class="text-secondary">Завершена</div>';
+                        }
+
+                        return '<div class="text-secondary">Остановлена</div>';
                     },
                     /*Требует вашего внимания*/
                     alertcount(PROJECT_ID){
                         // alert_project_count задается в bitrix/templates/kabinet/components/exi/project.list/.default/template.php
                         // создается в doitAction() bitrix/components/exi/project.list/class.php
-                        for(element of alert_project_count){
-                            if (element.PROJECT_ID == PROJECT_ID) return element.ALERT_COUNT;
-                        }
+                        return alert_project_count[PROJECT_ID] || 0;
                     },
                     showAlertCounter(task_id){
-                        for(id in task_alert){
-                            if (task_id == id) return task_alert[id];
-                        }
-
-                        return '';
+                        return task_alert[task_id] || '';
                     },
                     closemodal:function(){
                         this.$root.myModal.hide();
