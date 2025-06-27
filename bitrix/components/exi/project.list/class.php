@@ -123,7 +123,7 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
             $projectIds = array_column($saveData, 'ID');
             $messageFilter = [
                 'UF_PROJECT_ID' => $projectIds,
-                'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
+                //'UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
                 'UF_STATUS' => \Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE,
                 'UF_TARGET_USER_ID' => $user_id,
                 '=UF_ACTIVE' => true
