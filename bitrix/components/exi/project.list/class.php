@@ -208,22 +208,6 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
             ];
         }
 
-        $arResult['MESSAGE_DATA'] = [];
-        foreach ($saveData as $key => $item) {
-            $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(
-                $filter = [
-                    'UF_PROJECT_ID' => $item['ID'],
-                    '!UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
-                ],
-                $offset = 0,
-                $limit = 5,
-                $clear = false,
-                $new_reset = 'n'
-            );
-        }
-
-        //\Dbg::print_r($arResult['MESSAGE_DATA']);
-
         $arResult['ITEMS'] = $saveData;
 
             if (defined("BX_COMP_MANAGED_CACHE")) $CACHE_MANAGER->EndTagCache();
@@ -235,7 +219,6 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
                 $arResult['TASK_ALERT'],
                 $arResult['ACTUAL_MONTH_EXPENSES'],
                 $arResult['LAST_MONTH_EXPENSES'],
-                $arResult["MESSAGE_DATA"],
                 $arResult['ACTUAL_MONTH_BUDGET'],
             ));
         }
@@ -249,8 +232,7 @@ class ProjectListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
             $arResult['TASK_ALERT'] = $vars[4];
             $arResult['ACTUAL_MONTH_EXPENSES'] = $vars[5];
             $arResult['LAST_MONTH_EXPENSES'] = $vars[6];
-            $arResult["MESSAGE_DATA"]= $vars[7];
-            $arResult['ACTUAL_MONTH_BUDGET']= $vars[8];
+            $arResult['ACTUAL_MONTH_BUDGET']= $vars[7];
         }
 
     }

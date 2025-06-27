@@ -114,9 +114,6 @@ CUtil::InitJSCore(array('window'));
                         <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/?id='+value.ID">проверить</a>
                     </div>
                 </div>
-
-              <messangerperformances___ :projectID="value.ID" :taskID="0" :targetUserID="datauser.ID" :queue_id="0"/>
-
             </div> <!-- <div class="panel-body project-item-block"> -->
 </div>
 
@@ -189,13 +186,6 @@ CUtil::InitJSCore(array('window'));
 
     let messangerperformances___;
     window.addEventListener("components:ready", function(event) {
-        const messangerSystem2 = createMessangerSystem();
-        messangerperformances___ = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
-            'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
-            'TEMPLATE' => 'messangerTemplate2'
-        ], false, true)?>);
-        messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
-
         project_list.start(<?=CUtil::PhpToJSObject([
             'PROJECT_ID'=>0,
             'CONTAINER' => '#kabinetcontent',
