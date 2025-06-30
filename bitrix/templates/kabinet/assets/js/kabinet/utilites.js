@@ -51,15 +51,18 @@ const kabinet = {
 
 // Общие утилиты
 const commonUtils = {
+	// Выносим WeakMap за пределы функции, чтобы она сохранялась между вызовами
+	_componentCounters: new WeakMap(),
+
 	getId(component, indicator = '') {
-		const componentCounters = new WeakMap();
-		if (!componentCounters.has(component)) {
-			componentCounters.set(component, kabinet.uniqueId());
+		if (!this._componentCounters.has(component)) {
+			this._componentCounters.set(component, kabinet.uniqueId());
 		}
-		const componentCounter = componentCounters.get(component);
+		const componentCounter = this._componentCounters.get(component);
 		return `uid-${componentCounter}${indicator ? `-${indicator}` : ''}`;
 	}
 };
+
 
 /**
  * Настраивает общие свойства и методы для Vue приложения
