@@ -21,6 +21,21 @@ class Notificationhandler
         $this->initDefaultRules();
     }
 
+    public function generateAuthLink($userID): string
+    {
+        $token = bin2hex(random_bytes(32));
+        $expire = time() + 1800; // 30 минут
+
+        // Сохраняем в БД (пример для MySQL)
+        \Bitrix\Main\Application::getConnection()->queryExecute(
+            "INSERT INTO b_auth_tokens
+         (user_id, token, expire_time) 
+         VALUES ({$userID}, '{$token}', {$expire})"
+        );
+
+        return "token={$token}";
+    }
+
     private function initDefaultRules() {
         $this->rulesChain = new \Bitrix\telegram\notificationrule\Validateinput();
         /*
@@ -42,7 +57,7 @@ class Notificationhandler
             $messageType = $this->determineMessageType($messageData);
 
             if (!$this->rulesChain->shouldSend($messageData, $recipientData)) {
-                $this->logSkippedNotification($messageData, $recipientData);
+                //$this->logSkippedNotification($messageData, $recipientData);
                 return;
             }
 
@@ -51,6 +66,8 @@ class Notificationhandler
                 $messageType['isForUser'],
                 $recipientData
             );
+
+            if ($messageType['isForUser']) $message = $this->prepareMessageContent2($messageData,$recipientData);
 
             $FULL_MESSAGE = $this->buildMessageWithContext(
                 $message,
@@ -170,7 +187,28 @@ class Notificationhandler
      */
     private function prepareMessageContent($messageData, bool $isForUser, $recipientData): string
     {
-        $cleaned = trim(strip_tags($messageData['UF_MESSAGE_TEXT']));
+        // 1. Оставляем только текст и ссылки (удаляем <p> и другие теги, кроме <a>)
+        $cleaned = strip_tags($messageData['UF_MESSAGE_TEXT'], '<a>');
+
+        // 2. Добавляем &#AUTHLINK# только к ссылкам с текстом "открыть"
+        $cleaned = preg_replace_callback(
+            '/<a\s+(?:[^>]*?\s+)?href=(["\'])(.*?)\1[^>]*>(.*?)<\/a>/i',
+            function ($matches) {
+                $href = $matches[2];
+                $linkText = $matches[3];
+
+                // Если текст ссылки "открыть", добавляем &#AUTHLINK#
+                if (trim($linkText) === 'открыть') {
+                    return '<a href="' . $href . '&#AUTHLINK#">' . $linkText . '</a>';
+                }
+
+                // Иначе оставляем как есть
+                return $matches[0];
+            },
+            $cleaned
+        );
+
+        // 3. Обрезаем до 4096 символов (с поддержкой UTF-8)
         $message = mb_substr($cleaned, 0, 4096);
 
         if ($isForUser){
@@ -182,6 +220,9 @@ class Notificationhandler
         if ($this->getRecipientSource($recipientData) == 'ProjectsTable') $userParams = $recipientData->get("USER");
         if ($this->getRecipientSource($recipientData) == 'UserTable') $userParams = $recipientData;
 
+        $authLink = $this->generateAuthLink($userParams['ID']);
+        $message = str_replace(["#UF_TASK_ID#","#UF_QUEUE_ID#","#AUTHLINK#"],[$messageData['UF_TASK_ID'],$messageData['UF_QUEUE_ID'],$authLink],$message);
+
         $fullUserName = current(array_filter([
             trim(implode(" ", [$message_auther['LAST_NAME'], $message_auther['NAME'], $message_auther['SECOND_NAME']])),
             $message_auther['LOGIN']
@@ -190,6 +231,27 @@ class Notificationhandler
             return $isForUser
             ? "<p>{$fullUserName}</p><p>{$message}</p>"
             : $message;
+    }
+
+    private function prepareMessageContent2($messageData,$recipientData): string
+    {
+        $message_auther = $this->getUserData($messageData['UF_AUTHOR_ID']);
+        $fullUserName = current(array_filter([
+            trim(implode(" ", [$message_auther['LAST_NAME'], $message_auther['NAME'], $message_auther['SECOND_NAME']])),
+            $message_auther['LOGIN']
+        ]));
+
+        if ($this->getRecipientSource($recipientData) == 'FulfillmentTable') $userParams = $recipientData->get('TASK')->get("USER");
+        if ($this->getRecipientSource($recipientData) == 'TaskTable') $userParams = $recipientData->get("USER");
+        if ($this->getRecipientSource($recipientData) == 'ProjectsTable') $userParams = $recipientData->get("USER");
+        if ($this->getRecipientSource($recipientData) == 'UserTable') $userParams = $recipientData;
+
+        $authLink = $this->generateAuthLink($userParams['ID']);
+
+        $messageTemplate = '<a href="https://kupi-otziv.ru/kabinet/projects/reports/?t=#UF_TASK_ID#&id=#UF_QUEUE_ID#&#AUTHLINL#">Новое сообщение в ЛК – прочитать</a>';
+        $message = str_replace(["#UF_TASK_ID#","#UF_QUEUE_ID#","#AUTHLINL#"],[$messageData['UF_TASK_ID'],$messageData['UF_QUEUE_ID'],$authLink],$messageTemplate);
+
+        return "<p>{$fullUserName}</p><p>{$message}</p>";
     }
 
     /**
@@ -228,7 +290,7 @@ class Notificationhandler
             $parts[] = "Задача <a href=\"{$taskLink}\">«{$task['UF_NAME']}» #{$task['UF_EXT_KEY']}</a>";
         }
 
-        return implode(', ', $parts) . $message;
+        return implode(', ', $parts) . ' '. $message;
     }
 
     private function getRecipientSource($recipientData): string

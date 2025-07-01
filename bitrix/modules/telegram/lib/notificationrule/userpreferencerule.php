@@ -2,9 +2,15 @@
 namespace Bitrix\telegram\notificationrule;
 
 use Bitrix\telegram\Abstractnotificationrule;
+use Bitrix\telegram\exceptions\TelegramException;
 
 class Userpreferencerule extends Abstractnotificationrule {
     public function shouldSend(array $messageData,$recipientData): bool {
+
+
+        $UF_AUTHOR_ID = $messageData["UF_AUTHOR_ID"];
+        $result_intersect = array_intersect(array(REGISTRATED), \CUser::GetUserGroup($UF_AUTHOR_ID));
+        if(!empty($result_intersect)) return false;
 
         /*
         if ($recipientData['TASK']) {
