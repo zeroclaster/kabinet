@@ -511,3 +511,19 @@ $eventManager->addEventHandler('sale', 'OnSaleComponentOrderShowAjaxAnswer', fun
         }
     }
 });
+
+
+function isMobileDevice() {
+    $userAgent = strtolower($_SERVER['HTTP_USER_AGENT'] ?? '');
+    $mobileKeywords = [
+        'mobile', 'android', 'iphone', 'ipod', 'ipad',
+        'blackberry', 'webos', 'windows phone', 'opera mini'
+    ];
+
+    foreach ($mobileKeywords as $keyword) {
+        if (strpos($userAgent, $keyword) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
