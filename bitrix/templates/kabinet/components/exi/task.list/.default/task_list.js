@@ -478,7 +478,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month',	//'yearview,quarter,month',
+                right: '',	//'yearview,quarter,month',
                 ...parseJSON( node.getAttribute( 'data-fullcalendar-header' ) )
             },
             views: {

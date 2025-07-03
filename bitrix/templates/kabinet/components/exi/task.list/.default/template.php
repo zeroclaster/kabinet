@@ -184,7 +184,7 @@ $p = $request->get('p');
                     >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
 					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
 
-                    <div class="d-flex" v-if="task.UF_STATUS>0">
+                    <div class="task-palanning-info d-flex no-d-flex" v-if="task.UF_STATUS>0">
                         <div>Запланированы: {{anim_counter[task.ID]}}</div><div class="ml-3">Выполняются: {{taskStatus_v(task.ID)['work']}}</div><div class="ml-3">Выполнено: {{taskStatus_v(task.ID)['endwork']}}</div>
                     </div>
 
@@ -209,64 +209,46 @@ $p = $request->get('p');
 
                     <textInfoTask :task="datatask" :copyTask="datataskCopy" :taskindex="taskindex"/>
 
-
 					<div class="">
                         <template v-if="CopyTask.UF_STATUS==0">
-
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                            <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
+                                <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                                <div class="d-flex align-items-center"><input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)"> <div>{{PRODUCT.MEASURE_NAME}}</div></div>
                             </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
-                                    <div>
-                                        <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
-                                    </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
-                                    <div class="mr-3">
-                                        <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
-                                            <option v-for="option in CopyTask.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
-                                                {{ option.VALUE }}
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div style="position: relative" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">
-                                        <div class="input-group">
-                                            <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
-                                        </div>
-                                    </div>
+                            <div class="col-md-4 mr-3 d-flex justify-content-end align-items-center mobile-mt-4" style="padding-right:0;">
+                                <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
+                                    <option v-for="option in CopyTask.UF_CYCLICALITY_ORIGINAL" :value="option.ID">
+                                        {{ option.VALUE }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex justify-content-end align-items-center mobile-mt-4" style="position: relative;" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_DATE_COMPLETION">
+                                <div class="input-group">
+                                    <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
                                 </div>
                             </div>
                         </div>
 
                             <template v-if="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE=='multiple'">
                             <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 33">
-                                <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                    <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
-                                </div>
-
-                                <div class="col-sm-10" style="position: relative;">
-                                    <div class="d-flex">
-                                        <div>
-                                            <input
-                                                    :id="'kolichestvo'+task.ID"
-                                                    type="text"
-                                                    class="form-control"
-                                                    style="width: 100px;"
-                                                    size="2"
-                                                    v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
-                                                    @input="inpsaveCopy(taskindex)"
-                                            >
-                                        </div>
-                                        <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
-
-                                        <div>
-                                            До: {{datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}
-                                        </div>
-
+                                <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
+                                    <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                                    <div class="d-flex align-items-center">
+                                        <input
+                                                :id="'kolichestvo'+task.ID"
+                                                type="text"
+                                                class="form-control"
+                                                style="margin: 0;width: 100px;margin-right: 20px;"
+                                                size="2"
+                                                v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
+                                                @input="inpsaveCopy(taskindex)"
+                                        >
                                     </div>
+                                    <div>{{PRODUCT.MEASURE_NAME}}</div>
+                                </div>
+                                <div class="col-md-4 mr-3 d-flex justify-content-end align-items-center mobile-mt-4" style="padding-right:0;">
+                                    До: {{datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}
                                 </div>
                             </div>
                             </template>
@@ -275,42 +257,34 @@ $p = $request->get('p');
                         </template>
 
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 && CopyTask.UF_STATUS>0">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                            <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
+                                <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
+                                <div class="d-flex align-items-center">
+                                <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                    <div>{{PRODUCT.MEASURE_NAME}}</div>
+                                </div>
                             </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
-                                    <div>
-                                        <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="width: 100px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
-                                    </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}</div>
-                                    <div class="mr-3">
-                                        <div style="padding: 14px;padding-left: 0px;">{{ showOne1(CopyTask.UF_CYCLICALITY_ORIGINAL) }}</div>
-                                    </div>
-                                    <div style="position: relative">
-                                        <div class="input-group">
-                                            <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
-                                        </div>
-                                    </div>
+                            <div class="col-md-4 mr-3 d-flex justify-content-end align-items-center mobile-mt-4" style="padding-right:0;">
+                                {{ showOne1(CopyTask.UF_CYCLICALITY_ORIGINAL) }}
+                            </div>
+                            <div class="col-md-3 d-flex justify-content-end align-items-center mobile-mt-4" style="position: relative;">
+                                <div class="input-group">
+                                    <mydatepicker :tindex="taskindex" :original="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.FORMAT1" :mindd="CopyTask.UF_DATE_COMPLETION_ORIGINAL.MINDATE" :maxd="datataskCopy[taskindex].UF_DATE_COMPLETION_ORIGINAL.MAXDATE" v-model="datataskCopy[taskindex].UF_DATE_COMPLETION"/>
                                 </div>
                             </div>
                         </div>
 
                         <!-- ID 2 Ежемесечная задача -->
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 2 && CopyTask.UF_STATUS>0">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Изменить количество со следующего месяца:</label>
-                            </div>
-
-                            <div class="col-sm-10" style="position: relative;">
-                                <div class="d-flex">
+                            <div class="col-sm-5 text-sm-right d-flex align-items-center mobile-view">
+                                <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Изменить количество со следующего месяца:</label>
+                                <div class="d-flex align-items-center">
                                     <div class="numerator-range">
                                         <input
                                                 :id="'kolichestvo'+task.ID"
                                                 type="text"
                                                 class="form-control"
-                                                style="width: 100px;"
+                                                style="margin: 0;width: 100px;margin-right: 20px;"
                                                 size="2"
                                                 v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
                                                 @input="inpsaveCopy(taskindex)"
@@ -318,7 +292,7 @@ $p = $request->get('p');
                                         <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
                                         <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
                                     </div>
-                                    <div class="ml-3 mr-3 task-text-vertical-aling"> {{PRODUCT.MEASURE_NAME}}/в месяц</div>
+                                    <div>{{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>
                             </div>
                         </div>
@@ -328,10 +302,11 @@ $p = $request->get('p');
                             СТОИМОСТЬ
                         */?>
                         <div class="row form-group" v-if="CopyTask.FINALE_PRICE>0">
-                            <div class="col-sm-2 text-sm-right"><label class="col-form-label" :for="'linkInput2Price1'+task.ID">Цена за {{PRODUCT.MEASURE_NAME}}: </label></div>
-                            <div class="col-sm-3" style="position: relative;">
-                                <div class="price-product" v-if="PRODUCT.CATALOG_PRICE_1>0"><span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
+                            <div class="col-lg-4 mobile-col d-flex align-items-center">
+                                <label class="col-form-label col-form-label-custom" :for="'linkInput2Price1'+task.ID">Цена за {{PRODUCT.MEASURE_NAME}}: </label>
+                                <div class="price-product" style="margin-top: 0px;" v-if="PRODUCT.CATALOG_PRICE_1>0"><span>{{PRODUCT.CATALOG_PRICE_1}}</span> <span>руб.</span></div>
                             </div>
+
                             <div class="col-sm-4" style="position: relative;">
                                 <div class="d-flex">
                                     <div class="text-sm-right"><label class="col-form-label" :for="'linkInput2Price'+task.ID">Стоимость:&nbsp;</label></div>
@@ -385,13 +360,10 @@ $p = $request->get('p');
                             14.02.2025 сохранение поля Ссылка было на событии @change="savetask(taskindex)"
                             14.02.2025 добавили кнопку сохранить
                             */?>
-                            <div class="row form-group">
-								<div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-									<label class="col-form-label" :for="'linkInputLink'+task.ID">Ссылка:</label>
-								</div>
-
-								<div class="col-sm-6" style="position: relative;">
-									<div class="mt-3" v-for="inplist in task.UF_TARGET_SITE">
+                            <div class="form-group d-flex align-items-center mobile-view">
+									<label class="col-form-label col-form-label-custom lable-link-list-style-1" :for="'linkInputLink'+task.ID">Ссылка:</label>
+									<div class="target-list-link-block">
+                                    <div v-for="inplist in task.UF_TARGET_SITE">
                                     <input
                                             :class="['form-control', { 'it-required_field': is_required_field(task, 'UF_TARGET_SITE') }]"
                                             :id="'linkInputLink'+task.ID"
@@ -400,69 +372,46 @@ $p = $request->get('p');
                                             v-model="inplist.VALUE"
                                     >
                                     </div>
-                                    <div class="" style="position: relative;">
-                                        <button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button>
+                                        <div class="" style="position: relative;"><button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button></div>
                                     </div>
-                                </div>
 							</div>
 
-                        <div class="row form-group" style="margin-top: 7px;" v-if="PRODUCT.JUST_FILED.VALUE">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'justfieldInput'+task.ID">{{PRODUCT.JUST_FILED.VALUE}}:</label>
-                            </div>
-                            <div class="col-sm-6" style="position: relative;">
-                                    <input class="form-control" :id="'justfieldInput'+task.ID" type="text" placeholder="" v-model="task.UF_JUSTFIELD">
-                            </div>
+
+                        <div class="form-group d-flex align-items-center mobile-view" style="margin-top: 7px;" v-if="PRODUCT.JUST_FILED.VALUE">
+                                <label class="col-form-label col-form-label-custom" :for="'justfieldInput'+task.ID">{{PRODUCT.JUST_FILED.VALUE}}:</label>
+                                <input class="form-control" :id="'justfieldInput'+task.ID" type="text" placeholder="" v-model="task.UF_JUSTFIELD">
                         </div>
 							
-							<div class="row form-group"  v-if="PRODUCT.PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
-								<div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-									<label class="col-form-label" :for="'InputPhohto'+task.ID">Фото:</label>
-								</div>
-								<div class="col-sm-10" style="position: relative;">
-									<div id="previewfileimages" class="d-flex flex-wrap">
-												<div class="preview-img-block-1" v-for="photo in showpiclimits(task.UF_PHOTO_ORIGINAL,taskindex)" :style="'background-image:url('+photo.SRC+')'">
-														<div @click="removeimg(photo.ID,taskindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
-												</div>
+                        <div class="form-group d-flex align-items-center mobile-view"  v-if="PRODUCT.PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
+                                <label class="col-form-label col-form-label-custom" :for="'InputPhohto'+task.ID">Фото:</label>
+                                <div id="previewfileimages" class="d-flex flex-wrap">
+                                            <div class="preview-img-block-1" v-for="photo in showpiclimits(task.UF_PHOTO_ORIGINAL,taskindex)" :style="'background-image:url('+photo.SRC+')'">
+                                                    <div @click="removeimg(photo.ID,taskindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
+                                            </div>
 
-												<div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
-                                        <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
-                                            <button class="btn btn-secondary show-all-butt" type="button" @click="task.LIMIT = 1000">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
-                                        </div>
-                                        <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
-									</div>
-								</div>
-							</div>
+                                            <div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
+                                    <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
+                                        <button class="btn btn-secondary show-all-butt" type="button" @click="task.LIMIT = 1000">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
+                                    </div>
+                                    <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
+                                </div>
+                        </div>
 
                         <?/*
                             Проверяем есть ли согласование у услуги из каталога PRODUCT.COORDINATION.VALUE_XML_ID
                         */?>
-                        <div class="row form-group" v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'linkInputSoglacovanie'+task.ID">Согласование:</label>
-                            </div>
-
-                            <div class="col-sm-6" style="position: relative;">
-                                    <select class="form-control" name="" :id="'linkInputSoglacovanie'+task.ID" v-model="task.UF_COORDINATION">
-                                        <option v-for="option in clearFirstItem(task.UF_COORDINATION_ORIGINAL)" :value="option.ID">
-                                            {{ option.VALUE }}
-                                        </option>
-                                    </select>
-                            </div>
+                        <div class="form-group d-flex align-items-center mobile-view" v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
+                            <label class="col-form-label col-form-label-custom" :for="'linkInputSoglacovanie'+task.ID">Согласование:</label>
+                            <select class="form-control desktop-width" name="" :id="'linkInputSoglacovanie'+task.ID" v-model="task.UF_COORDINATION">
+                                <option v-for="option in clearFirstItem(task.UF_COORDINATION_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
+                            </select>
                         </div>
 
-                        <div class="row form-group">
-                            <div class="col-sm-2 text-sm-right d-flex justify-content-end align-items-center">
-                                <label class="col-form-label" :for="'linkInputReporting'+task.ID">Отчетность:</label>
-                            </div>
-
-                            <div class="col-sm-6" style="position: relative;">
-                                    <select class="form-control" name="" :id="'linkInputReporting'+task.ID" v-model="task.UF_REPORTING">
-                                        <option v-for="option in clearFirstItem(task.UF_REPORTING_ORIGINAL)" :value="option.ID">
-                                            {{ option.VALUE }}
-                                        </option>
-                                    </select>
-                            </div>
+                        <div class="form-group d-flex align-items-center mobile-view">
+                            <label class="col-form-label col-form-label-custom" :for="'linkInputReporting'+task.ID">Отчетность:</label>
+                            <select class="form-control desktop-width" name="" :id="'linkInputReporting'+task.ID" v-model="task.UF_REPORTING">
+                                    <option v-for="option in clearFirstItem(task.UF_REPORTING_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
+                            </select>
                         </div>
 
                         <div class="row form-group">
