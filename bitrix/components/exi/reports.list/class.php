@@ -84,6 +84,9 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         }
 		
 		$this->prepareData();
+
+        //$this->includeComponentTemplate(isMobileDevice() ? 'mobile' : '');
+
         $this->includeComponentTemplate($this->template);
 
         return true;
@@ -215,7 +218,15 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         $arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
 
         foreach($arResult["RUNNER_DATA"] as $item){
-            $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(['UF_QUEUE_ID'=>$item['ID']],0,$arParams['MESSAGE_COUNT']);
+            $filter = [
+                'UF_QUEUE_ID'=>$item['ID'],
+                '!UF_TYPE' => \Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE,
+            ];
+            $arResult["MESSAGE_DATA"][$item['ID']] = $messanger->getData(
+                $filter,
+                0,
+                $arParams['MESSAGE_COUNT']
+            );
         }
 
     }
