@@ -15,6 +15,10 @@ class Notificationhandler
     private $rulesChain;
     private $transport;
 
+    // Шаблоны для формирования сообщений
+    private const PROJECT_TEMPLATE = 'Проект «%s» #%s';
+    private const TASK_TEMPLATE = 'Задача <a href="%s">«%s» #%s</a>';
+
     public function __construct(Notificationtransportinterface $transport)
     {
         $this->transport = $transport;
@@ -282,12 +286,21 @@ class Notificationhandler
         }
 
         if ($project) {
-            $parts[] = "Проект «{$project['UF_NAME']}» #{$project['UF_EXT_KEY']}";
+            $parts[] = sprintf(
+                self::PROJECT_TEMPLATE,
+                $project['UF_NAME'],
+                $project['UF_EXT_KEY']
+            );
         }
 
         if ($task) {
             $taskLink = "https://kupi-otziv.ru/kabinet/projects/reports/?t={$task['ID']}";
-            $parts[] = "Задача <a href=\"{$taskLink}\">«{$task['UF_NAME']}» #{$task['UF_EXT_KEY']}</a>";
+            $parts[] = sprintf(
+                self::TASK_TEMPLATE,
+                $taskLink,
+                $task['UF_NAME'],
+                $task['UF_EXT_KEY']
+            );
         }
 
         return implode(', ', $parts) . ' '. $message;
