@@ -303,7 +303,7 @@ class Notificationhandler
             );
         }
 
-        return implode(', ', $parts) . ' '. $message;
+        return $message . '. '.implode(', ', $parts);
     }
 
     private function getRecipientSource($recipientData): string
