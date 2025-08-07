@@ -44,7 +44,8 @@ window['messangerTemplate'] =  `
 				<div class="col-12 text-block-mess">				
 					<div>
 						<div class="user-title mb-1"></div><div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
-					</div>					
+					</div>	
+					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>				
 					<div v-if="mess_item.UF_PROJECT_ID>0">
 						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}						
 						<div>Проект «{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}							
@@ -52,11 +53,9 @@ window['messangerTemplate'] =  `
 							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
 							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
 							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>
-						</span>					
-						,					
+						</span>										
 						</div>					
 					</div>					
-					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 				</div>
 			</div>			
 			
