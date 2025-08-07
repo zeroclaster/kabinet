@@ -33,6 +33,15 @@ if (
                     //print_r($result->makeCRC());
                     if ($result->isSuccess()) {
                         echo "<div class=\"alert alert-success\" role=\"alert\">Ваш баланс успешно пополнен!</div>";
+                        ?>
+                        <script>
+                            BX.ready(function() {
+                                setTimeout(function() {
+                                    window.location.href = '/kabinet/';
+                                }, 3000); // 3000 мс = 3 секунды
+                            });
+                        </script>
+                        <?
                     }else{
                         $err = $result->getErrors();
                         echo "<div class=\"alert alert-danger\" role=\"alert\">{$err}</div>";
