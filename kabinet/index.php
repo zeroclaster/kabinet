@@ -43,8 +43,9 @@ $GLOBALS['message_filter'] = ['UF_TYPE'=>\Bitrix\Kabinet\messanger\Messanger::SY
 ?>
 <?$APPLICATION->IncludeComponent("exi:messanger.view", "", Array(
         'FILTER_NAME' => 'message_filter',      // фильтр по id пользователя добавляется всегда
-        'COUNT' => 5,                           // количество сообщений в чате
+        'COUNT' => 10,                           // количество сообщений в чате
         'NEW_RESET' => 'N',                   // фиксироваь пометку причитанные сообщения, N - не фиксировать
+        "MODE" => 2
     )
 );?>
 
@@ -74,9 +75,9 @@ $GLOBALS['message_filter'] = ['UF_TYPE'=>\Bitrix\Kabinet\messanger\Messanger::SY
                     <?$APPLICATION->IncludeComponent("exi:project.list", "", Array(
                     )
                     );?>
-				</div>	
+				</div>
 			</div>
-		</div>	
+		</div>
 </section>
-	  
+
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

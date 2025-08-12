@@ -1,10 +1,6 @@
 window['messangerTemplate'] =  `
  <div :id="$id('messangerBlock')" class="messanger-block message-dashboard">  
     <div ref="messagelist" class="messange-list p-2">
-        
-        <div ref="showmoreblock" class="mess p-2 mb-4" v-if="datamessageForYou.length>4">
-            <button type="button" class="btn btn-sm btn-link" @click="showMore()">Показать еще <i class="fa fa-refresh" aria-hidden="true"></i></button>
-        </div>
     
 		<div v-for="mess_item in datamessageForYou">
 		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">

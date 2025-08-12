@@ -9,7 +9,7 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/
 id = headderapp
 bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
 */?>
-<div class="rd-navbar-panel-cell"><a href="/kabinet/finance/deposit/" title="пополнить баланс"><img src="<?=SITE_TEMPLATE_PATH?>/assets/images/popolnenie_64b.png" alt="" style="width: 50px;"></a></div>
+<div class="rd-navbar-panel-cell popolnit-icon"><a href="/kabinet/finance/deposit/" title="пополнить баланс"><img src="<?=SITE_TEMPLATE_PATH?>/assets/images/popolnenie_64b.png" alt=""></a></div>
 
 <!-- тут выводится балланс пользователя -->
 <div id="headderapp" class="rd-navbar-panel-cell"></div>
@@ -46,7 +46,7 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
           <div class="media align-items-center">
             <div class="pr-2"><span class="fa-bell"></span></div>
             <div class="media-body">
-             <div class="user-menu">Все комментарии</div>
+             <div class="user-menu">Сообщения</div>
             </div>
           </div></a>
 		  
