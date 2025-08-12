@@ -72,6 +72,9 @@ deposit_form = (function (){
                     },
                     onChange(){
                         this.clearError();
+
+                        const el = document.querySelector("#toscroll");
+                        if (el) el.scrollIntoView({behavior: 'smooth'});
                     },
                     toemail(e){
                         const form = e.target.form;

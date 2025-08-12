@@ -7,7 +7,7 @@ window.addEventListener("components:ready", function(event) {
             ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
         },
         template: `
-          <a href="/kabinet/finance/" target="_blank">Баланс: {{databilling.UF_VALUE}} руб.</a>
+          <a href="/kabinet/finance/" target="_blank">Баланс: {{databilling.UF_VALUE}}&nbsp;руб.</a>
     `
     });
 
