@@ -1090,3 +1090,46 @@ i.fa{
 .task-aciont-list-1 li a,.task-aciont-list-1 li .btn.btn-link-site{
 	font-size: 18px;
 }
+
+.col-form-label.col-form-label-custom{
+	padding-top: 0px;
+	padding-right: 20px;
+	padding-bottom: 0;
+	width: 203px;
+	text-align: right;
+}
+
+.form-control.desktop-width{
+	width: 40%;
+}
+
+.target-list-link-block > div{
+	margin-bottom: 20px;
+}
+.target-list-link-block > div:first-child{
+	margin-bottom: 0px;
+}
+.target-list-link-block > div:last-child{
+	margin-bottom: 0px;
+}
+
+.col-form-label.lable-link-list-style-1{
+	margin-bottom: 52px;
+}
+
+.select2-search__field {
+	width: 100% !important; /* Принудительно растягиваем */
+	min-width: 100px;       /* Минимальная ширина */
+}
+
+.select2-container .select2-search--inline{
+	width: 100%;
+}
+
+.popolnit-icon img{
+	width: 50px;
+}
+
+
+.site-red { color: #f00; }
+.site-gray { color: #999; }

@@ -29,7 +29,7 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
 <div class="row">
 
     <div class="col-md-4">
-        <div class="d-flex">
+        <div class="d-flex no-d-flex">
             <div class="d-flex align-items-center"><button type="button" class="btn btn-link btn-sm">За период</button></div>
 
             <div class="mr-2 d-flex align-items-center">с</div>
@@ -39,7 +39,7 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
         </div>
     </div>
     <div class="col-md-3">
-        <div class="d-flex">
+        <div class="d-flex no-d-flex">
             <div class="d-flex align-items-center mr-3" style="width: 100px;">Со статусом:</div>
             <div class="d-flex align-items-center">
                 <select name="statusfind" id="statusfind" class="form-control">

@@ -1,0 +1,192 @@
+h1, .h1 {
+    font-size: 19px;
+}
+
+h2, .h2 {
+    font-size: 18px;
+}
+
+h3, .h3 {
+    font-size: 18px;
+}
+
+h4, .h4 {
+    font-size: 15px;
+}
+
+
+.report-list-block .messanger-block{
+    border: 1px solid #FFF;
+}
+
+.report-list-block .panel-body{
+    padding: 16px;
+}
+
+.alert.abcs-1{
+    font-size: 14px;
+}
+
+.report-list-block .alert{
+    padding: 0;
+}
+
+.report-list-block .plane-date{
+    font-size: 13px;
+}
+
+.no-d-flex{
+    display: inherit !important;
+}
+
+.mobile-panel .rd-navbar-sidebar-panel{
+    position: relative;
+    width: inherit;
+    transform: none;
+    padding: 0;
+    background: none;
+}
+
+.mobile-panel .navbar-toggle-sidebar{
+    position: relative;
+    display: inherit;
+    top: 0;
+    right: 0;
+    transform: none;
+    color: #54c1e5;
+}
+
+.mobile-panel #usergamburgermenu{
+    width: 58px;
+}
+
+.rd-navbar-fixed-linked .page.header-static .rd-navbar-panel {
+    position: static;
+    padding-left: 5px;
+}
+
+.deposit-block-1 .method-additions > div{
+    height: 216px;
+}
+
+.type-pay-list > div{
+    margin-top: 20px;
+}
+
+.type-pay-list > div:first-child{
+    margin-top: 0px;
+}
+
+.billing-view .info .bold{
+    white-space: nowrap;
+}
+
+.icon-button::before {
+    font-size: 23px;
+    position: absolute;
+    top: 3px;
+    left: 12px;
+}
+
+.task-palanning-info .ml-3 {
+    margin-left:0!important;;
+    white-space: nowrap;
+}
+
+.task-list-block1 .col-md-1 {
+    max-width: 25.333%;
+    flex: 0 0 25.333%;
+    padding-right: 0px;
+}
+
+.report-mytypeahead-1{
+    margin-top: 20px;
+}
+
+.report-mytypeahead-1 .col-form-label{
+    padding: 0;
+}
+
+.report-mytypeahead-1 .col-sm-11.col-form-label{
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.mobile-col{
+    width: 336px;
+    padding-right: 0px;
+}
+
+.mobile-col-2{
+    padding-left: 0px;
+}
+
+.col-form-label-mobile{
+    padding-top: 0px;
+    padding-right: 20px;
+    padding-bottom: 0;
+}
+
+.mobile-view {
+    display: block!important;
+}
+
+.col-form-label.col-form-label-custom{
+    width: 100%;
+    text-align: left;
+}
+
+.form-control.desktop-width{
+    width: 100%;
+}
+
+.task-list-block1 .price-product{
+    margin-top: 0px;
+    width: 749px;
+    padding-right: 0;
+}
+
+.col-form-label.lable-link-list-style-1{
+    margin-bottom: 0px;
+}
+
+.mobile-mt-4{
+    margin-top: 16px;
+}
+
+.button-blk{
+    margin-top: 10px;
+}
+
+.ord-block1-1{
+    margin-top: 10px;
+}
+
+.popolnit-icon img{
+    width: 30px;
+}
+
+.mobile-panel #usergamburgermenu {
+    width: 40px;
+}
+
+#usergamburgermenu img {
+    height: 40px;
+}
+
+.mobile-panel #usergamburgermenu {
+    top: 8px;
+}
+
+@media (max-width: 991.98px) {
+    .btn.mobile-butt-1,.btn.mobile-butt-2 {
+        padding: 0.3125rem 0.91875rem;
+    }
+}
+
+.catalog-service-menulink{
+    display: none;
+}
+.rd-navbar-sidebar-active .catalog-service-menulink{
+    display: block;
+}

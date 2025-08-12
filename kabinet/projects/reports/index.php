@@ -47,7 +47,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 ?>
 <section class="">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex no-d-flex justify-content-between">
             <div>
                 <h4 style="margin: 0;">Проект</h4>
                 <div><h1><?=$project['UF_NAME']?> #<?=$project['UF_EXT_KEY']?></h1></div>
@@ -91,7 +91,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                     <div class="d-flex task-status-print h4" v-html="taskStatus_m(TASK_ID)"></div>
 
                     <div class="mt-3">
-                        <div class="d-flex">
+                        <div class="d-flex no-d-flex">
                             <div class="d-flex mr-3 align-items-center">Запланированы: <div class="fc-event-light ml-2 mr-2"><?=$QueueStatistics[0]['COUNT']?></div></div>
                             <div class="d-flex mr-3 align-items-center">Выполняются: <div class="fc-event-success ml-2 mr-2"><?=$QueueStatistics[1]['COUNT']?></div></div>
                             <div class="d-flex mr-3 align-items-center">Выполнено: <div class="fc-event-warning ml-2 mr-2"><?=$QueueStatistics[2]['COUNT']?></div></div>
@@ -149,7 +149,6 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
             <div class="col-md-12">
 
                 <h2>Согласование и отчеты</h2>
-                <div>Проверьте и, если необходимо, отредактируйте текст и нажмите "на публикацию". Вы можете отклонить текст, указав в комментарии, как нам его переписать.</div>
 
                 <div class="panel filter-block">
                     <div class="panel-body">

@@ -43,7 +43,7 @@ const createMessangerSystem = () => {
                             new_reset: PHPPARAMS.NEW_RESET,
                         }
                     },
-                    props: ['projectID','taskID','queue_id','targetUserID'],
+                    props: ['projectID','taskID','queue_id','targetUserID','isMobile'],
                     computed: {
                         ...BX.Vue3.Pinia.mapState(messageStore, ['datamessage']),
                         ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
@@ -237,8 +237,13 @@ const createMessangerSystem = () => {
                             //console.log(response);
                             kabinet.loading(false);
                             response.errors.forEach((error) => {
-                                kabinetStore.Notify = '';
-                                kabinetStore.Notify = error.message;
+                                if (response.errors[0].code != 0) {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = response.errors[0].message;
+                                }else {
+                                    kabinetStore.Notify = '';
+                                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                                }
                             });
 
                         },

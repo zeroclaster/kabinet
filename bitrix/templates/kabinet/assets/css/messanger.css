@@ -146,7 +146,14 @@
 	top: -3px;
 	right: 17px;
 	font-size: 23px;
-	color: #0069b2;
+}
+
+.messanger-block .messange-list .status-mark{
+	color: #54c1e5;
+}
+
+.messanger-block .messange-list .status-mark .mdi-check{
+	color: #555555;
 }
 
 .messanger-block .messange-list blockquote {

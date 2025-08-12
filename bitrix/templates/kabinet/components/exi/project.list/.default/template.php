@@ -45,10 +45,10 @@ CUtil::InitJSCore(array('window'));
                 <div class="row table-row-equal">
                     <div class="col-lg-9 h2 thumbnail thumbnail-left" style="margin: 0;">{{value.UF_NAME}}</div>
 
-                    <div class="col-lg-3 thumbnail thumbnail-right" v-if="getRequireFields(value.ID).length > 0">
+                    <div class="col-lg-3 button-blk thumbnail thumbnail-right" v-if="getRequireFields(value.ID).length > 0">
                         <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
-                    <div class="col-lg-3 thumbnail thumbnail-right" v-else>
+                    <div class="col-lg-3 button-blk thumbnail thumbnail-right" v-else>
                         <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                 </div>
@@ -59,9 +59,9 @@ CUtil::InitJSCore(array('window'));
 
                 <div class="row task-project table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
-                        <div class="h4">Задачи проекта:</div>
-                        <div>Задачи и работы в рамках проекта:</div>
-                        <div class="d-flex flex-wrap" v-if="value.UF_ORDER_ID">
+                        <div class="h4">Услуги</div>
+                        <div v-if="datatask.length>0">Выберите, чтобы посмотреть ход выполнения, согласования и отчет:</div>
+                        <div class="d-flex flex-wrap ord-block1-1" v-if="value.UF_ORDER_ID">
                             <div v-for="task in datatask" class="order-item-block">
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
                                 <template v-if="task.UF_PROJECT_ID == value.ID && task.UF_PRODUKT_ID == order.ID">
@@ -72,8 +72,8 @@ CUtil::InitJSCore(array('window'));
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг и планирование</a>
+                    <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
+                        <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг и планирование</a>
                     </div>
                 </div>
 
@@ -96,9 +96,9 @@ CUtil::InitJSCore(array('window'));
                             <div v-if="lastMonthExpenses(value.ID)>0">Расходы в прошлом месяце ({{lastMonthExpensesMonth(value.ID)}}): <b>{{lastMonthExpenses(value.ID)}}</b> рублей.</div>
                         </div>
                     </div>
-                    <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
-                        <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button" href="/kabinet/finance/">&nbsp;пополнить</a>
-                        <a v-else class="btn btn-primary icon-i-button" href="/kabinet/finance/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;пополнить</a>
+                    <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
+                        <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button mobile-butt-2" href="/kabinet/finance/">&nbsp;пополнить</a>
+                        <a v-else class="btn btn-primary icon-i-button mobile-butt-2" href="/kabinet/finance/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;пополнить</a>
                     </div>
                 </div>
 
@@ -110,7 +110,7 @@ CUtil::InitJSCore(array('window'));
                             В проекте есть уведомления, которые требуют вашей реакции.
                         </div>
                     </div>
-                    <div class="col-lg-3 align-self-center thumbnail thumbnail-right">
+                    <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
                         <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/?id='+value.ID">проверить</a>
                     </div>
                 </div>
