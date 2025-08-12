@@ -1,12 +1,15 @@
 <?
+use Bitrix\Main\Page\Asset;
+
 $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
+
+Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/admin/header.js");
 ?>
+<div class="rd-navbar-panel-cell"><span class="fa-bell site-gray" style="font-size: 22px;"></span></div>
 <div class="rd-navbar-panel-cell" id="admincontent">
     <div class="h4">Профиль администратора</div>
-    <?if($user->get('ID')):?>
-    <div>Вы находитесь в кабинете пользователя: <?=$user->printName()?> (#id: <?=$user->get('ID')?>)</div>
-    <?endif;?>
+    <? if ($user->get('ID')) echo '<div>Вы находитесь в кабинете пользователя: ' . $user->printName() . ' (#id: ' . $user->get('ID') . ')</div>'; ?>
 </div>
 <div class="rd-navbar-panel-cell">
     <div class="navbar-toggle navbar-user" data-multi-switch='{"targets":"#subpanel-user-menu","scope":"#subpanel-user-menu","isolate":"[data-multi-switch]"}' title="User Menu"><img src="<?=$siteuser->getAvatar60x60()?>" alt=""/></div>
@@ -35,5 +38,17 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         </div>
     </div>
 </div>
+<?php
+$adminUsers = \PHelp::usersGroup(MANAGER);
+$id_list = array_column($adminUsers,"ID");
+
+$filter = ['UF_STATUS'=>\Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE];
+$filter['UF_TARGET_USER_ID'] = $id_list;
+?>
+<script>
+    BX.ready(function() {
+        new NotificationChecker({filter:<?=CUtil::PhpToJSObject($filter, false, true)?>});
+    });
+</script>
 
 

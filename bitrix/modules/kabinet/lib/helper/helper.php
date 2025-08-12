@@ -51,6 +51,26 @@ class Helper extends Datesite{
         return !empty(array_intersect([MANAGER], $GroupArray));
     }
 
+    static function usersGroup($groupId){
+	    $users = [];
+
+        $dbUsers = \CUser::GetList(
+            'ID', 'ASC',
+            ['GROUPS_ID' => [$groupId]], // фильтр по группе
+            ['SELECT' => ['ID', 'NAME', 'LAST_NAME', 'SECOND_NAME', 'LOGIN', 'EMAIL']]
+        );
+
+        while ($user = $dbUsers->Fetch()) {
+            $users[] = [
+                'ID' => $user['ID'],
+                'NAME' => trim($user['NAME'] . ' ' . $user['SECOND_NAME'] . ' ' . $user['LAST_NAME']),
+                'LOGIN' => $user['LOGIN'],
+                'EMAIL' => $user['EMAIL']
+            ];
+        }
+        return $users;
+    }
+
     static function array_value_recursive($key, array $arr){
         $val = array();
         array_walk_recursive($arr, function($v, $k) use($key, &$val){

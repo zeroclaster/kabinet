@@ -7,6 +7,8 @@ use Bitrix\Main\Loader,
     Bitrix\Main\SystemException,
     Bitrix\Main\Error;
 
+use Bitrix\Kabinet\messanger\datamanager\LmessangerTable;
+
 class Messengerevents extends \Bitrix\Main\Engine\Controller
 {
     public function __construct(Request $request = null)
@@ -127,5 +129,30 @@ class Messengerevents extends \Bitrix\Main\Engine\Controller
         );
 
         return $messData;
+    }
+
+    public function getcountAction(){
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+        $files = $request->getFileList()->toArray();
+
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+
+        $f = [];
+        foreach ($post as $fieldName=>$value){
+            if (preg_match("/^FILTER-(.+)$/is",$fieldName,$matched)){
+                $filterFiled = $matched[1];
+                $f[$filterFiled] = $value;
+            }
+        }
+
+        $data = LmessangerTable::getListActive([
+            'select'=>[new \Bitrix\Main\Entity\ExpressionField('CNT', 'COUNT(*)')],
+            'filter'=>$f
+        ])->fetch();
+
+        $returnData = ['count'=> $data['CNT']];
+        $returnData['filter'] = $f;
+        return $returnData;
     }
 }
