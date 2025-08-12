@@ -27,9 +27,7 @@ $this->setFrameMode(true);
         <div class="container-fluid">
             <div class="row row-30">
                 <div class="col-md-12">
-
-                    <h2>Уведомления</h2>
-
+                    <h2><span class="fa-bell"></span> Сообщения</h2>
                     <div class="panel">
                             <messangerperformances :projectID="0" :taskID="0" :targetUserID="datauser.ID" :queue_id="0"/>
                     </div>
