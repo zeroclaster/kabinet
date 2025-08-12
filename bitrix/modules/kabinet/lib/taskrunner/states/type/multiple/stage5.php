@@ -77,6 +77,18 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function leaveStage($object){
         $object->set('UF_COMMENT','');
+
+        /*
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+
+        $QUEUE_ID=$object->get('ID');
+        $TASK_ID=$object->get('UF_TASK_ID');
+        $upd_id = $messanger->sendSystemMessage(
+            $messanger->config('ispolnitel_ozhidaet_tekst'),
+            $QUEUE_ID,
+            $TASK_ID
+        );
+        */
     }
 
     // когда пришли на статус
