@@ -248,6 +248,134 @@ class Messanger extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         return $listdata;
     }
 
+
+    public function getData2($filter = [], $offset = 0, $limit = 5, $clear = false, $new_reset = 'y')
+    {
+        global $CACHE_MANAGER, $USER;
+
+        $ClientManager = $this->clientmanager;
+        $user = $this->user;
+        $user_id = $user->get('ID');
+        $isAdmin = \PHelp::isAdmin();
+
+        $ttl = 14400;
+        if ($filter) $ttl = 0;
+
+        $finalFilter = $filter;
+        if (!$isAdmin) {
+            $finalFilter = array_merge([
+                'LOGIC' => 'AND',
+                [
+                    'LOGIC' => 'OR',
+                    'UF_AUTHOR_ID' => $user_id,
+                    'UF_TARGET_USER_ID' => $user_id
+                ]
+            ], $filter);
+        }
+
+        $cacheId = SITE_ID . '|' . serialize($user_id) . '|' . serialize($finalFilter) . "|limit={$limit}";
+        $cache = new \CPHPCache;
+
+        if ($clear) {
+            $cache->clean($cacheId, "kabinet/messangerdata");
+        }
+
+        $ttl = 0; // временно отключаем кеш для отладки, можно вернуть
+        if ($cache->StartDataCache($ttl, $cacheId, "kabinet/messangerdata")) {
+            if (defined("BX_COMP_MANAGED_CACHE")) {
+                $CACHE_MANAGER->StartTagCache("messanger_data");
+            }
+
+            $messages = [];
+
+            // === Шаг 1: Получаем все новые (непрочитанные) сообщения ===
+            $newFilter = array_merge($finalFilter, ['UF_STATUS' => self::NEW_MASSAGE]);
+            $newMessages = \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::getList([
+                'select' => ['*'],
+                'filter' => $newFilter,
+                'order' => ["UF_PUBLISH_DATE" => 'DESC'],
+            ])->fetchAll();
+
+            // Конвертируем новые сообщения
+            foreach ($newMessages as $data) {
+                $messages[] = $this->convertData($data, $this->getUserFields());
+            }
+
+            $alreadyLoadedIds = array_column($newMessages, 'ID');
+
+            // === Шаг 2: Если новых меньше лимита — добавляем последние (включая прочитанные) ===
+            $remainingCount = $limit - count($messages);
+            if ($remainingCount > 0) {
+                $additionalFilter = $finalFilter;
+                if (!empty($alreadyLoadedIds)) {
+                    $additionalFilter['!ID'] = $alreadyLoadedIds; // Исключаем уже загруженные
+                }
+
+                $moreMessages = \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::getList([
+                    'select' => ['*'],
+                    'filter' => $additionalFilter,
+                    'order' => ["UF_PUBLISH_DATE" => 'DESC'],
+                    'limit' => $remainingCount,
+                ])->fetchAll();
+
+                foreach ($moreMessages as $data) {
+                    $messages[] = $this->convertData($data, $this->getUserFields());
+                }
+            }
+
+            // Сортируем все сообщения по дате (DESC), чтобы самые свежие были вверху
+            usort($messages, function ($a, $b) {
+                return strtotime($b['UF_PUBLISH_DATE']) - strtotime($a['UF_PUBLISH_DATE']);
+            });
+
+            // === Обогащаем данные авторов ===
+            if ($messages) {
+                $authorIds = array_column($messages, 'UF_AUTHOR_ID_ORIGINAL');
+                $usersData = $ClientManager->getData([], ['ID' => array_unique($authorIds)]);
+
+                foreach ($messages as $index => $message) {
+                    $id = $message['UF_AUTHOR_ID_ORIGINAL'];
+                    $key = array_search($id, array_column($usersData, 'ID'));
+                    if ($key !== false) {
+                        $messages[$index]['UF_AUTHOR_ID_ORIGINAL'] = $usersData[$key];
+                    }
+                }
+            }
+
+            if (defined("BX_COMP_MANAGED_CACHE")) {
+                $CACHE_MANAGER->EndTagCache();
+            }
+
+            $cache->EndDataCache([$messages]);
+        } else {
+            $vars = $cache->GetVars();
+            $messages = $vars[0] ?? [];
+        }
+
+        // === Помечаем новые как прочитанные, если new_reset == 'y' ===
+        if ($new_reset === 'y') {
+            $readMessages = [];
+            foreach ($messages as $item) {
+                if (
+                    $item['UF_TARGET_USER_ID'] == $USER->GetID() &&
+                    $item['UF_STATUS'] == self::NEW_MASSAGE
+                ) {
+                    $readMessages[] = $item['ID'];
+                }
+            }
+
+            if (!empty($readMessages)) {
+                foreach ($readMessages as $id) {
+                    \Bitrix\Kabinet\messanger\datamanager\LmessangerTable::update($id, ['UF_STATUS' => self::READED_MASSAGE]);
+                }
+                // Очистка кеша после обновления статусов
+                $cache->clean($cacheId, "kabinet/messangerdata");
+            }
+        }
+
+        return $messages;
+    }
+
     public function clearCache(){
         $this->getData([],0,5,$clear=true);
     }

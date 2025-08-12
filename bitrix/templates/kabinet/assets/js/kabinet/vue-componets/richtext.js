@@ -85,7 +85,7 @@ const richtext = BX.Vue3.BitrixVue.mutableComponent('rich-text', {
                 //toolbar: [ "heading", 'bold', 'italic', 'link',"imageUpload"],
                 toolbar: [  ],
                 minHeight: '600px',
-                placeholder: 'Комментарий к исполнению...',
+                placeholder: 'Написать сообщение...',
                 heading: {
                     options: [
                         { model: 'paragraph', title: 'Заголовок', class: 'ck-heading_paragraph' },
