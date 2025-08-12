@@ -57,6 +57,8 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
         }
 
 
+        if (empty($arParams["MODE"])) $arParams["MODE"] = 1;
+
         return $params;
     }
 
@@ -89,16 +91,70 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
         global $DB;
 		$arParams = $this->arParams;
         $arResult = &$this->arResult;
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $messanger = $sL->get('Kabinet.Messanger');
+        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+        $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
+        $projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
+        $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
 
-        $arResult["MESSAGE_DATA"] = $messanger->getData(
-            $filter = $arParams["FILTER"],
-            $offset=0,
-            $limit=$arParams['COUNT'],
-            $clear=true,
-            $new_reset=$arParams['NEW_RESET']
-        );
+
+        if ($arParams["MODE"] == 2){
+            $arResult["MESSAGE_DATA"] = $messanger->getData2(
+                $filter = $arParams["FILTER"],
+                $offset = 0,
+                $limit = $arParams['COUNT'],
+                $clear = true,
+                $new_reset = $arParams['NEW_RESET']
+            );
+        }else {
+            $arResult["MESSAGE_DATA"] = $messanger->getData(
+                $filter = $arParams["FILTER"],
+                $offset = 0,
+                $limit = $arParams['COUNT'],
+                $clear = true,
+                $new_reset = $arParams['NEW_RESET']
+            );
+        }
+
+        if(\PHelp::isAdmin()) {
+            $projecs_id = array_column($arResult["MESSAGE_DATA"], 'UF_PROJECT_ID');
+            $tasks_id = array_column($arResult["MESSAGE_DATA"], 'UF_TASK_ID');
+
+            $projects = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([
+                'select'=>['*'],
+                'filter'=>['ID'=>$projecs_id],
+                'order'=>["UF_PUBLISH_DATE"=>'DESC']
+            ])->fetchAll();
+
+            $arResult["PROJECT_DATA"] = array_map(
+                fn($data) => $projectManager->convertData($data, $projectManager->getUserFields()),
+                $projects
+            );
+
+            $tasks = \Bitrix\Kabinet\task\datamanager\TaskTable::getListActive([
+                'select'=>['*'],
+                'filter'=>['ID'=>$tasks_id],
+                'order'=>["ID"=>'ASC']
+            ])->fetchAll();
+
+            $arResult["TASK_DATA"] = $TaskManager->remakeData($tasks);
+
+            $sqlfilter = array_column($arResult["MESSAGE_DATA"],'UF_QUEUE_ID');
+            $select = $runnerManager->getSelectFields();
+            $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
+            $Queue = $HLBClass::getlist([
+                'select'=>$select,
+                'filter'=>['ID'=>$sqlfilter],
+                //'order' => ['ID'=>'DESC'],
+            ])->fetchAll();
+
+            $arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
+
+
+            //\Dbg::print_r($arResult["PROJECT_DATA"]);
+
+            //\Dbg::print_r($arResult["TASK_DATA"]);
+
+        }
     }
 
 
