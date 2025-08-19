@@ -2,6 +2,7 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Договор и закрывающие документы");
 ?>
+
 <section class="section-xs">
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
@@ -55,7 +56,7 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                                 <div class="col-4">либо скачать договор, подписать и выслать в наш адрес.</div><div class="col" id="dogovorcreator-container">
                                 </div>
                                 <script type="text/html" id="dogovordowload-template">
-                                    <form action="/ajax/dowload/" @submit="dowload" method="post">
+                                    <form ref="downloadForm" action="/ajax/dowload/" @submit="dowload" method="post" formtarget="_blank">
                                         <input type="hidden" name="usertype" v-model="contracttype.value">
                                         <input type="hidden" name="nazvanie_organizacii" v-model="fields.UF_NAME">
                                         <input type="hidden" name="ur_addres" v-model="fields.UF_UR_ADDRESS">
@@ -72,10 +73,20 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                                         <input type="hidden" name="idclient" v-model="datauser.ID">
                                         <input type="hidden" name="emailclient" v-model="datauser.EMAIL">
                                         <input type="hidden" name="phoneclient" v-model="datauser.PERSONAL_PHONE">
+                                        <input type="hidden" name="dowloaddate" v-model="datauser.UF_DOGOVOR_DATE_PRINT">
                                         <div if="err_message" style="color: red;">{{err_message}}</div>
-                                    <button class="btn btn-primary" type="submit" formtarget="_blank">Скачать договор на подпись</button>
+                                    <button class="btn btn-primary" type="button" @click="setdowloadddate">Скачать договор на подпись</button>
                                     </form>
                                 </script>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">Доступные акты</div>
+                                <div class="col-8">
+                                <?$APPLICATION->IncludeComponent("exi:act.generator", "", Array(
+                                    )
+                                );?>
+                                </div>
                             </div>
 
                             <div class="mt-5">
@@ -99,14 +110,73 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
 
 <?
 (\KContainer::getInstance())->get('userStore');
-\Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/dogovor.creator.js");
 ?>
     <script>
         window.addEventListener("components:ready", function(event) {
-            dogovor_creator.start(<?=CUtil::PhpToJSObject([
-                'CONTAINER' => '#dogovorcreator-container',
-                'TEMPLATE' => '#dogovordowload-template',
-            ], false, true)?>);
+            const dogovorcreatorApplication = BX.Vue3.BitrixVue.createApp({
+                data() {
+                    return {
+                        err_message:'',
+                        isSaving: false
+                    }
+                },
+                computed: {
+                    ...BX.Vue3.Pinia.mapState(AgreementFormStore, ['fields','contractsettings','fields2','banksettings','contracttype']),
+                    ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
+                },
+                methods: {
+                    dowload(e) {
+                        if (this.err_message) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            return false;
+                        }
+                    },
+                    setdowloadddate() {
+                        if (this.isSaving) return;
+
+                        this.isSaving = true;
+                        this.err_message = '';
+
+                        // Проверяем, нужно ли обновлять дату (если поле пустое)
+                        if (!this.datauser.UF_DOGOVOR_DATE) {
+                            // Отправляем запрос на сохранение даты
+                            BX.ajax({
+                                url: '/ajax/setdatecontract.php',
+                                data: {
+                                    sessid: BX.bitrix_sessid(),
+                                    userId: this.datauser.ID
+                                },
+                                method: 'POST',
+                                dataType: 'json',
+                                onsuccess: (response) => {
+                                    if (response.status === 'success' && response.success) {
+                                        // После успешного сохранения отправляем форму
+                                        this.$refs.downloadForm.submit();
+                                    } else {
+                                        this.err_message = response.data.message || 'Ошибка при сохранении даты';
+                                    }
+                                    this.isSaving = false;
+                                },
+                                onfailure: () => {
+                                    this.err_message = 'Ошибка соединения';
+                                    this.isSaving = false;
+                                }
+                            });
+                        } else {
+                            // Если дата уже есть - сразу отправляем форму
+                            this.$refs.downloadForm.submit();
+                            this.isSaving = false;
+                        }
+                    }
+                },
+                mounted() {
+                    this.datauser.UF_DOGOVOR_DATE_PRINT = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY');
+                },
+                template: '#dogovordowload-template'
+            });
+
+            configureVueApp(dogovorcreatorApplication,'#dogovorcreator-container');
         });
     </script>
 	 

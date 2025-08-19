@@ -26,23 +26,7 @@ dogovor_creator = (function (){
                 template: PHPPARAMS.TEMPLATE
             });
 
-
-            const componentCounters = new WeakMap()
-            // The "this" object is the current component instance.
-            const getId = function (indicator) {
-                if (!componentCounters.has(this)) {
-                    componentCounters.set(this, kabinet.uniqueId())
-                }
-                const componentCounter = componentCounters.get(this)
-                return `uid-${componentCounter}` + (indicator ? `-${indicator}` : '')
-            }
-            dogovorcreatorApplication.config.globalProperties.$href = function (indicator) {
-                return `#${getId.call(this, indicator)}` }
-
-            dogovorcreatorApplication.config.globalProperties.$id = getId;
-
-            dogovorcreatorApplication.use(store);
-            dogovorcreatorApplication.mount(PHPPARAMS.CONTAINER);
+            configureVueApp(dogovorcreatorApplication,PHPPARAMS.CONTAINER);
         }
     }
 }());
