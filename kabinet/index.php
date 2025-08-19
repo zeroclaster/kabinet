@@ -38,8 +38,9 @@ $projects = $projectManager->getData();
 
 <?
 // если нужно показывать только прочитанные
+$GLOBALS['message_filter'] = [];
 //$GLOBALS['message_filter'] = ['UF_STATUS'=>\Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE];
-$GLOBALS['message_filter'] = ['UF_TYPE'=>\Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE];
+//$GLOBALS['message_filter'] = ['UF_TYPE'=>\Bitrix\Kabinet\messanger\Messanger::SYSTEM_MESSAGE];
 ?>
 <?$APPLICATION->IncludeComponent("exi:messanger.view", "", Array(
         'FILTER_NAME' => 'message_filter',      // фильтр по id пользователя добавляется всегда

@@ -77,11 +77,7 @@
 
                     <td style="width: 20%">
                         <div :class="'alert alert-only-text abcs-1'+' '+alertStyle(runner.UF_STATUS)"><i :class="'fa '+runner.UF_STATUS_ORIGINAL.ICON" aria-hidden="true"></i> {{runner.UF_STATUS_ORIGINAL.TITLE}} с {{runner.UF_CREATE_DATE_ORIGINAL.FORMAT1}}</div>
-
-                        <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
-                        <commentWrite :tindex="runnerindex" ref="modaleCommnetWrite" v-model="runner.UF_COMMENT"/>
-
-
+                        
                         <div class="mt-4 p-3 report-link-block" v-if="isShowReportLink(runnerindex)">
                             <div class="blk-title">Отчет:</div>
                             <div v-if="runner.UF_REPORT_LINK_ORIGINAL">Ссылка: <a :href="runner.UF_REPORT_LINK_ORIGINAL" target="_blank" rel="nofollow">Открыть</a></div>
@@ -89,6 +85,9 @@
                             <div v-if="runner.UF_REPORT_FILE_ORIGINAL">Файл: <a :href="runner.UF_REPORT_FILE_ORIGINAL" target="_blank" rel="nofollow">Скачать</a></div>
                             <div v-if="runner.UF_REPORT_TEXT_ORIGINAL">{{runner.UF_REPORT_TEXT_ORIGINAL}}</div>
                         </div>
+
+                        <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
+                        <commentWrite :tindex="runnerindex" ref="modaleCommnetWrite" v-model="runner.UF_COMMENT"/>
                     </td>
                 </tr>
                 </tbody>
