@@ -6,7 +6,7 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/admin/header.js");
 ?>
-<div class="rd-navbar-panel-cell"><span class="fa-bell site-gray" style="font-size: 22px;"></span></div>
+<div class="rd-navbar-panel-cell"><a href="/kabinet/admin/notifications/"><span class="fa-bell site-gray" style="font-size: 22px;"></span></a></div>
 <div class="rd-navbar-panel-cell" id="admincontent">
     <div class="h4">Профиль администратора</div>
     <? if ($user->get('ID')) echo '<div>Вы находитесь в кабинете пользователя: ' . $user->printName() . ' (#id: ' . $user->get('ID') . ')</div>'; ?>

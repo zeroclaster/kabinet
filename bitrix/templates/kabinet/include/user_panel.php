@@ -2,8 +2,10 @@
 use Bitrix\Main\Page\Asset;
 
 $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 (\KContainer::getInstance())->get('billingStore');
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/billing.js");
+Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/admin/header.js");
 ?>
 <?/*
 id = headderapp
@@ -44,7 +46,7 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
 		 
 		  <a class="list-group-item rounded-0" href="/kabinet/notifications/">
           <div class="media align-items-center">
-            <div class="pr-2"><span class="fa-bell"></span></div>
+            <div class="pr-2"><span class="fa-bell site-gray"></span></div>
             <div class="media-body">
              <div class="user-menu">Сообщения</div>
             </div>
@@ -74,3 +76,11 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
   </div>
 </div>
 </div>
+<?php
+$filter = [];
+?>
+<script>
+    BX.ready(function() {
+        new NotificationChecker({filter:<?=CUtil::PhpToJSObject($filter, false, true)?>});
+    });
+</script>
