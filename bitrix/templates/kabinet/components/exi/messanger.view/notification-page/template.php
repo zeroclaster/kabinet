@@ -34,7 +34,7 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
             <div class="row row-30">
                 <div class="col-md-12">
                     <div class="panel">
-                            <messangerperformances :projectID="0" :taskID="0" :targetUserID="datauser.ID" :queue_id="0"/>
+                            <messangerperformances :projectID="0" :taskID="0" :targetUserID="443" :queue_id="0"/>
                     </div>
                 </div>
             </div>
