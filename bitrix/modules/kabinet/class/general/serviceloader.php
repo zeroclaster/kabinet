@@ -236,15 +236,23 @@ class ServiceLoader
             $service = ServiceLocator::getInstance()->get($matches[1]);
             $method = $matches[2];
             $args = $this->resolveArguments(array_map('trim', explode(',', $matches[3])));
-
-            return $service->$method(...$args);
+            
+            $result = $service->$method(...$args);
+            
+            // Если метод возвращает строку (имя класса), создаем экземпляр
+            if (is_string($result) && class_exists($result)) {
+                return new $result();
+            }
+            
+            return $result;
         }
 
-        // Остальная существующая логика...
+        // Обработка параметров %parameter.name%
         if (preg_match('/^%([\w\.]+)%$/', $value, $matches)) {
             return $this->getNestedParameter($matches[1]);
         }
 
+        // Обработка ссылок на сервисы @service.id
         if (strpos($value, '@') === 0) {
             return ServiceLocator::getInstance()->get(substr($value, 1));
         }
