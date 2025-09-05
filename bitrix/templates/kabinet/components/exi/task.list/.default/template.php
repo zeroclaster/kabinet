@@ -207,9 +207,79 @@ $p = $request->get('p');
                     </template>
 
 
-                    <textInfoTask :task="datatask" :copyTask="datataskCopy" :taskindex="taskindex"/>
+
 
 					<div class="">
+
+                        <div class="h4">Дополните задачу данными:</div>
+
+                        <?/*
+                            14.02.2025 сохранение поля Ссылка было на событии @change="savetask(taskindex)"
+                            14.02.2025 добавили кнопку сохранить
+                            */?>
+                        <div class="form-group d-flex align-items-center mobile-view">
+                            <label class="col-form-label col-form-label-custom lable-link-list-style-1" :for="'linkInputLink'+task.ID">Ссылка:</label>
+                            <div class="target-list-link-block">
+                                <div v-for="inplist in task.UF_TARGET_SITE">
+                                    <input
+                                            :class="['form-control', { 'it-required_field': is_required_field(task, 'UF_TARGET_SITE') }]"
+                                            :id="'linkInputLink'+task.ID"
+                                            type="text"
+                                            placeholder="https://site.ru"
+                                            v-model="inplist.VALUE"
+                                    >
+                                </div>
+                                <div class="" style="position: relative;"><button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button></div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group d-flex align-items-center mobile-view" style="margin-top: 7px;" v-if="PRODUCT.JUST_FILED.VALUE">
+                            <label class="col-form-label col-form-label-custom" :for="'justfieldInput'+task.ID">{{PRODUCT.JUST_FILED.VALUE}}:</label>
+                            <input class="form-control" :id="'justfieldInput'+task.ID" type="text" placeholder="" v-model="task.UF_JUSTFIELD">
+                        </div>
+
+                        <div class="form-group d-flex align-items-center mobile-view"  v-if="PRODUCT.PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
+                            <label class="col-form-label col-form-label-custom" :for="'InputPhohto'+task.ID">Фото:</label>
+                            <div id="previewfileimages" class="d-flex flex-wrap">
+                                <div class="preview-img-block-1" v-for="photo in showpiclimits(task.UF_PHOTO_ORIGINAL,taskindex)" :style="'background-image:url('+photo.SRC+')'">
+                                    <div @click="removeimg(photo.ID,taskindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
+                                </div>
+
+                                <div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
+                                <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
+                                    <button class="btn btn-secondary show-all-butt" type="button" @click="task.LIMIT = 1000">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
+                                </div>
+                                <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
+                            </div>
+                        </div>
+
+                        <?/*
+                            Проверяем есть ли согласование у услуги из каталога PRODUCT.COORDINATION.VALUE_XML_ID
+                        */?>
+                        <div class="form-group d-flex align-items-center mobile-view" v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
+                            <label class="col-form-label col-form-label-custom" :for="'linkInputSoglacovanie'+task.ID">Согласование:</label>
+                            <select class="form-control desktop-width" name="" :id="'linkInputSoglacovanie'+task.ID" v-model="task.UF_COORDINATION">
+                                <option v-for="option in clearFirstItem(task.UF_COORDINATION_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group d-flex align-items-center mobile-view">
+                            <label class="col-form-label col-form-label-custom" :for="'linkInputReporting'+task.ID">Отчетность:</label>
+                            <select class="form-control desktop-width" name="" :id="'linkInputReporting'+task.ID" v-model="task.UF_REPORTING">
+                                <option v-for="option in clearFirstItem(task.UF_REPORTING_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
+                            </select>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-sm-10 offset-sm-2" style="position: relative;">
+                                <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)" :disabled="canBeSaved_(taskindex)">Применить</button>
+                            </div>
+                        </div>
+
+                        <textInfoTask :task="datatask" :copyTask="datataskCopy" :taskindex="taskindex"/>
+
+
                         <template v-if="CopyTask.UF_STATUS==0">
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2">
                             <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
@@ -354,71 +424,6 @@ $p = $request->get('p');
                             </div>
                         </div>
 
-                        <div class="h4">Дополните задачу данными:</div>
-
-                        <?/*
-                            14.02.2025 сохранение поля Ссылка было на событии @change="savetask(taskindex)"
-                            14.02.2025 добавили кнопку сохранить
-                            */?>
-                            <div class="form-group d-flex align-items-center mobile-view">
-									<label class="col-form-label col-form-label-custom lable-link-list-style-1" :for="'linkInputLink'+task.ID">Ссылка:</label>
-									<div class="target-list-link-block">
-                                    <div v-for="inplist in task.UF_TARGET_SITE">
-                                    <input
-                                            :class="['form-control', { 'it-required_field': is_required_field(task, 'UF_TARGET_SITE') }]"
-                                            :id="'linkInputLink'+task.ID"
-                                            type="text"
-                                            placeholder="https://site.ru"
-                                            v-model="inplist.VALUE"
-                                    >
-                                    </div>
-                                        <div class="" style="position: relative;"><button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button></div>
-                                    </div>
-							</div>
-
-
-                        <div class="form-group d-flex align-items-center mobile-view" style="margin-top: 7px;" v-if="PRODUCT.JUST_FILED.VALUE">
-                                <label class="col-form-label col-form-label-custom" :for="'justfieldInput'+task.ID">{{PRODUCT.JUST_FILED.VALUE}}:</label>
-                                <input class="form-control" :id="'justfieldInput'+task.ID" type="text" placeholder="" v-model="task.UF_JUSTFIELD">
-                        </div>
-							
-                        <div class="form-group d-flex align-items-center mobile-view"  v-if="PRODUCT.PHOTO_AVAILABILITY.VALUE_XML_ID != '<?=\Bitrix\Kabinet\task\Taskmanager::PHOTO_NO_NEEDED?>'">
-                                <label class="col-form-label col-form-label-custom" :for="'InputPhohto'+task.ID">Фото:</label>
-                                <div id="previewfileimages" class="d-flex flex-wrap">
-                                            <div class="preview-img-block-1" v-for="photo in showpiclimits(task.UF_PHOTO_ORIGINAL,taskindex)" :style="'background-image:url('+photo.SRC+')'">
-                                                    <div @click="removeimg(photo.ID,taskindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
-                                            </div>
-
-                                            <div class="preview-img-block-1" v-if="task.UF_PHOTO_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
-                                    <div class="preview-img-block-1 d-flex justify-content-center align-items-center" v-if="task.UF_PHOTO_ORIGINAL.length>limitpics && task.LIMIT==limitpics">
-                                        <button class="btn btn-secondary show-all-butt" type="button" @click="task.LIMIT = 1000">показать все {{task.UF_PHOTO_ORIGINAL.length}}</button>
-                                    </div>
-                                    <myInputFileComponent :tindex="taskindex" v-model="task.UF_PHOTO" />
-                                </div>
-                        </div>
-
-                        <?/*
-                            Проверяем есть ли согласование у услуги из каталога PRODUCT.COORDINATION.VALUE_XML_ID
-                        */?>
-                        <div class="form-group d-flex align-items-center mobile-view" v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
-                            <label class="col-form-label col-form-label-custom" :for="'linkInputSoglacovanie'+task.ID">Согласование:</label>
-                            <select class="form-control desktop-width" name="" :id="'linkInputSoglacovanie'+task.ID" v-model="task.UF_COORDINATION">
-                                <option v-for="option in clearFirstItem(task.UF_COORDINATION_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group d-flex align-items-center mobile-view">
-                            <label class="col-form-label col-form-label-custom" :for="'linkInputReporting'+task.ID">Отчетность:</label>
-                            <select class="form-control desktop-width" name="" :id="'linkInputReporting'+task.ID" v-model="task.UF_REPORTING">
-                                    <option v-for="option in clearFirstItem(task.UF_REPORTING_ORIGINAL)" :value="option.ID">{{ option.VALUE }}</option>
-                            </select>
-                        </div>
-
-                        <div class="row form-group">
-                            <div class="col-sm-10 offset-sm-2" style="position: relative;">
-                                    <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)" :disabled="canBeSaved_(taskindex)">Применить</button>
-                            </div>
-                        </div>
 					</div>
 					
                 </div>

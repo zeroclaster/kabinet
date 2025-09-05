@@ -2,7 +2,7 @@ const form_brief = {
     data() {
         return {
 			PROJECT_ID:PHPPARAMS.PROJECT_ID,
-			filterView:'showRequire',
+			filterView:'showAll',
         }
     },
     computed: {
