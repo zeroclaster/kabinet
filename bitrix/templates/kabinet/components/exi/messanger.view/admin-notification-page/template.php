@@ -34,7 +34,7 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
             <div class="row row-30">
                 <div class="col-md-12">
                     <div class="panel">
-                            <messangerperformances :projectID="0" :taskID="0" :targetUserID="datauser.ID" :queue_id="0"/>
+                            <messangerperformances ref="messangerRef" :projectID="0" :taskID="0" :targetUserID="datauser.ID" :queue_id="0"/>
                     </div>
                 </div>
             </div>
@@ -69,6 +69,8 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
                 datafulfi:FulfiListStoreData
             })
     });
+
+    const all_users = <?=CUtil::PhpToJSObject($arResult["ALL_USER"], false, true)?>;
 </script>
 
 
@@ -96,6 +98,8 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
         const messangerViewApplication = BX.Vue3.BitrixVue.createApp({
             data() {
                 return {
+                    alluser : all_users,
+                    active_user : 'allusers'
                 }
             },
             computed: {
@@ -103,8 +107,65 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
                 ...BX.Vue3.Pinia.mapState(FulfilistStore, ['datafulfi']),
             },
             methods: {
+                // Добавляем вычисляемое свойство для имени выбранного пользователя
+                selectedUserName() {
+                    if (this.$root.active_user && this.$root.active_user !== 'allusers') {
+                        const user = this.$root.alluser.find(u => u.ID == this.$root.active_user);
+                        return user ? user.PRINT_NAME : '';
+                    }
+                    return '';
+                },
                 getQualityById(id){
                     return this.datafulfi.find(item => item.ID === id) || null;
+                },
+                userChange(id = 0, IS_ADMIN = false) {
+
+                    if (IS_ADMIN) return;
+
+                    this.active_user = id || 'allusers';
+                    kabinet.loading();
+
+                    BX.ajax.runComponentAction('exi:messanger.view', 'filterByUser', {
+                        mode: 'class',
+                        data: {
+                            userId: id,
+                            count: <?=$arParams['COUNT']?>,
+                            new_reset: 'n'
+                        }
+                    }).then(response => {
+                        brieflistStore().$patch({ data: response.data.PROJECT_DATA });
+                        tasklistStore().$patch({ datatask: response.data.TASK_DATA });
+                        FulfilistStore().$patch({ datafulfi: response.data.RUNNER_DATA });
+                        messangerSystem2.store().$patch({ datamessage: response.data.MESSAGE_DATA });
+
+                        // Устанавливаем UF_TARGET_USER_ID через $root
+                        if (this.$refs.messangerRef) {
+                            this.$refs.messangerRef.fields.UF_TARGET_USER_ID = id;
+                        }
+
+                        kabinet.loading(false);
+
+                        // Добавляем прокрутку после загрузки данных
+                        this.$nextTick(() => {
+                            this.scrollToAppropriateBlock();
+                        });
+
+                    }).catch(error => {
+                        console.error(error);
+                        kabinet.loading(false);
+                    });
+                },
+                // Метод для прокрутки к нужному блоку
+                scrollToAppropriateBlock() {
+                    if (this.$refs.messangerRef) {
+                        if (this.active_user === 'allusers') {
+                            // Прокрутка к последнему сообщению
+                            this.$refs.messangerRef.scrollEnd();
+                        } else {
+                            // Прокрутка к блоку отправки сообщений
+                            this.$refs.messangerRef.scrollToSender();
+                        }
+                    }
                 }
             },
             components: {
@@ -115,5 +176,17 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
         });
 
         configureVueApp(messangerViewApplication,'#messangerblock');
+    });
+
+
+    window.addEventListener("components:ready", function(event) {
+        $( '.to-bottom' ).on( ( 'mousedown' ), function () {
+            this.classList.add( 'active' );
+            const footer = document.querySelector('footer');
+            const targetPosition = footer ? footer.offsetTop : document.body.scrollHeight;
+            $( 'html, body' ).stop().animate( { scrollTop:targetPosition }, 500, 'swing', (function () {
+                this.classList.remove( 'active' );
+            }).bind( this ));
+        });
     });
 </script>

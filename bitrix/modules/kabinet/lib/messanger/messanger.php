@@ -207,6 +207,10 @@ class Messanger extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
                     $ID = $message['UF_AUTHOR_ID_ORIGINAL'];
                     $key = array_search($ID, array_column($usersdata, 'ID'));
                     if ($key !== false){
+                        $adminUsers = \PHelp::usersGroup(MANAGER);
+                        $admin_list = array_column($adminUsers,"ID");
+                        $usersdata[$key]['IS_ADMIN'] = false;
+                        if (in_array($usersdata[$key]['ID'],$admin_list)) $usersdata[$key]['IS_ADMIN'] = true;
                         $listdata[$index]['UF_AUTHOR_ID_ORIGINAL'] = $usersdata[$key];
                     }
                 }

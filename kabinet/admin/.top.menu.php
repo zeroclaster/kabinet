@@ -36,7 +36,7 @@ $aMenuLinks = Array(
         ""
     ),
     Array(
-        "Все комментарии к исполнениям",
+        "Все сообщения",
         "/kabinet/admin/notifications/",
         Array(),
         Array("ICON"=>"mdi-border-all"),

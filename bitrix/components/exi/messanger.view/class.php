@@ -95,7 +95,7 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
         $TaskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
         $projectManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project');
         $runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
-
+        $ClientManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Client');
 
         if ($arParams["MODE"] == 2){
             $arResult["MESSAGE_DATA"] = $messanger->getData2(
@@ -155,6 +155,47 @@ class MessangerViewComponent extends \CBitrixComponent implements \Bitrix\Main\E
             //\Dbg::print_r($arResult["TASK_DATA"]);
 
         }
+
+
+        if(\PHelp::isAdmin()) {
+            $authorIds = array_column(\PHelp::usersGroup(REGISTRATED), 'ID');
+            $allUsers = $ClientManager->getData([], ['ID' => array_unique($authorIds)]);
+
+            foreach($allUsers as $k => $itm){
+                if (!$itm['KABINET_USER_BILLING_ID']) unset($allUsers[$k]);
+            }
+
+            // СОРТИРОВКА ПО PRINT_NAME
+            usort($allUsers, function($a, $b) {
+                return strcasecmp($a['PRINT_NAME'], $b['PRINT_NAME']);
+            });
+
+            $arResult["ALL_USER"] = $allUsers;
+        }
+    }
+
+    public function filterByUserAction($userId = 0, $count = 5, $new_reset = 'y')
+    {
+        $this->arParams['COUNT'] = $count;
+        $this->arParams['NEW_RESET'] = $new_reset;
+
+        // Устанавливаем фильтр по пользователю
+        if ($userId > 0) {
+            $this->arParams['FILTER'] = [
+                'LOGIC' => 'AND',
+                ['LOGIC' => 'OR','UF_AUTHOR_ID'=>$userId,'UF_TARGET_USER_ID'=>$userId]];
+        } else {
+            $this->arParams['FILTER'] = [];
+        }
+
+        $this->prepareData();
+
+        return [
+            'MESSAGE_DATA' => $this->arResult['MESSAGE_DATA'],
+            'PROJECT_DATA' => $this->arResult['PROJECT_DATA'],
+            'TASK_DATA' => $this->arResult['TASK_DATA'],
+            'RUNNER_DATA' => $this->arResult['RUNNER_DATA']
+        ];
     }
 
 
