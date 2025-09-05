@@ -29,7 +29,7 @@ class Financecommand implements Telegramcommandinterface
         $response =  "Ваш балланс {$data['UF_VALUE']} руб.\n";
         $response .=  "Расход в текущем месяце  {$ACTUAL_MONTH_EXPENSES} руб.\n";
         $response .=  "Бюджет на текущий месяц  {$ACTUAL_MONTH_BUDGET} руб.\n";
-        $response .=  "Бюджет на следующий месяц с с {$nextMouthStart->format("d.m.Y")} по {$nextMouthEnd->format("d.m.Y")} {$EXPENSES_NEXT_MONTH} руб.\n";
+        $response .=  "Бюджет на следующий месяц с {$nextMouthStart->format("d.m.Y")} по {$nextMouthEnd->format("d.m.Y")} {$EXPENSES_NEXT_MONTH} руб.\n";
 
         $response .= "Подробная информация о ваших финансах https://kupi-otziv.ru/kabinet/finance/{$authLink}";
 
