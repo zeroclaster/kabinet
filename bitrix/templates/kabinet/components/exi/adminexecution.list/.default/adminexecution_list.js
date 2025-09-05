@@ -359,11 +359,11 @@ adminexecution_list = (function (){
                         return false;
                     },
                     alertStyle(status){
-                        if ([0].indexOf(parseInt(status)) != -1) return 'alert-warning';
-                        if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-success-user';
-                        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-success';
-                        if ([9].indexOf(parseInt(status)) != -1) return 'alert-dark';
-                        if ([10].indexOf(parseInt(status)) != -1) return 'alert-danger';
+                        if ([0].indexOf(parseInt(status)) != -1) return 'alert-planned';
+                        if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-user-attention';
+                        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
+                        if ([9].indexOf(parseInt(status)) != -1) return 'alert-done';
+                        if ([10].indexOf(parseInt(status)) != -1) return 'alert-cancel';
                     },
                     catalogItem(PRODUCT_ID){
                         for(element of this.data3){
