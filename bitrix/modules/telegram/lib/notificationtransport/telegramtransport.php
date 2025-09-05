@@ -31,7 +31,7 @@ class Telegramtransport implements Notificationtransportinterface {
             return 'TaskTable';
         } elseif ($recipientData instanceof \Bitrix\Kabinet\project\datamanager\Project) {
             return 'ProjectsTable';
-        } elseif ($recipientData instanceof \Bitrix\Main\User) {
+        } elseif ($recipientData instanceof \Bitrix\Main\User || $recipientData instanceof \Bitrix\Main\EO_User) {
             return 'UserTable';
         }
         return 'unknown';

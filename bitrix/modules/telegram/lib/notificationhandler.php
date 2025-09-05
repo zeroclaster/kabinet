@@ -40,6 +40,13 @@ class Notificationhandler
         return "token={$token}";
     }
 
+    public function generateAuthLink_($userID): string
+    {
+
+
+        return "token=111";
+    }
+
     private function initDefaultRules() {
         $this->rulesChain = new \Bitrix\telegram\notificationrule\Validateinput();
         /*
@@ -314,7 +321,7 @@ class Notificationhandler
             return 'TaskTable';
         } elseif ($recipientData instanceof \Bitrix\Kabinet\project\datamanager\Project) {
             return 'ProjectsTable';
-        } elseif ($recipientData instanceof \Bitrix\Main\User) {
+        } elseif ($recipientData instanceof \Bitrix\Main\User || $recipientData instanceof \Bitrix\Main\EO_User) {
             return 'UserTable';
         }
         return 'unknown';
