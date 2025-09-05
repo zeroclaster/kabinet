@@ -109,9 +109,18 @@ if ($endActDate) {
         if ($endDateObj->format('Y-m-d') === $lastDayOfMonth->format('Y-m-d')) {
             // Если endactdate - последний день месяца, то ACT_DATE - первое число следующего месяца
             $actDate_ = $endDateObj->modify('first day of next month')->format('d.m.Y');
+			
+			$endactdate = $_REQUEST['endactdate'];
+			$endactdate = $endactdate ? (new DateTime($endactdate))->format('d.m.Y') : "";
+			$phpword->setValue('ENDACT', $endactdate);
         } else {
             // Иначе используем саму дату endactdate
             $actDate_ = $endDateObj->format('d.m.Y');
+			
+			$endactdate = $_REQUEST['endactdate'];
+			$endactdate = $endactdate ? (new DateTime($endactdate))->modify('-1 day')->format('d.m.Y') : "";
+			$phpword->setValue('ENDACT', $endactdate);
+			
         }
 		$phpword->setValue('ACT_CREATE', $actDate_);
 }
@@ -140,9 +149,6 @@ if (!empty($_REQUEST['dogovordate']) && !empty($_REQUEST['month'])) {
 
 $phpword->setValue('TEXT2', $TEXT2);
 
-$endactdate = $_REQUEST['endactdate'];
-$endactdate = $endactdate ? (new DateTime($endactdate))->format('d.m.Y') : "";
-$phpword->setValue('ENDACT', $endactdate);
 
 //$phpword->saveAs('edited.docx');
 if ($_REQUEST['dogovordate'])
