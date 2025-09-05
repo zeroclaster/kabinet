@@ -13,7 +13,7 @@ window['messangerTemplateAdmin'] = `
             <div v-for="user_item in $root.alluser" class="ml-0 mr-0 user_item p-3" :class="{ active: $root.active_user == user_item.ID }">
                 <div class="d-flex align-items-center p-0" @click="$root.userChange(user_item.ID)">
                 <div class="avatar-block"><div><img :src="user_item.PERSONAL_PHOTO_ORIGINAL_300x300.src" style="width: 50px;"></div></div>
-                <div class="pl-2">{{user_item.PRINT_NAME}}</div>
+                <div class="pl-2">{{user_item.PRINT_NAME}} #{{user_item.ID}}</div>
                 </div>
             </div>
         </div>
