@@ -12,7 +12,9 @@
         </div>
 
                 <div class="panel report-list-block" v-for="(runner,runnerindex) in datarunner">
-                    <div class="panel-body">
+                    <div class="panel-body p-0">
+                        <div class="p-3">
+
                         <div style="font-weight: bold;">#{{runner.UF_EXT_KEY}} исполнение для задачи {{TaskByIdKey[runner.UF_TASK_ID].UF_NAME}}</div>
 
                         <div class="">Плановая дата исполнения: <i class="fa fa-calendar" aria-hidden="true"></i> {{runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1}}</div>
@@ -56,6 +58,8 @@
                         </template>
 
                         <changestatus :catalog="runner.STATUSLIST" :tindex="runnerindex" v-model="runner.UF_STATUS"/>
+
+                        </div>
 
                         <template v-if="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID>0">
                             <div class="plug-block-writecomment"  v-if="!hiddenCommentBlock.isShow(runner)" @click="hiddenCommentBlock.mclick(runner)"><i class="fa fa-chevron-down" aria-hidden="true"></i> Написать сообщение</div>

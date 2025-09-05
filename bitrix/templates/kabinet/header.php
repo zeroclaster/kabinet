@@ -65,8 +65,10 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
                                         false
                                     );?>
                                 </div>
+                                <?/*
                                 <div class="catalog-service-menulink"><a href="/zakaz/" target="_blank"><span class="rd-navbar-icon mdi-cart-outline"></span> <span class="footer-item-menu">Каталог услуг</span></a></div>
-                            </div>
+                                */?>
+                        </div>
 
                         <div class="rd-navbar-panel-cell rd-navbar-panel-spacer"></div>
                         <?
@@ -117,9 +119,9 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
 
               
               </div>
-
+                <?/*
                 <div class="catalog-service-menulink"><a href="/zakaz/" target="_blank"><span class="rd-navbar-icon mdi-cart-outline"></span> <span class="footer-item-menu">Каталог услуг</span></a></div>
-
+                */?>
             </div>
               <?endif;?>
           </nav>

@@ -28,7 +28,8 @@
                         </div>
                     </td>
 
-                    <td width="30%">
+                    <td width="30%" class="p-0">
+                        <div class="p-3">
                         <div>#{{runner.UF_EXT_KEY}} исполнение для задачи {{TaskByIdKey[runner.UF_TASK_ID].UF_NAME}}</div>
 
                         <!-- ссылка -->
@@ -65,6 +66,8 @@
                                 </div>
                             </div>
                         </template>
+
+                        </div>
 
                         <template v-if="TaskByIdKey[runner.UF_TASK_ID].UF_MANAGER_ID>0">
                             <div class="plug-block-writecomment"  v-if="!hiddenCommentBlock.isShow(runner)" @click="hiddenCommentBlock.mclick(runner)"><i class="fa fa-chevron-down" aria-hidden="true"></i> Написать сообщение</div>
