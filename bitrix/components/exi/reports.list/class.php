@@ -157,7 +157,7 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         // Привязываем задачу
         $Query->registerRuntimeField('TASK',
             [
-                'data_type' => $HLBClassTask,
+                'data_type' => $HLBClassTask::getEntity()->getFullName(),
                 'reference' => ['=this.UF_TASK_ID' => 'ref.ID'],
                 'join_type' => 'LEFT'
             ]
@@ -178,6 +178,7 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         if(!empty($FILTER['todate1'])) $Query->addFilter('<UF_PLANNE_DATE',$FILTER['todate1']);
 
         if(isset($FILTER['statusfind']) && is_numeric($FILTER['statusfind'])) $Query->addFilter('UF_STATUS',$FILTER['statusfind']);
+        if(isset($FILTER['statusfind']) && is_array($FILTER['statusfind'])) $Query->addFilter('UF_STATUS',$FILTER['statusfind']);
 
         if(!empty($FILTER['queue_id'])) $Query->addFilter('ID',$FILTER['queue_id']);
 
