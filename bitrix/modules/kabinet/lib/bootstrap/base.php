@@ -79,13 +79,25 @@ abstract class Base{
         },'taskStore')
 
         ->make(function($this_){
-            $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-            $id_task = array_column($sL->get('Kabinet.Task')->getData(), 'ID');
-            $Queue_state = \CUtil::PhpToJSObject($sL->get('Kabinet.Runner')->getData($id_task), false, true);
+            //$sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+            //$id_task = array_column($sL->get('Kabinet.Task')->getData(), 'ID');
+            //$Queue_state = \CUtil::PhpToJSObject($sL->get('Kabinet.Runner')->getData($id_task), false, true);
 
+            $runnerManager =\Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
+            $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
+            $user_id = $user->get('ID');
+
+            $select = $runnerManager->getSelectFields();
+            $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
+            $Queue = $HLBClass::getlist([
+                'select'=>$select,
+                'filter'=>['TASK.UF_AUTHOR_ID'=>$user_id],
+                //'order' => ['ID'=>'DESC'],
+            ])->fetchAll();
+            
             // Bug.Fix.14.02.2025
             //$size = strlen(serialize($Queue_state));
-            $size = crc32(serialize($Queue_state));
+            $size = crc32(serialize($runnerManager->remakeFulfiData($Queue)));
 
             $this_->addJS(SITE_TEMPLATE_PATH."/components/exi/task.list/.default/queue.data.php?usr={$_GET['usr']}&c={$size}");
             return 'queueStore';

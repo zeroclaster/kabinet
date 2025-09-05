@@ -26,10 +26,27 @@ header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 31536000));
 $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
 
 // все задачи пользователя
-$all_id_task_list = array_column($sL->get('Kabinet.Task')->getData(), 'ID');
+//$all_id_task_list = array_column($sL->get('Kabinet.Task')->getData(), 'ID');
 
 // все исполнения пользователя
-$Queue_state = CUtil::PhpToJSObject($sL->get('Kabinet.Runner')->getData($all_id_task_list ), false, true);
+//$Queue_state = CUtil::PhpToJSObject($sL->get('Kabinet.Runner')->getData($all_id_task_list ), false, true);
+
+
+
+$runnerManager =\Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
+$user_id = $user->get('ID');
+
+$select = $runnerManager->getSelectFields();
+$HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
+$Queue = $HLBClass::getlist([
+    'select'=>$select,
+    'filter'=>['TASK.UF_AUTHOR_ID'=>$user_id],
+    //'order' => ['ID'=>'DESC'],
+])->fetchAll();
+
+//echo \Bitrix\Main\Entity\Query::getLastQuery();
+$Queue_state = CUtil::PhpToJSObject($runnerManager->remakeFulfiData($Queue), false, true);
 ?>
 
         // TODO вынести скрипт в отдельный файл
