@@ -12,7 +12,7 @@ class Clientmanager {
     public $clientList = [];
     public $updateFields = [
         'ID','TIMESTAMP_X','LOGIN','NAME','LAST_NAME','EMAIL','DATE_REGISTER','SECOND_NAME',
-        'PERSONAL_PHOTO','PERSONAL_PHONE','PERSONAL_PROFESSION','PERSONAL_WWW','PASSWORD'
+        'PERSONAL_PHOTO','PERSONAL_PHONE','PERSONAL_PROFESSION','PERSONAL_WWW','PASSWORD','BILLING.ID'
     ];
     public $updateUserFields = ['UF_EMAIL_NOTIFI','UF_TELEGRAM_NOTFI','UF_TELEGRAM_ID'];
     public $defFiltere = [];
@@ -67,7 +67,7 @@ class Clientmanager {
         }
 
 		$defFiltere = $this->defFiltere;
-			
+
 		$queryFilter = array_merge($defFiltere,$filter);
         $data = \Bitrix\Kabinet\UserTable::getListActive([
             'select'=>

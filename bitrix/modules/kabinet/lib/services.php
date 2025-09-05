@@ -279,7 +279,7 @@ return [
         'billing.config.user' => include __DIR__.'/billing/config.php',
         'messanger.config.admin'=> include __DIR__.'/messanger/admin/config.php',
         'messanger.config.user'=> include __DIR__.'/messanger/config.php',
-        'ClientMessanger.config.allowFileds' => ['ID','LOGIN','NAME','LAST_NAME','SECOND_NAME','PERSONAL_PHOTO','PERSONAL_PROFESSION'],
+        'ClientMessanger.config.allowFileds' => ['ID','LOGIN','NAME','LAST_NAME','SECOND_NAME','PERSONAL_PHOTO','PERSONAL_PROFESSION','BILLING.ID'],
         'task.config.priority' => 50,
         'task.config.timeout' => 60,
         // Константы HL-блоков (оставлены для совместимости или других нужд)

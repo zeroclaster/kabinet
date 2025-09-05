@@ -558,6 +558,12 @@ class UserTable extends DataManager
                 array('=this.ID' => 'ref.USER_ID'),
                 array('join_type' => 'INNER')
             ),
+            new \Bitrix\Main\ORM\Fields\Relations\Reference(
+                'BILLING',
+                '\Bitrix\Kabinet\billing\datamanager\BillingTable',
+                array('=this.ID' => 'ref.UF_AUTHOR_ID'),
+                array('join_type' => 'LEFT')
+            ),
 			(new OneToMany('PROJECTS', \Bitrix\Kabinet\project\datamanager\ProjectsTable::class, 'USER'))->configureJoinType('left'),
 		];
 	}
