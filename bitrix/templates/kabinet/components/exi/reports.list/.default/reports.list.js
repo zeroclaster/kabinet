@@ -239,7 +239,7 @@ methods: {
         runner = this.datarunner[index];
         if (!runner) return true;
         // ненайдено
-        if (["0","3","8"].indexOf(runner.UF_STATUS) == -1) return false;
+        if (["0","1","2","3","4","5"].indexOf(runner.UF_STATUS) == -1) return false;
 
         return true;
     },
