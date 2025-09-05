@@ -52,8 +52,8 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
         </div>
     </div>
     <div class="col-md-2 align-self-center alert-status-find">
-		<input id="alertfind" name="alert" name="alertfind" type="checkbox" value="y" <?if($SEARCH_RESULT['alert']) echo 'checked';?>>
-        <label for="alertfind" class="<?if($arResult['count_alert']) echo "alert-checked";?>">Требует вашего внимания:  <span class="badge badge-iphone-style"><?=$arResult['count_alert']?></span></label>
+		<input id="alertfind" name="alert" type="checkbox" value="y" <?if($SEARCH_RESULT['alert']) echo 'checked';else echo '';?>>
+        <label for="alertfind" class="alert-no-checked <?if($arResult['count_alert']) echo "alert-checked";?>">Требует вашего внимания:  <span class="badge badge-iphone-style"><?=$arResult['count_alert']?></span></label>
     </div>
     <div class="col-md-3">
         <div class="d-flex">
