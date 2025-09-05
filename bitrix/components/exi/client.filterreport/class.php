@@ -56,7 +56,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
         global ${$FILTER_NAME};
         if(!is_array(${$FILTER_NAME})) {
             ${$FILTER_NAME} = array();
-            $post['alert'] = 'y';
+            //$post['alert'] = 'y';
         }
 				
 		// Требуют внимания
@@ -88,7 +88,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
             $SEARCH_RESULT['todate1'] = $post['todate1'];
             ${$FILTER_NAME}['todate1'] = $post['todate1'];
         }
-        if(isset($post['statusfind'])){
+        if($post['statusfind']){
             $SEARCH_RESULT['statusfind'] = $post['statusfind'];
             ${$FILTER_NAME}['statusfind'] = $post['statusfind'];
         }
