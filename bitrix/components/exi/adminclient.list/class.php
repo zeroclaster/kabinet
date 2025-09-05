@@ -102,16 +102,19 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
             //'PROJECT.*',
             //'TASK.*',
         ]);
+        // ИСПРАВЛЕНИЕ: получаем полное имя сущности вместо объекта
         $Query->registerRuntimeField('PROJECT',
             [
-                'data_type' => $HLBClassProject,
+                'data_type' => $HLBClassProject::getEntity()->getFullName(),
                 'reference' => ['=this.ID' => 'ref.UF_AUTHOR_ID'],
                 'join_type' => 'LEFT'
             ]
         );
+
+        // ИСПРАВЛЕНИЕ: получаем полное имя сущности вместо объекта
         $Query->registerRuntimeField('TASK',
             [
-                'data_type' => $HLBClassTask,
+                'data_type' => $HLBClassTask::getEntity()->getFullName(),
                 'reference' => ['=this.ID' => 'ref.UF_AUTHOR_ID'],
                 'join_type' => 'LEFT'
             ]

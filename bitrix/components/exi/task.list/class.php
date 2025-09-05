@@ -58,6 +58,11 @@ class TaskListComponent extends \CBitrixComponent implements \Bitrix\Main\Engine
 
     public function doitAction()
     {
+        $arResult['TASK_ALERT'] = [];
+    }
+
+    public function doitAction__()
+    {
         $taskManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Task');
         $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
         $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');

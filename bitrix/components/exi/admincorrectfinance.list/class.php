@@ -144,7 +144,7 @@ class admincorrectfinanceListComponent extends \CBitrixComponent implements \Bit
         // Привязываем задачу
         $Query->registerRuntimeField('TASK',
             [
-                'data_type' => $HLBClassTask,
+                'data_type' => $HLBClassTask::getEntity()->getFullName(),
                 'reference' => ['=this.UF_TASK_ID' => 'ref.ID'],
                 'join_type' => 'LEFT'
             ]
@@ -153,7 +153,7 @@ class admincorrectfinanceListComponent extends \CBitrixComponent implements \Bit
         // Привязываем проект
         $Query->registerRuntimeField('PROJECT',
             [
-                'data_type' => $HLBClassProject,
+                'data_type' => $HLBClassProject::getEntity()->getFullName(),
                 'reference' => ['=this.TASK.UF_PROJECT_ID' => 'ref.ID'],
                 'join_type' => 'LEFT'
             ]
@@ -161,7 +161,7 @@ class admincorrectfinanceListComponent extends \CBitrixComponent implements \Bit
 
         $Query->registerRuntimeField('CLIENT',
             [
-                'data_type' => $ClassClient,
+                'data_type' => $ClassClient::getEntity()->getFullName(),
                 'reference' => ['=this.TASK.UF_AUTHOR_ID' => 'ref.ID'],
                 'join_type' => 'LEFT'
             ]
@@ -188,7 +188,7 @@ class admincorrectfinanceListComponent extends \CBitrixComponent implements \Bit
         if (!empty($FILTER["attention"]) && $FILTER["attention"] == 'adminattention'){
             $Query->registerRuntimeField('MESSAGE',
                 [
-                    'data_type' => $ClassMessager,
+                    'data_type' => $ClassMessager::getEntity()->getFullName(),
                     'reference' => ['=this.ID' => 'ref.UF_QUEUE_ID'],
                     'join_type' => 'INNER'
                 ]
