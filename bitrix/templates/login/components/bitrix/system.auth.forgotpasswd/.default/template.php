@@ -5,16 +5,30 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-6">
+                <div class="text-center"><a href="/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></a></div>
 
-                <div class="text-center"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></div>
-
-
-
+                    <?if (isMobileDevice()):?>
                 <div class="row align-items-end">
-                    <div class="col-12 text-right"><a href="<?=$arResult["AUTH_AUTH_URL"]?>"><?=GetMessage("AUTH_AUTH")?></a></div>
+                    <div class="col-12 text-right">
+                        <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                        <a href="<?=$arResult["AUTH_AUTH_URL"]?>">Вход</a>
+                    </div>
                 </div>
+                    <?else:?>
+                        <div class="row align-items-end">
+                            <div class="col-12 text-right">
+                                <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                                <a href="<?=$arResult["AUTH_AUTH_URL"]?>">Вход</a>
+                            </div>
+                        </div>
+                    <?endif;?>
+
+
                 <div class="panel">
                     <div class="panel-header">
+
+                        <h2>Восстановление пароля</h2>
+
                         <?
                         if (!empty($arParams["~AUTH_RESULT"]))
                         {
@@ -26,7 +40,6 @@
                         </div>
                     </div>
                     <div class="panel-body">
-
                         <form name="bform" method="post" target="_top" action="<?=$arResult["AUTH_URL"]?>">
                             <? if ($arResult["BACKURL"] <> '') echo "<input type=\"hidden\" name=\"backurl\" value=\"{$arResult["BACKURL"]}\" />"; ?>
                             <input type="hidden" name="AUTH_FORM" value="Y">

@@ -13,13 +13,26 @@ if($arResult["PHONE_REGISTRATION"])
         <div class="row justify-content-center">
             <div class="col-lg-10">
 
-                <div class="text-center"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></div>
+                <div class="text-center"><a href="/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></a></div>
 
-
+                <?if (isMobileDevice()):?>
                 <div class="row row-10 align-items-end">
                     <div class="col-6 col-sm-7"><a href="#"><img src="" alt=""></a></div>
-                    <div class="col-6 col-sm-5 text-right"><a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b><?=GetMessage("AUTH_AUTH")?></b></a><span class="px-2">|</span><a class="font-weight-bold" href="/login/?register=yes">Регистрация</a></div>
+                    <div class="col-6 col-sm-5 text-right">
+                        <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                        <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b><?=GetMessage("AUTH_AUTH")?></b></a><span class="px-2">|</span><a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                    </div>
                 </div>
+                <?else:?>
+                    <div class="row row-10 align-items-end">
+                        <div class="col-6 col-sm-7"><a href="#"><img src="" alt=""></a></div>
+                        <div class="col-6 col-sm-5 text-right">
+                            <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                            <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b><?=GetMessage("AUTH_AUTH")?></b></a><span class="px-2">|</span><a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                        </div>
+                    </div>
+                <?endif;?>
+
                 <div class="panel">
                     <div class="panel-header">
                         <h2><?=GetMessage("AUTH_CHANGE_PASSWORD")?></h2>

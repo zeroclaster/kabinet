@@ -46,13 +46,29 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
         <div class="row justify-content-center">
             <div class="col-lg-10">
 
-                <div class="text-center"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></div>
+                <div class="text-center"><a href="/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></a></div>
 
 
+                <?if (isMobileDevice()):?>
                 <div class="row row-10 align-items-end">
-                    <div class="col-6 col-sm-7"><a href="#"><img src="" alt=""></a></div>
-                    <div class="col-6 col-sm-5 text-right"><a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b><?=GetMessage("AUTH_AUTH")?></b></a><span class="px-2">|</span><a class="font-weight-bold" href="/login/?register=yes">Регистрация</a></div>
+                    <div class="col-sm-7"><a href="#"><img src="" alt=""></a></div>
+                    <div class="col-sm-12 text-right">
+                        <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                        <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Вход</b></a><span class="px-2">|</span>
+                        <a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                    </div>
                 </div>
+                <?else:?>
+                    <div class="row row-10 align-items-end">
+                        <div class="col-6 col-sm-7"><a href="#"><img src="" alt=""></a></div>
+                        <div class="col-6 col-sm-12 text-right">
+                            <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
+                            <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Вход</b></a><span class="px-2">|</span>
+                            <a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                        </div>
+                    </div>
+                <?endif;?>
+
                 <div class="panel">
                     <div class="panel-header">
                         <h2>Регистрация</h2>
@@ -60,21 +76,25 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
                     <div class="panel-body">
 
                         <?if(!isset($telegramData)):?>
-                        <div id="telegram-login-btn" style="margin: 20px;margin-bottom: 0px;"></div>
-
-                        <script>
-                            BX.ready(function() {
-                                var script = document.createElement('script');
-                                script.async = true;
-                                script.src = "https://telegram.org/js/telegram-widget.js?22";
-                                script.setAttribute('data-telegram-login', 'kupiotziv_bot');
-                                script.setAttribute('data-size', 'large');
-                                script.setAttribute('data-auth-url', '/auth/telegram.php');
-                                script.setAttribute('data-request-access', 'write');
-                                script.setAttribute('data-userpic', 'true'); // Отключаем аватарку
-                                document.getElementById('telegram-login-btn').appendChild(script);
-                            });
-                        </script>
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                            <div id="telegram-login-btn" style="margin: 0px;margin-bottom: 0px;"></div>
+                                            <script>
+                                                BX.ready(function() {
+                                                    var script = document.createElement('script');
+                                                    script.async = true;
+                                                    script.src = "https://telegram.org/js/telegram-widget.js?22";
+                                                    script.setAttribute('data-telegram-login', 'kupiotziv_bot');
+                                                    script.setAttribute('data-size', 'large');
+                                                    script.setAttribute('data-auth-url', '/auth/telegram.php');
+                                                    script.setAttribute('data-request-access', 'write');
+                                                    script.setAttribute('data-userpic', 'true'); // Отключаем аватарку
+                                                    document.getElementById('telegram-login-btn').appendChild(script);
+                                                });
+                                            </script>
+                            </div>
+                        </div>
                         <?endif;?>
 
                         <?
@@ -173,7 +193,7 @@ new BX.PhoneAuth({
     <?if($arResult["PHONE_REGISTRATION"]):?><?endif?>
     <div class="row form-group">
         <div class="col-sm-3 text-sm-right">
-            <label class="col-form-label" for="USER_PHONE_NUMBER"><?echo GetMessage("main_register_phone_number")?></label>
+            <label class="col-form-label starrequired" for="USER_PHONE_NUMBER"><?echo GetMessage("main_register_phone_number")?></label>
         </div>
         <div class="col-sm-9" style="position: relative;">
             <div class="input-group">
@@ -369,3 +389,57 @@ document.bform.USER_NAME.focus();
     </div>
 </div>
 </section>
+
+<script>
+    BX.ready(function(){
+        // Находим форму и поле телефона
+        var form = document.forms['bform'];
+        var phoneField = document.getElementById('USER_PHONE_NUMBER');
+
+        if (form && phoneField) {
+            // Добавляем обработчик отправки формы
+            BX.bind(form, 'submit', function(e) {
+                // Проверяем заполненность поля телефона
+                if (!BX.util.trim(phoneField.value)) {
+                    // Поле пустое, показываем ошибку и отменяем отправку
+                    e.preventDefault();
+
+                    // Создаем или находим контейнер для ошибки
+                    var errorContainer = document.getElementById('phone_error_message');
+                    if (!errorContainer) {
+                        errorContainer = document.createElement('div');
+                        errorContainer.id = 'phone_error_message';
+                        errorContainer.className = 'alert alert-danger';
+                        errorContainer.style.marginTop = '10px';
+
+                        // Вставляем перед кнопкой отправки или в удобное место
+                        var submitButton = form.querySelector('input[type="submit"]');
+                        if (submitButton) {
+                            BX.insertBefore(errorContainer, submitButton.parentNode);
+                        } else {
+                            form.appendChild(errorContainer);
+                        }
+                    }
+
+                    // Устанавливаем текст ошибки
+                    errorContainer.innerHTML = '<span class="fa fa-exclamation-circle"></span> Поле "Телефон" обязательно для заполнения';
+
+                    // Добавляем класс ошибки к полю
+                    BX.addClass(phoneField.parentNode, 'has-error');
+
+                    // Фокусируемся на поле
+                    phoneField.focus();
+                }
+            });
+
+            // Убираем ошибку при изменении поля
+            BX.bind(phoneField, 'input', function() {
+                var errorContainer = document.getElementById('phone_error_message');
+                if (errorContainer && BX.util.trim(phoneField.value)) {
+                    errorContainer.style.display = 'none';
+                    BX.removeClass(phoneField.parentNode, 'has-error');
+                }
+            });
+        }
+    });
+</script>
