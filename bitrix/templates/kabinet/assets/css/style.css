@@ -671,6 +671,8 @@ h6, .h6 {
 	height: auto;
 	border-radius: 50%;
 	overflow: hidden;
+	width: 68px;
+	height: 68px;
 }
 
 .site-red{
@@ -787,6 +789,14 @@ h6, .h6 {
 
 .badge-iphone-style{
 	color: #fff;
+	background-color: #ff000e;
+}
+
+.alert-no-checked .badge-iphone-style{
+	background-color: #dde3e8;
+}
+
+.alert-no-checked.alert-checked .badge-iphone-style{
 	background-color: #ff000e;
 }
 
@@ -1133,3 +1143,10 @@ i.fa{
 
 .site-red { color: #f00; }
 .site-gray { color: #999; }
+
+
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}

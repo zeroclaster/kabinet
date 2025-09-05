@@ -79,7 +79,7 @@ const createMessangerSystem = () => {
                             });
 
                             return data;
-                        },
+                        }
                     },
                     watch:{
                     },
@@ -105,6 +105,10 @@ const createMessangerSystem = () => {
 
                             return form_data;
                         },
+                        isAdminMessage(mess_item){
+                            if (mess_item.UF_AUTHOR_ID_ORIGINAL.IS_ADMIN) return 'admin-message';
+                            return 'user-message';
+                        },
                         isNewMessage(mess_item){
                             if (mess_item.UF_STATUS == 5) return 'new-message';
                             return '';
@@ -112,7 +116,7 @@ const createMessangerSystem = () => {
                         printStatus(message){
 
                             if (message.UF_AUTHOR_ID != this.datauser.ID) return '';
-                            if (message.UF_STATUS == 5) return '<div class="mdi-check"></div>';
+                            if (message.UF_STATUS == 5) return '<div class="mdi-check-all new-mess-color"></div>';
 
                             return '<div class="mdi-check-all"></div>';
                         },
@@ -264,7 +268,27 @@ const createMessangerSystem = () => {
                                 //preparePost: false
                             }).then(BX.delegate(this.responseHandler, this), BX.delegate(this.errorHandler, this));
                         },
+                        // Добавляем метод для прокрутки к блоку отправки
+                        scrollToSender() {
+                            if (this.$refs.senderblock) {
+                                setTimeout(() => {
+                                    this.$refs.senderblock.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'nearest'
+                                    });
+                                }, 100);
+                            }
+                        },
+                        // Модифицируем существующий метод scrollEnd
                         scrollEnd(){
+                            const node = this.$refs.messagelist;
+                            if (typeof node != 'undefined') {
+                                setTimeout(() => {
+                                    node.scrollTop = node.scrollHeight;
+                                }, 200);
+                            }
+                        },
+                        scrollEnd__(){
                             const node = this.$refs.messagelist;
                             if (typeof node != 'undefined') {
                                 setTimeout(()=>{
@@ -290,6 +314,33 @@ const createMessangerSystem = () => {
                             })
                                 .then(BX.delegate(this.responseHandler, this), BX.delegate(this.errorHandler, this));
                         },
+                        // В секции methods (или computed, если адаптируете)
+                        getMessageContext(mess_item) {
+                            // Инициализируем пустой объект контекста
+                            const context = { hasProject: false };
+
+                            // Если нет mess_item или projectlist, сразу возвращаем пустой контекст
+                            if (!mess_item || !this.projectlist || mess_item.UF_PROJECT_ID <= 0) {
+                                return context;
+                            }
+
+                            // Получаем проект
+                            context.project = this.projectlist[mess_item.UF_PROJECT_ID];
+                            context.hasProject = !!context.project; // Флаг, что проект найден
+
+                            // Если есть задача и project существует
+                            if (context.hasProject && mess_item.UF_TASK_ID > 0 && this.tasklist) {
+                                context.task = this.tasklist[mess_item.UF_TASK_ID];
+                                context.hasTask = !!context.task; // Флаг, что задача найдена
+
+                                // Получаем order данные, если все необходимые данные существуют
+                                if (context.hasTask && this.data2 && this.data2[context.project.UF_ORDER_ID]) {
+                                    context.order = this.data2[context.project.UF_ORDER_ID][context.task.UF_PRODUKT_ID];
+                                }
+                            }
+
+                            return context;
+                        }
                     },
                     components: {
                         richtext,

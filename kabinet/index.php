@@ -50,6 +50,7 @@ $GLOBALS['message_filter'] = [];
     )
 );?>
 
+<div class="pl-3"><a href="/kabinet/notifications/" class="h3 text-primary">Написать сообщение</a></div>
 
 <section class="section-xs">
         <div class="container-fluid">

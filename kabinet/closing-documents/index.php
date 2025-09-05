@@ -75,13 +75,17 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                                         <input type="hidden" name="phoneclient" v-model="datauser.PERSONAL_PHONE">
                                         <input type="hidden" name="dowloaddate" v-model="datauser.UF_DOGOVOR_DATE_PRINT">
                                         <div if="err_message" style="color: red;">{{err_message}}</div>
-                                    <button class="btn btn-primary" type="button" @click="setdowloadddate">Скачать договор на подпись</button>
+
+                                        <div class="d-flex align-items-center">
+                                            <div><button class="btn btn-primary" type="button" @click="setdowloadddate">Скачать договор на подпись</button></div>
+                                            <div class="ml-3" v-if="datauser.UF_DOGOVOR_DATE_PRINT">Договор №{{datauser.UF_DOGOVOR_DATE_PRINT}}{{datauser.ID}} от {{ datauser.UF_DOGOVOR_DATE_PRINT2 }}</div>
+                                        </div>
                                     </form>
                                 </script>
                             </div>
 
                             <div class="row">
-                                <div class="col-4">Доступные акты</div>
+                                <div class="col-4">Закрывающие документы</div>
                                 <div class="col-8">
                                 <?$APPLICATION->IncludeComponent("exi:act.generator", "", Array(
                                     )
@@ -172,6 +176,7 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                 },
                 mounted() {
                     this.datauser.UF_DOGOVOR_DATE_PRINT = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY');
+                    this.datauser.UF_DOGOVOR_DATE_PRINT2 = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY');
                 },
                 template: '#dogovordowload-template'
             });

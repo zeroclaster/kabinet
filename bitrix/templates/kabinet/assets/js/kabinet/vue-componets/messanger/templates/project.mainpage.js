@@ -7,12 +7,13 @@ window['messangerTemplate2'] = `
         </div>
     
 		<div v-for="mess_item in datamessage[projectID]">
-		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">
+		<div :class="'mess p-2 pb-4 mb-0 '+isNewMessage(mess_item)+' '+isAdminMessage(mess_item)">
 			<div class="row" v-if="mess_item.UF_TYPE == 3">
 				<div class="col-1 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
 				<div class="col-10 text-block-mess">
-					<div class="d-flex">
-						<div class="user-title mb-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div><div class="ml-auto datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
+					<div class="d-flex align-items-end">
+						<div class="user-title mb-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
+						<div class="ml-auto datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
 					
 					<div v-for="uplodfile in mess_item.UF_UPLOADFILE_ORIGINAL" class="mb-3">
@@ -24,9 +25,11 @@ window['messangerTemplate2'] = `
 				</div>
 			</div>
 			
-			<div class="row" v-if="mess_item.UF_TYPE == 4">	
-				<div class="col-12 text-block-mess">				
-					<div class="d-flex">						
+			<div class="row" v-if="mess_item.UF_TYPE == 4">
+			    <div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>	
+				<div class="col-10 text-block-mess">				
+					<div class="d-flex align-items-end">	
+					    <div class="user-title mb-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>					
 						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
@@ -54,7 +57,7 @@ window['messangerTemplate2'] = `
          	 		  
     </div> 
     		<div class="mess p-2 mb-2" v-if="datamessage[projectID].length==0">
-			Нет комментариев
+			Нет сообщений
          </div>	
 	<div class="p-2">
     <div ref="senderblock" class="sender-block">

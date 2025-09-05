@@ -7,7 +7,7 @@ window['messangerTemplate'] =    `
         </div>
     
 		<div v-for="mess_item in datamessage[queue_id]">
-		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">
+		<div :class="'mess p-2 pb-4 mb-0 '+isNewMessage(mess_item)+' '+isAdminMessage(mess_item)">
 			<div class="row">
 				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
 				<div class="col-10 text-block-mess">
@@ -21,15 +21,15 @@ window['messangerTemplate'] =    `
 						<a :href="uplodfile.SRC" target="_blank" v-if="uplodfile.MIME != 'image/jpeg'" style="font-size: 12px;"><i class="fa fa-file-text-o" aria-hidden="true"></i> Файл скачать</a>
                     </div>
 					
-					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class="mb-5"></div>
+					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 				</div>
 			</div>
 			
 			
 			
-			<div class="remove-message text-primary" @click="removemess(mess_item.ID)" v-if="accessAction(mess_item)"><i class="fa fa-times" aria-hidden="true"></i></div>
-			<div class="edit-message text-primary" @click="(event) => editmess(mess_item,event)" v-if="accessAction(mess_item)"><i class="fa fa-pencil" aria-hidden="true"></i>Изменить</div>
-			<div class="answer-message text-primary" @click="(event) => answermess(mess_item,event)" v-if="mess_item.UF_AUTHOR_ID != datauser.ID"><i class="fa fa-share" aria-hidden="true"></i>Ответить</div>
+			<div class="remove-message" @click="removemess(mess_item.ID)" v-if="accessAction(mess_item)"><i class="fa fa-times" aria-hidden="true"></i></div>
+			<div class="edit-message" @click="(event) => editmess(mess_item,event)" v-if="accessAction(mess_item)"><i class="fa fa-pencil" aria-hidden="true"></i>Изменить</div>
+			<div class="answer-message" @click="(event) => answermess(mess_item,event)" v-if="mess_item.UF_AUTHOR_ID != datauser.ID"><i class="fa fa-quote-right" aria-hidden="true"></i>&nbsp;Цитировать</div>
 			<div class="cansel-edit" @click="canseledit">Отменить изменения</div>
 			<div class="status-mark" v-html="printStatus(mess_item)"></div>
          </div>
@@ -37,7 +37,7 @@ window['messangerTemplate'] =    `
 		
 		<!--
 		<div class="mess p-2 mb-2" v-if="datamessage[queue_id].length==0">
-			Нет комментариев
+			Нет сообщений
          </div>
 		-->
 		 

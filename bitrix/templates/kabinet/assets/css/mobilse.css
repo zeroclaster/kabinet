@@ -190,3 +190,21 @@ h4, .h4 {
 .rd-navbar-sidebar-active .catalog-service-menulink{
     display: block;
 }
+
+.messanger-block .messange-list .avatar-block div{
+    width: 30px;
+    height: 30px;
+}
+
+.messange-list .mess .avatar-block{
+    padding-left: 4px;
+    padding-right: 5px !important;
+}
+
+.messanger-block .sender-block .send-message-button{
+    width: 58px!important;
+}
+
+.messanger-block .messange-list .status-mark{
+    right: 10px!important;
+}

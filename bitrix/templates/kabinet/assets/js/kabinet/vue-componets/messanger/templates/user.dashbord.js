@@ -3,27 +3,25 @@ window['messangerTemplate'] =  `
     <div ref="messagelist" class="messange-list p-2">
     
 		<div v-for="mess_item in datamessageForYou">
-		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">
+		<div :class="'mess p-2 pb-4 mb-0 '+isNewMessage(mess_item)+' '+isAdminMessage(mess_item)">
 				
 			<div class="row" v-if="mess_item.UF_TYPE == 3">
 				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
 				<div class="col-10 text-block-mess">				
-					<div class="d-flex">
+					<div class="d-flex align-items-end">
 						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
 						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
+										
+					<!-- Получаем весь контекст одним вызовом метода -->
+                    <template v-if="(ctx = getMessageContext(mess_item)) && ctx.hasProject">
+                        <div>
+                            Проект <span class="h3">«{{ ctx.project.UF_NAME }}» #{{ ctx.project.UF_EXT_KEY }}</span>
+                            <!-- Отображаем информацию о задаче, если она есть -->
+                            <span v-if="ctx.hasTask">, Задача <a :href="'/kabinet/projects/reports/?t=' + ctx.task.ID">«{{ ctx.task.UF_NAME }}» #{{ ctx.task.UF_PRODUKT_ID }}</a></span>
+                        </div>
+                    </template>
 					
-					<div v-if="mess_item.UF_PROJECT_ID>0">			
-						{{(project = projectlist[mess_item.UF_PROJECT_ID],null)}}
-						<div>
-						    Проект <span class="h3">«{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}</span>					  
-						<span v-if="mess_item.UF_TASK_ID>0">
-							{{(task = tasklist[mess_item.UF_TASK_ID],null)}}
-							{{(order = data2[project.UF_ORDER_ID][task.UF_PRODUKT_ID],null)}}
-							, Задача <a :href="'/kabinet/projects/reports/?t='+task.ID">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>
-						</span>									
-					    </div>
-					</div>
 					
 					<div v-for="uplodfile in mess_item.UF_UPLOADFILE_ORIGINAL" class="mb-3">
 					    <a :href="uplodfile.SRC" target="_blank" v-if="uplodfile.MIME == 'image/jpeg'"><img :src="uplodfile.SRC" alt="" style="width: 300px;"></a>
@@ -36,10 +34,11 @@ window['messangerTemplate'] =  `
 			
 			
 			<div class="row" v-if="mess_item.UF_TYPE == 4">
-				
-				<div class="col-12 text-block-mess">				
-					<div>
-						<div class="user-title mb-1"></div><div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
+				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
+				<div class="col-10 text-block-mess">				
+					<div class="d-flex align-items-end">
+						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
+						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>	
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>				
 					<div v-if="mess_item.UF_PROJECT_ID>0">
@@ -61,7 +60,7 @@ window['messangerTemplate'] =  `
 		 </div>
 		
 		<div class="mess p-2 mb-2" v-if="datamessageForYou.length==0">
-			Нет комментариев
+			Пока нет сообщений. Здесь вы можете написать нам. Привяжите Telegram на странице «Профиль», чтобы получать уведомления в мессенджере о ходе выполнения услуг.
          </div>		 		  
     </div> 
 </div>

@@ -1,5 +1,5 @@
 window['messangerTemplate'] = `
-<div :id="$id('messangerBlock')" class="messanger-block mt-5" v-if="typeof datamessage[queue_id] != 'undefined'">  
+<div :id="$id('messangerBlock')" class="messanger-block report-message-block mt-5" v-if="typeof datamessage[queue_id] != 'undefined'">  
     <div ref="messagelist" class="messange-list p-2" v-if="datamessage[queue_id].length>0">
     
         <div ref="showmoreblock" class="mess p-2 mb-4" v-if="datamessage[queue_id].length>4">
@@ -7,12 +7,13 @@ window['messangerTemplate'] = `
         </div>
     
 		<div v-for="mess_item in datamessage[queue_id]">
-		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">
+		<div :class="'mess p-2 pb-4 mb-0 '+isNewMessage(mess_item)+' '+isAdminMessage(mess_item)">
 			<div class="row" v-if="mess_item.UF_TYPE == 3">
-				<div class="col-1 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
-				<div class="col-11 text-block-mess">
-					<div class="d-flex">
-						<div class="user-title mb-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div><div class="ml-auto datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
+				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
+				<div class="col-10 text-block-mess">
+					<div class="d-flex align-items-end">
+						<div class="user-title mb-0">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
+						<div class="ml-auto datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
 					
 					<div v-for="uplodfile in mess_item.UF_UPLOADFILE_ORIGINAL" class="mb-3">
@@ -20,13 +21,15 @@ window['messangerTemplate'] = `
 						<a :href="uplodfile.SRC" target="_blank" v-if="uplodfile.MIME != 'image/jpeg'" style="font-size: 12px;"><i class="fa fa-file-text-o" aria-hidden="true"></i> Файл скачать</a>
                     </div>
 					
-					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class="mb-5"></div>
+					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 				</div>
 			</div>
 			
 			<div class="row" v-if="mess_item.UF_TYPE == 4">	
-				<div class="col-12 text-block-mess">				
-					<div class="d-flex">						
+			    <div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
+				<div class="col-10 text-block-mess">				
+					<div class="d-flex align-items-end">	
+					    <div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>					
 						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
@@ -42,8 +45,8 @@ window['messangerTemplate'] = `
 				</div>
 			</div>
 			
-			<div class="edit-message text-primary" @click="(event) => editmess(mess_item,event)" v-if="accessAction(mess_item)"><i class="fa fa-pencil" aria-hidden="true"></i>Изменить</div>
-			<div class="answer-message text-primary" @click="(event) => answermess(mess_item,event)" v-if="mess_item.UF_AUTHOR_ID != datauser.ID"><i class="fa fa-share" aria-hidden="true"></i>Ответить</div>
+			<div class="edit-message" @click="(event) => editmess(mess_item,event)" v-if="accessAction(mess_item)"><i class="fa fa-pencil" aria-hidden="true"></i>Изменить</div>
+			<div class="answer-message" @click="(event) => answermess(mess_item,event)" v-if="mess_item.UF_AUTHOR_ID != datauser.ID"><i class="fa fa-quote-right" aria-hidden="true"></i>&nbsp;Цитировать</div>
 			<div class="cansel-edit" @click="canseledit">Отменить изменения</div>
 			<div class="status-mark" v-html="printStatus(mess_item)"></div>
          </div>
@@ -51,7 +54,7 @@ window['messangerTemplate'] = `
 		
 		<!--
 		<div class="mess p-2 mb-2" v-if="datamessage[queue_id].length==0">
-			Нет комментариев
+			Нет сообщений
          </div>	
          -->	 		  
     </div> 

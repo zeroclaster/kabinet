@@ -1,26 +1,27 @@
 .messanger-block{
-	background-color: #f4f4f4;
+	background-color: #74b4e0;
 	color: #0d0d0d;
 	padding-top: 10px;
 }
 
+.messanger-block .messange-user-list{
+	background-color: #FFFFFF;
+}
+
 .messanger-block .messange-list{
-	height: 170px;
-	overflow: auto;
+	background-color: #74b4e0;
 }
 
 .messanger-block .datetime-message{
-
+	color: #bbbbbb;
 }
 
 .messanger-block .mess{
-	background-color: #FFF;
-	border-radius: 8px;
 	position: relative;
 }
 
 .messanger-block .mess:hover{
-	background-color: #F8FCFF;
+	/*background-color: #F8FCFF;*/
 }
 
 .messanger-block .remove-message{
@@ -39,8 +40,8 @@
 
 .messanger-block .answer-message{
 	position: absolute;
-	bottom: 3px;
-	left: 11px;
+	bottom: 0px;
+	left: 108px;
 	cursor:pointer;
 }
 
@@ -65,12 +66,12 @@
 	left: 44%;
 }
 
-.messanger-block .mess .avatar-block{
-	flex: 0 1 20%;
+.report-message-block .mess .avatar-block{
+	flex: 0 1 12%;
 }
 
 .messanger-block .mess .text-block-mess{
-	flex: 0 1 76%;
+
 }
 
 .messanger-block .mess .user-title{
@@ -87,7 +88,7 @@
 .messanger-block .sender-block .send-message-button{
 	width: 119px;
 	padding-top: 14px;
-	padding-bottom: 14px;
+	padding-bottom: 15px;
 }
 
 .messanger-block .sender-block .upload-file-block{
@@ -143,8 +144,8 @@
 
 .messanger-block .messange-list .status-mark{
 	position: absolute;
-	top: -3px;
-	right: 17px;
+	top: 2px;
+	right: 56px;
 	font-size: 23px;
 }
 
@@ -154,6 +155,14 @@
 
 .messanger-block .messange-list .status-mark .mdi-check{
 	color: #555555;
+}
+
+.messanger-block .messange-list .status-mark .mdi-check-all.new-mess-color{
+	color: #bbbbbb;
+}
+
+.messanger-block .messange-list .status-mark .mdi-check-all{
+	color: #059de8;
 }
 
 .messanger-block .messange-list blockquote {
@@ -171,7 +180,7 @@
 }
 
 .messanger-block .messange-list .new-message{
-	background-color: #E8E8E8;
+	/*background-color: #E8E8E8;*/
 }
 
 .messanger-main-page .col-1{
@@ -180,4 +189,48 @@
 
 .messanger-main-page .message_text_orgn{
 	margin-bottom: 0!important;
+}
+
+.messanger-block .messange-user-list .avatar-block div{
+	height: auto;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.messanger-block .messange-user-list .user_item{
+	cursor: pointer;
+}
+
+.messanger-block .messange-user-list .user_item:hover{
+	background-color: #f1f1f1;
+}
+
+.messanger-block .messange-user-list .user_item.active{
+	background-color: #74b4e0;
+}
+
+.messanger-block .selected-user-header{
+	background-color: #fff;
+}
+
+
+.messange-list .mess .text-block-mess{
+	background-color: #def1fd;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	padding: 9px 15px 9px 15px;
+}
+
+.messange-list .mess.admin-message .text-block-mess{
+	background-color: #FFFFFF;
+}
+
+.messange-list .mess.user-message .avatar-block img{
+	cursor: pointer;
+}
+
+.message-dashboard .messange-list .mess.user-message .user-title{
+	cursor: pointer;
 }

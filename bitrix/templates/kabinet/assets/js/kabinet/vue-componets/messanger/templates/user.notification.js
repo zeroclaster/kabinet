@@ -8,12 +8,12 @@ window['messangerTemplate'] = `
     
     <!-- datamessage -> $arResult["MESSAGE_DATA"] bitrix/components/exi/messanger.view/class.php -->
 		<div v-for="mess_item in datamessage">
-		<div :class="'mess p-2 pb-4 mb-4 '+isNewMessage(mess_item)">
+		<div :class="'mess p-2 pb-4 mb-0 '+isNewMessage(mess_item)+' '+isAdminMessage(mess_item)">
 				
 			<div class="row" v-if="mess_item.UF_TYPE == 3">
 				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
 				<div class="col-10 text-block-mess">					
-					<div class="d-flex">
+					<div class="d-flex align-items-end">
 						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
 						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
@@ -40,9 +40,11 @@ window['messangerTemplate'] = `
 			</div>
 			
 			<div class="row" v-if="mess_item.UF_TYPE == 4">	
-				<div class="col-12 text-block-mess">				
-					<div>
-						<div class="user-title mb-1"></div><div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
+				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
+				<div class="col-10 text-block-mess">				
+					<div class="d-flex align-items-end">
+						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
+						<div class="datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
 					<div v-if="mess_item.UF_PROJECT_ID>0">
@@ -62,9 +64,29 @@ window['messangerTemplate'] = `
          </div>
 		 </div>
 		
-		<div class="mess p-2 mb-2" v-if="datamessage.length==0">
-			Нет комментариев
-         </div>		 		  
+		<div class="mess p-2 mb-2" v-if="datamessage.length==0">Пока нет сообщений. Здесь вы можете написать нам. Привяжите Telegram на странице «Профиль», чтобы получать уведомления в мессенджере о ходе выполнения услуг.</div>		 		  
     </div> 
+    
+    <div class="p-2">
+    <div ref="senderblock" class="sender-block">
+        <form action="">
+            <div class="d-flex">
+                <div class="upload-file-block">
+                    <messUploadFileComponent v-model="fields.UF_UPLOADFILE"/>
+                </div>
+                <div class="message-text-block message-richtext-style">
+                    <div class="upload-file-list d-flex flex-wrap" v-if="fields.UF_UPLOADFILE.length>0">             
+                        <div class="mr-2 p-2" v-for="(upl_file,fileIndex) of fields.UF_UPLOADFILE">{{upl_file.name}} <div class="remove-upload-file text-primary" @click="removeUplFile(fileIndex)"><i class="fa fa-times" aria-hidden="true"></i></div></div>                      
+                    </div>
+					<richtext ref="richtextref" :original="fields.UF_MESSAGE_TEXT_ORIGINAL" v-model="fields.UF_MESSAGE_TEXT"/>
+                </div>
+                <div class="sender-block ml-auto d-flex align-items-center">
+                    <button v-if="isMobile" class="btn btn-primary btn-sm send-message-button" type="button" @click="sendMessage" :disabled="isDisabled"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                    <button v-else class="btn btn-primary btn-sm send-message-button" type="button" @click="sendMessage" :disabled="isDisabled"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+	</div>
 </div>
 `;
