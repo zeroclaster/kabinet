@@ -3,9 +3,9 @@
 require_once 'include/smtp/yandex.php';
 function custom_mail($to, $subject, $message, $additional_headers, $additional_parameters)
 {
-	AddMessage2Log($to . '|' . $subject. '|' .$message. '|' .$additional_headers. '|' .$additional_parameters, "my_module_id");
+	//AddMessage2Log($to . '|' . $subject. '|' .$message. '|' .$additional_headers. '|' .$additional_parameters, "my_module_id");
 				//mail_cast($to, $subject, $message, $additional_headers, $additional_parameters);
-	//return  @mail($to, $subject, $message, $additional_headers, $additional_parameters);
+	return  @mail($to, $subject, $message, $additional_headers, $additional_parameters);
 	return true;
 }
 
