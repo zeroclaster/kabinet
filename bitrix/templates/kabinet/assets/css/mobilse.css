@@ -208,3 +208,7 @@ h4, .h4 {
 .messanger-block .messange-list .status-mark{
     right: 10px!important;
 }
+
+.form-control.link_input{
+    width: inherit;
+}

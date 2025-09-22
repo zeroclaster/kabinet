@@ -1188,3 +1188,7 @@ i.fa{
 .m1-1 h5{
 	margin-top: 8px;
 }
+
+.form-control.link_input{
+	width: 475px;
+}
