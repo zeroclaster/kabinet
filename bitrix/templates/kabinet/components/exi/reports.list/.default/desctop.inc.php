@@ -1,4 +1,25 @@
 <script type="text/html" id="kabinet-content">
+
+    <!-- Модальное окно для просмотра изображения -->
+    <div class="modal fade m1-1" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Просмотр изображения</h5>
+                    <div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="" style="max-width: 100%; max-height: 80vh;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="panel report-list-block">
 
         <div class="panel-body">
@@ -39,7 +60,7 @@
                             <div class="">Фото:</div>
                             <div class=""  style="position: relative;">
                                 <div id="previewrunnerfileimages" class="d-flex flex-wrap">
-                                    <div class="preview-img-block-2" v-for="photo in showpiclimits(runner.UF_PIC_REVIEW_ORIGINAL,runnerindex)" :style="'background-image:url('+photo.SRC+')'">
+                                    <div class="preview-img-block-2" v-for="photo in showpiclimits(runner.UF_PIC_REVIEW_ORIGINAL,runnerindex)" :style="'background-image:url('+photo.SRC+');cursor:pointer;'" @click="openImageModal(photo.SRC)">
                                         <div @click="removeimg(photo.ID,runnerindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
                                     </div>
                                     <div class="preview-img-block-2" v-if="runner.UF_PIC_REVIEW_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>

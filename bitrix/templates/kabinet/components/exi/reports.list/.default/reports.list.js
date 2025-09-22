@@ -252,6 +252,13 @@ methods: {
         if (task.QUEUE_STATIST[4].COUNT > 0) return true;
 
         return false;
+    },
+    openImageModal(imageSrc) {
+        // Устанавливаем src изображения в модальном окне
+        document.getElementById('modalImage').src = imageSrc;
+
+        // Показываем модальное окно (используем jQuery для Bootstrap)
+        $('#imageModal').modal('show');
     }
 },
 created(){

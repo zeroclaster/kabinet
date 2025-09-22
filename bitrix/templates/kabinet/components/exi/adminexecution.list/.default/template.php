@@ -144,6 +144,7 @@ $this->setFrameMode(true);
                     <div id="previewrunnerfileimages" class="d-flex flex-wrap">
                         <div class="preview-img-block-2" v-for="photo in showpiclimits(runner.UF_PIC_REVIEW_ORIGINAL,runnerindex)" :style="'background-image:url('+photo.SRC+')'">
                             <div @click="removeimg(photo.ID,runnerindex)" class="remove-preview-image"><i class="fa fa-times" aria-hidden="true"></i></div>
+                            <a class="download-preview-image" :href="photo.SRC" :download="getFileName(photo.SRC)"></a>
                         </div>
                         <div class="preview-img-block-2" v-if="runner.UF_PIC_REVIEW_ORIGINAL.length==0"><img src="/bitrix/templates/kabinet/assets/images/product.noimage.png" alt="" style="width: 150px;"></div>
 

@@ -370,6 +370,10 @@ adminexecution_list = (function (){
                             if (element.ID == PRODUCT_ID) return element;
                         }
                     },
+                    getFileName(url) {
+                        // Извлекаем имя файла из URL
+                        return url.split('/').pop() || 'photo.jpg';
+                    }
                 },
                 mounted() {
                     var cur = this;
