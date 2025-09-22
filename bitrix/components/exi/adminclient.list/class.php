@@ -44,7 +44,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 		
 		$params["FILTER"] = $arrFilter;
 
-		if (empty($params['COUNT'])) $params['COUNT'] = 2;
+		if (empty($params['COUNT'])) $params['COUNT'] = 10;
         $params['OFFSET'] = 0;
 
         return $params;
@@ -222,7 +222,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
             'select'=>['*'],
             'filter'=>[
                 '!UF_STATUS'=>[
-                    0,  // не запланированные
+                   // 0,  // не запланированные
                     9, //завершеннык
                     10 //отмененные
                 ],
