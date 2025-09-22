@@ -25,12 +25,22 @@ class Contractmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager 
         "UF_ACTS",
     ];
 
+    protected $individ_required = [
+        "UF_NAME",
+        "UF_UR_ADDRESS",
+        "UF_INN",
+        "UF_OGRN",
+        "UF_MAILN_ADDRESS",
+        "UF_FIO",
+        "UF_ACTS",
+    ];
+
     // поля которые выводятся при выборе Физического лица в селекте это 1
 	public $fieldsType = [
         "UF_NAME"=>[2,3,4],
         "UF_UR_ADDRESS"=>[2,3,4],
         "UF_INN"=>[2,3,4],
-        "UF_KPP"=>[2,3,4],
+        "UF_KPP"=>[3,4],
         "UF_OGRN"=>[2,3,4],
         "UF_MAILN_ADDRESS"=>[1,2,3,4],
         "UF_FIO"=>[1,2,3,4],
@@ -53,6 +63,8 @@ class Contractmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager 
 
     public function getRquired($userType){
         if ($userType == 1) return $this->fiz_required;
+        if ($userType == 2) return $this->individ_required;
+
         else  return $this->comp_required;
     }
 
