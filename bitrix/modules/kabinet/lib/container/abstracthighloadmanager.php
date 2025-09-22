@@ -159,12 +159,18 @@ class Abstracthighloadmanager extends Base {
                     }, $HL_BLK);
                     */
                 }elseif($HL_FIELD_DATA['MULTIPLE'] == 'Y'){
-                    $value_ = [...unserialize($value)];
+                    $unserialized = unserialize($value);
+                    if (is_array($unserialized)) {
+                        $value_ = [...$unserialized];
+                    } else {
+                        // Обработка случая, когда unserialize возвращает не массив
+                        $value_ = is_scalar($unserialized) ? [$unserialized] : [];
+                    }
+
                     if ($HL_FIELD_DATA["USER_TYPE_ID"] != 'file'){
                         if (empty($value_)) $value_ = [['VALUE' => '']];
                         else {
                             $value_ = array_map(fn($v) => ['VALUE' => $v], $value_);
-
                         }
                     }
                     $value = $value_;
