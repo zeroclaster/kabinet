@@ -77,6 +77,8 @@ class Detailsmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         // сколько времени кешировать
         $ttl = 14400;
         // hack: $ttl = 0 то не кешировать
+
+        $listdata = [];
         if ($cache->StartDataCache($ttl, $cacheId, "kabinet/detailsproject"))
         {
             $infoprojects = \Bitrix\Kabinet\project\datamanager\ProjectsDetailsTable::getlist([

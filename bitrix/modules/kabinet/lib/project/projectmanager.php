@@ -469,6 +469,16 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         \Bitrix\Main\Loader::includeModule("catalog");
         \Bitrix\Main\Loader::includeModule("sale");
 
+        // Проверяем доступное количество товара
+        $product = \Bitrix\Catalog\ProductTable::getList([
+            'filter' => ['ID' => $product_id],
+            'select' => ['QUANTITY', 'AVAILABLE']
+        ])->fetch();
+
+        if (!$product || $product['QUANTITY'] < $quantity || $product['AVAILABLE'] !== 'Y') {
+            throw new ProjectException('Услуги нет в наличии или не доступна!');
+        }
+
         $user = $this->user;
         $user_id = $user->get('ID');
 
@@ -538,6 +548,16 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     public function addproductToOrder(int $order_id,int $product_id, int $quantity){
         \Bitrix\Main\Loader::includeModule("catalog");
         \Bitrix\Main\Loader::includeModule("sale");
+
+        // Проверяем доступное количество товара
+        $product = \Bitrix\Catalog\ProductTable::getList([
+            'filter' => ['ID' => $product_id],
+            'select' => ['QUANTITY', 'AVAILABLE']
+        ])->fetch();
+
+        if (!$product || $product['QUANTITY'] < $quantity || $product['AVAILABLE'] !== 'Y') {
+            throw new ProjectException('Услуги нет в наличии или не доступна!');
+        }
 
         $order = \Bitrix\Sale\Order::load($order_id); //по ID заказа
         $basket = $order->getBasket();
