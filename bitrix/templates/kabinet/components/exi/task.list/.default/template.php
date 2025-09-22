@@ -110,16 +110,13 @@ $p = $request->get('p');
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="d-flex">
-                        <h3 class="modal-title fs-5" id="exampleModalLabel">{{modaldata.title}}</h3>
-                        <div class="row ml-5">
-                            <div class="col-auto">
+                    <div class="w-100">
+                            <div class="">
                                 <input ref="inputclearsearch" class="form-control" type="text" placeholder="начните вводить название услуги..." @input="searchfilter1">
                             </div>
-                            <div class="col-auto">
+                            <div class="">
                                 <button ref="buttonclearsearch" type="button" class="btn btn-primary" style="display: none;" @click="clearsearchinput">Очистить</button>
                             </div>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -227,6 +224,7 @@ $p = $request->get('p');
                                             type="text"
                                             placeholder="https://site.ru"
                                             v-model="inplist.VALUE"
+                                            style="width: 475px;"
                                     >
                                 </div>
                                 <div class="" style="position: relative;"><button class="text-button" type="button" @click="addmoreinput(task)">+ еще ссылка</button></div>
@@ -273,7 +271,7 @@ $p = $request->get('p');
 
                         <div class="row form-group">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
-                                <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)" :disabled="canBeSaved_(taskindex)">Применить</button>
+                                <button class="btn btn-primary mr-3" type="button" @click="saveButton(taskindex)" :disabled="canBeSaved_(taskindex)">Сохранить</button>
                             </div>
                         </div>
 
