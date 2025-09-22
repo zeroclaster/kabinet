@@ -50,7 +50,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"OnBeforeAddHandler"]);
         AddEventHandler("", "\Task::OnBeforeAdd", [$this,"AutoIncrementAddHandler"]);
-        AddEventHandler("", "\Task::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
+        //AddEventHandler("", "\Task::OnBeforeDelete", [$this,"OnBeforeDeleteHandler"]);
 
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'ifChangeCycliality'],100);
         AddEventHandler("", "\Task::OnBeforeUpdate", [$this,'checkBeforeUpdate'],200);
