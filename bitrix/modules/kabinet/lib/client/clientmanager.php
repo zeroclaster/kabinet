@@ -11,7 +11,7 @@ class Clientmanager {
     protected $selectFields = [];
     public $clientList = [];
     public $updateFields = [
-        'ID','TIMESTAMP_X','LOGIN','NAME','LAST_NAME','EMAIL','DATE_REGISTER','SECOND_NAME',
+        'ID','TIMESTAMP_X','LOGIN','NAME','LAST_NAME','PHONE_NUMBER'=>'AUTHPHONE.PHONE_NUMBER','EMAIL','DATE_REGISTER','SECOND_NAME',
         'PERSONAL_PHOTO','PERSONAL_PHONE','PERSONAL_PROFESSION','PERSONAL_WWW','PASSWORD','BILLING.ID'
     ];
     public $updateUserFields = ['UF_EMAIL_NOTIFI','UF_TELEGRAM_NOTFI','UF_TELEGRAM_ID'];
@@ -35,11 +35,14 @@ class Clientmanager {
 			// пароль нельзя сохранять пустым
 			if (empty($ret['PASSWORD'])) unset($ret['PASSWORD']);
 		}
+
+        //$ret['PERSONAL_MOBILE'] = $ret['PHONE_NUMBER'];
         
         return $ret;
     }
 
     public function update($fields){
+        global $DB;
 
         $ID = $fields['ID'];
         unset($fields['ID'],$fields['TIMESTAMP_X'],$fields['DATE_REGISTER']);
@@ -54,6 +57,27 @@ class Clientmanager {
 
         $user->Update($ID, $editFields);
         if ($user->LAST_ERROR) throw new ClientException($user->LAST_ERROR);
+
+        // Сначала проверяем, есть ли уже запись для этого пользователя
+        $existingPhone = \Bitrix\Main\UserPhoneAuthTable::getList([
+            'filter' => ['=USER_ID' => $ID],
+            'select' => ['USER_ID']
+        ])->fetch();
+
+        $newPhoneNumber = $fields['PHONE_NUMBER'];
+
+        if ($existingPhone) {
+            // Обновляем существующую запись
+            $strSql = "UPDATE b_user_phone_auth SET PHONE_NUMBER = '" . $newPhoneNumber . "' WHERE USER_ID = " . intval($ID);
+            $DB->Query($strSql);
+        } else {
+            // Создаем новую запись
+            $result = \Bitrix\Main\UserPhoneAuthTable::add([
+                'USER_ID' => $ID,
+                'PHONE_NUMBER' => $newPhoneNumber,
+                'CONFIRMED' => 'Y' // или 'N' в зависимости от необходимости подтверждения
+            ]);
+        }
 
         return $ID;
     }

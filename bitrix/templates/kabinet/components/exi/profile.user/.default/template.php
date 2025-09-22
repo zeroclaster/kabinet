@@ -93,7 +93,7 @@ $ClientManager = $sL->get('Kabinet.Client');
                                    <label class="col-form-label" :for="$id('phone')">Телефон</label>
                                </div>
                                <div class="col-sm-9">
-                                   <input class="form-control" :id="$id('phone')" type="text" placeholder="" v-model="datauser.PERSONAL_PHONE">
+                                   <input class="form-control" :id="$id('phone')" type="text" placeholder="" v-model="datauser.PHONE_NUMBER">
                                </div>
                            </div>
                            <div class="row form-group">
