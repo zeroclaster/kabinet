@@ -81,7 +81,7 @@ class Notificationsender
         $currentDate = new DateTime(); // Текущая дата/время
 
         // Для тестирования можно задать конкретный час
-        // $currentHour = 13;
+         //$currentHour = 13;
 
         // Обрабатываем текущий период, если он есть в настройках
         if (isset(self::PERIODS[$currentHour])) {

@@ -10,7 +10,7 @@ class Userpreferencerule extends Abstractnotificationrule {
 
         $UF_AUTHOR_ID = $messageData["UF_AUTHOR_ID"];
         $result_intersect = array_intersect(array(REGISTRATED), \CUser::GetUserGroup($UF_AUTHOR_ID));
-        if(!empty($result_intersect)) return false;
+        if(empty($result_intersect)) return false;
 
         /*
         if ($recipientData['TASK']) {
