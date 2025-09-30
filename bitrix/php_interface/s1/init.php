@@ -340,7 +340,10 @@ function OnAfterUserRegisterHandler(&$arFields)
     if ($arFields["RESULT_MESSAGE"] && $arFields["RESULT_MESSAGE"]["TYPE"] == "ERROR") return;
 
     $userObj = new CUser;
-    $userObj->Update($arFields['USER_ID'], ['UF_TELEGRAM_NOTFI' => "1"]);
+    $userObj->Update($arFields['USER_ID'], [
+        'UF_TELEGRAM_NOTFI' => "1",
+        'UF_EMAIL_NOTIFI'=>"37"   //Получать уведомления по email 3-5 раз, утром днем и вечером
+    ]);
 
     if ($_POST['FROM_TELEGRAM'] == '1' && !empty($_POST['UF_TELEGRAM_ID'])) {
         $userObj->Update($arFields['USER_ID'], ['UF_TELEGRAM_ID' => $_POST['UF_TELEGRAM_ID']]);
