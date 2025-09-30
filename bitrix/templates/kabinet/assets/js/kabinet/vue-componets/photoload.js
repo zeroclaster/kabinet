@@ -14,9 +14,16 @@ const photoload = BX.Vue3.BitrixVue.mutableComponent('photo-load', {
     },
     props: ['modelValue','original'],
     computed: {
-        buttonTitle(){
-            if(!this.original) return "Загрузить";
+        // Проверяем, есть ли оригинальное изображение
+        hasOriginalImage() {
+            return this.original &&
+                typeof this.original === 'object' &&
+                this.original.SRC &&
+                this.original.SRC.length > 0;
+        },
 
+        buttonTitle(){
+            if(!this.hasOriginalImage) return "Загрузить";
             return "Заменить";
         }
     },
