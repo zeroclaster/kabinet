@@ -35,9 +35,6 @@ CUtil::InitJSCore(array('window'));
 <div id="kabinetcontent" data-modalload="" data-usermessangerr="projectmainpage" data-dashboardprojectlist=""></div>
 
 <script type="text/html" id="kabinet-content">
-<div class="panel project-block">
-    <div class="panel-body"><span v-if="data.length==0">У Вас пока нет проектов.</span> <a class="btn btn-primary mdi-plus icon-button" href="/kabinet/projects/breif/">Создать новый проект</a></div>
-</div>
 
 <div class="panel project-block mb-5" v-for="value in data">
           <div class="panel-body project-item-block">
@@ -60,7 +57,7 @@ CUtil::InitJSCore(array('window'));
                 <div class="row task-project table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
                         <div class="h4">Услуги</div>
-                        <div v-if="datatask.length>0">Выберите, чтобы посмотреть ход выполнения, согласования и отчет:</div>
+                        <div v-if="hasTasksInProject(value.ID)">Выберите, чтобы посмотреть ход выполнения, согласования и отчет:</div>
                         <div class="d-flex flex-wrap ord-block1-1" v-if="value.UF_ORDER_ID">
                             <div v-for="task in datatask" class="order-item-block">
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
@@ -76,6 +73,18 @@ CUtil::InitJSCore(array('window'));
                         <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг и планирование</a>
                     </div>
                 </div>
+
+              <div class="row table-row-equal" v-if="alertcount(value.ID)>0">
+                  <div class="col-lg-9 thumbnail thumbnail-left">
+                      <div class="h4"> Требует вашего внимания: {{alertcount(value.ID)}}</div>
+                      <div>
+                          В проекте есть уведомления, которые требуют вашей реакции.
+                      </div>
+                  </div>
+                  <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
+                      <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/?id='+value.ID">проверить</a>
+                  </div>
+              </div>
 
                 <div class="row table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
@@ -102,19 +111,11 @@ CUtil::InitJSCore(array('window'));
                     </div>
                 </div>
 
-
-                <div class="row table-row-equal" v-if="alertcount(value.ID)>0">
-                    <div class="col-lg-9 thumbnail thumbnail-left">
-                        <div class="h4"> Требует вашего внимания: {{alertcount(value.ID)}}</div>
-                        <div>
-                            В проекте есть уведомления, которые требуют вашей реакции.
-                        </div>
-                    </div>
-                    <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/?id='+value.ID">проверить</a>
-                    </div>
-                </div>
             </div> <!-- <div class="panel-body project-item-block"> -->
+</div>
+
+<div class="panel project-block">
+    <div class="panel-body"><span v-if="data.length==0">У Вас пока нет проектов.</span> <a class="btn btn-primary mdi-plus icon-button" href="/kabinet/projects/breif/">Создать новый проект</a></div>
 </div>
 
 <!-- Modal -->

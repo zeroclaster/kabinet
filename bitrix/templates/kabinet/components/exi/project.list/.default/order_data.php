@@ -56,7 +56,8 @@ const orderlistStore = BX.Vue3.Pinia.defineStore('orderlist', {
 
                     ret_array.push('UF_NAME');
                     ret_array.push('UF_PROJECT_GOAL');
-                    ret_array.push('UF_TOPICS_LIST');
+                    // Убираем из обязательных по ТЗ от 20.09.2025
+                    //ret_array.push('UF_TOPICS_LIST');
 					
 					return ret_array;
 				},

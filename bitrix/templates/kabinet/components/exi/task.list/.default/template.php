@@ -281,7 +281,14 @@ $p = $request->get('p');
                         <div class="row form-group" v-if="CopyTask.UF_CYCLICALITY == 1 || CopyTask.UF_CYCLICALITY == 2">
                             <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
                                 <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
-                                <div class="d-flex align-items-center"><input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)"> <div>{{PRODUCT.MEASURE_NAME}}</div></div>
+                                <div class="d-flex align-items-center">
+                                    <div class="numerator-range">
+                                        <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                        <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
+                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                    </div>
+                                    <div>{{PRODUCT.MEASURE_NAME}}</div>
+                                </div>
                             </div>
                             <div class="col-md-4 mr-3 d-flex justify-content-end align-items-center mobile-mt-4" style="padding-right:0;">
                                 <select class="form-control" name="" id="" v-model="datataskCopy[taskindex].UF_CYCLICALITY" @change_="inpsaveCopy(taskindex)">
@@ -302,6 +309,7 @@ $p = $request->get('p');
                                 <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
                                     <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
                                     <div class="d-flex align-items-center">
+                                        <div class="numerator-range">
                                         <input
                                                 :id="'kolichestvo'+task.ID"
                                                 type="text"
@@ -311,6 +319,9 @@ $p = $request->get('p');
                                                 v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
                                                 @input="inpsaveCopy(taskindex)"
                                         >
+                                            <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
+                                            <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                        </div>
                                     </div>
                                     <div>{{PRODUCT.MEASURE_NAME}}</div>
                                 </div>
@@ -327,8 +338,12 @@ $p = $request->get('p');
                             <div class="col-sm-4 text-sm-right d-flex align-items-center mobile-view">
                                 <label class="col-form-label col-form-label-custom col-form-label-mobile" :for="'kolichestvo'+task.ID" style="padding-top: 0px;">Количество:</label>
                                 <div class="d-flex align-items-center">
-                                <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
-                                    <div>{{PRODUCT.MEASURE_NAME}}</div>
+                                    <div class="numerator-range">
+                                        <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
+                                        <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
+                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                    </div>
+                                        <div>{{PRODUCT.MEASURE_NAME}}</div>
                                 </div>
                             </div>
                             <div class="col-md-4 mr-3 d-flex justify-content-end align-items-center mobile-mt-4" style="padding-right:0;">
@@ -356,8 +371,8 @@ $p = $request->get('p');
                                                 v-model="datataskCopy[taskindex].UF_NUMBER_STARTS"
                                                 @input="inpsaveCopy(taskindex)"
                                         >
-                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
                                         <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
+                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
                                     </div>
                                     <div>{{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>

@@ -36,9 +36,9 @@
 }
 
 .numerator-range button.button-minus{
-	top: 0;
+	top: 25px;
 }
 
 .numerator-range button.button-plus{
-	top: 25px;
+	top: 0;
 }

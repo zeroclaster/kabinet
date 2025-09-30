@@ -27,7 +27,7 @@ const  usekabinetStore = BX.Vue3.Pinia.defineStore('kabinetStore',
             if (newVal.value)
             PNotify.alert({
                 type: 'success',
-                title: 'Выполнена!',
+                title: 'Выполнено!',
                 text: newVal.value,
                 animation: 'fade',
                 width: '300px',

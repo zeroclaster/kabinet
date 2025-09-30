@@ -279,6 +279,9 @@ project_list = (function (){
                                 }
                             });
 
+                    },
+                    hasTasksInProject(projectId) {
+                        return this.datatask.some(task => task.UF_PROJECT_ID === projectId);
                     }
                 },
                 components: {
