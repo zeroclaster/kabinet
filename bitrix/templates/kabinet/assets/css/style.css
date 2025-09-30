@@ -1192,3 +1192,30 @@ i.fa{
 .form-control.link_input{
 	width: 475px;
 }
+
+/* Всегда показываем рамку редактора */
+.kabinet-project .ck-editor {
+	border: 1px solid #dde3e8 !important;
+	border-radius: 8px !important;
+	overflow: hidden !important;
+}
+
+/* Рамка editable области - УБИРАЕМ или делаем совместимой */
+.kabinet-project .ck-editor__editable {
+	border: none !important; /* Убираем внутреннюю рамку */
+	outline: none !important;
+}
+
+/* При фокусе меняем цвет основной рамки */
+.kabinet-project .ck-editor__editable:focus {
+	outline: none !important;
+}
+
+.kabinet-project .ck-editor:focus-within {
+	border-color: #dde3e8 !important;
+}
+
+/* При наведении на весь редактор */
+.kabinet-project .ck-editor:hover {
+	border-color: #dde3e8 !important;
+}
