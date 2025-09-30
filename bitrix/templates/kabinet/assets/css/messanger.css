@@ -175,6 +175,10 @@
 	color: #b0b0b0;
 }
 
+.messanger-block .messange-list .admin-message .status-mark{
+	right: 107px;
+}
+
 .ck-content blockquote {
 	color: #b0b0b0!important;
 }

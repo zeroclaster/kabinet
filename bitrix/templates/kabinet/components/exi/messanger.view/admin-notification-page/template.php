@@ -15,6 +15,7 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 
 Loc::loadMessages(__FILE__);
 $this->setFrameMode(true);
@@ -43,10 +44,19 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
 </script>
 
 <?
-(\KContainer::getInstance())->get('catalogStore','orderStore','userStore');
+(\KContainer::getInstance())->get('catalogStore','orderStore');
+
+$dataArray = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Client')->getData([],['ID'=>$siteuser['ID']]);
+$currentUser = $dataArray[0];
+$user_state = CUtil::PhpToJSObject($currentUser, false, true);
 ?>
 
 <script>
+    const userStoreData = <?=$user_state?>;
+    const  userStore = BX.Vue3.Pinia.defineStore('userfield', {
+        state: () => ({datauser:userStoreData}),
+    });
+
     const briefListStoreData = <?=CUtil::PhpToJSObject($arResult["PROJECT_DATA"], false, true)?>;
     const  brieflistStore = BX.Vue3.Pinia.defineStore('brieflist', {
         state: () => ({
@@ -106,6 +116,11 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
                 ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
                 ...BX.Vue3.Pinia.mapState(FulfilistStore, ['datafulfi']),
             },
+            mounted() {
+                // Обработка GET-параметра clientid после монтирования компонента
+                this.handleClientIdParameter();
+                this.scrollToAppropriateBlock();
+            },
             methods: {
                 // Добавляем вычисляемое свойство для имени выбранного пользователя
                 selectedUserName() {
@@ -114,6 +129,22 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
                         return user ? user.PRINT_NAME : '';
                     }
                     return '';
+                },
+                // Новый метод для обработки GET-параметра clientid
+                handleClientIdParameter() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const clientId = urlParams.get('clientid');
+
+                    if (clientId) {
+                        // Проверяем, существует ли пользователь с таким ID
+                        const clientUser = this.alluser.find(u => u.ID == clientId);
+                        if (clientUser) {
+                            // Автоматически открываем чат с этим клиентом
+                            this.userChange(clientId, clientUser.IS_ADMIN);
+                        } else {
+                            console.warn('Пользователь с ID', clientId, 'не найден');
+                        }
+                    }
                 },
                 getQualityById(id){
                     return this.datafulfi.find(item => item.ID === id) || null;

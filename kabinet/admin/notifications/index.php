@@ -42,6 +42,7 @@ $GLOBALS['message_filter'] = [
 );?>
 
 <script>
+    /*
 BX.ready(function () {
     setTimeout(function () {
         const el = document.querySelector("footer");
@@ -49,6 +50,7 @@ BX.ready(function () {
     },1000)
 
 });
+     */
 </script>
 
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

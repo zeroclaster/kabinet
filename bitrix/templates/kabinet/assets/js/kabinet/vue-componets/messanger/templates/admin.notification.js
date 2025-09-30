@@ -65,6 +65,10 @@ window['messangerTemplateAdmin'] = `
                     </div>
 					
 					<div v-html="mess_item.UF_MESSAGE_TEXT_ORIGINAL" class=""></div>
+					
+					<div class="remove-message" @click="removemess(mess_item.ID)" v-if="accessAction(mess_item)"><i class="fa fa-times" aria-hidden="true"></i></div>
+			        <div class="edit-message" @click="(event) => editmess(mess_item,event)" v-if="accessAction(mess_item)"><i class="fa fa-pencil" aria-hidden="true"></i>Изменить</div> 
+			        <div class="cansel-edit" @click="canseledit">Отменить изменения</div>                
 				</div>
 			</div>
 			
