@@ -159,8 +159,8 @@ class Runnermanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager{
         $dateEnd = $TaskManager->getItem($task)->theorDateEnd($task);
 
 
-        if (!$task['UF_TARGET_SITE'][0]['VALUE']) throw new FulfiException("Вы не заполнили обязательное поле Ссылка!");
-        if (!$task['UF_CYCLICALITY']) throw new FulfiException("Вы не выбрали Цикличность задачи!");
+        if (!$task['UF_TARGET_SITE'][0]['VALUE']) throw new FulfiException("Вы не заполнили обязательное поле Ссылка! Нажмите кнопку Сохранить.");
+        if (!$task['UF_CYCLICALITY']) throw new FulfiException("Вы не выбрали Цикличность задачи! Нажмите кнопку Сохранить.");
         if ($task['UF_CYCLICALITY'] == 1 && empty($task['UF_DATE_COMPLETION'])) throw new FulfiException("Не выбрана дата завершения!");
 
 
