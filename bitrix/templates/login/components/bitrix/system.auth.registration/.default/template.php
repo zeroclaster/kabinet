@@ -54,8 +54,7 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
                     <div class="col-sm-7"><a href="#"><img src="" alt=""></a></div>
                     <div class="col-sm-12 text-right">
                         <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
-                        <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Вход</b></a><span class="px-2">|</span>
-                        <a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                        <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Уже регистрировались — войдите</b></a>
                     </div>
                 </div>
                 <?else:?>
@@ -63,8 +62,7 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
                         <div class="col-6 col-sm-7"><a href="#"><img src="" alt=""></a></div>
                         <div class="col-6 col-sm-12 text-right">
                             <a href="/" rel="nofollow"><b>На главную</b></a><span class="px-2">|</span>
-                            <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Вход</b></a><span class="px-2">|</span>
-                            <a class="font-weight-bold" href="/login/?register=yes">Регистрация</a>
+                            <a href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><b>Уже регистрировались — войдите</b></a>
                         </div>
                     </div>
                 <?endif;?>
@@ -206,7 +204,7 @@ new BX.PhoneAuth({
 
     <div class="row form-group">
         <div class="col-sm-3 text-sm-right">
-            <label class="col-form-label" for="USER_NAME"><?=GetMessage("AUTH_NAME")?></label>
+            <label class="col-form-label starrequired" for="USER_NAME"><?=GetMessage("AUTH_NAME")?></label>
         </div>
         <div class="col-sm-9" style="position: relative;">
             <div class="input-group">
@@ -218,7 +216,7 @@ new BX.PhoneAuth({
 
     <div class="row form-group">
         <div class="col-sm-3 text-sm-right">
-            <label class="col-form-label" for="USER_LAST_NAME"><?=GetMessage("AUTH_LAST_NAME")?></label>
+            <label class="col-form-label starrequired" for="USER_LAST_NAME"><?=GetMessage("AUTH_LAST_NAME")?></label>
         </div>
         <div class="col-sm-9" style="position: relative;">
         <div class="input-group">
@@ -392,23 +390,48 @@ document.bform.USER_NAME.focus();
 
 <script>
     BX.ready(function(){
-        // Находим форму и поле телефона
+        // Находим форму и обязательные поля
         var form = document.forms['bform'];
         var phoneField = document.getElementById('USER_PHONE_NUMBER');
+        var nameField = document.getElementById('USER_NAME');
+        var lastNameField = document.getElementById('USER_LAST_NAME');
 
-        if (form && phoneField) {
+        if (form && phoneField && nameField && lastNameField) {
             // Добавляем обработчик отправки формы
             BX.bind(form, 'submit', function(e) {
+                var hasError = false;
+                var errorMessage = '';
+
                 // Проверяем заполненность поля телефона
                 if (!BX.util.trim(phoneField.value)) {
-                    // Поле пустое, показываем ошибку и отменяем отправку
+                    hasError = true;
+                    errorMessage += '<span class="fa fa-exclamation-circle"></span> Поле "Телефон" обязательно для заполнения<br>';
+                    BX.addClass(phoneField.parentNode, 'has-error');
+                }
+
+                // Проверяем заполненность поля имени
+                if (!BX.util.trim(nameField.value)) {
+                    hasError = true;
+                    errorMessage += '<span class="fa fa-exclamation-circle"></span> Поле "Имя" обязательно для заполнения<br>';
+                    BX.addClass(nameField.parentNode, 'has-error');
+                }
+
+                // Проверяем заполненность поля фамилии
+                if (!BX.util.trim(lastNameField.value)) {
+                    hasError = true;
+                    errorMessage += '<span class="fa fa-exclamation-circle"></span> Поле "Фамилия" обязательно для заполнения<br>';
+                    BX.addClass(lastNameField.parentNode, 'has-error');
+                }
+
+                if (hasError) {
+                    // Есть ошибки, показываем их и отменяем отправку
                     e.preventDefault();
 
                     // Создаем или находим контейнер для ошибки
-                    var errorContainer = document.getElementById('phone_error_message');
+                    var errorContainer = document.getElementById('form_error_message');
                     if (!errorContainer) {
                         errorContainer = document.createElement('div');
-                        errorContainer.id = 'phone_error_message';
+                        errorContainer.id = 'form_error_message';
                         errorContainer.className = 'alert alert-danger';
                         errorContainer.style.marginTop = '10px';
 
@@ -422,23 +445,39 @@ document.bform.USER_NAME.focus();
                     }
 
                     // Устанавливаем текст ошибки
-                    errorContainer.innerHTML = '<span class="fa fa-exclamation-circle"></span> Поле "Телефон" обязательно для заполнения';
+                    errorContainer.innerHTML = errorMessage;
+                    errorContainer.style.display = 'block';
 
-                    // Добавляем класс ошибки к полю
-                    BX.addClass(phoneField.parentNode, 'has-error');
-
-                    // Фокусируемся на поле
-                    phoneField.focus();
+                    // Фокусируемся на первом поле с ошибкой
+                    if (!BX.util.trim(nameField.value)) {
+                        nameField.focus();
+                    } else if (!BX.util.trim(lastNameField.value)) {
+                        lastNameField.focus();
+                    } else if (!BX.util.trim(phoneField.value)) {
+                        phoneField.focus();
+                    }
                 }
             });
 
-            // Убираем ошибку при изменении поля
-            BX.bind(phoneField, 'input', function() {
-                var errorContainer = document.getElementById('phone_error_message');
-                if (errorContainer && BX.util.trim(phoneField.value)) {
-                    errorContainer.style.display = 'none';
-                    BX.removeClass(phoneField.parentNode, 'has-error');
-                }
+            // Убираем ошибку при изменении полей
+            var fields = [phoneField, nameField, lastNameField];
+            fields.forEach(function(field) {
+                BX.bind(field, 'input', function() {
+                    var errorContainer = document.getElementById('form_error_message');
+                    if (errorContainer && BX.util.trim(field.value)) {
+                        BX.removeClass(field.parentNode, 'has-error');
+                        // Скрываем ошибку только если все поля заполнены
+                        var allFieldsFilled = true;
+                        fields.forEach(function(f) {
+                            if (!BX.util.trim(f.value)) {
+                                allFieldsFilled = false;
+                            }
+                        });
+                        if (allFieldsFilled) {
+                            errorContainer.style.display = 'none';
+                        }
+                    }
+                });
             });
         }
     });

@@ -32,7 +32,7 @@ else
 <label data-bx-user-consent="<?=htmlspecialcharsbx($config)?>" class="main-user-consent-request">
 	<input type="checkbox" value="Y" <?=($arParams['IS_CHECKED'] ? 'checked' : '')?> name="<?=htmlspecialcharsbx($arParams['INPUT_NAME'])?>">
 </label>
-<span class="<?=$linkClassName?>">Нажимая кнопку «Регистрация», я даю свое <a href='/pravila-sayta/' target='_blank'>согласие на обработку моих персональных данных</a>, в соответствии с Федеральным законом от 27.07.2006 года №152-ФЗ «О персональных данных», и принимаю условия <a href='/publichnaya-oferta/' target='_blank'>Оферты и Договора оказания услуг</a></span>
+<span class="<?=$linkClassName?>">Я даю свое <a href='/pravila-sayta/' target='_blank'>согласие на обработку моих персональных данных</a>, в соответствии с Федеральным законом от 27.07.2006 года №152-ФЗ «О персональных данных», и принимаю условия <a href='/publichnaya-oferta/' target='_blank'>Оферты и Договора оказания услуг</a></span>
 <div data-bx-template="main-user-consent-request-loader" style="display: none;">
 	<div class="main-user-consent-request-popup">
 		<div class="main-user-consent-request-popup-cont">
