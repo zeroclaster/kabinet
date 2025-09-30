@@ -7,6 +7,10 @@ CModule::IncludeModule('kabinet');
 //$data = json_decode($input, true);
 //AddMessage2Log(print_r($data,true), "my_module_id");
 
+
+// Флаг для определения, нужно ли передавать запрос в Bitrix24
+$shouldProxyToBitrix = false;
+
 if(1) {
     $bot = new \Bitrix\telegram\Telegrambothandler();
 
@@ -24,10 +28,11 @@ if(1) {
     } catch (\Bitrix\telegram\exceptions\TelegramException $e) {
         // Обработка ошибки (логирование, уведомление и т.д.)
         AddMessage2Log($e->getMessage(), 'telegram');
+        $shouldProxyToBitrix = true;
     }
 }
 
-if(1) {
+if($shouldProxyToBitrix) {
 
     $bitrixWebhookUrl = 'https://im-ru.bitrix.info/imwebhook/eh/eb5f7f3bb1f743224ddd5112bd08c5411690206592/';
 
