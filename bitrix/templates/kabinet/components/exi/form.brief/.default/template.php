@@ -18,7 +18,7 @@ Loc::loadMessages(__FILE__);
 
 ?>
 <section class="section-xs" style="position: relative">
-    <div class="container-fluid form-group" id="kabinetcontent" data-ckeditor="111" data-select2="erytr" data-formbrief=""></div>
+    <div class="container-fluid form-group form-brief" id="kabinetcontent" data-ckeditor="111" data-select2="erytr" data-formbrief=""></div>
 </section>
 
 
@@ -26,7 +26,7 @@ Loc::loadMessages(__FILE__);
 
     <section class="">
         <div class="container-fluid">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex no-d-flex justify-content-between">
                 <div>
                     <h4 v-if="fields.UF_NAME_ORIGINAL != ''">Проект: {{fields.UF_NAME_ORIGINAL}}</h4>
                     <div class="h1"><i class="fa fa-list" aria-hidden="true"></i> Бриф проекта</div>
@@ -36,23 +36,8 @@ Loc::loadMessages(__FILE__);
     </section>
 
 <div class="panel">
-    <div class="panel-header">
-        <h4 class="panel-title"></h4>
-    </div>
     <div class="panel-body">
-	
-	<?/*
-	ФИЛЬТР
-	*/?>
-	<div class="brief-field-filter">
-		<div class="d-flex justify-content-center">
-		<div class="mr-3 d-flex align-items-center">Показать:</div>
-		<div class="mr-3"><button :class="'btn btn-link' + (filterView == 'showRequire'? ' disabled':'')" @click="filterView='showRequire'" type="button">обязательные поля <?/*({{getRequireFields(fields.UF_ORDER_ID).length}} заполнить)*/?></button></div>
-		<div><button :class="'btn btn-link' + (filterView == 'showAll'? ' disabled':'')" type="button" @click="filterView='showAll'">все поля</button></div>
-		</div>
-	</div>
-	
-	
+
 <form action="" method="post" enctype="multipart/form-data">
     <? foreach ($arParams['GROUPS'] as $key => $GROUP_TITLE):?>
         <div class="form-group">
@@ -74,6 +59,29 @@ Loc::loadMessages(__FILE__);
 
         <?endforeach;?>
     <?endforeach;?>
+
+
+    <?/*
+ФИЛЬТР
+*/?>
+    <?/*
+ФИЛЬТР
+*/?>
+    <div class="brief-field-filter">
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-link d-flex align-items-center" type="button" @click="toggleFilterView">
+                <template v-if="filterView == 'showRequire'">
+                    <span class="mr-2">ПОКАЗАТЬ ВСЕ ПОЛЯ</span>
+                    <i class="fa fa-angle-down" aria-hidden="true" style="font-size: 31px;"></i>
+                </template>
+                <template v-else>
+                    <span class="mr-2">ПОКАЗАТЬ ТОЛЬКО ОБЯЗАТЕЛЬНЫЕ ПОЛЯ</span>
+                    <i class="fa fa-angle-up" aria-hidden="true" style="font-size: 31px;"></i>
+                </template>
+            </button>
+        </div>
+    </div>
+
     <div class="row form-group">
         <div class="col-sm-3 text-sm-right">
         </div>

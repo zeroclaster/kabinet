@@ -29,8 +29,9 @@ foreach($arResult['fieldValues'] as $value)
                     <?= $component->getHtmlBuilder()->buildTagAttributes($value['attrList'])?>
                 >
             <?php else: ?>
-
+            <div class="richtext-height-200">
                 <richtext :original="<?=$value['attrList']['original'] ?>" v-model="<?=$value['attrList']["v-model"] ?>"/>
+            </div>
 
 <?/*
                 <textarea

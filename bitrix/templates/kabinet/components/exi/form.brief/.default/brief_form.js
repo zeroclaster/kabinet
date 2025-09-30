@@ -2,7 +2,7 @@ const form_brief = {
     data() {
         return {
 			PROJECT_ID:PHPPARAMS.PROJECT_ID,
-			filterView:'showAll',
+            filterView: 'showRequire', // начальное значение - показываем только обязательные
         }
     },
     computed: {
@@ -39,6 +39,10 @@ const form_brief = {
         // bitrix/templates/kabinet/assets/js/kabinet/vue-componets/extension/addnewmethods.js
         ...addNewMethods(),
 		...BX.Vue3.Pinia.mapActions(orderlistStore, ['getRequireFields']),
+        // Новый метод для переключения фильтра
+        toggleFilterView() {
+            this.filterView = this.filterView === 'showRequire' ? 'showAll' : 'showRequire';
+        },
 		isRequire(field){
 			const RequireFields = this.getRequireFields(this.fields.UF_ORDER_ID);
 			if(RequireFields.indexOf(field) == -1) return '';
@@ -78,11 +82,15 @@ const form_brief = {
 						
 			return '';
 		},
-        isViewGroupTitle(groupFields){
+        isViewGroupTitle(groupFields) {
+            // Если показываем все поля, всегда показываем заголовок группы
+            if (this.filterView === 'showAll') return '';
+
+            // Для режима "только обязательные" проверяем есть ли обязательные поля в группе
             const RequireFields = this.getRequireFields(this.fields.UF_ORDER_ID);
             let count = 0;
-            for (field of groupFields){
-                if(RequireFields.indexOf(field) != -1) count++;
+            for (field of groupFields) {
+                if (RequireFields.indexOf(field) != -1) count++;
             }
 
             if (count == 0) return 'hidden-group';

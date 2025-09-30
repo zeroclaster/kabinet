@@ -49,3 +49,7 @@ if ($this->getComponent()->isMobileMode())
 		'/bitrix/components/bitrix/main.field.enum/templates/main.view/mobile.js'
 	);
 }
+
+foreach ($arResult['userField']['USER_TYPE']['FIELDS'] as $key => $val){
+    $arResult['userField']['USER_TYPE']['FIELDS'][$key] = preg_replace('/\s*\[\d+\]\s*$/', '', $val);
+}
