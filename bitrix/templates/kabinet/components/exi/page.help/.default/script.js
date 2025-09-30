@@ -36,7 +36,7 @@ class pagehelp {
         const cookieCode = this.cookie_prefix + "_pagehelp"+this.phpparams.CODE;
         if (typeof BX.getCookie(cookieCode) == "undefined" || BX.getCookie(cookieCode) == '') {
             //BX.show(this.CONTAINER_NODE);
-            this.openHelp();
+            //this.openHelp();
         }
 
     }

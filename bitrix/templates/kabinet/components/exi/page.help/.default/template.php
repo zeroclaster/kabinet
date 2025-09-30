@@ -21,7 +21,7 @@ $this->setFrameMode(true);
 $uid = $arParams["CODE"];
 ?>
 
-<section  id="block<?=$uid?>" class="section-xs help-page-module">
+<section  id="block<?=$uid?>" class="section-xs help-page-module" style="display: none;">
 
         <div class="row row-30">
             <div class="col-md-12">
