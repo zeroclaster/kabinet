@@ -46,12 +46,15 @@ const mydatepicker = BX.Vue3.BitrixVue.mutableComponent('date-picker', {
     mounted () {
         // Add event handler
         let mindate = moment();
-        if (typeof this.mindd != "undefined") mindate = moment.unix(this.mindd);
+        if (typeof this.mindd != "undefined") {
+            if (this.mindd) mindate = moment.unix(this.mindd).toDate();
+            else mindate = this.mindd;
+        }
 
         $(this.$refs.input).datetimepicker({
             locale: moment.locale('ru'),
             format: 'DD.MM.YYYY',
-            minDate: mindate.toDate()//new Date()
+            minDate: mindate//new Date()
         })
             .on('dp.change', (event) => {
                 this.updateValue(event.date);
