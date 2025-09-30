@@ -61,6 +61,8 @@ $config = [
 function onPrologBootstrape(){
     global $USER;
 
+    if (defined('ADMIN_SECTION') && ADMIN_SECTION) return;
+
     if (\CSite::InDir('/kabinet/') && (!$USER || !$USER->IsAuthorized())) LocalRedirect("/login/");
 
     $context = \PHelp::isAdmin() ? 'admin' : 'user';
