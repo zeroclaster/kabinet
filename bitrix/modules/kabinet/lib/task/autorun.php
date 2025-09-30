@@ -62,6 +62,7 @@ class Autorun{
 
             // если нет, то планируем
             if (!$isExists) {
+                $task['UF_DATE_COMPLETION'] = $TaskManager->getItem($task)->theorDateEnd($task);
                 $taskConvert = $TaskManager->remakeData([$task]);
                 $runnerManager->startTask($taskConvert[0]);
             }
