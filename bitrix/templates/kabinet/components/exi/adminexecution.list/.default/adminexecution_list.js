@@ -1,7 +1,8 @@
 var adminexecution_list = document.adminclient_list || {};
 adminexecution_list = (function (){
     return {
-        start(PHPPARAMS){
+        start(PHPPARAMS, messageStoreInstance){
+
             const changestatus = BX.Vue3.BitrixVue.mutableComponent('change status', {
                 template: `
                           <div class="mt-3" v-if="catalog.length>0">
@@ -46,6 +47,89 @@ adminexecution_list = (function (){
                 }
             });
 
+            const changeResponsible = BX.Vue3.BitrixVue.mutableComponent('change-Responsible', {
+                template: `
+                <div><label class="" :for="'responsible-admin'+id_input">Ответственный</label></div>
+                <div>
+                    <select :id="'responsible-admin'+id_input" v-model="responsibleModelvalue">
+                        <option></option>
+                        <option v-for="option in admindata" :value="option.id">{{ option.value }}</option>
+                    </select>
+                </div>
+                `,
+                data(){
+                    return{
+                        id_input:'inpid'+kabinet.uniqueId(),
+                    }
+                },
+                props: ['modelValue','tindex','admindata','status'],
+                computed: {
+                    responsibleModelvalue: {
+                        get() {
+                            if (!this.modelValue) return 0;
+
+                            try {
+                                const data = JSON.parse(this.modelValue);
+                                if (Array.isArray(data) && data.length > 0) {
+                                    // Ищем последнюю запись с текущим статусом
+                                    const currentResponsible = data.find(item => item.status === this.status);
+                                    if (currentResponsible) {
+                                        return currentResponsible.id;
+                                    }
+
+                                    // Если нет записи с текущим статусом, возвращаем последнюю
+                                    //return data[data.length - 1].id;
+                                    return 0;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing UF_RESPONSIBLE:', e);
+                            }
+
+                            return 0;
+                        },
+                        set(newValue) {
+                            if (!newValue || newValue === 0) {
+                                this.$emit('update:modelValue', '[]');
+                                return;
+                            }
+
+                            const user = this.admindata.find(t => t.id === newValue);
+                            if (!user) return;
+
+                            let data = [];
+
+                            try {
+                                if (this.modelValue) {
+                                    data = JSON.parse(this.modelValue);
+                                }
+                            } catch (e) {
+                                console.error('Error parsing existing UF_RESPONSIBLE:', e);
+                                data = [];
+                            }
+
+                            // Удаляем существующую запись с текущим статусом (если есть)
+                            data = data.filter(item => item.status !== this.status);
+
+                            // Добавляем новую запись
+                            data.push({
+                                id: user.id,
+                                value: user.value,
+                                status: this.status,
+                                date: new Date().toISOString()
+                            });
+
+                            this.$emit('update:modelValue', JSON.stringify(data));
+                            this.inpsave(this.tindex);
+                        }
+                    }
+                },
+                methods: {
+                    inpsave(index){
+                        if (typeof this.$.inpSaveTimer != 'undefined') clearTimeout(this.$.inpSaveTimer);
+                        this.$.inpSaveTimer = setTimeout(()=>{this.$root.savetask(index);},1000);
+                    }
+                }
+            });
 
             const accountfield = BX.Vue3.BitrixVue.mutableComponent('account-field', {
                 template: `
@@ -139,6 +223,7 @@ adminexecution_list = (function (){
                     return {
                         countview:PHPPARAMS['viewcount'],
                         total: PHPPARAMS['total'],
+                        adminlist: PHPPARAMS['adminlist'],
                         showloadmore:true,
                         limitpics:5
                     }
@@ -171,7 +256,7 @@ adminexecution_list = (function (){
                         let formData = new FormData;
                         this.$root.offset = this.$root.offset + 25;
                         formData.append("OFFSET",this.$root.offset);
-                        for (fieldname in filterclientlist) formData.append(fieldname,filterclientlist[fieldname]);
+                        formData.append("FILTER_JSON", JSON.stringify(filterclientlist));
 
                         formData.append("countview",this_.countview);
                         const kabinetStore = usekabinetStore();
@@ -189,12 +274,21 @@ adminexecution_list = (function (){
                             //if (Object.keys(data.RUNNER_DATA).length == this_.total) this_.showloadmore = false;
 
 
+                            /*
 							if (typeof data.MESSAGE_DATA != "undefined" && Object.keys(data.MESSAGE_DATA).length>0){
 								const message_store = messageStore();								
 								for(index in data.MESSAGE_DATA) 
                                     message_store.datamessage[index] = data.MESSAGE_DATA[index];
-								
 							}
+                             */
+
+                            // ИСПРАВЛЕННЫЙ БЛОК - используем переданное хранилище
+                            if (typeof data.MESSAGE_DATA != "undefined" && Object.keys(data.MESSAGE_DATA).length>0 && messageStoreInstance){
+                                for(index in data.MESSAGE_DATA) {
+                                    messageStoreInstance.datamessage[index] = data.MESSAGE_DATA[index];
+                                }
+                            }
+
 
                             // клиенты
                             if (typeof data.CLIENT_DATA != "undefined")
@@ -386,6 +480,7 @@ adminexecution_list = (function (){
                     sharephoto,
                     accountfield,
                     changestatus,
+                    changeResponsible,
                     messangerperformances,
                     richtext,
                 },

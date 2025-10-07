@@ -123,6 +123,13 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         // Требует внимания
         if($post['attention']) ${$FILTER_NAME}['attention'] = $SEARCH_RESULT['attention'] = $post['attention'];
 
+        // Добавляем обработку ответственного
+        if($post['responsibleidsearch'])
+            ${$FILTER_NAME}['responsibleidsearch'] = $SEARCH_RESULT['responsibleidsearch'] = $post['responsibleidsearch'];
+
+        if($post['responsibletextsearch'] && !$post['responsibleidsearch'])
+            ${$FILTER_NAME}['responsibletextsearch'] = $SEARCH_RESULT['responsibletextsearch'] = $post['responsibletextsearch'];
+
         $this->includeComponentTemplate($this->template);
         return true;
     }
@@ -226,6 +233,109 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         return $output;
     }
 
+    public function getalldataAction()
+    {
+        $output = [
+            'clients' => [],
+            'projects' => [],
+            'tasks' => [],
+            'executions' => [],
+            'responsibles' => [],
+        ];
+
+        // Получаем всех клиентов
+        $clientsData = \Bitrix\Kabinet\UserTable::getlist([
+            'select'=>['ID','LOGIN','NAME','LAST_NAME','SECOND_NAME','EMAIL'],
+            'filter'=>[
+                'ACTIVE'=>1,
+                'UF_GROUP_REF.GROUP_ID'=>REGISTRATED,
+                '>PROJECTS.ID'=>0,
+                'PROJECTS.UF_ACTIVE'=>1
+            ],
+            'order'=>['NAME'=>'ASC','EMAIL'=>'ASC']
+        ])->fetchAll();
+
+        foreach ($clientsData as $item){
+            $userName = current(array_filter([
+                trim(implode(" ", [$item['LAST_NAME'], $item['NAME'], $item['SECOND_NAME']])),
+                $item['LOGIN']
+            ]));
+
+            $output['clients'][] = [
+                "value" => $userName .' '. $item['EMAIL']. ' (ID'.$item['ID'].')',
+                "id" => $item['ID']
+            ];
+        }
+
+        // Получаем все проекты (без фильтра по клиенту)
+        $projectsData = \Bitrix\Kabinet\project\datamanager\ProjectsTable::getlist([
+            'select'=>['ID','UF_NAME','UF_EXT_KEY'],
+            'filter'=>['UF_ACTIVE'=>1],
+            'order'=>['UF_NAME'=>'ASC']
+        ])->fetchAll();
+
+        foreach ($projectsData as $item){
+            $output['projects'][] = [
+                "value" => $item['UF_NAME']. ' (#'.$item['UF_EXT_KEY'].')',
+                "id" => $item['ID']
+            ];
+        }
+
+        // Получаем все задачи (без фильтра по проекту)
+        $tasksData = \Bitrix\Kabinet\task\datamanager\TaskTable::getlist([
+            'select'=>['ID','UF_NAME','UF_EXT_KEY'],
+            'filter'=>['UF_ACTIVE'=>1],
+            'order'=>['UF_NAME'=>'ASC']
+        ])->fetchAll();
+
+        foreach ($tasksData as $item){
+            $output['tasks'][] = [
+                "value" => $item['UF_NAME']. ' (#'.$item['UF_EXT_KEY'].')',
+                "id" => $item['ID']
+            ];
+        }
+
+        // Получаем все execution ID
+        $executionsData = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::getlist([
+            'select'=>['ID', 'UF_EXT_KEY'],
+            'filter'=>['UF_ACTIVE'=>1],
+            'order'=>['ID'=>'DESC']
+        ])->fetchAll();
+
+        foreach ($executionsData as $item){
+            $output['executions'][] = [
+                "value" => $item['UF_EXT_KEY'],
+                "id" => $item['UF_EXT_KEY'],
+                "extKey" => $item['UF_EXT_KEY']
+            ];
+        }
+
+        // Получаем всех ответственных менеджеров
+        $responsiblesData = \Bitrix\Kabinet\UserTable::getlist([
+            'select'=>['ID','LOGIN','NAME','LAST_NAME','SECOND_NAME','EMAIL'],
+            'filter'=>[
+                'ACTIVE'=>1,
+                'UF_GROUP_REF.GROUP_ID'=>MANAGER,
+            ],
+            'order'=>['NAME'=>'ASC','EMAIL'=>'ASC'],
+            'group'=>['ID'],
+        ])->fetchAll();
+
+        foreach ($responsiblesData as $item){
+            $userName = current(array_filter([
+                trim(implode(" ", [$item['LAST_NAME'], $item['NAME'], $item['SECOND_NAME']])),
+                $item['LOGIN']
+            ]));
+
+            $output['responsibles'][] = [
+                "value" => $userName .' '. $item['EMAIL']. ' (ID'.$item['ID'].')',
+                "id" => $item['ID']
+            ];
+        }
+
+        return $output;
+    }
+
     /* signed params*/
     protected function listKeysSignedParameters()
     {
@@ -238,6 +348,16 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
     {
         //если действия не нужно конфигурировать, то пишем просто так. И будет конфиг по умолчанию
         return [
+            'getalldata' => [
+                'prefilters' => [
+                    new ActionFilter\Authentication(),
+                    new ActionFilter\HttpMethod(
+                        array(ActionFilter\HttpMethod::METHOD_GET, ActionFilter\HttpMethod::METHOD_POST)
+                    ),
+                    new ActionFilter\Csrf(),
+                    new \Bitrix\Kabinet\Engine\ActionFilter\Groupmanager()
+                ]
+            ],
             'getclients' => [
                 'prefilters' => [
                     new ActionFilter\Authentication(),

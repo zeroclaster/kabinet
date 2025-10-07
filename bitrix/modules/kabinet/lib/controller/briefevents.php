@@ -347,15 +347,9 @@ class Briefevents extends \Bitrix\Main\Engine\Controller
             'message'=>'Данные успешно обновлены!'
         ];
     }
+    
+    public function searchAction($q){
+        return  \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Project')->searchProducts($q);
+    }
 
-	public function edittaskAction(){
-		$request = $this->getRequest();
-        $fields = $request->getPostList()->toArray();
-		$files = $request->getFileList()->toArray();
-		
-		AddMessage2Log([$fields], "my_module_id");
-        AddMessage2Log($files, "my_module_id");
-		AddMessage2Log([$_FILES], "my_module_id");
-		
-	}
 }

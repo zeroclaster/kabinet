@@ -70,7 +70,8 @@ $this->setFrameMode(true);
                     <label class="col-form-label col-form-label-sm" for="search-executionid">Найти исполнение, #</label>
                 </div>
                 <div class="col-sm-4">
-                    <input value="<?=$SEARCH_RESULT['executionidsearch']?>" name="executionidsearch" id="search-executionid" class="form-control form-control-sm" type="text" placeholder="">
+                    <input id="executionidsearch" name="executionidsearch" type="hidden">
+                    <input value="<?=$SEARCH_RESULT['executiontextsearch']?>" name="executiontextsearch" id="search-executionid" class="form-control form-control-sm" type="text" placeholder="введите номер">
                 </div>
             </div>
         </div>
@@ -83,12 +84,23 @@ $this->setFrameMode(true);
                     <label class="col-form-label col-form-label-sm" for="search-statusexecution">Со статусом:</label>
                 </div>
                 <div class="col-sm-9">
-                    <select value="<?=$SEARCH_RESULT['statusexecutionsearch']?>" name="statusexecutionsearch" id="search-statusexecution" class="form-control form-control-sm">
-                        <option value=""></option>
+
+                    <div class="status-checkboxes" style="margin-bottom: 10px;">
                         <?foreach ($runnerManager->getStatusList() as $idstatus => $titlestatus):?>
-                            <option value="<?=$idstatus?>" <?if(is_numeric($SEARCH_RESULT['statusexecutionsearch']) && $SEARCH_RESULT['statusexecutionsearch'] == $idstatus):?>selected<?endif;?>><?=$titlestatus?></option>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="statusexecutionsearch[]"
+                                       value="<?=$idstatus?>"
+                                       id="status-<?=$idstatus?>"
+                                       <?if(is_array($SEARCH_RESULT['statusexecutionsearch']) && in_array($idstatus, $SEARCH_RESULT['statusexecutionsearch'])):?>checked<?endif;?>
+                                       <?if(!is_array($SEARCH_RESULT['statusexecutionsearch']) && is_numeric($SEARCH_RESULT['statusexecutionsearch']) && $SEARCH_RESULT['statusexecutionsearch'] == $idstatus):?>checked<?endif;?>>
+                                <label class="form-check-label" for="status-<?=$idstatus?>" style="font-size: 0.875rem;">
+                                    <?=$titlestatus?>
+                                </label>
+                            </div>
                         <?endforeach;?>
-                    </select>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -140,6 +152,20 @@ $this->setFrameMode(true);
                 </ul>
                 </div>
             </div>
+
+
+                    <div class="row form-group">
+                        <div class="col-sm-3 text-sm-right">
+                            <label class="col-form-label col-form-label-sm" for="search-responsible">Ответственный</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input id="responsibleidsearch" name="responsibleidsearch" type="hidden">
+                            <input value="<?=$SEARCH_RESULT['responsibletextsearch']?>" name="responsibletextsearch" id="search-responsible" class="form-control form-control-sm" type="text" placeholder="начните вводить или выберите из списка" data-typehead=''>
+                        </div>
+                    </div>
+
+
+
         </div>
         <div class="col-md-6">
             <div class="row form-group">
@@ -195,7 +221,8 @@ $this->setFrameMode(true);
 
     <div class="row justify-content-md-center">
         <div class="col-md-8 text-center">
-            <button type="submit" class="btn btn-primary mr-5">Показать</button> Показать: <a href="#" id="clearfilter">Все</a>
+            <button type="submit" class="btn btn-primary mr-5">Показать</button>
+            <button type="button" id="clearfilter" class="btn btn-outline-secondary">Сбросить фильтр</button>
         </div>
     </div>
 </form>

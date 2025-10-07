@@ -95,7 +95,7 @@ $this->setFrameMode(true);
             <div class="mb-3 form-group datepicker-input">
                 <div><label class="" for="planedate-execution">Плановая дата выполнения</label></div>
                 <div class="d-flex">
-                    <mydatepicker :tindex="runnerindex" :original="runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1" :mindd="runner.UF_PLANNE_DATE_ORIGINAL.MINDATE" v-model="runner.UF_PLANNE_DATE"/>
+                    <mydatepicker :tindex="runnerindex" :original="runner.UF_PLANNE_DATE_ORIGINAL.FORMAT1" :mindd="false" v-model="runner.UF_PLANNE_DATE"/>
                 </div>
             </div>
 
@@ -108,6 +108,7 @@ $this->setFrameMode(true);
                 <div class="mb-3">
                     <div>Проект:</div>
                     <div class="text-primary">{{dataproject[UF_PROJECT_ID].UF_NAME}} #{{dataproject[UF_PROJECT_ID].UF_EXT_KEY}}</div>
+                    <div><a :href="'/kabinet/projects/breif/?id='+UF_PROJECT_ID+'&usr='+UF_AUTHOR_ID" target="_blank">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
                 </div>
                 <div class="mb-3">
                     <div>Задача:</div>
@@ -204,9 +205,13 @@ $this->setFrameMode(true);
 
         <td style="width: 20%">
             <div class="mb-3 form-group datepicker-input">
+                <changeResponsible :tindex="runnerindex" :admindata="adminlist" :status="runner.UF_STATUS" v-model="runner.UF_RESPONSIBLE"/>
+            </div>
+
+            <div class="mb-3 form-group datepicker-input">
                 <div><label class="" for="factdate-execution">Дата публикации</label></div>
                 <div class="d-flex">
-                    <mydatepicker :tindex="runnerindex" :original="runner.UF_ACTUAL_DATE_ORIGINAL.FORMAT1" :mindd="runner.UF_ACTUAL_DATE_ORIGINAL.MINDATE" v-model="runner.UF_ACTUAL_DATE"/>
+                    <mydatepicker :tindex="runnerindex" :original="runner.UF_ACTUAL_DATE_ORIGINAL.FORMAT1" :mindd="false" v-model="runner.UF_ACTUAL_DATE"/>
                 </div>
             </div>
 
@@ -258,7 +263,10 @@ $this->setFrameMode(true);
 	const taskListStoreData = <?=CUtil::PhpToJSObject($arResult["TASK_DATA"], false, true)?>;
 	const orderListStoreData = <?=CUtil::PhpToJSObject($arResult["ORDER_DATA"], false, true)?>;
 	const runnerListStoreData = <?=CUtil::PhpToJSObject($arResult["RUNNER_DATA"], false, true)?>;
-	const filterclientlist = <?=CUtil::PhpToJSObject($arParams["FILTER"], false, true)?>;
+
+
+    const filterclientlist = <?=json_encode($arParams["FILTER"])?>;
+	console.log(filterclientlist);
 
     const  clientlistStore = BX.Vue3.Pinia.defineStore('clientlist', {
         state: () => ({dataclient:clientListStoreData}),
@@ -302,15 +310,19 @@ $this->setFrameMode(true);
 
         window.addEventListener("components:ready", function(event) {
             const messangerSystem2 = createMessangerSystem();
+            const messageStoreInstance = messangerSystem2.store();
             messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
                 'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
                 'TEMPLATE' => 'messangerTemplate'
             ], false, true)?>);
-            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
+            messageStoreInstance.$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
 
             adminexecution_list.start(<?=CUtil::PhpToJSObject([
 						"viewcount"=>$arParams["COUNT"],
-					    "total"=>$arResult["TOTAL"]
-				], false, true)?>);
+					    "total"=>$arResult["TOTAL"],
+                        "adminlist"=>$arParams["ADMINLIST"],
+				], false, true)?>,
+                messageStoreInstance // Передаем хранилище вторым параметром
+            );
         });
     </script>

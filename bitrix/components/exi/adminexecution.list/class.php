@@ -49,6 +49,8 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         if(empty($params['MESSAGE_COUNT'])) $params['MESSAGE_COUNT'] = 5;
 
+        $params['ADMINLIST'] = $this->getAdminList();
+
         return $params;
     }
 
@@ -130,8 +132,9 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         if(!empty($FILTER['executionidsearch'])) $Query->addFilter('UF_EXT_KEY',$FILTER['executionidsearch']);
 
         //Со статусом
+
         if(
-            isset($FILTER['statusexecutionsearch']) && is_numeric($FILTER['statusexecutionsearch'])
+            isset($FILTER['statusexecutionsearch']) && is_array($FILTER['statusexecutionsearch'])
         ) $Query->addFilter('UF_STATUS',$FILTER['statusexecutionsearch']);
 
 
@@ -148,6 +151,10 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
             $Query->where($carriagesFilter);
         }
+
+        // Фильтр по ответственному
+        if(!empty($FILTER["responsibleidsearch"])) $Query->addFilter('%UF_RESPONSIBLE',"(ID".$FILTER["responsibleidsearch"].")");
+
 
         // Привязываем задачу
         $Query->registerRuntimeField('TASK',
@@ -322,17 +329,67 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
     }
 
+    public function getAdminList(){
+        $output = [];
+
+        $data = \Bitrix\Kabinet\UserTable::getlist([
+            'select'=>['ID','LOGIN','NAME','LAST_NAME','SECOND_NAME','EMAIL'],
+            'filter'=>[
+                'ACTIVE'=>1,
+                'UF_GROUP_REF.GROUP_ID'=>MANAGER,
+            ],
+            'order'=>['NAME'=>'ASC','EMAIL'=>'ASC'],
+            'group'=>['ID'],
+        ])->fetchAll();
+
+        foreach ($data as $item){
+            $userName = current(array_filter([
+                trim(implode(" ", [$item['LAST_NAME'], $item['NAME'], $item['SECOND_NAME']])),
+                $item['LOGIN']
+            ]));
+
+            $output[] = [
+                "value"=>$userName .' '. $item['EMAIL']. ' (ID'.$item['ID'].')',
+                'id'=>$item['ID'],
+            ];
+        }
+
+        return $output;
+    }
+
     public function loadmoreAction()
     {
         $arParams = &$this->arParams;
         $post = $this->request->getPostList()->toArray();
-        $arParams['COUNT'] = $post['countview'];
-        $arParams['OFFSET'] = $post['OFFSET'];
-        $arParams['FILTER'] = $this->request->getPostList()->toArray();
+
+        // Устанавливаем базовые параметры
+        $arParams['COUNT'] = $post['countview'] ?? $arParams['COUNT'];
+        $arParams['OFFSET'] = $post['OFFSET'] ?? $arParams['OFFSET'];
+
+        // Обрабатываем JSON фильтр
+        if (!empty($post['FILTER_JSON'])) {
+            $filterJson = $post['FILTER_JSON'];
+            $decodedFilter = json_decode($filterJson, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decodedFilter)) {
+                $arParams['FILTER'] = $decodedFilter;
+            } else {
+                // Если JSON некорректный, используем исходный фильтр
+                $arParams['FILTER'] = $this->request->getPostList()->toArray();
+            }
+        } else {
+            // Если FILTER_JSON не передан, используем стандартный способ
+            $arParams['FILTER'] = $this->request->getPostList()->toArray();
+        }
+
+        // Удаляем служебные поля из фильтра
+        unset($arParams['FILTER']['OFFSET']);
+        unset($arParams['FILTER']['countview']);
+        unset($arParams['FILTER']['FILTER_JSON']);
+        unset($arParams['FILTER']['signedParamsString']);
 
         // Делаем запрос со сдвигом OFFSET
         $this->prepareData();
-
 
         if ($this->hasErrors())
         {
