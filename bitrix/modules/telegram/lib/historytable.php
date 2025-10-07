@@ -21,6 +21,7 @@ use Bitrix\Main\ORM\Fields\Validators\LengthValidator;
  * <li> PERIOD_DATE date mandatory
  * <li> DATE_SENT datetime mandatory
  * <li> IS_RECOVERY bool ('N', 'Y') optional default 'N'
+ * <li> NOTIFICATION_TYPE string(50) mandatory
  * </ul>
  *
  * @package Bitrix\Notification
@@ -94,6 +95,13 @@ class HistoryTable extends DataManager
                     'values' => ['N', 'Y'],
                     'default' => 'N',
                     'title' => Loc::getMessage('HISTORY_ENTITY_IS_RECOVERY_FIELD'),
+                ]
+            ),
+            new StringField(
+                'NOTIFICATION_TYPE',
+                [
+                'values' => ['MESSAGE', 'BILLING'],
+                'default_value' => 'MESSAGE'
                 ]
             ),
         ];

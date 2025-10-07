@@ -357,16 +357,17 @@ class Notificationsender
      * @param DateTime $date Дата
      * @return bool True если уведомление уже отправлено
      */
-    protected function isNotificationSent(int $userId, string $periodKey, DateTime $date): bool
+    protected function isNotificationSent(int $userId, string $periodKey, DateTime $date, string $type = 'MESSAGE'): bool
     {
         $res = HistoryTable::getList([
             'filter' => [
                 '=USER_ID' => $userId,
                 '=PERIOD' => $periodKey,
                 '=PERIOD_DATE' => $date,
+                '=NOTIFICATION_TYPE' => $type,
             ],
-            'select' => ['ID'], // Выбираем только ID для оптимизации
-            'limit' => 1,       // Ограничиваем одну запись
+            'select' => ['ID'],
+            'limit' => 1,
         ]);
 
         return (bool)$res->fetch();
@@ -379,14 +380,15 @@ class Notificationsender
      * @param string $periodKey Ключ периода
      * @param DateTime $date Дата
      */
-    protected function markNotificationSent(int $userId, string $periodKey, DateTime $date)
+    protected function markNotificationSent(int $userId, string $periodKey, DateTime $date, string $type = 'MESSAGE')
     {
         HistoryTable::add([
             'USER_ID' => $userId,
             'PERIOD' => $periodKey,
             'PERIOD_DATE' => $date,
             'DATE_SENT' => new DateTime(),
-            'IS_RECOVERY' => $this->isRecoveryMode ? 'Y' : 'N', // Флаг восстановленного уведомления
+            'IS_RECOVERY' => $this->isRecoveryMode ? 'Y' : 'N',
+            'NOTIFICATION_TYPE' => $type,
         ]);
     }
 

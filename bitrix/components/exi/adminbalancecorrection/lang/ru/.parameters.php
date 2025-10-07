@@ -1,0 +1,12 @@
+<?php
+$MESS['PUBLICATIONS_LIST_MODULE_NOT_INSTALLED'] = 'Модуль "Highload-блоки" не установлен';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_BLOCK_ID'] = 'ID highload блока';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_DETAIL_URL'] = 'Путь к странице просмотра записи';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_ROWS_PER_PAGE'] = 'Разбить по страницам количеством';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_PAGEN_ID'] = 'Идентификатор страницы';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_FILTER_NAME'] = 'Идентификатор фильтра';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_CHECK_PERMISSIONS'] = 'Проверять права доступа';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_SORT_FIELD'] = 'Поле сортировки';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_SORT_ORDER'] = 'Направление сортировки';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_SORT_ORDER_DESC'] = 'По убыванию';
+$MESS['PUBLICATIONS_LIST_PARAMETERS_SORT_ORDER_ASC'] = 'По возрастанию';

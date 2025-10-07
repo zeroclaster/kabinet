@@ -43,9 +43,6 @@ if (!is_object($USER)) $USER = new \CUser;
 $USER->Authorize(443);
 onPrologBootstrape();
 
-// Запуск обработки
-$sender = new \Bitrix\telegram\Notificationsender();
-$sender->execute();
 
 // Запуск обработки уведомлений об операциях биллинга
 $billingSender = new \Bitrix\telegram\BillingNotificationSender();

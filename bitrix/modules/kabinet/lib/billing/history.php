@@ -71,7 +71,11 @@ class History extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $fields = [];
         $fields['UF_USER_EDIT'] = $siteuser->printName().' '.'(email:'.$siteuser['EMAIL'].')';
 
-        if ($initiator instanceof \Bitrix\Kabinet\taskrunner\states\Basestate){
+        // ОБРАБОТКА ДЛЯ BalanceOperationsComponent (банковский перевод)
+        if ($initiator instanceof \BalanceOperationsComponent) {
+            $fields['UF_AUTHOR_ID'] = $user->get('ID');
+        }
+        else if ($initiator instanceof \Bitrix\Kabinet\taskrunner\states\Basestate){
             $runnerFields = $initiator->runnerFields;
             $fields['UF_QUEUE_ID'] = $runnerFields['ID'];
             $task = $initiator->getTask();

@@ -93,7 +93,7 @@ class Billing extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $this->history->addHistory('Возврат средств. По задаче: ',$initiator,$value);
     }
 
-    public function addMoney($value,$user_id = 0,$initiator){
+    public function addMoney($value,$user_id = 0,$initiator,$operation_title = 'Пополнение баланса.'){
         if ($user_id)
             $filter = ['UF_AUTHOR_ID'=>$user_id];
         else
@@ -107,9 +107,8 @@ class Billing extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $calc = $Money + $value;
         $this->update(['ID'=>$billing['ID'],'UF_VALUE'=>$calc]);
         $this->getData($clear=true,$filter);
-        $this->history->addHistory('Пополнение баланса.',$initiator,$value);
+        $this->history->addHistory($operation_title,$initiator,$value);
     }
-
 
     public function teorygetMoney($value,$user_id = 0){
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
