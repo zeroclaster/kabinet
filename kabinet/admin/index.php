@@ -7,6 +7,12 @@ $APPLICATION->SetTitle("Клиенты и проекты");
 $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
+
+if ($siteuser['ID'] == 983) {
+    // Редирект для пользователя 983
+    LocalRedirect('/kabinet/admin/finance/');
+}
+
 //\Dbg::var_dump($user->get('ID'));
 
 //echo \Bitrix\Main\Entity\Query::getLastQuery();

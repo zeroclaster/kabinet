@@ -30,11 +30,15 @@ $projects = $projectManager->getData();
     </div>
 </section>
 
-<?$APPLICATION->IncludeComponent("exi:billing.view", "dashboard", Array(
+<?
+/*
+$APPLICATION->IncludeComponent("exi:billing.view", "dashboard", Array(
         'COUNT' => 2,                           // количество
         "FILTER_NAME"=>'',
     )
-);?>
+);
+*/
+?>
 
 <?
 // если нужно показывать только прочитанные

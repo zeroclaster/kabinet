@@ -155,6 +155,10 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                                 dataType: 'json',
                                 onsuccess: (response) => {
                                     if (response.status === 'success' && response.success) {
+                                        this.datauser.UF_DOGOVOR_DATE = response.UF_DOGOVOR_DATE;
+                                        this.datauser.UF_DOGOVOR_DATE_PRINT = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY');
+                                        this.datauser.UF_DOGOVOR_DATE_PRINT2 = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY');
+
                                         // После успешного сохранения отправляем форму
                                         this.$refs.downloadForm.submit();
                                     } else {
@@ -175,8 +179,12 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                     }
                 },
                 mounted() {
-                    this.datauser.UF_DOGOVOR_DATE_PRINT = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY');
-                    this.datauser.UF_DOGOVOR_DATE_PRINT2 = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY');
+                    this.datauser.UF_DOGOVOR_DATE_PRINT = '';
+                    this.datauser.UF_DOGOVOR_DATE_PRINT2 = '';
+                    if (this.datauser.UF_DOGOVOR_DATE) {
+                        this.datauser.UF_DOGOVOR_DATE_PRINT = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY');
+                        this.datauser.UF_DOGOVOR_DATE_PRINT2 = moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY');
+                    }
                 },
                 template: '#dogovordowload-template'
             });

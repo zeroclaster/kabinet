@@ -8,6 +8,7 @@ use Bitrix\Main,
     Bitrix\Main\SystemException,
     Bitrix\Main\Engine\ActionFilter,
     Bitrix\Main\Loader;
+use Bitrix\telegram\Billingnotificationhandler;
 use Bitrix\telegram\exceptions\TelegramException;
 
 
@@ -63,6 +64,7 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
     public function prepareData()
     {
         $this->arResult["CLIENT_DATA"] = [];
+        $this->arResult["BILLING_DATA"] = [];
         $this->arResult["TOTAL"] = 0;
         $this->arResult['SEARCH_RESULT'] = [];
 
@@ -80,6 +82,7 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
         // Получаем менеджер клиентов
         $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         $ClientManager = $sL->get('Kabinet.Client');
+        $billing = $sL->get('Kabinet.Billing');
 
         // ЕСЛИ ВЫБРАН КОНКРЕТНЫЙ КЛИЕНТ - ЗАГРУЖАЕМ ТОЛЬКО ЕГО ДАННЫЕ
         if (!empty($SEARCH_RESULT['clientidsearch']) && $SEARCH_RESULT['clientidsearch'] > 0) {
@@ -89,9 +92,16 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
             $this->arResult["CLIENT_DATA"] = $ClientManager->getData([], ['ID' => [$clientId]]);
             $this->arResult["TOTAL"] = count($this->arResult["CLIENT_DATA"]);
 
+            // Получаем данные биллинга для выбранного клиента
+            if (!empty($this->arResult["CLIENT_DATA"])) {
+                $client = $this->arResult["CLIENT_DATA"][0];
+                $billingData = $billing->getData(false, ['UF_AUTHOR_ID' => $client['ID']]);
+                $this->arResult["BILLING_DATA"] = $billingData ?: [];
+            }
         } else {
             // ЕСЛИ КЛИЕНТ НЕ ВЫБРАН - dataclient БУДЕТ ПУСТЫМ МАССИВОМ
             $this->arResult["CLIENT_DATA"] = [];
+            $this->arResult["BILLING_DATA"] = [];
             $this->arResult["TOTAL"] = 0;
         }
     }
@@ -146,6 +156,7 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
     public function bankTransferAction()
     {
+        $warning = '';
         $post = $this->request->getPostList()->toArray();
 
         $clientId = (int)$post['client_id'];
@@ -162,18 +173,46 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
             $commission = $amount * 0.03;
             $finalAmount = $amount * 0.97;
 
-            $billing->addMoney($finalAmount, $clientId, $this,"Пополнение баланса. Банковский перевод. ");
+            $operation_id = $billing->addMoney($amount, $clientId, $this,"Пополнение баланса. Банковский перевод. ");
             $calc_sum =  round($commission,2);
             $billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
 
-            $bot = new \Bitrix\telegram\Telegrambothandler();
-            $bot->sendMessageToUserTelegram($clientId, "Пополнение баланса. Банковский перевод. {$amount} руб.");
+            // Создаем обработчик для уведомлений биллинга
+            $billingHandler = new Billingnotificationhandler();
+            try {
+                $billingHandler->handleBillingOperation($operation_id);
 
-            return [
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Уведомление биллинга отправлено пользователю {$clientId}: операция ID {$operation_id}" . "\n",
+                    FILE_APPEND
+                );
+            } catch (\Exception $e) {
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Ошибка отправки уведомления биллинга для операции {$operation_id}: " . $e->getMessage() . "\n",
+                    FILE_APPEND
+                );
+            }
+
+            try {
+                $bot = new \Bitrix\telegram\Telegrambothandler();
+                $bot->sendMessageToUserTelegram($clientId, "Пополнение баланса. Банковский перевод. {$amount} руб.");
+            } catch (\Exception $e) {
+                $warning = 'Не удалось отправить Telegram-уведомление';
+            }
+
+            $response = [
                 'success' => true,
                 'message' => 'Баланс успешно пополнен',
                 'data' => []
             ];
+
+            if ($warning) {
+                $response['warning'] = $warning;
+            }
+
+            return $response;
 
         } catch (\Exception $e) {
             $this->errorCollection[] = new Error($e->getMessage(), 1);
@@ -187,6 +226,7 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
     public function freeReplenishmentAction()
     {
+        $warning = '';
         $post = $this->request->getPostList()->toArray();
 
         $clientId = (int)$post['client_id'];
@@ -200,12 +240,40 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         try {
             $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
-            $billing->addMoney($amount, $clientId, $this,"Пополнение баланса. ".$comment);
-            return [
+            $operation_id = $billing->addMoney($amount, $clientId, $this,"Пополнение баланса. ".$comment);
+
+            // Создаем обработчик для уведомлений биллинга
+            $billingHandler = new Billingnotificationhandler();
+            try {
+                $billingHandler->handleBillingOperation($operation_id);
+
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Уведомление биллинга отправлено пользователю {$clientId}: операция ID {$operation_id}" . "\n",
+                    FILE_APPEND
+                );
+            } catch (\Exception $e) {
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Ошибка отправки уведомления биллинга для операции {$operation_id}: " . $e->getMessage() . "\n",
+                    FILE_APPEND
+                );
+            }
+
+            try {
+                $bot = new \Bitrix\telegram\Telegrambothandler();
+                $bot->sendMessageToUserTelegram($clientId, "Пополнение баланса. {$comment} {$amount} руб.");
+            } catch (\Exception $e) {
+                $warning = 'Не удалось отправить Telegram-уведомление';
+            }
+
+            $response = [
                 'success' => true,
                 'message' => 'Баланс успешно пополнен',
                 'data' => []
             ];
+
+            return $response;
 
         } catch (\Exception $e) {
             $this->errorCollection[] = new Error($e->getMessage(), 1);
@@ -215,6 +283,7 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
     public function withdrawAction()
     {
+        $warning = '';
         $post = $this->request->getPostList()->toArray();
 
         $clientId = (int)$post['client_id'];
@@ -228,14 +297,65 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
         try {
             $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
-            $billing->getMoney($amount, 0, $billing, "Списание с баланса. ".$comment);
+            $operation_id = $billing->getMoney($amount, 0, $billing, "Списание с баланса. {$comment} {$amount} руб.");
 
-            return [
+            // Создаем обработчик для уведомлений биллинга
+            $billingHandler = new Billingnotificationhandler();
+            try {
+                $billingHandler->handleBillingOperation($operation_id);
+
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Уведомление биллинга отправлено пользователю {$clientId}: операция ID {$operation_id}" . "\n",
+                    FILE_APPEND
+                );
+            } catch (\Exception $e) {
+                file_put_contents(
+                    $_SERVER['DOCUMENT_ROOT'] . '/upload/billing_notifications.log',
+                    date('[Y-m-d H:i:s] ') . "Ошибка отправки уведомления биллинга для операции {$operation_id}: " . $e->getMessage() . "\n",
+                    FILE_APPEND
+                );
+            }
+
+            try {
+                $bot = new \Bitrix\telegram\Telegrambothandler();
+                $bot->sendMessageToUserTelegram($clientId, "Списание с баланса. {$comment} {$amount} руб.");
+            } catch (\Exception $e) {
+                $warning = 'Не удалось отправить Telegram-уведомление';
+            }
+
+            $response = [
                 'success' => true,
                 'message' => 'Списание выполнено успешно',
                 'data' => []
             ];
 
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->errorCollection[] = new Error($e->getMessage(), 1);
+            return null;
+        }
+    }
+
+    public function getbillingdataAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $clientId = (int)$post['client_id'];
+
+        if (!$clientId) {
+            $this->errorCollection[] = new Error('Не указан ID клиента', 1);
+            return null;
+        }
+
+        try {
+            $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
+            $billingData = $billing->getData(false, ['UF_AUTHOR_ID' => $clientId]);
+
+            return [
+                'success' => true,
+                'billingData' => $billingData ?: []
+            ];
         } catch (\Exception $e) {
             $this->errorCollection[] = new Error($e->getMessage(), 1);
             return null;
@@ -297,7 +417,15 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
                     new ActionFilter\Csrf(),
                     new \Bitrix\Kabinet\Engine\ActionFilter\Groupmanager()
                 ]
+            ],
+            'getbillingdata' => [
+                'prefilters' => [
+                    new ActionFilter\HttpMethod([ActionFilter\HttpMethod::METHOD_POST]),
+                    new ActionFilter\Csrf(),
+                    new \Bitrix\Kabinet\Engine\ActionFilter\Groupmanager()
+                ]
             ]
         ];
     }
+
 }

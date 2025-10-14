@@ -64,7 +64,7 @@ class Contractmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager 
     public function getRquired($userType){
         if ($userType == 1) return $this->fiz_required;
         if ($userType == 2) return $this->individ_required;
-
+        
         else  return $this->comp_required;
     }
 

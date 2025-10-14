@@ -22,9 +22,6 @@ $APPLICATION->AddChainItem("Проект", "/kabinet/projects/?id=".$p);
 $APPLICATION->AddChainItem("Заказ услуг и планирование задач", "");
 ?>
 
-
-
-
 <section class="section-xs">
     <div class="container-fluid">
         <div class="d-flex no-d-flex justify-content-between">
@@ -54,6 +51,15 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
                         'PROJECT' => $project['ID']
                     )
                 );?>
+
+                <div class="panel deposit-block-1">
+                    <div class="panel-body">
+                <?/*$APPLICATION->IncludeComponent("exi:balance.deposit", "", Array(
+                    )
+                );*/?>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
