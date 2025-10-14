@@ -36,12 +36,14 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                         ?>
                     </div>
                 </div>
+                <?if($clientfilter1):?>
                 <?$APPLICATION->IncludeComponent("exi:adminexecution.list", "", Array(
                         'FILTER_NAME' => 'clientfilter1',
                         'COUNT' => $_REQUEST['viewcount'],
                         'MESSAGE_COUNT' => 5,
                     )
                 );?>
+                <?endif;?>
             </div>
         </div>
     </div>
