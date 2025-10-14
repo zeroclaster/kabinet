@@ -3,6 +3,18 @@ deposit_form = (function (){
     return {
         start(PHPPARAMS){
 
+            // Получаем хранилище до создания приложения
+            const agreementStore = AgreementStore();
+
+            // Определяем тип оплаты по умолчанию на основе contracttype
+            let defaultTypePay = PHPPARAMS.TYPEPAY;
+            if (!agreementStore.contracttype.value || agreementStore.contracttype.value == "0" || agreementStore.contracttype.value == "1") {
+                defaultTypePay = 1; // Карта
+            } else if (agreementStore.contracttype.value > 1) {
+                defaultTypePay = 3; // Банковский перевод
+            }
+
+
             const depositApplication = BX.Vue3.BitrixVue.createApp({
                 data() {
                     return {
@@ -11,7 +23,7 @@ deposit_form = (function (){
 							summapopolneniya2:0,
                             percentpopolneniya:0,
                             promocode:'',
-                            typepay:PHPPARAMS.TYPEPAY,
+                            typepay: defaultTypePay, // Используем вычисленное значение
                             qrsumm:PHPPARAMS.QRSUMM,
                         },
                         errorField:{},
@@ -106,7 +118,7 @@ deposit_form = (function (){
 
                     },
 					download(e){
-	
+
                         if (this.fields.summapopolneniya == 0)  this.errorField.summapopolneniya = true;
 						if (this.fields.summapopolneniya < 1000)  this.errorField.summapopolneniya2 = true;                        
 
@@ -115,7 +127,7 @@ deposit_form = (function (){
 							if (this.contract.UF_NAME == '')  this.errorField.contractFieldEmpty = true;
 							if (this.contract.UF_UR_ADDRESS == '')  this.errorField.contractFieldEmpty = true;
 							if (this.contract.UF_INN == '')  this.errorField.contractFieldEmpty = true;
-							if (this.contract.UF_KPP == '')  this.errorField.contractFieldEmpty = true;
+							if ((this.contracttype.value == 3 || this.contracttype.value == 4) && this.contract.UF_KPP == '')  this.errorField.contractFieldEmpty = true;
 							if (this.contract.UF_OGRN == '')  this.errorField.contractFieldEmpty = true;
 						}
 						
