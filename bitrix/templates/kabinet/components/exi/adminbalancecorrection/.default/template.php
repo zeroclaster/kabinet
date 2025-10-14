@@ -47,9 +47,18 @@ $this->setFrameMode(true);
     <div class="panel">
         <div class="panel-body">
             <!-- Выбранный клиент -->
-            <div v-if="currentClient" class="selected-client mt-4 p-3 border rounded bg-light">
-                <h4>Выбран клиент: {{currentClient.NAME}} {{currentClient.LAST_NAME}}</h4>
-                <p>Email: {{currentClient.EMAIL}} | ID: {{currentClient.ID}}</p>
+            <div v-if="currentClient" class="selected-client mt-4 p-3 border rounded" style="background-color: #e6f7fd;">
+                <h4 style="margin-top: 0;">Выбран клиент: {{currentClient.NAME}} {{currentClient.LAST_NAME}} (#{{currentClient.ID}})</h4>
+                <p>Email: {{currentClient.EMAIL}}</p>
+                <p><a :href="'/kabinet/finance/?usr='+currentClient.ID" target="_blank">Финансы <i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                <!-- Добавляем отображение биллинга -->
+                <div class="billing-info mt-2 p-2" style="background-color: #fff; border-radius: 4px;">
+                    <h5 style="margin: 0 0 8px 0;">Баланс:</h5>
+                    <div class="billing-amount" style="font-size: 24px; font-weight: bold; color: #28a745;">
+                        {{ formatCurrency(currentBilling.UF_VALUE || 0) }}
+                    </div>
+                    <small class="text-muted">Последнее обновление: {{ getBillingUpdateTime() }}</small>
+                </div>
             </div>
 
             <!-- Формы операций (показываются только когда выбран клиент) -->
@@ -71,7 +80,7 @@ $this->setFrameMode(true);
                                        placeholder="0.00"
                                        required
                                        pattern="[0-9]*\.?[0-9]*">
-                                <small class="form-text text-muted">Максимальная сумма: 50 000 руб.</small>
+                                <small class="form-text text-muted">Максимальная сумма: 1 000 000 руб.</small>
                             </div>
 
                             <div class="form-group">
@@ -99,7 +108,7 @@ $this->setFrameMode(true);
                                 </div>
                                 <button type="submit"
                                         class="btn btn-primary"
-                                        :disabled="!bankTransfer.amount || bankTransfer.amount <= 0 || bankTransfer.amount > 50000">
+                                        :disabled="!bankTransfer.amount || bankTransfer.amount <= 0 || bankTransfer.amount > 1000000">
                                     Выполнить пополнение
                                 </button>
                             </div>
@@ -123,7 +132,7 @@ $this->setFrameMode(true);
                                        placeholder="0.00"
                                        required
                                        pattern="[0-9]*\.?[0-9]*">
-                                <small class="form-text text-muted">Максимальная сумма: 50 000 руб.</small>
+                                <small class="form-text text-muted">Максимальная сумма: 1 000 000 руб.</small>
                             </div>
 
                             <div class="form-group">
@@ -137,7 +146,7 @@ $this->setFrameMode(true);
                             <div class="d-flex align-items-center">
                                 <button type="submit"
                                         class="btn btn-primary"
-                                        :disabled="!freeReplenishment.amount || freeReplenishment.amount <= 0 || freeReplenishment.amount > 50000">
+                                        :disabled="!freeReplenishment.amount || freeReplenishment.amount <= 0 || freeReplenishment.amount > 1000000">
                                     Выполнить пополнение
                                 </button>
                                 <div class="ml-3">
@@ -167,7 +176,7 @@ $this->setFrameMode(true);
                                        placeholder="0.00"
                                        required
                                        pattern="[0-9]*\.?[0-9]*">
-                                <small class="form-text text-muted">Максимальная сумма: 50 000 руб.</small>
+                                <small class="form-text text-muted">Максимальная сумма: 1 000 000 руб.</small>
                             </div>
 
                             <div class="form-group">
@@ -181,7 +190,7 @@ $this->setFrameMode(true);
                             <div class="d-flex align-items-center">
                                 <button type="submit"
                                         class="btn btn-danger"
-                                        :disabled="!withdraw.amount || withdraw.amount <= 0 || withdraw.amount > 50000">
+                                        :disabled="!withdraw.amount || withdraw.amount <= 0 || withdraw.amount > 1000000">
                                     Выполнить списание
                                 </button>
                                 <div class="ml-3">
@@ -237,6 +246,7 @@ $jsParams = [
 
         balanceOperationsApp._component.data = () => ({
             dataclient: <?=CUtil::PhpToJSObject($arResult["CLIENT_DATA"], false, true)?>,
+            billingdata: <?=CUtil::PhpToJSObject($arResult["BILLING_DATA"], false, true)?>,
             total: Number(<?=$arResult["TOTAL"]?>),
             bankTransfer: {
                 amount: 0,
@@ -252,7 +262,8 @@ $jsParams = [
                 comment: '',
                 message: null
             },
-            operationMessage: null
+            operationMessage: null,
+            lastBillingUpdate: new Date() // Время последнего обновления биллинга
         });
 
         configureVueApp(balanceOperationsApp);

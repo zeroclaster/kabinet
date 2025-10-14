@@ -48,5 +48,5 @@ $sender = new \Bitrix\telegram\Notificationsender();
 $sender->execute();
 
 // Запуск обработки уведомлений об операциях биллинга
-$billingSender = new \Bitrix\telegram\BillingNotificationSender();
-$billingSender->execute();
+//$billingSender = new \Bitrix\telegram\BillingNotificationSender();
+//$billingSender->execute();

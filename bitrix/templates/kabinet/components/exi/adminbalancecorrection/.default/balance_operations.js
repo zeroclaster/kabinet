@@ -14,6 +14,10 @@ const balance_operations = {
         currentClient() {
             // dataclient содержит либо одного выбранного клиента, либо пустой массив
             return this.dataclient.length > 0 ? this.dataclient[0] : null;
+        },
+        // ВЫЧИСЛЯЕМОЕ СВОЙСТВО ДЛЯ БИЛЛИНГА ТЕКУЩЕГО КЛИЕНТА
+        currentBilling() {
+            return this.billingdata && Object.keys(this.billingdata).length > 0 ? this.billingdata : {};
         }
     },
     mounted() {
@@ -28,6 +32,69 @@ const balance_operations = {
          */
         validateNumber(value) {
             return /^\d*\.?\d*$/.test(value);
+        },
+
+        /**
+         * Форматирование валюты
+         */
+        formatCurrency(amount) {
+            return new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'RUB',
+                minimumFractionDigits: 2
+            }).format(amount);
+        },
+
+        /**
+         * Получение времени обновления биллинга
+         */
+        getBillingUpdateTime() {
+            return this.lastBillingUpdate.toLocaleTimeString('ru-RU');
+        },
+
+        /**
+         * Обновление данных биллинга
+         */
+        async refreshBillingData() {
+            if (!this.currentClient) return;
+
+            try {
+                // Здесь можно добавить метод для обновления биллинга через AJAX
+                // Пока просто обновляем время
+                this.lastBillingUpdate = new Date();
+
+                // Если нужно реальное обновление данных с сервера:
+                 const response = await this.fetchBillingData(this.currentClient.ID);
+                if (response.success) {
+                     this.billingdata = response.billingData;
+                     this.lastBillingUpdate = new Date();
+                }
+            } catch (error) {
+                console.error('Ошибка обновления биллинга:', error);
+            }
+        },
+
+        /**
+         * Запрос данных биллинга с сервера (опционально)
+         */
+        async fetchBillingData(clientId) {
+            try {
+                const response = await BX.ajax.runComponentAction(
+                    PHPPARAMS.componentName,
+                    'getbillingdata',
+                    {
+                        mode: 'class',
+                        data: {
+                            signedParameters: PHPPARAMS.signedParameters,
+                            client_id: clientId
+                        }
+                    }
+                );
+                return response.data;
+            } catch (error) {
+                console.error('Ошибка получения данных биллинга:', error);
+                return { success: false };
+            }
         },
 
         /**
@@ -61,7 +128,7 @@ const balance_operations = {
          * Проверка максимальной суммы (50 000)
          */
         validateMaxAmount(amount, operationType) {
-            const MAX_AMOUNT = 50000;
+            const MAX_AMOUNT = 1000000;
             if (amount > MAX_AMOUNT) {
                 this.showFormMessage(`Максимальная сумма для ${operationType} - 50 000 руб.`, false, operationType);
                 return false;
@@ -101,13 +168,11 @@ const balance_operations = {
         },
 
         async submitBankTransfer() {
-            // ИСПОЛЬЗУЕМ currentClient ВМЕСТО selectedClient
             if (!this.currentClient || !this.bankTransfer.amount || this.bankTransfer.amount <= 0) {
                 this.showFormMessage('Введите корректную сумму', false, 'bankTransfer');
                 return;
             }
 
-            // Проверка максимальной суммы
             if (!this.validateMaxAmount(this.bankTransfer.amount, 'пополнения банковским переводом')) {
                 return;
             }
@@ -120,7 +185,7 @@ const balance_operations = {
                         mode: 'class',
                         data: {
                             signedParameters: PHPPARAMS.signedParameters,
-                            client_id: this.currentClient.ID, // ИСПОЛЬЗУЕМ currentClient
+                            client_id: this.currentClient.ID,
                             amount: parseFloat(this.bankTransfer.amount)
                         },
                         getParameters: {usr : this.currentClient.ID}
@@ -129,6 +194,8 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'bankTransfer');
+                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
+                    await this.refreshBillingData();
                     this.clearForms();
                 }
             } catch (error) {
@@ -139,13 +206,11 @@ const balance_operations = {
         },
 
         async submitFreeReplenishment() {
-            // ИСПОЛЬЗУЕМ currentClient ВМЕСТО selectedClient
             if (!this.currentClient || !this.freeReplenishment.amount || this.freeReplenishment.amount <= 0) {
                 this.showFormMessage('Введите корректную сумму', false, 'freeReplenishment');
                 return;
             }
 
-            // Проверка максимальной суммы
             if (!this.validateMaxAmount(this.freeReplenishment.amount, 'свободного пополнения')) {
                 return;
             }
@@ -158,7 +223,7 @@ const balance_operations = {
                         mode: 'class',
                         data: {
                             signedParameters: PHPPARAMS.signedParameters,
-                            client_id: this.currentClient.ID, // ИСПОЛЬЗУЕМ currentClient
+                            client_id: this.currentClient.ID,
                             amount: parseFloat(this.freeReplenishment.amount),
                             comment: this.freeReplenishment.comment
                         },
@@ -168,6 +233,8 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'freeReplenishment');
+                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
+                    await this.refreshBillingData();
                     this.clearForms();
                 }
             } catch (error) {
@@ -178,13 +245,11 @@ const balance_operations = {
         },
 
         async submitWithdraw() {
-            // ИСПОЛЬЗУЕМ currentClient ВМЕСТО selectedClient
             if (!this.currentClient || !this.withdraw.amount || this.withdraw.amount <= 0) {
                 this.showFormMessage('Введите корректную сумму', false, 'withdraw');
                 return;
             }
 
-            // Проверка максимальной суммы
             if (!this.validateMaxAmount(this.withdraw.amount, 'списания')) {
                 return;
             }
@@ -197,7 +262,7 @@ const balance_operations = {
                         mode: 'class',
                         data: {
                             signedParameters: PHPPARAMS.signedParameters,
-                            client_id: this.currentClient.ID, // ИСПОЛЬЗУЕМ currentClient
+                            client_id: this.currentClient.ID,
                             amount: parseFloat(this.withdraw.amount),
                             comment: this.withdraw.comment
                         },
@@ -207,6 +272,8 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'withdraw');
+                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
+                    await this.refreshBillingData();
                     this.clearForms();
                 }
             } catch (error) {
@@ -215,7 +282,6 @@ const balance_operations = {
                 this.showFormMessage(errorMessage, false, 'withdraw');
             }
         },
-
         clearForms() {
             this.bankTransfer.amount = 0;
             this.freeReplenishment.amount = 0;
