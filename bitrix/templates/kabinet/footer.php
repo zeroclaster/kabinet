@@ -63,7 +63,7 @@ foreach ($addscript as $item) {
 <script>
     BX.ready(function () {
         try {
-            BX.ajax.get("/cron/cron1.php", ()=> {});
+            //BX.ajax.get("/cron/cron1.php", ()=> {});
         }catch (e){
 
         }
