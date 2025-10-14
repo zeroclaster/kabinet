@@ -20,6 +20,8 @@ if (!$project) LocalRedirect("/404.php");
 
 $APPLICATION->AddChainItem("Проект", "/kabinet/projects/?id=".$p);
 $APPLICATION->AddChainItem("Заказ услуг и планирование задач", "");
+
+// merge
 ?>
 
 <section class="section-xs">
