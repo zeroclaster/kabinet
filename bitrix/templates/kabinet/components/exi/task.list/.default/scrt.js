@@ -1,23 +1,47 @@
 var searchProduct = function (){
 
     return {
-        searchfilter1(event){
-            const needle = event.target.value;
-            if(needle.length < 2 && needle.length > 1) return;
+        async searchfilter1(event){
+            const needle = event.target.value.trim();
 
-            if (needle.length >= 1) BX.show(this.$refs.buttonclearsearch);
-            else BX.hide(this.$refs.buttonclearsearch);
-
-            let result = [];
-            let reg = new RegExp(needle,"i");
-            for(index in this.data3){
-                if(needle == '') result.push(this.data3[index]);
-                else
-                    if (reg.test(this.data3[index].NAME)) result.push(this.data3[index]);
+            if(needle.length < 2) {
+                if(needle.length === 0) {
+                    this.listprd = [...Object.values(this.data3)];
+                    BX.hide(this.$refs.buttonclearsearch);
+                }
+                return;
             }
 
-            if (typeof this.inpSaveTimer2 != 'undefined') clearTimeout(this.inpSaveTimer2);
-            this.inpSaveTimer2 = setTimeout(()=>{this.listprd = result;},2000);
+            BX.show(this.$refs.buttonclearsearch);
+
+            // Очищаем предыдущий таймер
+            if (this.searchTimer) {
+                clearTimeout(this.searchTimer);
+            }
+
+            // Устанавливаем новый таймер с задержкой 800ms
+            this.searchTimer = setTimeout(async () => {
+                try {
+                    const response = await BX.ajax.runAction('bitrix:kabinet.evn.briefevents.search', {
+                        data: {
+                            q: needle,
+                        },
+                        getParameters: {usr : usr_id_const}
+                    });
+
+                    if(response.data) {
+                        this.listprd = response.data;
+                    } else {
+                        this.listprd = [];
+                    }
+
+                } catch (error) {
+                    console.error('Search failed:', error);
+                    const kabinetStore = usekabinetStore();
+                    kabinetStore.Notify = '';
+                    kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                }
+            }, 800);
         },
         clearsearchinput(){
             if (typeof this.inpSaveTimer2 != 'undefined') clearTimeout(this.inpSaveTimer2);

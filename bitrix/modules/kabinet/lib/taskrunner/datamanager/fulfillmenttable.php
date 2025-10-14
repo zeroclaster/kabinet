@@ -48,6 +48,7 @@ Loc::loadMessages(__FILE__);
  * <li> UF_NUMBER_STARTS int optional
  * <li> UF_DATE_COMPLETION datetime optional
  * <li> UF_EXT_KEY int optional
+ * <li> UF_RESPONSIBLE text optional
  * </ul>
  *
  * @package Bitrix\Kabinet
@@ -249,6 +250,12 @@ class FulfillmentTable extends DataManager
                 'UF_EXT_KEY',
                 [
                     'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_EXT_KEY_FIELD')
+                ]
+            ),
+            new TextField(
+                'UF_RESPONSIBLE',
+                [
+                    'title' => Loc::getMessage('FULFILLMENT_ENTITY_UF_RESPONSIBLE_FIELD'),
                 ]
             ),
             (new Reference(

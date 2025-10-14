@@ -56,6 +56,7 @@ var taskMethods = function(){
             product.COUNT = parseInt(product.COUNT) - 1;
         },
         chooseadd: function(product){
+            console.log(product.COUNT);
             if (parseInt(product.COUNT) == 0) {
                 const kabinetStore = usekabinetStore();
                 kabinetStore.Notify = '';
