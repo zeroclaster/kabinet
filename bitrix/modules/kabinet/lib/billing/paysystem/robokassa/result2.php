@@ -6,7 +6,7 @@ https://auth.robokassa.ru/Merchant/WebService/Service.asmx
 https://github.com/unetway/robokassa/blob/master/src/Robokassa.php
 */
 
-class Result extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
+class Result2 extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
     protected $trans_id = 0;
     public $description = 'Система оплаты Robokassa';
 
@@ -53,6 +53,15 @@ class Result extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
             $this->setError('При пополнении баланса возникла ошибка!');
             return false;
         }
+
+        // Login parser user
+        global $USER;
+        if (!is_object($USER)) $USER = new \CUser;
+        /*
+         * Робот manager1 manager1@manager1.ru
+         */
+        $USER->Authorize($trans['USER_ID']);
+        onPrologBootstrape();
 
         // включить транзакцию
         return $this->involveTransaction($trans['ID'],$out_summ);
