@@ -54,9 +54,9 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
 
                 <div class="panel deposit-block-1">
                     <div class="panel-body">
-                <?/*$APPLICATION->IncludeComponent("exi:balance.deposit", "", Array(
+                <?$APPLICATION->IncludeComponent("exi:balance.deposit", "", Array(
                     )
-                );*/?>
+                );?>
                     </div>
                 </div>
 
@@ -65,5 +65,4 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
     </div>
 </section>
 
-	  
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
