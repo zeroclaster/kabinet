@@ -21,6 +21,7 @@ Loc::loadMessages(__FILE__);
 
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID'));
+
 ?>
 <div class="panel-body" id="kabinetcontent" data-contractform=""></div>
 
@@ -60,7 +61,15 @@ $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID')
                     <label class="col-form-label" for="<?=$component->makeId($fieldParams)?>"><?=$fieldParams['FIELD_TITLE_VIEW']?></label>
                 </div>
                 <div class="col-sm-6"><?=$fieldParams['PUBLIC_EDIT']?></div>
+
+                <?if($fieldParams['FIELD_NAME'] != 'UF_ACTS'):?>
                 <div class="col-sm-3 form-help-message"><?=$fieldParams["HELP_MESSAGE"]?></div>
+                <?else:?>
+                    <div class="col-sm-3 form-help-message" v-if="contracttype.value==1">Укажите паспортные данные</div>
+                    <div class="col-sm-3 form-help-message" v-if="contracttype.value==2">Листа записи в ЕГРИП. Или “Свидетельства о государственной регистрации”, если ИП зарегистрирован до 2017 года.</div>
+                    <div class="col-sm-3 form-help-message" v-if="contracttype.value==3">Устава или № Доверенности.</div>
+                    <div class="col-sm-3 form-help-message" v-if="contracttype.value==4">Устава или № Доверенности.</div>
+                <?endif;?>
             </div>
 
         <?endforeach;?>

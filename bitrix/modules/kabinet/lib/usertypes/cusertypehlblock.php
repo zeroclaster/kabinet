@@ -499,7 +499,7 @@ class CKabinetUserTypeHlblock extends EnumType
 						{
 							$row['VALUE'] = $USER_FIELD_MANAGER->getListView($userfield, $row[$userfield['FIELD_NAME']]);
 						}
-						$row['VALUE'] .= ' ['.$row['ID'].']';
+						//$row['VALUE'] .= ' ['.$row['ID'].']';
 					}
 				}
 			}

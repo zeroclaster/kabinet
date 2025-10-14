@@ -7,7 +7,7 @@ class BillingViewApp extends BaseListApp {
 
         super(params);
         this.EXPENSES_NEXT_MONTH = params.PHPPARAMS?.EXPENSES_NEXT_MONTH;
-        this.usr_id_const = params.PHPPARAMS?.usr_id_const || '';
+        this.usr_id_const = usr_id_const;
     }
 
     getAppConfig() {
@@ -17,7 +17,7 @@ class BillingViewApp extends BaseListApp {
             ...baseConfig,
             data: () => ({
                 ...baseConfig.data(),
-                usr_id_const: '?usr=' + this.usr_id_const
+                usr_id_const: '?usr=' + usr_id_const
             }),
             computed: {
                 ...baseConfig.computed,

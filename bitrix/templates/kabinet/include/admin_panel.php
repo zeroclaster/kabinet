@@ -3,7 +3,7 @@ use Bitrix\Main\Page\Asset;
 
 $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
-
+(\KContainer::getInstance())->get('billingStore');
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/applications/admin/header.js");
 ?>
 <div class="rd-navbar-panel-cell"><a href="/kabinet/admin/notifications/"><span class="fa-bell site-gray" style="font-size: 22px;"></span></a></div>

@@ -53,6 +53,7 @@ $this->setFrameMode(true);
                         <div>
                             <div class="h4">{{client.NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
                             <div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
+                            <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank">Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
                         </div>
                         <div class="mt-4">
                             <div class="font-weight-bold">Кабинет клиента:</div>
@@ -111,7 +112,7 @@ $this->setFrameMode(true);
                                                                 <div class="">Стоимость: <span style="font-size: 23px;">{{task.FINALE_PRICE}} <span v-if="task.UF_CYCLICALITY == 2">руб./месяц</span><span v-if="task.UF_CYCLICALITY != 2">руб.</span></span></div>
                                                                 <div class="info-blk">Дата создания: <span>{{task.UF_PUBLISH_DATE_ORIGINAL.FORMAT1}}</span></div>
                                                                 <div class="info-blk">Дата завершения: <span>{{task.UF_DATE_COMPLETION_ORIGINAL.FORMAT1}}</span></div>
-                                                                <div class="info-blk">Согласование: <span>{{viewListFieldTitle(task,'UF_COORDINATION')}}</span></div>
+                                                                <div class="info-blk" v-if="task.UF_COORDINATION>0 && task.UF_COORDINATION!=11">Согласование: <span>{{viewListFieldTitle(task,'UF_COORDINATION')}}</span>{{task.UF_COORDINATION}}</div>
                                                                 <div class="info-blk">Отчетность: <span>{{viewListFieldTitle(task,'UF_REPORTING')}}</span></div>
                                                                 <div class="info-blk">Тип процесса: <span>{{viewListFieldTitle(task,'UF_CYCLICALITY')}}</span></div>
                                                             </div>

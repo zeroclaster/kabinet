@@ -419,7 +419,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
             $data = \Bitrix\iblock\ElementTable::getlist([
                 'select'=>['ID','NAME','CODE','PREVIEW_PICTURE','IBLOCK_SECTION_ID'],
                 'filter'=>['ACTIVE'=>1,'IBLOCK_ID'=>1],
-                'order'=>['NAME'=>'asc']
+                'order'=>["SORT"=>"ASC"]
             ])->fetchAll();
 
             foreach($data as &$itm){
@@ -632,6 +632,77 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
 
         // Сбрассываем кеширование у пользователя
         $this->orderData(0, true);
+    }
+
+    public function searchProducts(string $query): array {
+        if(mb_strlen($query) < 2) {
+            return [];
+        }
+
+        $result = [];
+
+        \Bitrix\Main\Loader::includeModule("search");
+
+        $obSearch = new \CSearch();
+
+        // Более точная настройка фильтров
+        $arFilter = [
+            'QUERY' => $query,
+            'SITE_ID' => SITE_ID,
+            'MODULE_ID' => 'iblock',
+            'PARAM1' => 'CATALOG', // TYPE инфоблока
+            'PARAM2' => 1, // ID инфоблока
+        ];
+
+        $aSort = [
+            'CUSTOM_RANK' => 'DESC',
+            'TITLE_RANK' => 'DESC',
+            'RANK' => 'DESC'
+        ];
+
+        // Дополнительные фильтры для активных элементов
+        $exFILTER = [
+            'ACTIVE' => 'Y',
+            'ACTIVE_DATE' => 'Y'
+        ];
+
+        try {
+            $obSearch->Search($arFilter, $aSort, $exFILTER);
+            $obSearch->NavStart(100); // Можно увеличить лимит
+
+            $foundIds = [];
+            while($searchItem = $obSearch->Fetch()) {
+                $elementId = (int)$searchItem['ITEM_ID'];
+                $foundIds[] = $elementId;
+            }
+
+            // Получаем все данные каталога
+            $catalogData = $this->catalogData();
+
+            // Создаем индекс для быстрого поиска по ID
+            $catalogIndex = [];
+            foreach ($catalogData as $item) {
+                $catalogIndex[$item['ID']] = $item;
+            }
+
+            // Фильтруем найденные элементы по данным из каталога
+            foreach($foundIds as $elementId) {
+                if(isset($catalogIndex[$elementId])) {
+                    $result[] = $catalogIndex[$elementId];
+                }
+            }
+
+        } catch (\Exception $e) {
+            // Логируем ошибку, но не прерываем выполнение
+            \CEventLog::Add([
+                "SEVERITY" => "ERROR",
+                "AUDIT_TYPE_ID" => "SEARCH_ERROR",
+                "MODULE_ID" => "kabinet",
+                "DESCRIPTION" => "Search error: " . $e->getMessage(),
+            ]);
+        }
+
+        return $result;
     }
 
 }
