@@ -139,6 +139,8 @@ class History extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         \Bitrix\Kabinet\billing\datamanager\BillinghistoryTable::update($ID,['UF_AUTHOR_ID'=>$fields['UF_AUTHOR_ID']]);
 
         $this->getData(true);
+
+        return $ID;
     }
 
     public function getData($clear=false,$filter = [],$offset=0,$limit=5){

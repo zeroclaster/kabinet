@@ -107,7 +107,9 @@ class Billing extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $calc = $Money + $value;
         $this->update(['ID'=>$billing['ID'],'UF_VALUE'=>$calc]);
         $this->getData($clear=true,$filter);
-        $this->history->addHistory($operation_title,$initiator,$value);
+        $creatge_id = $this->history->addHistory($operation_title,$initiator,$value);
+
+        return $creatge_id;
     }
 
     public function teorygetMoney($value,$user_id = 0){
