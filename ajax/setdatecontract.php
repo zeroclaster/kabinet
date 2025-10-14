@@ -57,7 +57,7 @@ if (!array_key_exists('UF_DOGOVOR_DATE', $userFields)) {
 
 // Если поле уже заполнено - ничего не делаем
 if (!empty($userFields['UF_DOGOVOR_DATE'])) {
-    echo json_encode(['success' => true, 'message' => 'Дата уже сохранена ранее']);
+    echo json_encode(['status' => 'success', 'success' => true, 'message' => 'Дата уже сохранена ранее']);
     die();
 }
 
@@ -66,9 +66,10 @@ $currentDate = ConvertTimeStamp(time(), 'SHORT');
 $result = $user->Update($userId, ['UF_DOGOVOR_DATE' => $currentDate]);
 
 if ($result) {
-    echo json_encode(['success' => true]);
+    $UF_DOGOVOR_DATE = $currentDate.' 00:00:00';
+    echo json_encode(['status' => 'success', 'success' => true,'UF_DOGOVOR_DATE'=>$UF_DOGOVOR_DATE]);
 } else {
-    echo json_encode(['success' => false, 'message' => $user->LAST_ERROR]);
+    echo json_encode(['status' => 'error', 'success' => false, 'message' => $user->LAST_ERROR]);
 }
 
 require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/epilog_after.php');
