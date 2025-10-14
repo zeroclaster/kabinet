@@ -30,6 +30,18 @@ $this->setFrameMode(true);
 
 
 CUtil::InitJSCore(array('window'));
+$user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
+// Проверяем есть ли проекты у пользователя и автоматически создаем новый если нет
+//if (session_id() == "YrBs9jCVCNWJ7l2YOBIrdtbox72U1xkg")
+if (empty($arResult['ITEMS'])) {
+    createProjectForNewUser($user['ID']);
+}
+
+
+if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
+LocalRedirect('/kabinet/projects/planning/?p=' . $arResult['ITEMS'][0]['ID']);
+}
+
 ?>
 <h2>Ваши проекты</h2>
 <div id="kabinetcontent" data-modalload="" data-usermessangerr="projectmainpage" data-dashboardprojectlist=""></div>

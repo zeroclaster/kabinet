@@ -5,8 +5,10 @@ function custom_mail($to, $subject, $message, $additional_headers, $additional_p
 {
 	//AddMessage2Log($to . '|' . $subject. '|' .$message. '|' .$additional_headers. '|' .$additional_parameters, "my_module_id");
 				//mail_cast($to, $subject, $message, $additional_headers, $additional_parameters);
+
+//return true;
 	return  @mail($to, $subject, $message, $additional_headers, $additional_parameters);
-	return true;
+	
 }
 
 define('VUEJS_DEBUG', true);

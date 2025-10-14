@@ -550,6 +550,25 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             return acc;
         }, {});
         console.log(this.anim_counter);
+
+        // ДОБАВЛЕННЫЙ КОД: Автоматическое открытие модального окна при отсутствии задач
+        if (!this.datatask || this.datatask.length === 0) {
+
+            this.modaldata.project = this.project.ID;
+
+            if (this.project.UF_ORDER_ID) {
+                this.modaldata.order = this.project.UF_ORDER_ID;
+            }
+
+            // Используем setTimeout чтобы дать Vue полностью отрендерить компонент
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    this.myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                    this.myModal.show();
+                }, 100);
+            });
+        }
+
     },
 	components: {
 			myInputFileComponent,

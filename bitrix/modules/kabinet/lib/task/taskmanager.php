@@ -157,6 +157,13 @@ class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $orders = $this->ProjectManager->orderData($fields['UF_AUTHOR_ID']);
         $PRODUCT = $orders[$isExistsProject['UF_ORDER_ID']][$fields["UF_PRODUKT_ID"]];
 
+        if($PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE)
+            $object->set('UF_COORDINATION', 13);
+        else
+            $object->set('UF_COORDINATION', 0);
+
+        $object->set('UF_REPORTING', 10);
+
         // IBLOCK  TASK_CONTINUITY - Возможность непрерывности задачи
         if ($PRODUCT['TASK_CONTINUITY']['VALUE_XML_ID']) {
             // доступные варианты для задачи

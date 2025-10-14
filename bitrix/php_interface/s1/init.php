@@ -189,7 +189,37 @@ function my_onBeforeResultAdd($WEB_FORM_ID, &$arFields, &$arrVALUES)
 
    session_start();
 
-   CModule::IncludeModule('iblock'); 
+   CModule::IncludeModule('iblock');
+
+    if ($WEB_FORM_ID == 1)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 2)
+    {
+        //if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 3)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 4)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 5)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 6)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+    if ($WEB_FORM_ID == 7)
+    {
+        if ($arrVALUES['spninput2'] != '0') $APPLICATION->ThrowException('SPAN STOP!');
+    }
+
  
   if ($WEB_FORM_ID == 4) 
   {
@@ -357,5 +387,70 @@ function OnAfterUserRegisterHandler(&$arFields)
         }
 
         unset($_SESSION['TELEGRAM_REGISTER_DATA']);
+    }
+
+    // Создаем проект для нового пользователя
+    //createProjectForNewUser($arFields['USER_ID']);
+}
+
+
+function createProjectForNewUser($userId) {
+    // Подключаем необходимый модуль
+    if (!\Bitrix\Main\Loader::includeModule('kabinet')) {
+        AddMessage2Log("Модуль 'kabinet' не найден");
+        return false;
+    }
+
+    // Подготавливаем данные для проекта
+    $postData = [
+        'HLBLOCK_4_UF_AUTHOR_ID' => $userId,
+        'HLBLOCK_4_UF_NAME' => 'Первый проект',
+        'HLBLOCK_8_UF_PROJECT_GOAL' => 'Описание проекта по умолчанию',
+        // Добавьте другие необходимые поля здесь
+    ];
+
+    try {
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $ProjectManager = $sL->get('Kabinet.Project');
+        $infoManager = $sL->get('Kabinet.infoProject');
+        $detailsManager = $sL->get('Kabinet.detailsProject');
+        $targetManager = $sL->get('Kabinet.targetProject');
+
+        // 1. Создаем основной проект
+        // Передаем подготовленные данные, а не несуществующий $request
+        $projectFields = $ProjectManager->retrieveAdditionalsFields($postData);
+        $projectId = $ProjectManager->add($projectFields); // Используем add для создания
+
+        if (!$projectId) {
+            throw new Exception('Не удалось создать основной проект');
+        }
+
+        // 2. Создаем запись в доп. информации о проекте
+        $infoFields = $infoManager->retrieveAdditionalsFields($postData);
+        $infoFields['UF_PROJECT_ID'] = $projectId;
+        $infoManager->add($infoFields);
+
+        // 3. Создаем запись в деталях проекта
+        $detailsFields = $detailsManager->retrieveAdditionalsFields($postData);
+        $detailsFields['UF_PROJECT_ID'] = $projectId;
+        $detailsManager->add($detailsFields);
+
+        // 4. Создаем запись в целевой аудитории
+        $targetFields = $targetManager->retrieveAdditionalsFields($postData);
+        $targetFields['UF_PROJECT_ID'] = $projectId;
+        $targetManager->add($targetFields);
+
+        // Перенаправляем на страницу планирования нового проекта
+        LocalRedirect('/kabinet/projects/planning/?p=' . $projectId);
+        exit;
+
+    } catch (\Bitrix\Main\SystemException $e) {
+        // Обработка специфичных для Bitrix исключений :cite[1]
+        AddMessage2Log("SystemException при создании проекта: " . $e->getMessage());
+        return false;
+    } catch (Exception $e) {
+        // Обработка общих исключений
+        AddMessage2Log("Общее исключение при создании проекта: " . $e->getMessage());
+        return false;
     }
 }
