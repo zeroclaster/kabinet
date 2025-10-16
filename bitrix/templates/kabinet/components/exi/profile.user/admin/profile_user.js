@@ -52,7 +52,6 @@ profile_user= (function (){
                                 //preparePost: false
                             })
                                 .then(function(response) {
-                                    console.log(response)
                                     const data = response.data;
                                     kabinetStore.NotifyOk = '';
                                     kabinetStore.NotifyOk = data.message;
@@ -106,13 +105,6 @@ profile_user= (function (){
                         this.datauser ["PERSONAL_PHOTO"] = event.target.files;
                         this.savefields();
                     }
-                },
-                created(){
-                },
-                mounted() {
-                    var cur = this;
-                },
-                components: {
                 },
                 // language=Vue
                 template: '#kabinet-content'

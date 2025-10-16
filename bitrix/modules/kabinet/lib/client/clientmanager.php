@@ -173,6 +173,7 @@ class Clientmanager {
         // Add User fields
         foreach ($listdata as $index => $fields){
             $arUF = $GLOBALS["USER_FIELD_MANAGER"]->GetUserFields("USER", $fields['ID']);
+
             foreach ($arUF as $name=>$params){
                 $listdata[$index][$name] = $params["VALUE"]?? 0;
                 if ($params["USER_TYPE_ID"] == 'enumeration'){
@@ -189,6 +190,10 @@ class Clientmanager {
                 elseif ($params["USER_TYPE_ID"]=="boolean"){
                     if($params["VALUE"] == "1") $listdata[$index][$name] = true;
                     else $listdata[$index][$name] = false;
+                }
+                elseif ($params["USER_TYPE_ID"]=="double"){
+                    if ($params["VALUE"] === false)  $listdata[$index][$name] = 0;
+                    $listdata[$index][$name. '_ORIGINAL'] =  $params["VALUE"]?? 0;
                 }
                 else{
                     $listdata[$index][$name. '_ORIGINAL'] =  $params["VALUE"]?? 0;

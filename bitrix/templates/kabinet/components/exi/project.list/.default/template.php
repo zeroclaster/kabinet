@@ -39,7 +39,7 @@ if (empty($arResult['ITEMS'])) {
 
 
 if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
-LocalRedirect('/kabinet/projects/planning/?p=' . $arResult['ITEMS'][0]['ID']);
+//LocalRedirect('/kabinet/projects/planning/?p=' . $arResult['ITEMS'][0]['ID']);
 }
 
 ?>
