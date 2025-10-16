@@ -32,7 +32,7 @@ else{
     ShowError("Task data not found". "(".$taskdata['ID'].")");
 }
 
-$QueueStatistics = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('queue.statistics')->getStatistics($taskdata);
+
 $runner = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->getTaskFulfiData($taskdata['ID']);
 
 $project_data = $projectManager->getData();
@@ -71,70 +71,12 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 <section class="task-info-block">
     <div class="container-fluid">
         <div class="row row-30">
-            <div id="taskinfocontent" class="col-md-12" data-taskinfo="">
-            </div>
+            <?$APPLICATION->IncludeComponent("exi:task.info.block", "", Array(
+                )
+            );?>
         </div>
     </div>
 </section>
-
-<script type="text/html" id="task-info-template">
-    <div id="task<?=$taskdata['ID']?>" class="panel">
-        <div class="panel-body">
-
-            <div class="row">
-                <div class="col-md-1">
-                    <img src="<?=$user_order['PREVIEW_PICTURE_SRC']?>" alt="<?=$taskdata['UF_NAME']?>">
-                </div>
-                <div class="col-md-8">
-                    <div class="h3" style="margin-top:0px;"><?=$taskdata['UF_NAME']?> #<?=$taskdata['UF_EXT_KEY']?></div>
-
-                    <div class="d-flex task-status-print h4" v-html="taskStatus_m(TASK_ID)"></div>
-
-                    <div class="mt-3">
-                        <div class="d-flex no-d-flex">
-                            <div class="d-flex mr-3 align-items-center">Запланированы: <div class="fc-event-light ml-2 mr-2"><?=$QueueStatistics[0]['COUNT']?></div></div>
-                            <div class="d-flex mr-3 align-items-center">Выполняются: <div class="fc-event-success ml-2 mr-2"><?=$QueueStatistics[1]['COUNT']?></div></div>
-                            <div class="d-flex mr-3 align-items-center">Выполнено: <div class="fc-event-warning ml-2 mr-2"><?=$QueueStatistics[2]['COUNT']?></div></div>
-                        </div>
-                        <div>Примерная частота исполнений: 1 ед. <?=\PHelp::dimensiontimeConvert($user_order['MINIMUM_INTERVAL']['VALUE'])?></div>
-                        <div>Завершится: <?=$taskdata['UF_DATE_COMPLETION_ORIGINAL']['FORMAT1']?></div>
-                        <?if($taskdata['UF_TARGET_SITE_ORIGINAL']):?>
-
-                                <div class="d-flex link-block">
-                                    <div class="mr-4">Ссылка:</div>
-                                    <div class="link-block-value"><?
-                                        foreach ($taskdata['UF_TARGET_SITE_ORIGINAL'] as $linksite) if ($linksite['VALUE']){
-                                            $link_ = $linksite['VALUE'];
-                                            echo "<div><a href='{$link_}' target='_blank' rel=\"nofollow\">{$link_}</a></div>";
-                                        }
-                                        ?></div>
-                                </div>
-
-                        <?endif;?>
-                    </div>
-
-                    <div class="mt-3">
-                        <?
-                        $key = array_search($taskdata['UF_CYCLICALITY'], array_column($taskdata['UF_CYCLICALITY_ORIGINAL'], 'ID'));
-                        if ($key !== false){
-                            ?>
-                            <?=$taskdata['UF_CYCLICALITY_ORIGINAL'][$key]['VALUE']?>
-                        <?}?>
-                    </div>
-
-
-                </div>
-                <div class="col-md-3">
-                    <ul class="list-unstyled">
-                        <li><a href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['UF_PRODUKT_ID']?>">Планирование</a></li>
-                        <li><a href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
-                    </ul>
-                </div>
-            </div> <!-- <div class="row"> -->
-
-        </div> <!-- <div class="panel-body"> -->
-    </div>
-</script>
 
 
 <?if(!$runner):?>
@@ -191,28 +133,15 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 <?
 (\KContainer::getInstance())->get('queueStore');
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/kabinet/calendar.reports.js");
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/reports.list/.default/js/task.info.js");
 ?>
 <script>
-    components.tasklist22 = {
-        selector: '[data-taskinfo]',
-        script: [
-            '../../kabinet/components/exi/task.list/.default/task_status.js'
-        ],
-        init:null
-    }
-
     window.addEventListener("components:ready", function(event) {
-
-        task_info.start(<?=CUtil::PhpToJSObject([
-                'TASK_ID' => $task_id
-        ], false, true)?>);
-
-	   /*
-	   calendar_reports.start(<?=CUtil::PhpToJSObject([
-          "TASK_ID"=>$taskdata['ID'],
-        ], false, true)?>);
-		*/
+        /*
+        calendar_reports.start(<?=CUtil::PhpToJSObject([
+        "TASK_ID"=>$taskdata['ID'],
+    ], false, true)?>);
+    */
     });
 </script>
+
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
