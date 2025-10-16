@@ -55,7 +55,15 @@ $ClientManager = $sL->get('Kabinet.Client');
                            </div>
                            <div class="row form-group">
                                <div class="col-sm-3 text-sm-right">
-                                   <label class="col-form-label" :for="$id('surname')">Фамилия</label>
+                                   <label class="col-form-label" :for="$id('lastname')">Фамилия</label>
+                               </div>
+                               <div class="col-sm-9">
+                                   <input class="form-control" :id="$id('lastname')" type="text" placeholder="" v-model="datauser.LAST_NAME">
+                               </div>
+                           </div>
+                           <div class="row form-group">
+                               <div class="col-sm-3 text-sm-right">
+                                   <label class="col-form-label" :for="$id('surname')">Отчество</label>
                                </div>
                                <div class="col-sm-9">
                                    <input class="form-control" :id="$id('surname')" type="text" placeholder="" v-model="datauser.SECOND_NAME">

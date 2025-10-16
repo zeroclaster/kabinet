@@ -11,7 +11,7 @@
                 <div class="radio-item">
 
                     <input id="typepay-1" type="radio" name="typepay" value="1" v-model="fields.typepay" @change="onChange">
-                    <label for="typepay-1" class="radio-label">
+                    <label for="typepay-1" class="radio-label no-d-flex-to-block">
                         <i class="fa fa-credit-card-alt" aria-hidden="true"></i> <span style="font-size: 22px;">Карта</span> <span style="font-weight: normal;color: #8a8a8a;">Мгновенное пополнение. Мир, СБП, Сбер Pay, Т-pay, Я-Пэй. Комиссия 7%</span>
                     </label>
                 </div>
@@ -22,7 +22,7 @@
                 <?if(0):?>
                     <div class="radio-item">
                         <input id="typepay-2" type="radio" name="typepay" value="2" v-model="fields.typepay" @change="onChange">
-                        <label for="typepay-2" class="radio-label">
+                        <label for="typepay-2" class="radio-label no-d-flex-to-block">
                             <i class="fa fa-qrcode" aria-hidden="true"></i> QR-код
                         </label>
                     </div>
@@ -32,7 +32,7 @@
             <?if(!\PHelp::isAdmin()):?>
                 <div class="radio-item">
                     <input id="typepay-3" type="radio" name="typepay" value="3" v-model="fields.typepay" @change="onChange">
-                    <label for="typepay-3" class="radio-label">
+                    <label for="typepay-3" class="radio-label no-d-flex-to-block">
                         <i class="fa fa-university" aria-hidden="true"></i> <span style="font-size: 22px;">Банковский перевод</span> <span style="font-weight: normal;color: #8a8a8a;">Оплата по счету, для юрлиц и ИП. Комиссия 3%</span>
                     </label>
                 </div>
@@ -41,7 +41,7 @@
             <?if(\PHelp::isAdmin()):?>
                 <div class="radio-item">
                     <input id="typepay-4" type="radio" name="typepay" value="4" v-model="fields.typepay" @change="onChange">
-                    <label for="typepay-4" class="radio-label">
+                    <label for="typepay-4" class="radio-label no-d-flex-to-block">
                         <i class="fa fa-university" aria-hidden="true"></i> Прямое пополнение
                     </label>
                 </div>
