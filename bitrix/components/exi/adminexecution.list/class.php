@@ -119,8 +119,8 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         if(!empty($FILTER['planedaterangesearchto'])) $Query->addFilter('<UF_PLANNE_DATE',$FILTER['planedaterangesearchto']);
 
         // Дата публикации
-        if(!empty($FILTER['publicdatefromsearch']))  $Query->addFilter('>UF_ACTUAL_DATE',$FILTER['planedaterangesearchto']);
-        if(!empty($FILTER['publicdatetosearch'])) $Query->addFilter('<UF_ACTUAL_DATE',$FILTER['planedaterangesearchto']);
+        if(!empty($FILTER['publicdatefromsearch']))  $Query->addFilter('>UF_ACTUAL_DATE',$FILTER['publicdatefromsearch']);
+        if(!empty($FILTER['publicdatetosearch'])) $Query->addFilter('<UF_ACTUAL_DATE',$FILTER['publicdatetosearch']);
 
         /* 17.04.2025
         для пользователей ввели внешний ключь
