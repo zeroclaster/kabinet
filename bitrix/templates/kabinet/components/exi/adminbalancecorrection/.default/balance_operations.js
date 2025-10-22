@@ -128,7 +128,7 @@ const balance_operations = {
          * Проверка максимальной суммы (50 000)
          */
         validateMaxAmount(amount, operationType) {
-            const MAX_AMOUNT = 1000000;
+            const MAX_AMOUNT = 1000000000;
             if (amount > MAX_AMOUNT) {
                 this.showFormMessage(`Максимальная сумма для ${operationType} - 50 000 руб.`, false, operationType);
                 return false;
