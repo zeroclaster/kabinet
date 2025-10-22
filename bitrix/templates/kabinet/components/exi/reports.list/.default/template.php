@@ -77,9 +77,6 @@ else
 include_once(__DIR__.'/desctop.inc.php');
 
 ?>
-
-
-
 <? (\KContainer::getInstance())->get('orderStore','briefStore','taskStore'); ?>
 <script>
     const  runnerlistStore = BX.Vue3.Pinia.defineStore('runnerlist', {
@@ -132,15 +129,20 @@ include_once(__DIR__.'/desctop.inc.php');
         const signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>';
 
         var messageStore = null;
+        var messageStoreInstance = null;
 
         window.addEventListener("components:ready", function(event) {
 
             const messangerSystem2 = createMessangerSystem();
+            messageStoreInstance = messangerSystem2.store();
             reportsListApplicationConfig.components.messangerperformances = messangerSystem2.component.start(<?=CUtil::PhpToJSObject([
                 'VIEW_COUNT' => $arParams['MESSAGE_COUNT'],
                 'TEMPLATE' => 'messangerTemplate'
             ], false, true)?>);
-            messangerSystem2.store().$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
+            messageStoreInstance.$patch({ datamessage: <?=CUtil::PhpToJSObject($arResult["MESSAGE_DATA"], false, true)?> });
+
+            // Дополнительно сохраняем в глобальной переменной для обратной совместимости
+            window.messageStoreInstance = messageStoreInstance;
 
             messageStore = messangerSystem2.store();
 

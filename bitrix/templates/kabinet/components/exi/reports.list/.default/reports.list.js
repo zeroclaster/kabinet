@@ -5,7 +5,8 @@ data() {
         countview:PHPPARAMS['viewcount'],
         total: PHPPARAMS['total'],
         showloadmore:true,
-        limitpics:5
+        limitpics:5,
+        messageStoreInstance: null
     }
 },
 setup(){
@@ -57,10 +58,18 @@ methods: {
             kabinet.loading(false);
             const data = response.data;
 
+            /*
             if (typeof data.MESSAGE_DATA != "undefined" && Object.keys(data.MESSAGE_DATA).length>0){
                 const message_store = messageStore();
                 for(index in data.MESSAGE_DATA)
                     message_store.datamessage[index] = data.MESSAGE_DATA[index];
+            }*/
+
+            // ИСПРАВЛЕННЫЙ БЛОК - используем переданное хранилище
+            if (typeof data.MESSAGE_DATA != "undefined" && Object.keys(data.MESSAGE_DATA).length>0 && window.messageStoreInstance){
+                for(index in data.MESSAGE_DATA) {
+                    window.messageStoreInstance.datamessage[index] = data.MESSAGE_DATA[index];
+                }
             }
 
             if (typeof data.RUNNER_DATA != "undefined" && data.RUNNER_DATA.length == 0) this_.showloadmore = false;
