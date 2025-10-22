@@ -1255,3 +1255,37 @@ i.fa{
 	border-color: #2196f3;
 	color: #1976d2;
 }
+
+.table th.sortable-header {
+	cursor: pointer;
+	user-select: none;
+	position: relative;
+	padding: 0;
+}
+
+.sortable-header:hover {
+	background-color: #f8f9fa;
+}
+
+.sort-arrows {
+	margin-left: 8px;
+	display: inline-flex;
+	flex-direction: column;
+	position: absolute;
+	top: 2px;
+}
+
+.sort-arrows i {
+	font-size: 10px;
+	line-height: 8px;
+	color: #ccc;
+	transition: color 0.2s;
+}
+
+.sort-arrows i.active {
+	color: #007bff;
+}
+
+.sort-arrows i.fa-arrow-up {
+	margin-bottom: 2px;
+}

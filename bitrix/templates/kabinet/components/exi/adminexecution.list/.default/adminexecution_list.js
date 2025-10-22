@@ -3,6 +3,45 @@ adminexecution_list = (function (){
     return {
         start(PHPPARAMS, messageStoreInstance){
 
+
+            // Добавляем компонент для заголовка с сортировкой
+            const SortableHeader = BX.Vue3.BitrixVue.mutableComponent('sortable-header', {
+                template: `
+                    <th scope="col" class="sortable-header" @click="toggleSort">
+                        <span class="header-text">{{fieldTitle}}</span>
+                        <span class="sort-arrows">
+                            <i class="fa fa-arrow-up" :class="{ active: sortField === fieldName && sortOrder === 'asc' }"></i>
+                            <i class="fa fa-arrow-down" :class="{ active: sortField === fieldName && sortOrder === 'desc' }"></i>
+                        </span>
+                    </th>
+                `,
+                props: ['currentSortField', 'currentSortOrder','fieldName','fieldTitle'],
+                computed: {
+                    sortField: {
+                        get() { return this.currentSortField; },
+                        set(value) { this.$emit('update:currentSortField', value); }
+                    },
+                    sortOrder: {
+                        get() { return this.currentSortOrder; },
+                        set(value) { this.$emit('update:currentSortOrder', value); }
+                    }
+                },
+                methods: {
+                    toggleSort() {
+                        if (this.sortField === this.fieldName) {
+                            // Если уже сортируем по этому полю, меняем направление
+                            this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            // Если сортируем по другому полю, переключаемся на это поле
+                            this.sortField = this.fieldName;
+                            this.sortOrder = 'desc';
+                        }
+                        this.$root.applySort();
+                    }
+                }
+            });
+
+
             const changestatus = BX.Vue3.BitrixVue.mutableComponent('change status', {
                 template: `
                           <div class="mt-3" v-if="catalog.length>0">
@@ -225,7 +264,9 @@ adminexecution_list = (function (){
                         total: PHPPARAMS['total'],
                         adminlist: PHPPARAMS['adminlist'],
                         showloadmore:true,
-                        limitpics:5
+                        limitpics:5,
+                        sort_field: PHPPARAMS['sort_field'] || 'UF_PLANNE_DATE',
+                        sort_order: PHPPARAMS['sort_order'] || 'desc'
                     }
                 },
                 computed: {
@@ -251,14 +292,97 @@ adminexecution_list = (function (){
                         for(element of runner.STATUSLIST) if (element.ID == runner.UF_STATUS) ret = element.TITLE
                         return ret;
                     },
+
+                    applySort() {
+                        // Перезагружаем данные с новой сортировкой
+                        this.reloadData();
+                    },
+
+                    reloadData() {
+                        const this_ = this;
+                        let formData = new FormData;
+
+                        // Сбрасываем offset при смене сортировки
+                        this.$root.offset = 0;
+                        formData.append("OFFSET", this.$root.offset);
+                        formData.append("FILTER_JSON", JSON.stringify(filterclientlist));
+                        formData.append("countview", this_.countview);
+
+                        // Добавляем параметры сортировки
+                        formData.append("sort_field", this_.sort_field);
+                        formData.append("sort_order", this_.sort_order);
+
+                        const kabinetStore = usekabinetStore();
+                        kabinet.loading();
+
+                        // Очищаем текущие данные
+                        this_.datarunner.length = 0;
+
+                        var data = BX.ajax.runComponentAction("exi:adminexecution.list", "loadmore", {
+                            mode: 'class',
+                            data: formData,
+                            timeout: 300
+                        }).then(function (response) {
+                            kabinet.loading(false);
+                            const data = response.data;
+
+                            // Обработка данных как в методе moreload
+                            if (typeof data.RUNNER_DATA != "undefined" && data.RUNNER_DATA.length == 0) this_.showloadmore = false;
+
+                            if (typeof data.MESSAGE_DATA != "undefined" && Object.keys(data.MESSAGE_DATA).length>0 && messageStoreInstance){
+                                for(index in data.MESSAGE_DATA) {
+                                    messageStoreInstance.datamessage[index] = data.MESSAGE_DATA[index];
+                                }
+                            }
+
+                            if (typeof data.CLIENT_DATA != "undefined")
+                                for(index in data.CLIENT_DATA) {
+                                    this_.dataclient[index] = data.CLIENT_DATA[index];
+                                }
+
+                            if (typeof data.PROJECT_DATA != "undefined")
+                                for(index in data.PROJECT_DATA) {
+                                    this_.dataproject[index] = data.PROJECT_DATA[index];
+                                }
+
+                            if (typeof data.TASK_DATA != "undefined")
+                                for(index in data.TASK_DATA) {
+                                    this_.datatask[index] = data.TASK_DATA[index];
+                                }
+
+                            if (typeof data.ORDER_DATA != "undefined")
+                                for(index in data.ORDER_DATA) {
+                                    this_.dataorder[index] = data.ORDER_DATA[index];
+                                }
+
+                            if (typeof data.RUNNER_DATA != "undefined"){
+                                data.RUNNER_DATA.forEach((elm)=>{this_.datarunner.push(elm)});
+                            }
+
+                        }, function (response) {
+                            kabinet.loading(false);
+                            if (response.errors[0].code != 0) {
+                                kabinetStore.Notify = '';
+                                kabinetStore.Notify = response.errors[0].message;
+                            } else {
+                                kabinetStore.Notify = '';
+                                kabinetStore.Notify = "Возникла системная ошибка! Пожалуйста обратитесь к администратору сайта.";
+                            }
+                        });
+                    },
+
                     moreload:function (e) {
                         const this_ = this;
                         let formData = new FormData;
                         this.$root.offset = this.$root.offset + 25;
                         formData.append("OFFSET",this.$root.offset);
                         formData.append("FILTER_JSON", JSON.stringify(filterclientlist));
-
                         formData.append("countview",this_.countview);
+
+                        // Добавляем параметры сортировки
+                        formData.append("sort_field", this_.sort_field);
+                        formData.append("sort_order", this_.sort_order);
+
                         const kabinetStore = usekabinetStore();
                         kabinet.loading();
                         var data = BX.ajax.runComponentAction("exi:adminexecution.list", "loadmore", {
@@ -483,6 +607,7 @@ adminexecution_list = (function (){
                     changeResponsible,
                     messangerperformances,
                     richtext,
+                    SortableHeader // Добавляем новый компонент
                 },
                 // language=Vue
                 template: '#kabinet-content'

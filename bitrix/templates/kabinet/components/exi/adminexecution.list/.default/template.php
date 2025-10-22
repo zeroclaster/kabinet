@@ -81,9 +81,29 @@ $this->setFrameMode(true);
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Планирование</th>
+        <th scope="col">
+
+            <SortableHeader
+                    :current-sort-field="sort_field"
+                    :current-sort-order="sort_order"
+                    field-name="UF_PLANNE_DATE"
+                    field-title="Планирование"
+                    @update:currentSortField="sort_field = $event"
+                    @update:currentSortOrder="sort_order = $event"
+            />
+
+        </th>
         <th scope="col">Текст и поля</th>
-        <th scope="col">Статус и действия</th>
+        <th scope="col">
+            <SortableHeader
+                    :current-sort-field="sort_field"
+                    :current-sort-order="sort_order"
+                    field-name="UF_CREATE_DATE"
+                    field-title="Статус и действия"
+                    @update:currentSortField="sort_field = $event"
+                    @update:currentSortOrder="sort_order = $event"
+            />
+        </th>
         <th scope="col">Размещение и отчет</th>
     </tr>
     </thead>
@@ -321,6 +341,8 @@ $this->setFrameMode(true);
 						"viewcount"=>$arParams["COUNT"],
 					    "total"=>$arResult["TOTAL"],
                         "adminlist"=>$arParams["ADMINLIST"],
+                    "sort_field"=>$arParams['SORT_FIELD'],
+                    "sort_order"=>$arParams['SORT_ORDER'],
 				], false, true)?>,
                 messageStoreInstance // Передаем хранилище вторым параметром
             );
