@@ -63,7 +63,15 @@
                                     <label for="summa-popolneniya">Сумма пополнения, руб.</label>
                                     <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
                                     <div v-if="showError('summapopolneniya2')" class="error-field">Сумма платежа не должна быть меньше 1000</div>
-                                    <input id="summa-popolneniya" name="summapopolneniya" class="form-control" style="text-align: right" type="text" v-model="fields.summapopolneniya" @input="onInput">
+                                    <input
+                                            id="summa-popolneniya"
+                                            name="summapopolneniya"
+                                            class="form-control"
+                                            style="text-align: right" type="text"
+                                            v-model="fields.summapopolneniya"
+                                            @input="formatCurrency($event, 'summapopolneniya')"
+                                            placeholder="0.00"
+                                    >
                                     <div class="info-help">Не менее 1000 рублей.</div>
                                 </div>
                             </div>
@@ -169,7 +177,16 @@
                                     <label for="summa-popolneniya2">Сумма пополнения, руб.</label>
                                     <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
                                     <div v-if="showError('summapopolneniya2')" class="error-field">Сумма платежа не должна быть меньше 1000</div>
-                                    <input id="summa-popolneniya2" name="summapopolneniya" class="form-control" style="text-align: right" type="text" v-model="fields.summapopolneniya" @input="onInput">
+                                    <input
+                                            id="summa-popolneniya2"
+                                            name="summapopolneniya"
+                                            class="form-control"
+                                            style="text-align: right"
+                                            type="text"
+                                            v-model="fields.summapopolneniya"
+                                            @input="formatCurrency($event, 'summapopolneniya')"
+                                            placeholder="0.00"
+                                    >
                                     <div class="info-help">Не менее 1000 рублей.</div>
                                 </div>
                             </div>
