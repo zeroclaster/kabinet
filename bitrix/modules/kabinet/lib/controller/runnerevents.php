@@ -89,7 +89,9 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
         $sum = $current['UF_MONEY_RESERVE'] - $odlData['UF_MONEY_RESERVE'];
         $RunnerManager->taskFileds = $TaskData;
         if ($sum>0) {
-            $billing->addMoney($sum, $TaskData['UF_AUTHOR_ID'], $RunnerManager);
+            // исправление по доработкам от 2025-09-12
+            // пополнять типо не нужно, сразу списываем
+            //$billing->addMoney($sum, $TaskData['UF_AUTHOR_ID'], $RunnerManager);
             $billing->getMoney($sum, $TaskData['UF_AUTHOR_ID'], $RunnerManager);
         }else{
             $billing->cachback2($sum*-1,$TaskData['UF_AUTHOR_ID'],$RunnerManager);
