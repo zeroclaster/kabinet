@@ -89,17 +89,13 @@ EventManager::getInstance()->addEventHandler('kabinet','OnBeforeStartStage',func
 
 if (!$server->getRequestMethod() || DEBUGPARS)
 {
+    \utilCron1::addlog('---------------------------------------------------------------------------------');
+    \utilCron1::addlog('Запуск крона выполнения задачи');
+
     try {
-        \utilCron1::addlog('---------------------------------------------------------------------------------');
-        \utilCron1::addlog('Запуск крона выполнения задачи');
-
         $Queue->run();
-        $taskAutoRun->run();
-
     } catch (\Exception $e) {
-
         //var_dump($e->getMessage());
-
         if ($e->getCode() == 100){
             // Вышло отведенное время
         }elseif($e->getCode() == 200){
@@ -108,11 +104,26 @@ if (!$server->getRequestMethod() || DEBUGPARS)
         else{
             \utilCron1::addlog("Что-то пошло не так! ".$e->getMessage());
         }
-
     }
+
+    try {
+        $taskAutoRun->run();
+    } catch (\Exception $e) {
+        //var_dump($e->getMessage());
+        if ($e->getCode() == 100){
+            // Вышло отведенное время
+        }elseif($e->getCode() == 200){
+            \utilCron1::addlog('Вышло отведенное время');
+        }
+        else{
+            \utilCron1::addlog("Что-то пошло не так! ".$e->getMessage());
+        }
+    }
+
+    \utilCron1::addlog('Завершение крона');
 }
 
-\utilCron1::addlog('Завершение крона');
+
 
 
 
