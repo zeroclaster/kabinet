@@ -19,8 +19,8 @@ deposit_form = (function (){
                 data() {
                     return {
                         fields :{
-                            summapopolneniya:0,	
-							summapopolneniya2:0,
+                            summapopolneniya:'',
+							summapopolneniya2:'',
                             percentpopolneniya:0,
                             promocode:'',
                             typepay: defaultTypePay, // Используем вычисленное значение
@@ -38,20 +38,27 @@ deposit_form = (function (){
                     ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
 					...BX.Vue3.Pinia.mapState(AgreementStore, ['contract','bank','contracttype']),
                     totalsum(){
-						const typepay = this.fields.typepay;
-						
-						
+                        const typepay = this.fields.typepay;
                         const pecent2 = this.pecent2[typepay];
-						
-						var summapopolneniya = 0;
-						
-						if (typepay == 1 || typepay == 3) summapopolneniya = this.fields.summapopolneniya;
-						if (typepay == 2) summapopolneniya = this.fields.qrsumm;
 
-									
-                        summapopolneniya = parseFloat(summapopolneniya);
+                        var summapopolneniya = 0;
+
+                        if (typepay == 1 || typepay == 3) {
+                            // Если поле пустое, возвращаем 0
+                            if (this.fields.summapopolneniya === '') {
+                                return '0.00';
+                            }
+                            // Преобразуем строку с запятой в число
+                            let summaValue = this.fields.summapopolneniya.toString().replace(',', '.');
+                            summapopolneniya = parseFloat(summaValue) || 0;
+                        }
+                        if (typepay == 2) {
+                            let qrsummValue = this.fields.qrsumm.toString().replace(',', '.');
+                            summapopolneniya = parseFloat(qrsummValue) || 0;
+                        }
+
                         return parseFloat(summapopolneniya / pecent2).toFixed(2);
-                    },					
+                    },
                     isError(){
                         for(fieldName in this.errorField){
                             if (this.errorField[fieldName]) return true;
@@ -61,6 +68,54 @@ deposit_form = (function (){
                     },
                 },
                 methods: {
+
+                    formatCurrency(event, fieldName) {
+                        this.clearError();
+
+                        let input = event.target;
+                        let value = input.value;
+
+                        // Если поле пустое, оставляем пустым
+                        if (value === '') {
+                            this.fields[fieldName] = '';
+                            return;
+                        }
+
+                        // Разрешаем цифры, точку и запятую
+                        value = value.replace(/[^\d.,]/g, '');
+
+                        // Заменяем запятую на точку для единообразия
+                        value = value.replace(/,/g, '.');
+
+                        // Удаляем все точки, кроме первой
+                        let dotCount = (value.match(/\./g) || []).length;
+                        if (dotCount > 1) {
+                            value = value.replace(/\.+$/, ""); // Удаляем точки в конце
+                            value = value.substring(0, value.indexOf('.')) +
+                                value.substring(value.indexOf('.')).replace(/\./g, '');
+                        }
+
+                        // Ограничиваем копейки до 2 знаков после точки
+                        if (value.includes('.')) {
+                            let parts = value.split('.');
+                            if (parts[1].length > 2) {
+                                parts[1] = parts[1].substring(0, 2);
+                                value = parts[0] + '.' + parts[1];
+                            }
+                        }
+
+                        // Убеждаемся, что число не начинается с точки
+                        if (value.startsWith('.')) {
+                            value = '0' + value;
+                        }
+
+                        // Обновляем значение в модели
+                        this.fields[fieldName] = value;
+
+                        // Обновляем значение в input (на случай, если мы что-то изменили)
+                        input.value = value;
+                    },
+
                     showError(field){
                         if (typeof this.errorField[field] != "undefined" && this.errorField[field]) return true;
 
@@ -74,7 +129,7 @@ deposit_form = (function (){
                     onInput(){
                         this.clearError();
                     },
-                    onInput2(){
+                    onInput2__(){
                         this.clearError();
 
                         let summapopolneniya = parseInt(this.fields.summapopolneniya);
@@ -82,6 +137,19 @@ deposit_form = (function (){
 
                         this.sumpopolnenia = summapopolneniya*percentpopolneniya/100;
                     },
+                    onInput2(){
+                        this.clearError();
+
+                        // Если поле пустое, устанавливаем сумму пополнения в 0
+                        let summaValue = this.fields.summapopolneniya === '' ? '0' : this.fields.summapopolneniya.toString().replace(',', '.');
+                        let percentValue = this.fields.percentpopolneniya.toString().replace(',', '.');
+
+                        let summapopolneniya = parseFloat(summaValue) || 0;
+                        let percentpopolneniya = parseFloat(percentValue) || 0;
+
+                        this.sumpopolnenia = (summapopolneniya * percentpopolneniya / 100).toFixed(2);
+                    },
+
                     onChange(){
                         this.clearError();
 
@@ -119,8 +187,15 @@ deposit_form = (function (){
                     },
 					download(e){
 
-                        if (this.fields.summapopolneniya == 0)  this.errorField.summapopolneniya = true;
-						if (this.fields.summapopolneniya < 1000)  this.errorField.summapopolneniya2 = true;                        
+                        // Преобразуем строку в число, учитывая запятую
+                        let summaValue = this.fields.summapopolneniya.toString().replace(',', '.');
+                        let summa = parseFloat(summaValue) || 0;
+
+                        if (this.fields.summapopolneniya === '' || summa == 0) this.errorField.summapopolneniya = true;
+                        if (summa < 1000) this.errorField.summapopolneniya2 = true;
+
+                        //if (this.fields.summapopolneniya == 0)  this.errorField.summapopolneniya = true;
+						//if (this.fields.summapopolneniya < 1000)  this.errorField.summapopolneniya2 = true;
 
 						if (this.contracttype.value == 0)  this.errorField.contractFieldEmpty = true;
 						if (this.contracttype.value == 2 || this.contracttype.value == 3 || this.contracttype.value == 4){
@@ -136,7 +211,6 @@ deposit_form = (function (){
 						if (this.contract.mail_addres == '')  this.errorField.contractFieldEmpty = true;
 						
 
-														
                         if (this.isError){
 							e.preventDefault();
 							e.stopPropagation();
@@ -145,10 +219,13 @@ deposit_form = (function (){
 					},
                     onSubmit(e){
 
-                        if (this.fields.summapopolneniya == 0)  this.errorField.summapopolneniya = true;
-						if (this.fields.summapopolneniya < 1000)  this.errorField.summapopolneniya2 = true;                        
+                        // Преобразуем строку в число, учитывая запятую
+                        let summaValue = this.fields.summapopolneniya.toString().replace(',', '.');
+                        let summa = parseFloat(summaValue) || 0;
 
-                        						
+                        if (this.fields.summapopolneniya === '' || summa == 0) this.errorField.summapopolneniya = true;
+                        if (summa < 1000) this.errorField.summapopolneniya2 = true;
+
                         if (this.isError) return;
 
                         const form = document.querySelector("form[name='depositform1']");
