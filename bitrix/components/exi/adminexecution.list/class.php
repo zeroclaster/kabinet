@@ -51,6 +51,10 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         $params['ADMINLIST'] = $this->getAdminList();
 
+        // Добавляем параметры сортировки
+        $params['SORT_FIELD'] = $request->get('sort_field') ?? 'UF_PLANNE_DATE';
+        $params['SORT_ORDER'] = $request->get('sort_order') ?? 'desc';
+
         return $params;
     }
 
@@ -111,6 +115,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         $connection = $entity->getConnection();
         $Query->setSelect([
             'ID',
+            'UF_PLANNE_DATE',
             'UF_AUTHOR_ID'=>'TASK.UF_AUTHOR_ID'
         ]);
 
@@ -259,17 +264,51 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         if (!$resNoLimit) return $this->arResult;
         $arResult["TOTAL"] = count($resNoLimit);
 
-        $Query->setOffset($arParams['OFFSET']);
-        $Query->setLimit($arParams['COUNT']);
+        //$Query->setOffset($arParams['OFFSET']);
+        //$Query->setLimit($arParams['COUNT']);
 
         // TODO AKULA убрать вариант сортировки для отладки
         //для отладки
         //$Query->setOrder(["UF_PLANNE_DATE"=>'desc',"TASK.UF_PUBLISH_DATE"=>'asc']);
         // правильный вариант
         //$Query->setOrder(["UF_PLANNE_DATE"=>'asc',"TASK.UF_PUBLISH_DATE"=>'asc']);
-        $Query->setOrder(["UF_CREATE_DATE"=>'desc',"TASK.UF_PUBLISH_DATE"=>'desc']);
 
-        $res = $Query->exec()->fetchAll();
+
+        //$Query->setOrder(["UF_CREATE_DATE"=>'desc',"TASK.UF_PUBLISH_DATE"=>'desc']);
+        $sortField = $arParams['SORT_FIELD'];
+        $sortOrder = strtoupper($arParams['SORT_ORDER']) === 'ASC' ? 'asc' : 'desc';
+
+// Получаем SQL запрос без сортировки
+        $sql = $Query->getQuery();
+
+// Добавляем сортировку напрямую в SQL
+        switch ($sortField) {
+            case 'UF_PLANNE_DATE':
+                $sql .= " ORDER BY UF_PLANNE_DATE " . $sortOrder;
+                break;
+            case 'UF_CREATE_DATE':
+                $sql .= " ORDER BY UF_CREATE_DATE " . $sortOrder;
+                break;
+            case 'UF_ACTUAL_DATE':
+                $sql .= " ORDER BY UF_ACTUAL_DATE " . $sortOrder;
+                break;
+            default:
+                $sql .= " ORDER BY UF_PLANNE_DATE DESC";
+        }
+
+        $sql .= " LIMIT " . (int)$arParams['COUNT'] . " OFFSET " . (int)$arParams['OFFSET'];
+
+        // Выполняем запрос напрямую
+        $connection = \Bitrix\Main\Application::getConnection();
+        $result = $connection->query($sql);
+        $res = [];
+        while ($row = $result->fetch()) {
+            $res[] = $row;
+        }
+
+        //$res = $Query->exec()->fetchAll();
+
+        //$arResult["Q"] = htmlspecialchars($sql);
 
         //\Dbg::print_r(\Bitrix\Main\Entity\Query::getLastQuery());
 
@@ -365,6 +404,10 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         // Устанавливаем базовые параметры
         $arParams['COUNT'] = $post['countview'] ?? $arParams['COUNT'];
         $arParams['OFFSET'] = $post['OFFSET'] ?? $arParams['OFFSET'];
+
+        // Добавляем параметры сортировки
+        $arParams['SORT_FIELD'] = $post['sort_field'] ?? 'UF_PLANNE_DATE';
+        $arParams['SORT_ORDER'] = $post['sort_order'] ?? 'desc';
 
         // Обрабатываем JSON фильтр
         if (!empty($post['FILTER_JSON'])) {
