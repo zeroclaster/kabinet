@@ -108,7 +108,7 @@ $this->setFrameMode(true);
                                 </div>
                                 <button type="submit"
                                         class="btn btn-primary"
-                                        :disabled="!bankTransfer.amount || bankTransfer.amount <= 0 || bankTransfer.amount > 1000000">
+                                        :disabled="!bankTransfer.amount || bankTransfer.amount <= 0 || bankTransfer.amount > 1000000000">
                                     Выполнить пополнение
                                 </button>
                             </div>
