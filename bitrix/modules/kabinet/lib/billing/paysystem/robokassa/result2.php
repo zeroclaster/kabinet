@@ -75,7 +75,8 @@ class Result2 extends \Bitrix\Kabinet\billing\paysystem\Baseresult{
         try {
             $billing->addMoney($trans['SUM'], $trans['USER_ID'], $this);
             $calc_sum =  round($trans['SUM'] *0.07,2);
-            $billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
+            // от 22.10.2025
+            //$billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
         }catch (SystemException $exception){
             $this->setError($exception->getMessage());
             return false;

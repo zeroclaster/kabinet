@@ -27,9 +27,11 @@ deposit_form = (function (){
                             qrsumm:PHPPARAMS.QRSUMM,
                         },
                         errorField:{},
-                        pecent: [0,7,7,3],
+                        //pecent: [0,7,7,3],
+                        pecent: [0,0,0,0],
                         // 2025-02-17 по ТЗ меняем  на такой расет
-                        pecent2: [0,0.93,0.93,0.97],
+                        //pecent2: [0,0.93,0.93,0.97],
+                        pecent2: [0,1,1,1],
                         sumpopolnenia:0,
                     }
                 },
