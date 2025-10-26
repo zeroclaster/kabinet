@@ -42,7 +42,7 @@ class Autorun{
                 'UF_STATUS'=>\Bitrix\Kabinet\task\Taskmanager::WORKED
             ],
             'order' => ['UF_RUN_DATE'=>'ASC'],
-            'limit'	=> 5
+            'limit'	=> 20
         ])->fetchAll();
 
         [$mouthStart,$mouthEnd] = \PHelp::nextMonth();
