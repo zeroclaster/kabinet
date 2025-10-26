@@ -41,6 +41,7 @@ global $USER;
 if (!is_object($USER)) $USER = new CUser;
 //$arAuthResult = $USER->Login("yandexmetrica@wsem.ru", "123456");
 $USER->Authorize(443);
+onPrologBootstrape();
 
 (\KContainer::getInstance())->setArgs(function(){
 			global $USER;
@@ -102,7 +103,7 @@ if (!$server->getRequestMethod() || DEBUGPARS)
             \utilCron1::addlog('Вышло отведенное время');
         }
         else{
-            \utilCron1::addlog("Что-то пошло не так! ".$e->getMessage());
+            \utilCron1::addlog("Что-то пошло не так! ($Queue->run)".$e->getMessage());
         }
     }
 
@@ -116,7 +117,7 @@ if (!$server->getRequestMethod() || DEBUGPARS)
             \utilCron1::addlog('Вышло отведенное время');
         }
         else{
-            \utilCron1::addlog("Что-то пошло не так! ".$e->getMessage());
+            \utilCron1::addlog("Что-то пошло не так! (taskAutoRun) ".$e->getMessage());
         }
     }
 

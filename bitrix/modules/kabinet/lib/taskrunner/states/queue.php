@@ -84,7 +84,7 @@ class Queue{
                 '!UF_STATUS'=>[9,10],   // исключаем статус Выпонин и Отменен
             ],
             'order' => ['UF_RUN_DATE'=>'DESC'],
-            'limit'	=> 2
+            'limit'	=> 20
         ])->fetchAll();
 
         if (!$list) throw new SystemException("Отсутствует очередь.");

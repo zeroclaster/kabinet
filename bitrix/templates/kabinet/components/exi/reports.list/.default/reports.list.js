@@ -220,7 +220,7 @@ methods: {
         if (
             this.datarunner[index].UF_REPORT_TEXT_ORIGINAL ||
             this.datarunner[index].UF_REPORT_LINK_ORIGINAL ||
-            this.datarunner[index].UF_REPORT_LINK_ORIGINAL ||
+            this.datarunner[index].UF_REPORT_SCREEN_ORIGINAL ||
             this.datarunner[index].UF_REPORT_FILE_ORIGINAL
         ) return true;
 
