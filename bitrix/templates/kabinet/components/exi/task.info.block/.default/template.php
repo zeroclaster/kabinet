@@ -72,7 +72,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                             <div class="mr-4">Ссылка:</div>
                             <div class="link-block-value">
                                 <div v-for="(linksite, index) in currentLinks" :key="index">
-                                    <a :href="linksite.VALUE" target="_blank" rel="nofollow">{{ linksite.VALUE }}</a>
+                                    {{ linksite.VALUE }}
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,19 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                             <?=$taskdata['UF_CYCLICALITY_ORIGINAL'][$key]['VALUE']?>
                         <?}?>
                     </div>
+                </div>
+                <div class="col-md-3">
+                    <ul class="list-unstyled">
+                        <li><a href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['UF_PRODUKT_ID']?>">Заказ услуг</a></li>
 
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 0;">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-8">
                     <!-- ПЕРЕНЕСЕННЫЙ БЛОК: Дополните задачу данными -->
                     <div class="mt-4">
                         <div class="h4"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Дополните задачу данными:</div>
@@ -167,12 +179,10 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-md-3">
                     <ul class="list-unstyled">
-                        <li><a href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['UF_PRODUKT_ID']?>">Планирование</a></li>
-                        <li><a href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
+                       <li><a class="btn btn-danger mdi-alert-outline icon-button" href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
                     </ul>
                 </div>
             </div>

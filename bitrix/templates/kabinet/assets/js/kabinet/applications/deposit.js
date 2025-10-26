@@ -33,9 +33,36 @@ deposit_form = (function (){
                         sumpopolnenia:0,
                     }
                 },
+                watch: {
+                    // Следим за изменением недостающей суммы
+                    missingAmount: {
+                        handler(newAmount) {
+                            if (newAmount > 0) {
+                                // Устанавливаем значение напрямую
+                                this.fields.summapopolneniya = newAmount.toString();
+                                this.clearError();
+
+                                // Скроллим к полю ввода
+                                this.$nextTick(() => {
+                                    const amountInput = document.getElementById('summa-popolneniya');
+                                    if (amountInput) {
+                                        setTimeout(() => {
+                                            amountInput.scrollIntoView({
+                                                behavior: 'smooth',
+                                                block: 'center'
+                                            });
+                                            amountInput.focus();
+                                        }, 100);
+                                    }
+                                });
+                            }
+                        },
+                        immediate: true
+                    }
+                },
                 computed: {
 					...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
-                    ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
+                    ...BX.Vue3.Pinia.mapState(billingStore, ['databilling', 'missingAmount']),
 					...BX.Vue3.Pinia.mapState(AgreementStore, ['contract','bank','contracttype']),
                     totalsum(){
                         const typepay = this.fields.typepay;
