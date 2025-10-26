@@ -206,5 +206,87 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
             'message'=>'Задача успешно запланирована!<br>Ждет выполнения.'
         ];
     }
+
+    public function savenoteAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $fulfillmentId = $post['fulfillment_id'] ?? 0;
+        $noteText = $post['note_text'] ?? '';
+
+        if (!$fulfillmentId) {
+            return ['success' => false, 'message' => 'Неверные параметры'];
+        }
+
+        try {
+            $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+            $siteuser = $sL->get('siteuser');
+
+            // Ищем существующую заметку
+            $existingNote = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::getList([
+                'filter' => [
+                    'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_ACTIVE' => 1
+                ],
+                'order' => ['UF_CREATED_DATE' => 'DESC'],
+                'limit' => 1
+            ])->fetch();
+
+            if ($existingNote) {
+                // Обновляем существующую заметку
+                $result = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::update($existingNote['ID'], [
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_MODIFIED_DATE' => new \Bitrix\Main\Type\DateTime()
+                ]);
+            } else {
+                // Создаем новую заметку
+                $result = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::add([
+                    'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_CREATED_BY' => $siteuser->get('ID'),
+                    'UF_CREATED_DATE' => new \Bitrix\Main\Type\DateTime(),
+                    'UF_NOTE_TYPE' => 1,
+                    'UF_ACTIVE' => 1,
+                    'UF_IS_PRIVATE' => 0,
+                    'UF_PRIORITY' => 1
+                ]);
+            }
+
+            if ($result->isSuccess()) {
+                return ['success' => true, 'message' => 'Заметка сохранена'];
+            } else {
+                return ['success' => false, 'message' => 'Ошибка сохранения'];
+            }
+
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    public function getcurrentnoteAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $fulfillmentId = $post['fulfillment_id'] ?? 0;
+
+        if (!$fulfillmentId) {
+            return ['note' => ''];
+        }
+
+        try {
+            $note = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::getList([
+                'select' => ['UF_NOTE_TEXT'],
+                'filter' => [
+                    'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_ACTIVE' => 1
+                ],
+                'order' => ['UF_CREATED_DATE' => 'DESC'],
+                'limit' => 1
+            ])->fetch();
+
+            return ['note' => $note['UF_NOTE_TEXT'] ?? ''];
+
+        } catch (\Exception $e) {
+            return ['note' => ''];
+        }
+    }
 }
 
