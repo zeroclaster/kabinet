@@ -465,8 +465,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
                     new ActionFilter\Csrf(),
                     new \Bitrix\Kabinet\Engine\ActionFilter\Groupmanager()
                 ]
-            ]
-
+            ],
         ];
     }
 

@@ -34,3 +34,113 @@
 .admin-execution-list .table thead > tr {
   background-color: #e1e1e1;
 }
+
+/* ------------------------------------------------------------------------- */
+.notes-container {
+    position: relative;
+}
+
+.note-sticker {
+    background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+    border: 1px solid #ffd54f;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+    transform: rotate(-0.5deg);
+}
+
+.note-sticker:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.note-sticker.editing {
+    transform: rotate(0deg);
+    cursor: default;
+}
+
+.note-content {
+    position: relative;
+    height: 100%;
+}
+
+.note-text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #5d4037;
+}
+
+.note-textarea {
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #5d4037;
+    padding: 0;
+    box-shadow: none;
+}
+
+.note-textarea:focus {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.note-corner {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    color: #ffb300;
+    opacity: 0.7;
+}
+
+.note-placeholder {
+    background: #f5f5f5;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #999;
+}
+
+.note-placeholder:hover {
+    background: #e0e0e0;
+    border-color: #999;
+    color: #666;
+}
+
+.placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.placeholder-content i {
+    font-size: 24px;
+}
+
+/* Линии как на настоящей бумаге */
+.note-sticker::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(transparent 0%, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px);
+    background-size: 100% 40px;
+    pointer-events: none;
+    border-radius: 8px;
+}

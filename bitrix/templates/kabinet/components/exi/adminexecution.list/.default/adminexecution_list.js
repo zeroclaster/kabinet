@@ -3,6 +3,160 @@ adminexecution_list = (function (){
     return {
         start(PHPPARAMS, messageStoreInstance){
 
+            const changenotes = BX.Vue3.BitrixVue.mutableComponent('change-notes', {
+                template: `
+        <div class="mb-3 form-group">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="mb-0" :for="'notes-execution'+id_input">Заметки</label>
+                <button 
+                    v-if="!isEditing && currentNote" 
+                    class="btn btn-outline-secondary btn-sm"
+                    @click="startEditing"
+                    title="Редактировать заметку"
+                >
+                    <i class="fa fa-edit"></i>
+                </button>
+            </div>
+            
+            <!-- Режим просмотра -->
+            <div v-if="!isEditing" class="notes-container">
+                <div 
+                    v-if="currentNote" 
+                    class="note-sticker"
+                    @click="startEditing"
+                >
+                    <div class="note-content">
+                        <div class="note-text">{{ currentNote }}</div>
+                        <div class="note-corner">
+                            <i class="fa fa-paperclip"></i>
+                        </div>
+                    </div>
+                </div>
+                <div 
+                    v-else 
+                    class="note-placeholder"
+                    @click="startEditing"
+                >
+                    <div class="placeholder-content">
+                        <i class="fa fa-plus-circle"></i>
+                        <span>Добавить заметку</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Режим редактирования -->
+            <div v-else class="notes-edit">
+                <div class="note-sticker editing">
+                    <div class="note-content">
+                        <textarea 
+                            class="form-control note-textarea" 
+                            :id="'notes-execution'+id_input" 
+                            v-model="noteText" 
+                            :placeholder="'Введите текст заметки...'"
+                            rows="4"
+                            ref="textareaRef"
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="mt-2 d-flex gap-2 justify-content-end">
+                    <button 
+                        class="btn btn-success btn-sm" 
+                        @click="saveNote" 
+                        :disabled="!noteText.trim()"
+                    >
+                        <i class="fa fa-check"></i> Сохранить
+                    </button>
+                    <button 
+                        class="btn btn-outline-secondary btn-sm" 
+                        @click="cancelEditing"
+                    >
+                        <i class="fa fa-times"></i> Отмена
+                    </button>
+                </div>
+            </div>
+        </div>
+    `,
+                data(){
+                    return{
+                        id_input: 'inpid'+kabinet.uniqueId(),
+                        noteText: '',
+                        isEditing: false,
+                        currentNote: ''
+                    }
+                },
+                props: ['modelValue','tindex','fulfillmentId'],
+                computed: {
+                    localModelValue: {
+                        get() {
+                            return this.modelValue;
+                        },
+                        set(value) {
+                            this.$emit('update:modelValue', value);
+                        }
+                    }
+                },
+                mounted() {
+                    this.loadCurrentNote();
+                },
+                methods: {
+                    loadCurrentNote() {
+                        if (!this.fulfillmentId) return;
+
+                        const this_ = this;
+                        BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.getcurrentnote', {
+                            data: {
+                                fulfillment_id: this.fulfillmentId
+                            }
+                        }).then(function(response) {
+                            if (response.data && response.data.note) {
+                                this_.currentNote = response.data.note;
+                            }
+                        });
+                    },
+
+                    startEditing() {
+                        this.isEditing = true;
+                        this.noteText = this.currentNote;
+
+                        this.$nextTick(() => {
+                            if (this.$refs.textareaRef) {
+                                this.$refs.textareaRef.focus();
+                                // Автоматическое увеличение высоты текстового поля
+                                this.$refs.textareaRef.style.height = 'auto';
+                                this.$refs.textareaRef.style.height = this.$refs.textareaRef.scrollHeight + 'px';
+                            }
+                        });
+                    },
+
+                    cancelEditing() {
+                        this.isEditing = false;
+                        this.noteText = this.currentNote;
+                    },
+
+                    saveNote() {
+                        if (!this.noteText.trim()) return;
+
+                        const this_ = this;
+                        const kabinetStore = usekabinetStore();
+
+                        BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.savenote', {
+                            data: {
+                                fulfillment_id: this.fulfillmentId,
+                                note_text: this.noteText
+                            }
+                        }).then(function(response) {
+                            if (response.data.success) {
+                                kabinetStore.NotifyOk = 'Заметка сохранена';
+                                this_.currentNote = this_.noteText;
+                                this_.isEditing = false;
+                                this_.localModelValue = this_.noteText;
+                            }
+                        }, function(response) {
+                            kabinetStore.Notify = 'Ошибка при сохранении заметки';
+                        });
+                    }
+                }
+            });
 
             // Добавляем компонент для заголовка с сортировкой
             const SortableHeader = BX.Vue3.BitrixVue.mutableComponent('sortable-header', {
@@ -276,6 +430,7 @@ adminexecution_list = (function (){
                     ...BX.Vue3.Pinia.mapState(orderlistStore, ['dataorder']),
                     ...BX.Vue3.Pinia.mapState(runnerlistStore, ['datarunner']),
                     ...BX.Vue3.Pinia.mapState(cataloglistStore, ['data3']),
+                    ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
                     viewedcount(){
                         return this.datarunner.length;
                     },
@@ -607,7 +762,8 @@ adminexecution_list = (function (){
                     changeResponsible,
                     messangerperformances,
                     richtext,
-                    SortableHeader // Добавляем новый компонент
+                    SortableHeader, // Добавляем новый компонент
+                    changenotes // Добавляем новый компонент
                 },
                 // language=Vue
                 template: '#kabinet-content'
