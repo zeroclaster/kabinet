@@ -84,7 +84,7 @@ $this->setFrameMode(true);
                             </div>
 
                             <div class="form-group">
-                                <label>Удержание 3%</label>
+                                <label>Удержание 0%</label>
                                 <input type="text"
                                        class="form-control"
                                        :value="calculateCommission"
@@ -249,16 +249,16 @@ $jsParams = [
             billingdata: <?=CUtil::PhpToJSObject($arResult["BILLING_DATA"], false, true)?>,
             total: Number(<?=$arResult["TOTAL"]?>),
             bankTransfer: {
-                amount: 0,
+                amount: null,
                 message: null
             },
             freeReplenishment: {
-                amount: 0,
+                amount: null,
                 comment: '',
                 message: null
             },
             withdraw: {
-                amount: 0,
+                amount: null,
                 comment: '',
                 message: null
             },

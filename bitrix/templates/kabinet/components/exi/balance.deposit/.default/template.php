@@ -12,7 +12,7 @@
 
                     <input id="typepay-1" type="radio" name="typepay" value="1" v-model="fields.typepay" @change="onChange">
                     <label for="typepay-1" class="radio-label no-d-flex-to-block">
-                        <i class="fa fa-credit-card-alt" aria-hidden="true"></i> <span style="font-size: 22px;">Карта</span> <span style="font-weight: normal;color: #8a8a8a;">Мгновенное пополнение. Мир, СБП, Сбер Pay, Т-pay, Я-Пэй. Комиссия 7%</span>
+                        <i class="fa fa-credit-card-alt" aria-hidden="true"></i> <span style="font-size: 22px;">Карта</span> <span style="font-weight: normal;color: #8a8a8a;">Мгновенное пополнение. Мир, СБП, Сбер Pay, Т-pay, Я-Пэй. Комиссия 0%</span>
                     </label>
                 </div>
             <?endif;?>
@@ -33,7 +33,7 @@
                 <div class="radio-item">
                     <input id="typepay-3" type="radio" name="typepay" value="3" v-model="fields.typepay" @change="onChange">
                     <label for="typepay-3" class="radio-label no-d-flex-to-block">
-                        <i class="fa fa-university" aria-hidden="true"></i> <span style="font-size: 22px;">Банковский перевод</span> <span style="font-weight: normal;color: #8a8a8a;">Оплата по счету, для юрлиц и ИП. Комиссия 3%</span>
+                        <i class="fa fa-university" aria-hidden="true"></i> <span style="font-size: 22px;">Банковский перевод</span> <span style="font-weight: normal;color: #8a8a8a;">Оплата по счету, для юрлиц и ИП. Комиссия 0%</span>
                     </label>
                 </div>
             <?endif;?>

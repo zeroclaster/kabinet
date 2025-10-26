@@ -2,36 +2,52 @@ const balance_operations = {
     computed: {
         calculateCommission() {
             if (!this.bankTransfer.amount || this.bankTransfer.amount <= 0) return '0.00 руб.';
-            const commission = this.bankTransfer.amount * 0.03;
+            //const commission = this.bankTransfer.amount * 0.0;
+            const commission = this.bankTransfer.amount * 1;
             return commission.toFixed(2) + ' руб.';
         },
         calculateFinalAmount() {
             if (!this.bankTransfer.amount || this.bankTransfer.amount <= 0) return '0.00 руб.';
-            const finalAmount = this.bankTransfer.amount * 0.97;
+            const finalAmount = this.bankTransfer.amount * 1;
+            //const finalAmount = this.bankTransfer.amount * 0.97;
             return finalAmount.toFixed(2) + ' руб.';
         },
-        // ВЫЧИСЛЯЕМОЕ СВОЙСТВО ДЛЯ ТЕКУЩЕГО КЛИЕНТА
         currentClient() {
-            // dataclient содержит либо одного выбранного клиента, либо пустой массив
             return this.dataclient.length > 0 ? this.dataclient[0] : null;
         },
-        // ВЫЧИСЛЯЕМОЕ СВОЙСТВО ДЛЯ БИЛЛИНГА ТЕКУЩЕГО КЛИЕНТА
         currentBilling() {
             return this.billingdata && Object.keys(this.billingdata).length > 0 ? this.billingdata : {};
         }
     },
     mounted() {
-        // Сохраняем ссылку на инстанс для доступа из фильтра
         window.balanceOperationsApp = this;
     },
     methods: {
         ...helperVueComponents(),
 
         /**
-         * Валидация числа - только цифры и точка
+         * Валидация числа - цифры, точка и запятая
          */
         validateNumber(value) {
-            return /^\d*\.?\d*$/.test(value);
+            return /^[\d.,]*$/.test(value);
+        },
+
+        /**
+         * Нормализация разделителя десятичных - заменяем запятую на точку
+         */
+        normalizeDecimalSeparator(value) {
+            return value.replace(',', '.');
+        },
+
+        /**
+         * Проверка корректности десятичного числа
+         */
+        isValidDecimal(value) {
+            if (!value) return true;
+
+            const normalized = this.normalizeDecimalSeparator(value);
+            // Проверяем, что после нормализации это валидное десятичное число
+            return /^\d*\.?\d*$/.test(normalized);
         },
 
         /**
@@ -59,15 +75,11 @@ const balance_operations = {
             if (!this.currentClient) return;
 
             try {
-                // Здесь можно добавить метод для обновления биллинга через AJAX
-                // Пока просто обновляем время
                 this.lastBillingUpdate = new Date();
-
-                // Если нужно реальное обновление данных с сервера:
-                 const response = await this.fetchBillingData(this.currentClient.ID);
+                const response = await this.fetchBillingData(this.currentClient.ID);
                 if (response.success) {
-                     this.billingdata = response.billingData;
-                     this.lastBillingUpdate = new Date();
+                    this.billingdata = response.billingData;
+                    this.lastBillingUpdate = new Date();
                 }
             } catch (error) {
                 console.error('Ошибка обновления биллинга:', error);
@@ -75,7 +87,7 @@ const balance_operations = {
         },
 
         /**
-         * Запрос данных биллинга с сервера (опционально)
+         * Запрос данных биллинга с сервера
          */
         async fetchBillingData(clientId) {
             try {
@@ -103,34 +115,72 @@ const balance_operations = {
         handleAmountInput(event, formType) {
             const value = event.target.value;
 
-            // Разрешаем только цифры и точку
+            // Разрешаем только цифры, точку и запятую
             if (!this.validateNumber(value)) {
-                event.target.value = value.replace(/[^\d.]/g, '');
+                event.target.value = value.replace(/[^\d.,]/g, '');
+                return;
+            }
+
+            // Нормализуем разделитель (запятую в точку)
+            const normalizedValue = this.normalizeDecimalSeparator(value);
+
+            // Проверяем валидность десятичного числа
+            if (!this.isValidDecimal(normalizedValue)) {
+                // Если невалидное, откатываем к предыдущему значению
+                if (formType === 'bankTransfer') {
+                    event.target.value = this.bankTransfer.amount || '';
+                } else if (formType === 'freeReplenishment') {
+                    event.target.value = this.freeReplenishment.amount || '';
+                } else if (formType === 'withdraw') {
+                    event.target.value = this.withdraw.amount || '';
+                }
+                return;
             }
 
             // Ограничиваем количество знаков после запятой
-            const parts = event.target.value.split('.');
+            const parts = normalizedValue.split('.');
             if (parts.length > 1 && parts[1].length > 2) {
                 event.target.value = parts[0] + '.' + parts[1].substring(0, 2);
+            } else {
+                event.target.value = value; // Сохраняем оригинальное значение с запятой если нужно
             }
 
-            // Обновляем соответствующее поле данных
+            // Обновляем соответствующее поле данных (сохраняем нормализованное значение)
+            const finalValue = parts.length > 1 ? parts[0] + '.' + parts[1] : normalizedValue;
+            const numericValue = parseFloat(finalValue) || null;
+
             if (formType === 'bankTransfer') {
-                this.bankTransfer.amount = parseFloat(event.target.value) || 0;
+                this.bankTransfer.amount = numericValue;
             } else if (formType === 'freeReplenishment') {
-                this.freeReplenishment.amount = parseFloat(event.target.value) || 0;
+                this.freeReplenishment.amount = numericValue;
             } else if (formType === 'withdraw') {
-                this.withdraw.amount = parseFloat(event.target.value) || 0;
+                this.withdraw.amount = numericValue;
             }
         },
 
         /**
-         * Проверка максимальной суммы (50 000)
+         * Проверка максимальной суммы
          */
         validateMaxAmount(amount, operationType) {
-            const MAX_AMOUNT = 1000000000;
+            const MAX_AMOUNT = 1000000;
             if (amount > MAX_AMOUNT) {
-                this.showFormMessage(`Максимальная сумма для ${operationType} - 50 000 руб.`, false, operationType);
+                this.showFormMessage(`Максимальная сумма для ${operationType} - 1 000 000 руб.`, false, operationType);
+                return false;
+            }
+            return true;
+        },
+
+        /**
+         * Проверка минимальной суммы для копеек
+         */
+        validateDecimalAmount(amount, formType) {
+            if (amount === null || amount === 0) return true;
+
+            // Проверяем, что число имеет не более 2 знаков после запятой
+            const amountStr = amount.toString();
+            const parts = amountStr.split('.');
+            if (parts.length > 1 && parts[1].length > 2) {
+                this.showFormMessage('Сумма не может иметь более 2 знаков после запятой', false, formType);
                 return false;
             }
             return true;
@@ -147,7 +197,7 @@ const balance_operations = {
                 };
                 setTimeout(() => {
                     this.bankTransfer.message = null;
-                }, 2000);
+                }, 5000);
             } else if (formType === 'freeReplenishment') {
                 this.freeReplenishment.message = {
                     text: text,
@@ -155,7 +205,7 @@ const balance_operations = {
                 };
                 setTimeout(() => {
                     this.freeReplenishment.message = null;
-                }, 2000);
+                }, 5000);
             } else if (formType === 'withdraw') {
                 this.withdraw.message = {
                     text: text,
@@ -163,7 +213,7 @@ const balance_operations = {
                 };
                 setTimeout(() => {
                     this.withdraw.message = null;
-                }, 2000);
+                }, 5000);
             }
         },
 
@@ -173,7 +223,8 @@ const balance_operations = {
                 return;
             }
 
-            if (!this.validateMaxAmount(this.bankTransfer.amount, 'пополнения банковским переводом')) {
+            if (!this.validateDecimalAmount(this.bankTransfer.amount, 'bankTransfer') ||
+                !this.validateMaxAmount(this.bankTransfer.amount, 'пополнения банковским переводом')) {
                 return;
             }
 
@@ -194,7 +245,6 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'bankTransfer');
-                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
                     await this.refreshBillingData();
                     this.clearForms();
                 }
@@ -211,7 +261,8 @@ const balance_operations = {
                 return;
             }
 
-            if (!this.validateMaxAmount(this.freeReplenishment.amount, 'свободного пополнения')) {
+            if (!this.validateDecimalAmount(this.freeReplenishment.amount, 'freeReplenishment') ||
+                !this.validateMaxAmount(this.freeReplenishment.amount, 'свободного пополнения')) {
                 return;
             }
 
@@ -233,7 +284,6 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'freeReplenishment');
-                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
                     await this.refreshBillingData();
                     this.clearForms();
                 }
@@ -250,7 +300,8 @@ const balance_operations = {
                 return;
             }
 
-            if (!this.validateMaxAmount(this.withdraw.amount, 'списания')) {
+            if (!this.validateDecimalAmount(this.withdraw.amount, 'withdraw') ||
+                !this.validateMaxAmount(this.withdraw.amount, 'списания')) {
                 return;
             }
 
@@ -272,7 +323,6 @@ const balance_operations = {
 
                 if (response.data && response.data.success) {
                     this.showFormMessage(response.data.message, true, 'withdraw');
-                    // ОБНОВЛЯЕМ ДАННЫЕ БИЛЛИНГА ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ
                     await this.refreshBillingData();
                     this.clearForms();
                 }
@@ -282,14 +332,13 @@ const balance_operations = {
                 this.showFormMessage(errorMessage, false, 'withdraw');
             }
         },
+
         clearForms() {
-            this.bankTransfer.amount = 0;
-            this.freeReplenishment.amount = 0;
+            this.bankTransfer.amount = null;
+            this.freeReplenishment.amount = null;
             this.freeReplenishment.comment = '';
-            this.withdraw.amount = 0;
+            this.withdraw.amount = null;
             this.withdraw.comment = '';
-
-
         },
 
         showMessage(text, success) {
@@ -297,7 +346,6 @@ const balance_operations = {
                 text: text,
                 success: success
             };
-
             setTimeout(() => {
                 this.operationMessage = null;
             }, 5000);

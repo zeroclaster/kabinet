@@ -175,7 +175,8 @@ class BalanceOperationsComponent extends \CBitrixComponent implements \Bitrix\Ma
 
             $operation_id = $billing->addMoney($amount, $clientId, $this,"Пополнение баланса. Банковский перевод. ");
             $calc_sum =  round($commission,2);
-            $billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
+            // от 22.10.2025
+            //$billing->getMoney($calc_sum, 0, $billing, 'Комиссионный сбор');
 
             // Создаем обработчик для уведомлений биллинга
             $billingHandler = new Billingnotificationhandler();
