@@ -9,7 +9,7 @@ adminexecution_list = (function (){
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="mb-0" :for="'notes-execution'+id_input">Заметки</label>
                 <button 
-                    v-if="!isEditing && currentNote" 
+                    v-if="!isEditing && notesFulfiList.length > 0" 
                     class="btn btn-outline-secondary btn-sm"
                     @click="startEditing"
                     title="Редактировать заметку"
@@ -21,12 +21,20 @@ adminexecution_list = (function (){
             <!-- Режим просмотра -->
             <div v-if="!isEditing" class="notes-container">
                 <div 
-                    v-if="currentNote" 
+                    v-if="notesFulfiList.length > 0" 
                     class="note-sticker"
                     @click="startEditing"
                 >
                     <div class="note-content">
-                        <div class="note-text">{{ currentNote }}</div>
+                        <div class="note-history">
+                            <div v-for="(note, index) in notesFulfiList" :key="index" class="note-item">
+                                <div class="note-meta">
+                                    <span class="note-date">{{ formatDate(note.date) }}</span>
+                                    <span class="note-user">{{ note.username }}</span>
+                                </div>
+                                <div class="note-text">{{ note.text }}</div>
+                            </div>
+                        </div>
                         <div class="note-corner">
                             <i class="fa fa-paperclip"></i>
                         </div>
@@ -81,19 +89,12 @@ adminexecution_list = (function (){
                         id_input: 'inpid'+kabinet.uniqueId(),
                         noteText: '',
                         isEditing: false,
-                        currentNote: ''
+                        notesFulfiList: []
                     }
                 },
-                props: ['modelValue','tindex','fulfillmentId'],
+                props: ['fulfillmentId'],
                 computed: {
-                    localModelValue: {
-                        get() {
-                            return this.modelValue;
-                        },
-                        set(value) {
-                            this.$emit('update:modelValue', value);
-                        }
-                    }
+                    ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
                 },
                 mounted() {
                     this.loadCurrentNote();
@@ -109,19 +110,38 @@ adminexecution_list = (function (){
                             }
                         }).then(function(response) {
                             if (response.data && response.data.note) {
-                                this_.currentNote = response.data.note;
+                                try {
+                                    // Парсим JSON строку из сервера
+                                    const parsedData = parseJSON(response.data.note);
+
+                                    if (Array.isArray(parsedData)) {
+                                        this_.notesFulfiList = parsedData;
+                                    } else if (parsedData && typeof parsedData === 'object') {
+                                        // Если пришел объект, преобразуем в массив
+                                        this_.notesFulfiList = [parsedData];
+                                    } else {
+                                        this_.notesFulfiList = [];
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing notes data:', e);
+                                    this_.notesFulfiList = [];
+                                }
+                            } else {
+                                this_.notesFulfiList = [];
                             }
+                        }).catch(function(error) {
+                            console.error('Error loading notes:', error);
+                            this_.notesFulfiList = [];
                         });
                     },
 
                     startEditing() {
                         this.isEditing = true;
-                        this.noteText = this.currentNote;
+                        this.noteText = '';
 
                         this.$nextTick(() => {
                             if (this.$refs.textareaRef) {
                                 this.$refs.textareaRef.focus();
-                                // Автоматическое увеличение высоты текстового поля
                                 this.$refs.textareaRef.style.height = 'auto';
                                 this.$refs.textareaRef.style.height = this.$refs.textareaRef.scrollHeight + 'px';
                             }
@@ -130,7 +150,7 @@ adminexecution_list = (function (){
 
                     cancelEditing() {
                         this.isEditing = false;
-                        this.noteText = this.currentNote;
+                        this.noteText = '';
                     },
 
                     saveNote() {
@@ -139,20 +159,49 @@ adminexecution_list = (function (){
                         const this_ = this;
                         const kabinetStore = usekabinetStore();
 
+                        // Создаем новую заметку
+                        const newNote = {
+                            username: this.datauser.PRINT_NAME || 'ADMIN',
+                            date: new Date().toISOString(),
+                            text: this.noteText.trim()
+                        };
+
+                        // Добавляем новую заметку к существующему списку
+                        const updatedNotesList = [...this.notesFulfiList, newNote];
+
+                        // Преобразуем в JSON строку для отправки на сервер
+                        const notesJsonString = JSON.stringify(updatedNotesList);
+
                         BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.savenote', {
                             data: {
                                 fulfillment_id: this.fulfillmentId,
-                                note_text: this.noteText
+                                note_text: notesJsonString
                             }
                         }).then(function(response) {
                             if (response.data.success) {
+                                kabinetStore.NotifyOk = '';
                                 kabinetStore.NotifyOk = 'Заметка сохранена';
-                                this_.currentNote = this_.noteText;
+                                this_.notesFulfiList = updatedNotesList; // Обновляем локальный список
+                                this_.noteText = '';
                                 this_.isEditing = false;
-                                this_.localModelValue = this_.noteText;
+                            } else {
+                                kabinetStore.Notify = response.data.message || 'Ошибка при сохранении заметки';
                             }
-                        }, function(response) {
+                        }).catch(function(response) {
+                            kabinetStore.Notify = '';
                             kabinetStore.Notify = 'Ошибка при сохранении заметки';
+                            console.error('Save note error:', response);
+                        });
+                    },
+
+                    formatDate(dateString) {
+                        const date = new Date(dateString);
+                        return date.toLocaleDateString('ru-RU', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
                         });
                     }
                 }

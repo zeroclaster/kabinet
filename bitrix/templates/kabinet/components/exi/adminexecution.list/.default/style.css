@@ -68,11 +68,44 @@
     height: 100%;
 }
 
+.note-history {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.note-item {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #ffd54f;
+}
+
+.note-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.note-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #795548;
+    margin-bottom: 4px;
+}
+
+.note-date {
+    font-weight: bold;
+}
+
+.note-user {
+    font-style: italic;
+}
+
 .note-text {
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.4;
     color: #5d4037;
 }
