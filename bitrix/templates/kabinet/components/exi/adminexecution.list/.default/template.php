@@ -228,10 +228,8 @@ $this->setFrameMode(true);
                 <changeResponsible :tindex="runnerindex" :admindata="adminlist" :status="runner.UF_STATUS" v-model="runner.UF_RESPONSIBLE"/>
             </div>
 
-            <!-- Добавить этот блок после changeResponsible -->
-
-            <changenotes :tindex="runnerindex" :fulfillment-id="runner.ID" v-model="runner.UF_NOTES"/>
-
+            <!-- ЗАМЕТКИ -->
+            <changenotes :fulfillment-id="runner.ID"/>
 
             <div class="mb-3 form-group datepicker-input">
                 <div><label class="" for="factdate-execution">Дата публикации</label></div>
