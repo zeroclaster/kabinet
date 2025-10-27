@@ -307,7 +307,6 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         }
 
         //$res = $Query->exec()->fetchAll();
-
         //$arResult["Q"] = htmlspecialchars($sql);
 
         //\Dbg::print_r(\Bitrix\Main\Entity\Query::getLastQuery());
@@ -324,16 +323,33 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         if (!$res) return $this->arResult;
 
+        // ДОБАВЛЕНО: Формируем параметры сортировки для второго запроса
+        $order = [];
+        switch ($sortField) {
+            case 'UF_PLANNE_DATE':
+                $order = ['UF_PLANNE_DATE' => $sortOrder];
+                break;
+            case 'UF_CREATE_DATE':
+                $order = ['UF_CREATE_DATE' => $sortOrder];
+                break;
+            case 'UF_ACTUAL_DATE':
+                $order = ['UF_ACTUAL_DATE' => $sortOrder];
+                break;
+            default:
+                $order = ['UF_PLANNE_DATE' => 'DESC'];
+        }
+
         $sqlfilter = array_column($res,'ID');
         $select = $runnerManager->getSelectFields();
         $HLBClass = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentTable::class;
         $Queue = $HLBClass::getlist([
             'select'=>$select,
             'filter'=>['ID'=>$sqlfilter],
-            //'order' => ['ID'=>'DESC'],
+            'order' => $order,
         ])->fetchAll();
 
-       $arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
+
+        $arResult["RUNNER_DATA"] = $runnerManager->remakeFulfiData($Queue);
         $arrayTaskID = array_unique(array_column($this->arResult["RUNNER_DATA"],'UF_TASK_ID'));
 		
 		// for debug
