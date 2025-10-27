@@ -417,6 +417,23 @@ $p = $request->get('p');
     </div>
     </template>
 
+    <!-- Блок общей стоимости проекта -->
+    <div class="panel mb-4 total-cost-panel">
+        <div class="panel-body">
+            <div class="d-flex align-items-center">
+                <div class="">
+                    <h5 class="mb-0" style="margin-top: 0;">Итого:</h5>
+                    <small class="text-muted"></small>
+                </div>
+                <div class="text-right ml-3">
+                    <div class="total-project-cost">
+                        <strong>{{ totalProjectCost.toLocaleString('ru-RU') }}</strong> руб.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <questiona_ctivity_component question="Вы действительно хотите отменить задачу? Задачу будет отменена, средства возвращены на баланс." ref="modalqueststopcyclicality33planned"/>
     <questiona_ctivity_component question="Задача выполняется и завершится автоматически, когда будет исполнена. Если вы желаете прервать исполнение задачи – напишите в чат поддержки." ref="modalqueststopcyclicality33worked"/>
 

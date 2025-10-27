@@ -137,6 +137,30 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
         ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
         ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
+
+        // Добавляем вычисляемое свойство для общей стоимости
+        totalProjectCost() {
+            let total = 0;
+
+            for (let taskIndex in this.datataskCopy) {
+                const task = this.datataskCopy[taskIndex];
+                // Проверяем, что задача принадлежит текущему проекту
+                if (task.UF_PROJECT_ID == this.project_id) {
+                    total += parseFloat(task.FINALE_PRICE) || 0;
+                }
+            }
+
+            const amount = Math.round(total * 100) / 100; // Округляем до 2 знаков
+
+            // Получаем хранилище биллинга
+            const billing = billingStore();
+
+            // Устанавливаем недостающую сумму
+            billing.setMissingAmount(amount);
+
+            return amount;
+        },
+
         project(){
             if (!PHPPARAMS.PROJECT_ID) return [];
             for (p of this.data){
