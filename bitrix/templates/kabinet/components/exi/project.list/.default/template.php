@@ -68,7 +68,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
 
                 <div class="row task-project table-row-equal">
                     <div class="col-lg-9 thumbnail thumbnail-left">
-                        <div class="h4">Услуги</div>
+                        <div class="h4">Ход работы</div>
                         <div v-if="hasTasksInProject(value.ID)">Выберите, чтобы посмотреть ход выполнения, согласования и отчет:</div>
                         <div class="d-flex flex-wrap ord-block1-1" v-if="value.UF_ORDER_ID">
                             <div v-for="task in datatask" class="order-item-block">
@@ -82,7 +82,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                         </div>
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг и планирование</a>
+                        <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг</a>
                     </div>
                 </div>
 

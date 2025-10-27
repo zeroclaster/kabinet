@@ -1289,3 +1289,21 @@ i.fa{
 .sort-arrows i.fa-arrow-up {
 	margin-bottom: 2px;
 }
+
+.search-modale-block{
+	position: relative;
+}
+
+.search-modale-block .clear-inpunt-search{
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.search-modale-block .clear-inpunt-search button{
+	background: none;
+	border: none;
+	height: 48px;
+	font-size: 20px;
+	width: 36px;
+}
