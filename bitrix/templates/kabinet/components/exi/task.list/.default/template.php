@@ -76,7 +76,7 @@ $p = $request->get('p');
     </div>
 
 
-    <h4>Календарь задач проекта</h4>
+    <h4>Календарь проекта</h4>
     <div class="panel">
         <div class="panel-body">
             <div class="row justify-content-md-center">
@@ -110,12 +110,12 @@ $p = $request->get('p');
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="w-100">
+                    <div class="w-100 search-modale-block">
                             <div class="">
                                 <input ref="inputclearsearch" class="form-control" type="text" placeholder="начните вводить название услуги..." @input="searchfilter1">
                             </div>
-                            <div class="">
-                                <button ref="buttonclearsearch" type="button" class="btn btn-primary" style="display: none;" @click="clearsearchinput">Очистить</button>
+                            <div class="clear-inpunt-search">
+                                <button ref="buttonclearsearch" type="button" class="" style="display: none;" @click="clearsearchinput">x</button>
                             </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ $p = $request->get('p');
                             <div class="align-self-center count-button-change"><button class="btn btn-warning plus-btn" type="button" @click="increment(product)">+</button><input type="text" class="count-product-input" v-model="product.COUNT"><button class="btn btn-warning minus-btn" type="button" @click="decrease(product)">-</button></div>
                             */?>
                             <div class="align-self-center">
-                                <button class="btn btn-block btn-sm btn-info" type="button" @click="chooseadd(product)">ДОБАВИТЬ</button>
+                                <button class="btn btn-block btn-sm btn-info" type="button" @click="chooseadd(product)">ВЫБРАТЬ</button>
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,14 @@ $p = $request->get('p');
                             :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
                             :data-cyclicality="task.UF_CYCLICALITY"
                     >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
-					<div class="d-flex task-status-print h4" v-html="taskStatus_m(task.ID)"></div>
+
+
+					<div class="d-flex align-items-center task-status-print h4">
+                        <div v-html="taskStatus_m(task.ID)"></div>
+
+                        <div class="ml-4" v-if="getEventsByTaskId(task.ID).length > 0"><a class="btn btn-primary" style="padding-left: 0px;padding: 9px 10px;" :href="'/kabinet/projects/reports/?t='+task.ID">Ход работы <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></div>
+
+                    </div>
 
                     <div class="task-palanning-info d-flex no-d-flex" v-if="task.UF_STATUS>0">
                         <div>Запланированы: {{anim_counter[task.ID]}}</div><div class="ml-3">Выполняются: {{taskStatus_v(task.ID)['work']}}</div><div class="ml-3">Выполнено: {{taskStatus_v(task.ID)['endwork']}}</div>
@@ -381,8 +388,6 @@ $p = $request->get('p');
                 </div>
                 <div class="col">
 					<ul class="list-unstyled task-aciont-list-1">
-						<li v-if="getEventsByTaskId(task.ID).length > 0"><a style="padding-left: 0px;" :href="'/kabinet/projects/reports/?t='+task.ID">Согласование и отчеты <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></li>
-
                         <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
 
                                 <?/* 1 Однократное выполнение */?>
