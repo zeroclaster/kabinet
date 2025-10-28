@@ -15,6 +15,14 @@ if (
         empty($_REQUEST["InvId"]) &&
         empty($_REQUEST["SignatureValue"])
 ) LocalRedirect("/kabinet/finance/deposit/");
+
+/**
+ * задается в шаблоне bitrix/templates/kabinet/components/exi/balance.deposit/.default/template.php
+ */
+if (isset($_SESSION['return_url'])) {
+    LocalRedirect($_SESSION['return_url']);
+    exit();
+}
 ?>
 <section class="section-xs">
     <div class="container-fluid">
@@ -43,8 +51,8 @@ if (
                         </script>
                         <?
                     }else{
-                        $err = $result->getErrors();
-                        echo "<div class=\"alert alert-danger\" role=\"alert\">{$err}</div>";
+                        //$err = $result->getErrors();
+                        //echo "<div class=\"alert alert-danger\" role=\"alert\">{$err}</div>";
                     }
                     ?>
                 </div>
