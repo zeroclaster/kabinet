@@ -31,6 +31,16 @@ Dbg::showDebug();
 ?>
 </div>
 
+<?/*
+window.jslist
+Инвалидация кеша браузера - при изменении файла меняется цифровая подпись, что заставляет браузер загружать новую версию
+Контроль версий - каждая версия файла имеет уникальный идентификатор
+обновление при изменении размера файла - пользователи всегда получают актуальные версии скриптов
+*/?>
+<script data-skip-moving="true">
+    window.jslist = <?=CUtil::PhpToJSObject(\PHelp::getTemplateJsFilesWithSummedTimestamps(), false, true)?>;
+</script>
+
     <?
     Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/components/base/jquery-3.4.1.min.js");
     Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/components/base/script.js");

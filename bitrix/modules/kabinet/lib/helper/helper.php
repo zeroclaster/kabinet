@@ -97,4 +97,137 @@ class Helper extends Datesite{
         return $result;
     }
 
+
+    /**
+     * Рекурсивно находит все JS файлы в папке шаблона кабинета, исключая указанные директории.
+
+    Возвращает: Массив с информацией о каждом JS файле:
+    name - имя файла
+    path - относительный путь от папки шаблона
+    full_path - полный путь к файлу
+    timestamp - комбинированная метка (время изменения + размер файла)
+
+    Особенности:
+    Использует кеширование на 4 часа для повышения производительности
+    Исключает папки assets/components/ и components/bitrix/
+    Рекурсивный поиск во всех подпапках шаблона
+     *
+     * @return array Массив с информацией о JS файлах
+     */
+    static function getTemplateJsFiles() {
+        // Настройка кеширования через константу
+        $cacheEnabled = defined('TEMPLATE_JS_FILES_CACHE_TTL') ? TEMPLATE_JS_FILES_CACHE_TTL : 4 * 3600;
+
+        // Если TTL = 0, работаем без кеша
+        if ($cacheEnabled !== 0) {
+            // Ключ для кеша
+            $cacheKey = 'template_js_files_' . md5(__METHOD__);
+            $cacheTtl = $cacheEnabled;
+
+            // Пытаемся получить данные из кеша
+            $cache = \Bitrix\Main\Data\Cache::createInstance();
+            if ($cache->initCache($cacheTtl, $cacheKey, '/template/js_files/')) {
+                return $cache->getVars();
+            }
+
+            // Если кеша нет, инициализируем буфер
+            $cache->startDataCache();
+        }
+
+        $jsFiles = array();
+
+        // Путь к папке шаблона
+        $templatePath = $_SERVER['DOCUMENT_ROOT'] . '/bitrix/templates/kabinet/';
+
+        // Проверяем существование папки
+        if (!file_exists($templatePath) || !is_dir($templatePath)) {
+            if (isset($cache)) {
+                $cache->endDataCache($jsFiles);
+            }
+            return $jsFiles;
+        }
+
+        // Пути для исключения
+        $excludePaths = [
+            $templatePath . 'assets/components/',
+            $templatePath . 'components/bitrix/'
+        ];
+
+        // Создаем рекурсивный итератор для поиска во всех подпапках
+        $directoryIterator = new \RecursiveDirectoryIterator($templatePath);
+        $iterator = new \RecursiveIteratorIterator($directoryIterator);
+
+        // Фильтруем только JS файлы
+        $jsIterator = new \RegexIterator($iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
+
+        foreach ($jsIterator as $file) {
+            $fullPath = $file[0];
+
+            // Пропускаем файлы из исключенных папок
+            $excludeFile = false;
+            foreach ($excludePaths as $excludePath) {
+                if (strpos($fullPath, $excludePath) === 0) {
+                    $excludeFile = true;
+                    break;
+                }
+            }
+
+            if ($excludeFile) {
+                continue;
+            }
+
+            // Получаем относительный путь от папки шаблона
+            $relativePath = str_replace($templatePath, '', $fullPath);
+
+            // Получаем имя файла
+            $fileName = basename($fullPath);
+
+            $jsFiles[] = array(
+                'name' => $fileName,
+                'path' => $relativePath,
+                'full_path' => $fullPath,
+                'timestamp' => filemtime($fullPath) . filesize($fullPath)
+            );
+        }
+
+        // Сохраняем результат в кеш (если кеширование включено)
+        if (isset($cache)) {
+            $cache->endDataCache($jsFiles);
+        }
+
+        return $jsFiles;
+    }
+
+    /**
+        Группирует JS файлы по имени и суммирует их временные метки.
+
+        Возвращает: Ассоциативный массив, где:
+        Ключ - имя файла
+        Значение - суммарная временная метка всех файлов с таким именем
+
+        Особенности:
+        Использует данные из getTemplateJsFiles()
+        Объединяет временные метки файлов-дубликатов
+        Полезен для создания уникальных идентификаторов версий файлов
+    */
+    static function getTemplateJsFilesWithSummedTimestamps() {
+        // Получаем все JS файлы из основного метода
+        $jsFiles = self::getTemplateJsFiles();
+
+        $result = array();
+
+        foreach ($jsFiles as $fileInfo) {
+            $fileName = $fileInfo['name'];
+            $timestamp = $fileInfo['timestamp'];
+
+            // Если файл с таким именем уже есть в результате, суммируем временные метки
+            if (isset($result[$fileName])) {
+                $result[$fileName] += $timestamp;
+            } else {
+                $result[$fileName] = $timestamp;
+            }
+        }
+
+        return $result;
+    }
 }

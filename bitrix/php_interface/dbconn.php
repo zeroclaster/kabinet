@@ -36,4 +36,10 @@ define("LOG_FILENAME", $_SERVER["DOCUMENT_ROOT"]."/log.txt");
 date_default_timezone_set("Etc/GMT-3");
 
 @define("ERROR_404","N");
+
+// Вариант 1: Без кеширования
+define('TEMPLATE_JS_FILES_CACHE_TTL', 0);
+
+// Вариант 2: Кеширование на 1 час
+//define('TEMPLATE_JS_FILES_CACHE_TTL', 3600);
 ?>
