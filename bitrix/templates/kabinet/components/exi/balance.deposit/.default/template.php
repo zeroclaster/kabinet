@@ -1,3 +1,7 @@
+<?php
+$_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
+?>
+
 <?/* МЕСТО ВСТАВКИ */?>
 <div id="depositcontent"></div>
 
