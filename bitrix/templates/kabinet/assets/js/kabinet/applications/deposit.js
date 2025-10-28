@@ -330,9 +330,10 @@ deposit_form = (function (){
                             //preparePost: false
                         })
                             .then(function(response) {
-                                //document.location.href = response.data.link;
+                                document.location.href = response.data.link;
                                 kabinet.loading(false);
 
+                                /*
                                 // Создаем временную форму для открытия в новой вкладке
                                 const tempForm = document.createElement('form');
                                 tempForm.method = 'GET';
@@ -356,7 +357,7 @@ deposit_form = (function (){
 
                                 // Показываем сообщение о начале отслеживания
                                 //kabinetStore.NotifyOk = 'Переход к оплате. Отслеживаем обновление баланса...';
-
+                                 */
                             }, function (response) {
                                 //console.log(response);
                                 response.errors.forEach((error) => {
