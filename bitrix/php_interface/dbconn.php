@@ -5,7 +5,7 @@ $DBType = "mysql";
 $DBHost = "localhost";
 $DBLogin = "u1400386_kupi_otziv_r";
 $DBPassword = "Vfe1VnURNY1WDTMx";
-$DBName = "u1400386_kupi_otziv_r";
+$DBName = "u1400386_kupi_otziv_t";
 $DBDebug = true;
 $DBDebugToFile = false;
 

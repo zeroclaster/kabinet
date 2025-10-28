@@ -9,7 +9,7 @@ use Bitrix\Kabinet\exceptions\MessangerException;
     "Bitrix\\telegram\Exceptions\NotificationException" => "lib/exceptions/exceptions.php",
 ));
 
-
+/*
 AddEventHandler("", "\Lmessanger::OnAfterAdd", function ($id, $primary, $fields, $object) {
 
     $compositeTransport = new \Bitrix\telegram\notificationtransport\Compositetransport();
@@ -20,5 +20,6 @@ AddEventHandler("", "\Lmessanger::OnAfterAdd", function ($id, $primary, $fields,
     $handler->handleMessageAdd($id);
 
 });
+*/
 
 
