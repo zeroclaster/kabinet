@@ -39,7 +39,6 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
 
     public function configureActions()
     {
-        //если действия не нужно конфигурировать, то пишем просто так. И будет конфиг по умолчанию
         return [
             'makepaylink' => [
                 'prefilters' => [
@@ -48,7 +47,15 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
                         array(ActionFilter\HttpMethod::METHOD_GET, ActionFilter\HttpMethod::METHOD_POST)
                     ),
                     new ActionFilter\Csrf(),
-                    //new \Bitrix\Kabinet\Engine\ActionFilter\Chechrequestparams()
+                ]
+            ],
+            'getbalance' => [
+                'prefilters' => [
+                    new ActionFilter\Authentication(),
+                    new ActionFilter\HttpMethod(
+                        array(ActionFilter\HttpMethod::METHOD_GET, ActionFilter\HttpMethod::METHOD_POST) // Разрешаем оба метода
+                    ),
+                    new ActionFilter\Csrf(),
                 ]
             ],
         ];
@@ -106,5 +113,20 @@ class Bilingevents extends \Bitrix\Main\Engine\Controller
             'billinkdata'=>$billing->getData(),
             'message'=>'Данные успешно обновлены!',
         ];
+    }
+
+    public function getbalanceAction() {
+        try {
+            $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+            $billingManager = $sL->get('Kabinet.Billing');
+            $data = $billingManager->getData();
+
+            return [
+                'balance' => $data
+            ];
+        } catch (\Exception $e) {
+            $this->addError(new Error("Ошибка при получении баланса: " . $e->getMessage(), 1));
+            return null;
+        }
     }
 }

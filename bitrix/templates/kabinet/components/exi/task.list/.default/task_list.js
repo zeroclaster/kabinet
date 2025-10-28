@@ -206,9 +206,13 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
          * Проверяет достаточно ли средств на балансе для запуска всех задач проекта
          * @returns {boolean} true если средств достаточно для всех задач
          */
-        checkBalance() {
-            const balance = this.databilling?.VALUE || 0;
+        checkBalance(index) {
+            const billing = billingStore();
+            const balance = billing.databilling?.UF_VALUE || 0;
             let totalTaskPrice = 0;
+
+            const current_task = this.datataskCopy[index];
+            const TaskPrice = parseFloat(current_task.FINALE_PRICE) || 0;
 
             // Суммируем стоимость всех задач проекта
             for (let taskIndex in this.datataskCopy) {
@@ -219,7 +223,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 }
             }
 
-            if (totalTaskPrice > balance) {
+            if (TaskPrice > balance) {
                 const kabinetStore = usekabinetStore();
                 kabinetStore.Notify = '';
                 kabinetStore.Notify = "У вас недостаточно средств для запуска всех задач проекта!";
@@ -262,7 +266,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
         starttask(index){
             // Проверяем баланс
-            if (!this.checkBalance()) {
+            if (!this.checkBalance(index)) {
                 return;
             }
 

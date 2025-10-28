@@ -33,6 +33,11 @@ deposit_form = (function (){
                         //pecent2: [0,0.93,0.93,0.97],
                         pecent2: [0,1,1,1],
                         sumpopolnenia:0,
+
+                        balanceCheckInterval: null,
+                        balanceCheckAttempts: 0,
+                        maxBalanceCheckAttempts: 30, // 30 попыток (5 минут при интервале 10 секунд)
+                        isCheckingBalance: false,
                     }
                 },
                 watch: {
@@ -45,6 +50,7 @@ deposit_form = (function (){
                                 this.clearError();
 
                                 // Скроллим к полю ввода
+                                /*
                                 this.$nextTick(() => {
                                     const amountInput = document.getElementById('summa-popolneniya');
                                     if (amountInput) {
@@ -57,6 +63,7 @@ deposit_form = (function (){
                                         }, 100);
                                     }
                                 });
+                                 */
                             }
                         },
                         immediate: true
@@ -97,6 +104,60 @@ deposit_form = (function (){
                     },
                 },
                 methods: {
+
+                    startBalancePolling() {
+                        // Останавливаем предыдущий интервал, если он был
+                        this.stopBalancePolling();
+                        this.balanceCheckAttempts = 0;
+                        this.isCheckingBalance = true;
+
+                        this.balanceCheckInterval = setInterval(() => {
+                            this.checkBalance();
+                        }, 2000); // Проверяем каждые 10 секунд
+                    },
+
+                    stopBalancePolling() {
+                        if (this.balanceCheckInterval) {
+                            clearInterval(this.balanceCheckInterval);
+                            this.balanceCheckInterval = null;
+                        }
+                        this.isCheckingBalance = false;
+                    },
+
+                    checkBalance() {
+                        if (this.balanceCheckAttempts >= this.maxBalanceCheckAttempts) {
+                            this.stopBalancePolling();
+                            const kabinetStore = usekabinetStore();
+                            kabinetStore.Notify = '';
+                            kabinetStore.Notify = "Увы, не удалось обновить балланс! Попробуйте обновить страницу.";
+                            return;
+                        }
+
+                        this.balanceCheckAttempts++;
+
+                        BX.ajax.runAction('bitrix:kabinet.evn.bilingevents.getbalance', {
+                            getParameters: {usr: usr_id_const}
+                        })
+                            .then((response) => {
+                                const newBalance = response.data.balance;
+                                const currentBalance = this.databilling.UF_VALUE_ORIGINAL;
+
+                                // Если баланс изменился, обновляем данные и останавливаем опрос
+                                if (newBalance.UF_VALUE_ORIGINAL != currentBalance) {
+                                    const billing = billingStore();
+                                    billing.databilling = newBalance;
+                                    this.stopBalancePolling();
+
+                                    // Показываем уведомление об успешном обновлении
+                                    const kabinetStore = usekabinetStore();
+                                    kabinetStore.NotifyOk = '';
+                                    kabinetStore.NotifyOk = 'Баланс успешно обновлен!';
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Ошибка при проверке баланса:', error);
+                            });
+                    },
 
                     formatCurrency(event, fieldName) {
                         this.clearError();
@@ -247,7 +308,7 @@ deposit_form = (function (){
 						}					
 					},
                     onSubmit(e){
-
+                        var cur = this;
                         // Преобразуем строку в число, учитывая запятую
                         let summaValue = this.fields.summapopolneniya.toString().replace(',', '.');
                         let summa = parseFloat(summaValue) || 0;
@@ -269,9 +330,33 @@ deposit_form = (function (){
                             //preparePost: false
                         })
                             .then(function(response) {
-                                document.location.href = response.data.link;
+                                //document.location.href = response.data.link;
                                 kabinet.loading(false);
-                                //console.log(data)
+
+                                // Создаем временную форму для открытия в новой вкладке
+                                const tempForm = document.createElement('form');
+                                tempForm.method = 'GET';
+                                tempForm.action = response.data.link;
+                                tempForm.target = '_blank';
+                                tempForm.style.display = 'none';
+
+                                // Добавляем форму в DOM
+                                document.body.appendChild(tempForm);
+
+                                // Отправляем форму (откроется в новой вкладке)
+                                tempForm.submit();
+
+                                // Удаляем форму после отправки
+                                setTimeout(() => {
+                                    document.body.removeChild(tempForm);
+                                }, 100);
+
+                                // Начинаем опрос баланса после перехода к оплате
+                                cur.startBalancePolling();
+
+                                // Показываем сообщение о начале отслеживания
+                                //kabinetStore.NotifyOk = 'Переход к оплате. Отслеживаем обновление баланса...';
+
                             }, function (response) {
                                 //console.log(response);
                                 response.errors.forEach((error) => {
