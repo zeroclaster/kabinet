@@ -3,8 +3,7 @@ global $USER;
 $userId = $USER->GetID();
 $aMenuLinks = Array();
 
-// Пункты, которые нужно скрыть для пользователя 983
-if ($userId != 983) {
+
     $aMenuLinks = array_merge($aMenuLinks, Array(
         Array(
             "Клиенты и проекты",
@@ -13,6 +12,11 @@ if ($userId != 983) {
             Array("ICON"=>"mdi-file-outline"),
             ""
         ),
+    ));
+
+// Пункты, которые нужно скрыть для пользователя 983
+if ($userId != 983) {
+    $aMenuLinks = array_merge($aMenuLinks, Array(
         Array(
             "Исполнения",
             "/kabinet/admin/performances/",
@@ -43,6 +47,15 @@ if ($userId != 983) {
         ),
     ));
 }
+
+
+$aMenuLinks[] = Array(
+    "ФинСтатистика",
+    "/kabinet/admin/finstats/",
+    Array(),
+    Array("ICON"=>"mdi-border-all"),
+    "CSite::InGroup(array(14))"
+);
 
 // Пункт "Финансы" - только для группы 13
 $aMenuLinks[] = Array(

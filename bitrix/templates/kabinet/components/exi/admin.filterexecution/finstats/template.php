@@ -28,7 +28,7 @@ $this->setFrameMode(true);
         <div class="col-md-6">
             <div class="row form-group">
                 <div class="col-sm-4 text-sm-right">
-                    <label class="col-form-label col-form-label-sm" for="search-publicdatefrom">Дата публикации</label>
+                    <label class="col-form-label col-form-label-sm" for="search-publicdatefrom">Даты смены последней стадии у исполнения:</label>
                 </div>
                 <div class="col-sm-8">
                     <div class="d-flex">
