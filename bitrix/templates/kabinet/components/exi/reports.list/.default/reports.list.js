@@ -238,10 +238,10 @@ methods: {
         if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-user-attention';
 
         //Красные – отмена..
-        if ([9].indexOf(parseInt(status)) != -1) return 'alert-cancel';
+        if ([9].indexOf(parseInt(status)) != -1) return 'alert-done';
 
         //темно-серые – выполнено
-        if ([10].indexOf(parseInt(status)) != -1) return 'alert-done';
+        if ([10].indexOf(parseInt(status)) != -1) return 'alert-cancel';
     },
     isUserrEdit(index){
         var runner;
