@@ -58,7 +58,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                         <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                     <div class="col-lg-3 button-blk thumbnail thumbnail-right" v-else>
-                        <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                 </div>
 
@@ -82,7 +82,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                         </div>
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-primary mdi-menu-right icon-button-right icon-i-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Заказ услуг</a>
+                        <a class="btn btn-primary mdi-plus icon-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])">Заказ услуг</a>
                     </div>
                 </div>
 
@@ -118,8 +118,8 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                         </div>
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                        <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button mobile-butt-2" href="/kabinet/finance/">&nbsp;пополнить</a>
-                        <a v-else class="btn btn-primary icon-i-button mobile-butt-2" href="/kabinet/finance/"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>&nbsp;пополнить</a>
+                        <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button mobile-butt-2" href="/kabinet/finance/">пополнить</a>
+                        <a v-else class="btn btn-primary mdi-credit-card icon-button mobile-butt-1" href="/kabinet/finance/">пополнить</a>
                     </div>
                 </div>
 
@@ -208,6 +208,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
             'ACTUAL_MONTH_BUDGET' => $arResult['ACTUAL_MONTH_BUDGET'],
             'LAST_MONTH_EXPENSES' => $arResult['LAST_MONTH_EXPENSES'],
             'FUTURE_SPENDING' => $arResult['FUTURE_SPENDING'],
+            "ALERT_STATUS"=>\Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->config('ALERT'),
         ], false, true)?>);
     });
 </script>

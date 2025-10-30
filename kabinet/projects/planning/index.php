@@ -29,7 +29,7 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
         <div class="d-flex no-d-flex justify-content-between">
             <div>
                 <h4 style="margin: 0;">Проект: <?=$project['UF_NAME']?> #<?=$project['UF_EXT_KEY']?></h4>
-                <div class="h1"><i class="fa fa-calendar" aria-hidden="true"></i> Заказ услуг и планирование</div>
+                <div class="h1">Заказ услуг</div>
             </div>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PLANNING" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
         </div>
@@ -56,9 +56,9 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
 
                 <div class="panel deposit-block-1">
                     <div class="panel-body">
-                <?/*$APPLICATION->IncludeComponent("exi:balance.deposit", "", Array(
+                <?$APPLICATION->IncludeComponent("exi:balance.deposit", "", Array(
                     )
-                );*/?>
+                );?>
                     </div>
                 </div>
 
@@ -67,5 +67,4 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
     </div>
 </section>
 
-	  
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

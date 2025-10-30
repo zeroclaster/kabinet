@@ -10,6 +10,15 @@ client_filter_report = (function () {
 				
 				BX.bind(findform.alertfind,'click',(e)=>findform.submit());
 
+                // Добавляем обработчик нажатия Enter для поля "ID исполнения"
+                const queueInput = findform.querySelector('input[name="queue"]');
+                BX.bind(queueInput, 'keypress', function(event) {
+                    if (event.keyCode === 13) { // 13 - код клавиши Enter
+                        event.preventDefault(); // Предотвращаем стандартное поведение
+                        findform.submit(); // Отправляем форму
+                    }
+                });
+
                 $fromDatepicker.datetimepicker({
                     locale: moment.locale('ru'),
                     format: 'DD.MM.YYYY',

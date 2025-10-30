@@ -42,3 +42,18 @@
 .numerator-range button.button-plus{
 	top: 0;
 }
+
+.total-project-cost {
+	font-size: 1.5rem;
+	color: #1fa2cd;
+	font-weight: bold;
+}
+
+.total-project-cost strong {
+	font-size: 1.8rem;
+}
+
+.panel.total-cost-panel {
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border-left: 4px solid #1fa2cd;
+}

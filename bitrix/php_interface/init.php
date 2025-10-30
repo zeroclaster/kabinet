@@ -147,14 +147,32 @@ class Dbg{
 AddEventHandler('main', 'OnEpilog', '_Check404Error', 1);
 function _Check404Error()
 {
-	if (defined("ERROR_404") && ERROR_404 == "Y") {
-		global $APPLICATION;
+    global $APPLICATION, $USER;
+
+    // Проверяем, не находимся ли мы в админке Bitrix
+    $currentPage = $APPLICATION->GetCurPage();
+    if (strpos($currentPage, '/bitrix/admin/') === 0) {
+        return;
+    }
+
+    if (defined("ERROR_404") && ERROR_404 == "Y") {
+
 		$APPLICATION->RestartBuffer();
 
 		require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/templates/PAGE404/header.php");
 		require($_SERVER["DOCUMENT_ROOT"] . "/404.php");
 		require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/templates/PAGE404/footer.php");
 	}
+
+
+    if (!is_object($USER) || !$USER->IsAuthorized())
+    {
+        $APPLICATION->RestartBuffer();
+        
+        require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/templates/PAGE404/header.php");
+        require($_SERVER["DOCUMENT_ROOT"] . "/404.php");
+        require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/templates/PAGE404/footer.php");
+    }
 }
 
 // Site help utilities

@@ -16,7 +16,7 @@ project_list = (function (){
                     }
                 },
                 setup(){
-                    const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+                    const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status(PHPPARAMS);
 
                     return {
                         taskStatus_m,

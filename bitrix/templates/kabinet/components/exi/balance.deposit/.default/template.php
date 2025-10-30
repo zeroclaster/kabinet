@@ -94,7 +94,12 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                             <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
 
                             <div class="d-flex justify-content-center"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
-                            <div class="gotopay"><button class="btn btn-primary" type="button" @click="onSubmit">Перейти к оплате</button></div>
+                            <div v-if="isCheckingBalance" class="alert alert-warning" role="alert">
+                            <div class="balance-checking">
+                                ⏳ Отслеживаем обновление баланса... (попытка {{balanceCheckAttempts}}/{{maxBalanceCheckAttempts}})
+                            </div>
+                            </div>
+                            <div v-if="!isCheckingBalance" class="gotopay"><button class="btn btn-primary" type="button" @click="onSubmit">Перейти к оплате</button></div>
                         </div>
 
                     </div>

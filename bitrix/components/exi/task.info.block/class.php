@@ -10,7 +10,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
 Loc::loadMessages(__FILE__);
 
-class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\Main\Engine\Contract\Controllerable, \Bitrix\Main\Errorable
+class TaskInfoBlockComponent extends \CBitrixComponent implements \Bitrix\Main\Engine\Contract\Controllerable, \Bitrix\Main\Errorable
 {
     const ERROR_TEXT = 1;
     const ERROR_404 = 2;
@@ -29,88 +29,50 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 
     public function onPrepareComponentParams($params)
     {
-        $request = $this->request;
-        $post = $this->request->getPostList()->toArray();
+        $request =$this->request;
+        $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 
-        //\Dbg::var_dump($post);
+        //if (empty($params['TASK_ID'])) $this->errorCollection[] = new Error('Поле TASK_ID не задано!',self::ERROR_TEXT);
+		
+		$arrFilter = [];
+				
+		if (!empty($params["FILTER_NAME"]) && preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $params["FILTER_NAME"]))
+		{
+			$arrFilter = $GLOBALS[$params["FILTER_NAME"]] ?? [];
+			if (!is_array($arrFilter))
+			{
+				$arrFilter = [];
+			}
+		}
 
-        //if ($request->get('ID') == NULL ) $this->errorCollection[] = new Error('id not found!');
+		$params["FILTER"] = $arrFilter;
+		
+		if (empty($params['COUNT'])) $params['COUNT'] = 5;
+        $params['OFFSET'] = 0;
+
+
+        if (empty($arParams["MODE"])) $arParams["MODE"] = 1;
 
         return $params;
     }
 
     public function executeComponent()
     {
-		$runnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
-		
-        $FILTER_NAME = $this->arParams['FILTER_NAME'];
-		$this->arResult['SEARCH_RESULT'] = [];
-		$SEARCH_RESULT = &$this->arResult['SEARCH_RESULT'];
-		
-		$task_id = $this->request->get('t');
-
-		$post = $this->request->getPostList()->toArray();
-        //\Dbg::var_dump($post);
-
-        /*Make filter*/
-        global ${$FILTER_NAME};
-        if(!is_array(${$FILTER_NAME})) {
-            ${$FILTER_NAME} = array();
-            //$post['alert'] = 'y';
-        }
-				
-		// Требуют внимания
-		// [3,5,8]
-		$alert_status_client = $runnerManager->config('ALERT');
-        $runner = $runnerManager->getTaskFulfiData($task_id);
-
-		${$FILTER_NAME}['alert'] = [];
-		$this->arResult['count_alert'] = 0;
-		// Подсчитываем количество исполнений требущие внимания
-
-        if (empty($post['clearflag'])) {
-            foreach ($runner as $item) {
-                if (in_array($item['UF_STATUS'], $alert_status_client)) $this->arResult['count_alert']++;
-
-                if ($post['alert'] && in_array($item['UF_STATUS'], $alert_status_client)) {
-                    $SEARCH_RESULT['alert'] = $post['alert'];
-                    ${$FILTER_NAME}['statusfind'] = $alert_status_client;
-                }
-            }
+        if ($this->hasErrors())
+        {
+            return $this->processErrors();
         }
 		
-       
-        if($post['fromdate1']){
-            $SEARCH_RESULT['fromdate1'] = $post['fromdate1'];
-            ${$FILTER_NAME}['fromdate1'] = $post['fromdate1'];
-        }
-        if($post['todate1']){
-            $SEARCH_RESULT['todate1'] = $post['todate1'];
-            ${$FILTER_NAME}['todate1'] = $post['todate1'];
-        }
-        if($post['statusfind']){
-            $SEARCH_RESULT['statusfind'] = $post['statusfind'];
-            ${$FILTER_NAME}['statusfind'] = $post['statusfind'];
-        }
-
-        if ($this->request->get('id') != NULL){
-            $SEARCH_RESULT['id'] = $this->request->get('id');
-            ${$FILTER_NAME}['id'] = $this->request->get('id');
-        }
-
-        if ($this->request->get('queue') != NULL){
-            $SEARCH_RESULT['queue'] = $this->request->get('queue');
-            ${$FILTER_NAME}['queue'] = preg_replace('/\D/', '', trim($this->request->get('queue')));
-        }
-
+		$this->prepareData();
         $this->includeComponentTemplate($this->template);
 
         return true;
     }
 
-    public function prepareData(){
 
+    public function prepareData(){
     }
+
 
     /* signed params*/
     protected function listKeysSignedParameters()

@@ -67,7 +67,7 @@
             <state id="4" name="state5" icon="fa-hourglass-half">
                 <title>В работе у специалиста</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-undo" aria-hidden="true"></i> Отклонить с комментарием]]></button>
+                    <button><![CDATA[<i class="fa fa-undo align-middle" aria-hidden="true"></i> <span>Отклонить с комментарием</span>]]></button>
                 </user>
                 <admin>
                     <button>В работе у специалиста</button>
@@ -94,10 +94,10 @@
             <state id="6" name="state7" icon="fa-hourglass-half">
                 <title>Публикация</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-rocket" aria-hidden="true"></i> Отправить на публикацию]]></button>
+                    <button><![CDATA[<i class="fa fa-rocket align-middle" aria-hidden="true"></i> <span>Отправить на публикацию</span>]]></button>
                 </user>
                 <admin>
-                    <button><![CDATA[<i class="fa fa-rocket" aria-hidden="true"></i> Отправить на публикацию]]></button>
+                    <button><![CDATA[<i class="fa fa-rocket align-middle" aria-hidden="true"></i> <span>Отправить на публикацию</span>]]></button>
                 </admin>
                 <stylecss>fc-event-success</stylecss>
                 <description>
@@ -138,7 +138,7 @@
             <state id="9" name="state10" icon="fa-check-circle-o">
                 <title>Выполнена</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Отчет принят]]></button>
+                    <button><![CDATA[<i class="fa fa-thumbs-o-up align-middle" aria-hidden="true"></i> <span>Отчет принят</span>]]></button>
                 </user>
                 <admin>
                     <button>Выполнена</button>
@@ -152,10 +152,10 @@
             <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </user>
                 <admin>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
@@ -258,10 +258,10 @@
             <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </user>
                 <admin>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
@@ -382,10 +382,10 @@
             <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
                 <user>
-                    <button><i class="fa fa-times" aria-hidden="true"></i> Отменить</button>
+                    <button><i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span></button>
                 </user>
                 <admin>
-                    <button><i class="fa fa-times" aria-hidden="true"></i> Отменить</button>
+                    <button><i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span></button>
                 </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>
@@ -491,10 +491,10 @@
             <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>
                 <user>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </user>
                 <admin>
-                    <button><![CDATA[<i class="fa fa-times" aria-hidden="true"></i> Отменить]]></button>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Отменить</span>]]></button>
                 </admin>
                 <stylecss>fc-event-danger</stylecss>
                 <description>

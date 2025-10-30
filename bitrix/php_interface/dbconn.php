@@ -5,7 +5,7 @@ $DBType = "mysql";
 $DBHost = "localhost";
 $DBLogin = "u1400386_kupi_otziv_r";
 $DBPassword = "Vfe1VnURNY1WDTMx";
-$DBName = "u1400386_kupi_otziv_r";
+$DBName = "u1400386_kupi_otziv_t";
 $DBDebug = true;
 $DBDebugToFile = false;
 
@@ -36,4 +36,10 @@ define("LOG_FILENAME", $_SERVER["DOCUMENT_ROOT"]."/log.txt");
 date_default_timezone_set("Etc/GMT-3");
 
 @define("ERROR_404","N");
+
+// Вариант 1: Без кеширования
+define('TEMPLATE_JS_FILES_CACHE_TTL', 0);
+
+// Вариант 2: Кеширование на 1 час
+//define('TEMPLATE_JS_FILES_CACHE_TTL', 3600);
 ?>

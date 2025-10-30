@@ -34,7 +34,20 @@ $billing_state = CUtil::PhpToJSObject($data, false, true);
 ?>
     const billingStoreData = <?=$billing_state?>;
     const  billingStore = BX.Vue3.Pinia.defineStore('billing-Store', {
-    state: () => ({databilling:billingStoreData}),
+    state: () => ({
+    missingAmount: 0, // Добавляем поле для недостающей суммы
+    databilling:billingStoreData
+    }),
+    actions: {
+    // Добавляем action для установки недостающей суммы
+    setMissingAmount(amount) {
+    this.missingAmount = amount;
+    },
+    // Очищаем недостающую сумму после пополнения
+    clearMissingAmount() {
+    this.missingAmount = 0;
+    }
+    }
     });
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php");

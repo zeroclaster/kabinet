@@ -44,7 +44,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     setup(){
 
         const {projectOrder, projectTask} = data_helper();
-        const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+        const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status(PHPPARAMS);
         const tasklistS = tasklistStore();
         const {makeData,canBeSaved_} = canbesaved__();
         makeData(tasklistS.datatask);
@@ -137,6 +137,30 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...BX.Vue3.Pinia.mapState(tasklistStore, ['datatask']),
         ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
         ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
+
+        // Добавляем вычисляемое свойство для общей стоимости
+        totalProjectCost() {
+            let total = 0;
+
+            for (let taskIndex in this.datataskCopy) {
+                const task = this.datataskCopy[taskIndex];
+                // Проверяем, что задача принадлежит текущему проекту
+                if (task.UF_PROJECT_ID == this.project_id) {
+                    total += parseFloat(task.FINALE_PRICE) || 0;
+                }
+            }
+
+            const amount = Math.round(total * 100) / 100; // Округляем до 2 знаков
+
+            // Получаем хранилище биллинга
+            const billing = billingStore();
+
+            // Устанавливаем недостающую сумму
+            billing.setMissingAmount(amount);
+
+            return amount;
+        },
+
         project(){
             if (!PHPPARAMS.PROJECT_ID) return [];
             for (p of this.data){
@@ -153,7 +177,125 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...addNewMethods(),
         ...BX.Vue3.Pinia.mapActions(calendarStore, ['updatecalendare','getEventsByTaskId']),
         ...BX.Vue3.Pinia.mapActions(brieflistStore, ['getRequireFields']),
+        /**
+         * Проверяет достаточно ли средств на балансе для запуска задачи
+         * @param {number} taskIndex - индекс задачи
+         * @returns {boolean} true если средств достаточно
+         */
+        checkBalance___(taskIndex) {
+            const task = this.datataskCopy[taskIndex];
+            const balance = this.databilling?.VALUE || 0;
+            const taskPrice = task.FINALE_PRICE || 0;
+
+            if (taskPrice > balance) {
+                const kabinetStore = usekabinetStore();
+                kabinetStore.Notify = '';
+                kabinetStore.Notify = "У вас недостаточно средств!";
+
+                // Устанавливаем недостающую сумму в billingStore
+                const missingAmount = Math.ceil(taskPrice - balance);
+                this.setMissingAmount(missingAmount);
+
+
+                return false;
+            }
+            return true;
+        },
+
+        /**
+         * Проверяет достаточно ли средств на балансе для запуска всех задач проекта
+         * @returns {boolean} true если средств достаточно для всех задач
+         */
+        checkBalance(index) {
+            const billing = billingStore();
+            const balance = billing.databilling?.UF_VALUE || 0;
+            let totalTaskPrice = 0;
+
+            const current_task = this.datataskCopy[index];
+            const TaskPrice = parseFloat(current_task.FINALE_PRICE) || 0;
+
+            // Суммируем стоимость всех задач проекта
+            for (let taskIndex in this.datataskCopy) {
+                const task = this.datataskCopy[taskIndex];
+                // Проверяем, что задача принадлежит текущему проекту
+                if (task.UF_PROJECT_ID == this.project_id) {
+                    totalTaskPrice += parseFloat(task.FINALE_PRICE) || 0;
+                }
+            }
+
+            if (TaskPrice > balance) {
+                const kabinetStore = usekabinetStore();
+                //kabinetStore.Notify = '';
+                //kabinetStore.Notify = "У вас недостаточно средств для запуска всех задач проекта!";
+
+                // Устанавливаем недостающую сумму в billingStore
+                //const missingAmount = Math.ceil(totalTaskPrice - balance);
+
+                // Устанавиливание всю ссумму (тз от директора 30.10.2025)
+                const missingAmount = Math.ceil(totalTaskPrice);
+                this.setMissingAmount(missingAmount);
+
+                return false;
+            }
+            return true;
+        },
+
+        // Новый метод для установки недостающей суммы
+        setMissingAmount(amount) {
+            // Получаем хранилище биллинга
+            const billing = billingStore();
+
+            // Устанавливаем недостающую сумму
+            billing.setMissingAmount(amount);
+
+            // Скроллим к компоненту пополнения баланса
+            this.scrollToDepositComponent();
+        },
+
+// Метод для скролла к компоненту пополнения
+        scrollToDepositComponent() {
+            this.$nextTick(() => {
+                const depositComponent = document.querySelector('.deposit-block-1');
+                if (depositComponent) {
+                    setTimeout(() => {
+                        depositComponent.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    }, 100);
+                }
+            });
+        },
+
+        ButtoncheckBalance(index) {
+            const billing = billingStore();
+            const balance = billing.databilling?.UF_VALUE || 0;
+            let totalTaskPrice = 0;
+
+            const current_task = this.datataskCopy[index];
+            const TaskPrice = parseFloat(current_task.FINALE_PRICE) || 0;
+
+            // Суммируем стоимость всех задач проекта
+            for (let taskIndex in this.datataskCopy) {
+                const task = this.datataskCopy[taskIndex];
+                // Проверяем, что задача принадлежит текущему проекту
+                if (task.UF_PROJECT_ID == this.project_id) {
+                    totalTaskPrice += parseFloat(task.FINALE_PRICE) || 0;
+                }
+            }
+
+            if (TaskPrice > balance) {
+                return false;
+            }
+            return true;
+        },
+
         starttask(index){
+            // Проверяем баланс
+            if (!this.checkBalance(index)) {
+                return;
+            }
+
             var cur = this;
             console.log(this.datataskCopy);
             var form_data = this.dataToFormData(this.datataskCopy[index]);
@@ -332,11 +474,125 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
             this.$root.inpSaveTimer = setTimeout(()=>{this.savetask(task_index);},5000);
         },
-        inpsaveCopy: function (task_index){
 
+        // Инициализация калькулятора
+        initCalculator() {
+            this.taskCalculator = new TaskCalculator(this);
+        },
+
+        // Пересчет задачи при изменении параметров
+        recalculateTask(taskIndex) {
+            const task = this.datataskCopy[taskIndex];
+            const product = this.getProductByIndexTask(taskIndex);
+
+            if (!task || !product) return;
+
+            const recalculatedTask = this.taskCalculator.recalculateTask(task, product);
+
+            // Обновляем только расчетные поля
+            this.datataskCopy[taskIndex] = {
+                ...this.datataskCopy[taskIndex],
+                UF_DATE_COMPLETION: recalculatedTask.UF_DATE_COMPLETION,
+                FINALE_PRICE: recalculatedTask.FINALE_PRICE,
+                RUN_DATE: recalculatedTask.RUN_DATE
+            };
+        },
+
+        // Обновленный метод remakeTaskData
+        remakeTaskData(taskIndex) {
+            const task = this.datataskCopy[taskIndex];
+            if (!task) return;
+
+            // 1. Инициализация UF_DATE_COMPLETION_ORIGINAL (аналог первого цикла в remakeData)
+            if (!task.UF_DATE_COMPLETION_ORIGINAL) {
+                task.UF_DATE_COMPLETION_ORIGINAL = {};
+            }
+
+            task.UF_DATE_COMPLETION_ORIGINAL.MINDATE = task.UF_DATE_COMPLETION;
+            task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE = moment().add(1, 'year').unix();
+
+            if (task.UF_DATE_COMPLETION_ORIGINAL.MINDATE > task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE) {
+                task.UF_DATE_COMPLETION_ORIGINAL.MAXDATE = task.UF_DATE_COMPLETION_ORIGINAL.MINDATE;
+            }
+
+            // 2. Получаем продукт
+            const product = this.getProductByIndexTask(taskIndex);
+            if (!product) return;
+
+            // 3. Устанавливаем количество по умолчанию если пустое
+            if (!task.UF_NUMBER_STARTS) {
+                task.UF_NUMBER_STARTS = product.QUANTITY || 1;
+            }
+
+            // 4. FINALE_PRICE уже пересчитан в recalculateTask
+
+            // 5. Обновляем QUEUE_STATIST (если нужно)
+            // task.QUEUE_STATIST = this.getQueueStatistics(task);
+
+            // 6. Фильтруем доступные варианты цикличности
+            if (product.TASK_CONTINUITY && product.TASK_CONTINUITY.VALUE_XML_ID) {
+                const possibleOptions = this.getPossibleCyclicalityOptions(product.TASK_CONTINUITY.VALUE_XML_ID);
+
+                if (task.UF_CYCLICALITY_ORIGINAL && Array.isArray(task.UF_CYCLICALITY_ORIGINAL)) {
+                    task.UF_CYCLICALITY_ORIGINAL = task.UF_CYCLICALITY_ORIGINAL.filter(option =>
+                        possibleOptions.includes(option.ID)
+                    );
+                }
+            }
+
+            // 7. Форматируем значения цикличности (аналог второго цикла в remakeData)
+            if (task.UF_CYCLICALITY_ORIGINAL && Array.isArray(task.UF_CYCLICALITY_ORIGINAL)) {
+                for (const option of task.UF_CYCLICALITY_ORIGINAL) {
+                    if (!option.VALUE) continue;
+
+                    // 1 - Однократное выполнение
+                    if (option.ID == 1) {
+                        // Используем RUN_DATE из recalculateTask вместо calculateDateStart
+                        option.VALUE = 'равномерно с ' + task.RUN_DATE + ' до заданной даты';
+                    }
+
+                    // 2 - Повторяется ежемесячно
+                    if (option.ID == 2) {
+                        // Используем RUN_DATE из recalculateTask вместо calculateDateStart
+                        option.VALUE = 'ежемесячно, начиная с ' + task.RUN_DATE;
+                    }
+                }
+            }
+
+            // 8. RUN_DATE уже рассчитан в recalculateTask - ничего не делаем
+
+            // Обновляем реактивные данные
+            this.datataskCopy[taskIndex] = { ...task };
+        },
+
+        // Упрощенный getPossibleCyclicalityOptions
+        getPossibleCyclicalityOptions(taskContinuityXmlId) {
+            const TASK_CONTINUITY = {
+                '5f08a50f317495840fe150a6556e3d43': [33],    // Одно исполнение
+                '9295af06d671d06eb0bf036c3886f9d3': [1],     // Только однократные
+                '4e6662937b21b89d5c02879b7e47718b': [2],     // Непрерывная задача
+                '51e37ecf0978bf080600464552b95d1f': [1, 2],  // Однократная или непрерывная
+                'fb226d4fc4447d5c81e2a902042ffca3': [34],    // Ежемесячная услуга
+            };
+
+            return TASK_CONTINUITY[taskContinuityXmlId] || [];
+        },
+
+        inpsaveCopyOLD(task_index){
             if (typeof this.$root.inpSaveTimer != 'undefined') clearTimeout(this.$root.inpSaveTimer);
             this.$root.inpSaveTimer = setTimeout(()=>{this.savetaskCopy(task_index);},2000);
         },
+
+        // Обновленный метод inpsaveCopy
+        inpsaveCopy(taskIndex) {
+            // Сначала пересчитываем локально
+            this.recalculateTask(taskIndex);
+
+            // ДОБАВЛЕННАЯ ЛОГИКА: аналог remakeData для конкретной задачи
+            // Используем данные из recalculateTask (UF_DATE_COMPLETION, RUN_DATE и т.д.)
+            this.remakeTaskData(taskIndex);
+        },
+
         getProductByIndexTask(index) {
             // 1. Достаём исходные данные задачи (без реактивной обёртки)
             const rawTask = BX.Vue3.toRaw(this.datatask[index]);
@@ -453,9 +709,47 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                      this.animatedCounter(task_id);
                  }
              },200);
+        },
+
+        /*
+        taskQueueCount(task_id){
+            const calendarStore_ = calendarStore();
+            const taskEvents = calendarStore_.getEventsByTaskId(task_id);
+            return taskEvents.length;
         }
+        */
+
+        taskQueueCount(task_id){
+            const { taskStatus_v } = task_status();
+            const counts = taskStatus_v(task_id);
+
+            // Суммируем все активные события (запланированные, работающие и требующие внимания)
+            return counts.stopwark + counts.work + counts.alert;
+        },
+
+        decreaseNumberStarts(taskIndex) {
+            if (this.datataskCopy[taskIndex].UF_NUMBER_STARTS > 1) {
+                this.datataskCopy[taskIndex].UF_NUMBER_STARTS--;
+                this.inpsaveCopy(taskIndex);
+            }
+        },
     },
     mounted() {
+        // Функция для получения параметра из URL
+        const getActionParameter = () => {
+            // GET параметр
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'add_service') return true;
+
+            // POST параметр
+            if (typeof window.POST_PARAMS !== 'undefined' &&
+                window.POST_PARAMS.action === 'add_service') {
+                return true;
+            }
+
+            return false;
+        };
+
         $('.external-events .fc-event').each(function() {
             $(this).data('event', {
                 title: $.trim($(this).text()),
@@ -489,11 +783,14 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             acc[task.ID] = this.taskStatus_v(task.ID).stopwark;
             return acc;
         }, {});
-        console.log(this.anim_counter);
+
+        this.initCalculator();
 
         // ДОБАВЛЕННЫЙ КОД: Автоматическое открытие модального окна при отсутствии задач
-        if (!this.datatask || this.datatask.length === 0) {
+        const shouldShowModal = !this.datatask || this.datatask.length === 0 ||
+            getActionParameter();
 
+        if (shouldShowModal) {
             this.modaldata.project = this.project.ID;
 
             if (this.project.UF_ORDER_ID) {

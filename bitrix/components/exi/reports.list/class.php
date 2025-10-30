@@ -181,8 +181,8 @@ class ReportsListComponent extends \CBitrixComponent implements \Bitrix\Main\Eng
         if(isset($FILTER['statusfind']) && is_array($FILTER['statusfind'])) $Query->addFilter('UF_STATUS',$FILTER['statusfind']);
 
         if(!empty($FILTER['queue_id'])) $Query->addFilter('ID',$FILTER['queue_id']);
+        if(!empty($FILTER['queue'])) $Query->addFilter('UF_EXT_KEY',$FILTER['queue']);
 
-		
         $Query->setOrder(["UF_CREATE_DATE"=>'desc',"TASK.UF_PUBLISH_DATE"=>'desc']);
 
         $resNoLimit = $Query->exec()->fetchAll();

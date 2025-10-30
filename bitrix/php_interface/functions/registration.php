@@ -41,7 +41,7 @@ function OnAfterUserLoginHandler(&$fields)
 
     if($fields['USER_ID']>0 && $register == NULL)
     {
-        //$APPLICATION->set_cookie(COption::GetOptionString("main", "cookie_name", "BITRIX_SM")."_EMAIL", $fields["EMAIL"]);
+        //$APPLICATION->set_cookie(COption::GetOptionString("main", "cookie_name", "BITRIX_SM")."_EMAIL", $arFields["EMAIL"]);
 
         $arGroups = CUser::GetUserGroup($fields['USER_ID']);
         //AddMessage2Log(print_R(array_intersect([6], CUser::GetUserGroup($fields['USER_ID'])),true), "my_module_id");

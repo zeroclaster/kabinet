@@ -24,6 +24,7 @@ bitrix/templates/kabinet/assets/js/kabinet/applications/billing.js
     <div class="butt-blk1"><button class="btn btn-link mdi-menu menu-hamburger"></button></div>
     */?>
     <img src="<?=$siteuser->getAvatar60x60()?>" alt=""/>
+    <i class="fa fa-angle-down header-avatar-icon" aria-hidden="true"></i>
 </div>
 
 <div class="rd-navbar-subpanel" id="subpanel-user-menu">
