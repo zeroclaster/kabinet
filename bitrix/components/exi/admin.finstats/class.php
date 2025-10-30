@@ -117,6 +117,30 @@ class adminFinstatsComponent extends \CBitrixComponent implements \Bitrix\Main\E
         ];
     }
 
+    /**
+     * Добавляет 11 часов 59 минут к дате
+     */
+    protected function addEndOfDay($dateString)
+    {
+        if (empty($dateString)) {
+            return null;
+        }
+
+        try {
+            // Создаем объект DateTime из строки
+            $date = new \DateTime($dateString);
+            // Добавляем 11 часов 59 минут
+            $date->modify('+11 hours +59 minutes');
+
+
+
+            return $date->format('d.m.Y H:i:s');
+        } catch (\Exception $e) {
+            // В случае ошибки возвращаем оригинальную дату
+            return $dateString;
+        }
+    }
+
     public function prepareData(){
         global $DB;
         $arParams = $this->arParams;
@@ -138,11 +162,15 @@ class adminFinstatsComponent extends \CBitrixComponent implements \Bitrix\Main\E
 
         // Фильтр по дате публикации
         if(!empty($FILTER['publicdatefromsearch'])) {
-            $Query->addFilter('>=UF_ACTUAL_DATE', $FILTER['publicdatefromsearch']);
+            $Query->addFilter('>=UF_CREATE_DATE', $FILTER['publicdatefromsearch']);
         }
         if(!empty($FILTER['publicdatetosearch'])) {
-            $Query->addFilter('<=UF_ACTUAL_DATE', $FILTER['publicdatetosearch']);
+            // Добавляем 11 часов 59 минут к конечной дате
+            $endDate = $this->addEndOfDay($FILTER['publicdatetosearch']);
+            $Query->addFilter('<=UF_CREATE_DATE', $endDate);
         }
+
+        //$Query->addFilter('UF_STATUS',6);
 
         // Выбираем только нужные поля
         $Query->setSelect([
@@ -152,6 +180,10 @@ class adminFinstatsComponent extends \CBitrixComponent implements \Bitrix\Main\E
         ]);
 
         $res = $Query->exec()->fetchAll();
+
+        //\Dbg::print_r(\Bitrix\Main\Entity\Query::getLastQuery());
+
+        //\Dbg::print_r($res);
 
         // Инициализируем статистику для всех статусов
         $statsByStatus = [];
