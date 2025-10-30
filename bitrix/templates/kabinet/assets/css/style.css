@@ -967,8 +967,8 @@ i.fa{
 }
 .alert-done {
 	color: #fff;
-	background-color: #3a4049;
-	border-color: rgba(58, 64, 73, 0.2);
+	background-color: #00946f;
+	border-color: #052624;
 }
 
 .alert-only-text.alert-planned{
@@ -994,7 +994,7 @@ i.fa{
 .alert-only-text.alert-done{
 	background: none;
 	border: none;
-	color: #3a4049;
+	color: #00946f;
 }
 
 
@@ -1306,4 +1306,10 @@ i.fa{
 	height: 48px;
 	font-size: 20px;
 	width: 36px;
+}
+
+.link-block{
+	max-width: 500px;
+	word-break: break-all;
+	overflow: hidden;
 }
