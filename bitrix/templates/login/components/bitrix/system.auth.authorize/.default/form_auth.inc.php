@@ -24,7 +24,7 @@
                     <label for="user"><?=GetMessage("AUTH_LOGIN")?></label>
                     <div class="input-group">
                         <div class="input-group-prepend"><span class="input-group-text fa-user"></span></div>
-                        <input class="form-control" id="user" type="text" name="USER_LOGIN" placeholder="Введите ваш <?=GetMessage("AUTH_LOGIN")?>" value="<?=$arResult["LAST_LOGIN"]?>" >
+                        <input class="form-control" id="user" type="text" name="USER_LOGIN" placeholder="Введите ваш <?=GetMessage("AUTH_LOGIN")?>" value="<?=$arResult["LAST_EMAIL"]?>" >
                     </div>
                 </div>
                 <div class="form-group">
@@ -63,7 +63,7 @@
 
                 <?if ($arResult["STORE_PASSWORD"] == "Y"):?>
                     <div class="custom-control custom-switch custom-switch-primary">
-                        <input class="custom-control-input" type="checkbox" name="USER_REMEMBER" id="novfjclw"/>
+                        <input class="custom-control-input" type="checkbox" name="USER_REMEMBER" id="novfjclw" checked/>
                         <label class="custom-control-label" for="novfjclw"><?=GetMessage("AUTH_REMEMBER_ME")?>
                         </label>
                     </div>

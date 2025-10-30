@@ -148,7 +148,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
         <div class="row row-30">
             <div class="col-md-12">
 
-                <h2>Согласование и отчеты</h2>
+                <h2>Ход работы</h2>
 
                 <div class="panel filter-block">
                     <div class="panel-body">

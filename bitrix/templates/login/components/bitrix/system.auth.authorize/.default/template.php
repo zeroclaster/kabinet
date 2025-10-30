@@ -117,6 +117,28 @@ try{document.form_auth.USER_PASSWORD.focus();}catch(e){}
 try{document.form_auth.USER_LOGIN.focus();}catch(e){}
 <?endif?>
 
+
+// При загрузке страницы подставляем сохраненный логин из куки
+BX.ready(function() {
+    var savedLogin = BX.getCookie('saved_login');
+    if (savedLogin && document.form_auth && document.form_auth.USER_LOGIN) {
+        document.form_auth.USER_LOGIN.value = savedLogin;
+    }
+
+
+// При отправке формы сохраняем логин в куки
+if (document.form_auth) {
+    document.form_auth.addEventListener('submit', function() {
+        var loginValue = document.form_auth.USER_LOGIN.value;
+        if (loginValue) {
+            // Сохраняем на 30 дней
+            BX.setCookie('saved_login', loginValue, {expires: 30});
+        }
+    });
+}
+
+});
+
 window.addEventListener("components:ready", function(event) {
     if (typeof err_auth_mess != "undefined") {
         PNotify.alert({
