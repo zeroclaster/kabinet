@@ -1,0 +1,54 @@
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetTitle("ФинСтатистика");
+?>
+
+
+<?
+$siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
+
+?>
+<section class="section-xs">
+    <div class="container-fluid">
+        <div class="row row-30">
+            <div class="col-md-12 d-xxl-flex">
+                <h1>ФинСтатистика</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section-xs">
+    <div class="container-fluid">
+        <div class="row row-30">
+            <div class="col-md-12">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap group-10">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <?$APPLICATION->IncludeComponent("exi:admin.filterexecution", "finstats", Array(
+                                'FILTER_NAME' => 'clientfilter1',
+                            )
+                        );?>
+                        <?
+                        global $clientfilter1;
+                        //\Dbg::var_dump($clientfilter1);
+                        ?>
+
+                        <?$APPLICATION->IncludeComponent("exi:admin.finstats", "", Array(
+                                'FILTER_NAME' => 'clientfilter1',
+                                'COUNT' => $_REQUEST['viewcount'],
+                            )
+                        );?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
+
+
