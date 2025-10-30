@@ -6,7 +6,7 @@ const mytypeahead = BX.Vue3.BitrixVue.mutableComponent('type-ahead', {
                 <div class="col-sm-11" v-if="isEdit()">
                     <input ref="input" :id="$id('id_input')" class="form-control" type="text" @change="sendvalinput" v-model="localModelValue" placeholder="начните вводить или выберите из списка">
                 </div>
-                 <div class="col-sm-11 col-form-label" v-else>                 
+                 <div class="col-sm-11 col-form-label link-block" v-else>                 
                     {{localModelValue}}
                 </div>               
 </div>

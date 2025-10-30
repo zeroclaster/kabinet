@@ -51,6 +51,8 @@ $this->setFrameMode(true);
                 <h4 style="margin-top: 0;">Выбран клиент: {{currentClient.NAME}} {{currentClient.LAST_NAME}} (#{{currentClient.ID}})</h4>
                 <p>Email: {{currentClient.EMAIL}}</p>
                 <p><a :href="'/kabinet/finance/?usr='+currentClient.ID" target="_blank">Финансы <i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                <p><a :href="'/kabinet/profile/?usr='+currentClient.ID" target="_blank">Профиль <i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                <p><a :href="'/kabinet/closing-documents/?usr='+currentClient.ID" target="_blank">Договора и документы <i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
                 <!-- Добавляем отображение биллинга -->
                 <div class="billing-info mt-2 p-2" style="background-color: #fff; border-radius: 4px;">
                     <h5 style="margin: 0 0 8px 0;">Баланс:</h5>
