@@ -61,21 +61,21 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                     <div class="d-flex task-status-print h4" v-html="taskStatus_m(TASK_ID)"></div>
 
                     <div class="mt-3">
+                        <?/*
                         <div class="d-flex no-d-flex">
                             <div class="d-flex mr-3 align-items-center">Запланированы: <div class="fc-event-light ml-2 mr-2"><?=$QueueStatistics[0]['COUNT']?></div></div>
                             <div class="d-flex mr-3 align-items-center">Выполняются: <div class="fc-event-success ml-2 mr-2"><?=$QueueStatistics[1]['COUNT']?></div></div>
                             <div class="d-flex mr-3 align-items-center">Выполнено: <div class="fc-event-warning ml-2 mr-2"><?=$QueueStatistics[2]['COUNT']?></div></div>
                         </div>
+                        */?>
+
+                        <div class="task-palanning-info d-flex no-d-flex" v-if="taskData.UF_STATUS>0">
+                            <div>Всего: {{taskQueueCount(taskData.ID)}}</div><div class="ml-3">Запланированы: <span class="task-staus-counter alert-planned">{{taskStatus_v(taskData.ID)['stopwark']}}</span></div><div class="ml-3">Выполняются: <span class="task-staus-counter alert-worked">{{taskStatus_v(taskData.ID)['work']}}</span></div><div class="ml-3">Требуют внимания: <span class="task-staus-counter alert-user-attention">{{taskStatus_v(taskData.ID)['alert']}}</span></div><div class="ml-3">Выполнено: <span class="task-staus-counter alert-done">{{taskStatus_v(taskData.ID)['endwork']}}</span></div>
+                        </div>
+
                         <div>Примерная частота исполнений: 1 ед. <?=\PHelp::dimensiontimeConvert($user_order['MINIMUM_INTERVAL']['VALUE'])?></div>
                         <div>Завершится: <?=$taskdata['UF_DATE_COMPLETION_ORIGINAL']['FORMAT1']?></div>
-                        <div class="d-flex link-block" v-if="hasLinks">
-                            <div class="mr-4">Ссылка:</div>
-                            <div class="link-block-value">
-                                <div v-for="(linksite, index) in currentLinks" :key="index">
-                                    {{ linksite.VALUE }}
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="mt-3">
@@ -89,7 +89,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 </div>
                 <div class="col-md-3">
                     <ul class="list-unstyled">
-                        <li><a href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['UF_PRODUKT_ID']?>">Заказ услуг</a></li>
+                        <li><a class="btn btn-primary mdi-plus icon-button mobile-butt-1" href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['ID']?>">Заказать ещё</a></li>
 
                     </ul>
                 </div>
@@ -106,7 +106,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                         <div class="form-group d-flex align-items-center mobile-view">
                             <label class="col-form-label col-form-label-custom lable-link-list-style-1" :for="'linkInputLink'+TASK_ID">Ссылка:</label>
                             <div class="target-list-link-block">
-                                <div v-for="(inplist, index) in taskData.UF_TARGET_SITE" :key="index">
+                                <div class="link-list-item" v-for="(inplist, index) in taskData.UF_TARGET_SITE" :key="index">
                                     <input
                                             :class="['form-control', { 'it-required_field': isRequiredField(taskData, 'UF_TARGET_SITE') },'link_input']"
                                             :id="'linkInputLink'+TASK_ID+index"
@@ -115,6 +115,15 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                                             v-model="inplist.VALUE"
                                             @input="onInputChange"
                                     >
+                                    <button
+                                            class="btn btn-outline-secondary cvadrat-button button-click-clibort2"
+                                            type="button"
+                                            @click="copyLinkToClipboard(inplist.VALUE, index)"
+                                            title="Копировать ссылку"
+                                            :disabled="!inplist.VALUE"
+                                    >
+                                        <i class="fa fa-files-o" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                                 <div class="" style="position: relative;">
                                     <button class="text-button" type="button" @click="addMoreLink">+ еще ссылка</button>
@@ -182,7 +191,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 </div>
                 <div class="col-md-3">
                     <ul class="list-unstyled">
-                       <li><a class="btn btn-danger mdi-alert-outline icon-button" href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
+                       <li><a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
                     </ul>
                 </div>
             </div>

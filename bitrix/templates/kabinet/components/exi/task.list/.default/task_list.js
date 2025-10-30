@@ -44,7 +44,7 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
     setup(){
 
         const {projectOrder, projectTask} = data_helper();
-        const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status();
+        const {taskStatus_m,taskStatus_v,taskStatus_b} = task_status(PHPPARAMS);
         const tasklistS = tasklistStore();
         const {makeData,canBeSaved_} = canbesaved__();
         makeData(tasklistS.datatask);
@@ -225,11 +225,14 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
             if (TaskPrice > balance) {
                 const kabinetStore = usekabinetStore();
-                kabinetStore.Notify = '';
-                kabinetStore.Notify = "У вас недостаточно средств для запуска всех задач проекта!";
+                //kabinetStore.Notify = '';
+                //kabinetStore.Notify = "У вас недостаточно средств для запуска всех задач проекта!";
 
                 // Устанавливаем недостающую сумму в billingStore
-                const missingAmount = Math.ceil(totalTaskPrice - balance);
+                //const missingAmount = Math.ceil(totalTaskPrice - balance);
+
+                // Устанавиливание всю ссумму (тз от директора 30.10.2025)
+                const missingAmount = Math.ceil(totalTaskPrice);
                 this.setMissingAmount(missingAmount);
 
                 return false;
@@ -262,6 +265,29 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                     }, 100);
                 }
             });
+        },
+
+        ButtoncheckBalance(index) {
+            const billing = billingStore();
+            const balance = billing.databilling?.UF_VALUE || 0;
+            let totalTaskPrice = 0;
+
+            const current_task = this.datataskCopy[index];
+            const TaskPrice = parseFloat(current_task.FINALE_PRICE) || 0;
+
+            // Суммируем стоимость всех задач проекта
+            for (let taskIndex in this.datataskCopy) {
+                const task = this.datataskCopy[taskIndex];
+                // Проверяем, что задача принадлежит текущему проекту
+                if (task.UF_PROJECT_ID == this.project_id) {
+                    totalTaskPrice += parseFloat(task.FINALE_PRICE) || 0;
+                }
+            }
+
+            if (TaskPrice > balance) {
+                return false;
+            }
+            return true;
         },
 
         starttask(index){
@@ -683,7 +709,30 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                      this.animatedCounter(task_id);
                  }
              },200);
+        },
+
+        /*
+        taskQueueCount(task_id){
+            const calendarStore_ = calendarStore();
+            const taskEvents = calendarStore_.getEventsByTaskId(task_id);
+            return taskEvents.length;
         }
+        */
+
+        taskQueueCount(task_id){
+            const { taskStatus_v } = task_status();
+            const counts = taskStatus_v(task_id);
+
+            // Суммируем все активные события (запланированные, работающие и требующие внимания)
+            return counts.stopwark + counts.work + counts.alert;
+        },
+
+        decreaseNumberStarts(taskIndex) {
+            if (this.datataskCopy[taskIndex].UF_NUMBER_STARTS > 1) {
+                this.datataskCopy[taskIndex].UF_NUMBER_STARTS--;
+                this.inpsaveCopy(taskIndex);
+            }
+        },
     },
     mounted() {
         // Функция для получения параметра из URL

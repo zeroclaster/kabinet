@@ -226,7 +226,56 @@ const taskinfoApplicationConfig = {
             } else {
                 kabinetStore.Notify = message;
             }
+        },
+
+        /*
+        taskQueueCount(task_id){
+            const calendarStore_ = calendarStore();
+            const taskEvents = calendarStore_.getEventsByTaskId(task_id);
+            return taskEvents.length;
         }
+        */
+
+        taskQueueCount(task_id){
+            const { taskStatus_v } = task_status();
+            const counts = taskStatus_v(task_id);
+
+            // Суммируем все активные события (запланированные, работающие и требующие внимания)
+            return counts.stopwark + counts.work + counts.alert;
+        },
+
+        // Копирование ссылки в буфер обмена
+        copyLinkToClipboard(link, index) {
+            if (!link || link.trim() === '') return;
+
+            navigator.clipboard.writeText(link.trim())
+                .then(() => {
+                    // Показываем уведомление об успешном копировании
+                  //  this.showNotification(`Ссылка #${index + 1} скопирована в буфер обмена`, "success");
+                })
+                .catch(err => {
+                    console.error('Ошибка при копировании: ', err);
+                    // Fallback для старых браузеров
+                    this.fallbackCopyToClipboard(link.trim());
+                });
+        },
+
+        // Fallback метод для копирования
+        fallbackCopyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+              //  this.showNotification("Ссылка скопирована в буфер обмена", "success");
+            } catch (err) {
+                console.error('Ошибка при копировании (fallback): ', err);
+                this.showNotification("Не удалось скопировать ссылку", "error");
+            }
+            document.body.removeChild(textArea);
+        },
     },
     watch: {
         // Следим за изменениями в хранилище задач

@@ -45,13 +45,14 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 
 //\Dbg::print_r($taskdata);
 ?>
-<section class="">
+<section class="mt-4">
     <div class="container-fluid">
         <div class="d-flex no-d-flex justify-content-between">
             <div>
-                <h4 style="margin: 0;">Проект</h4>
-                <div><h1><?=$project['UF_NAME']?> #<?=$project['UF_EXT_KEY']?></h1></div>
-                <h4>Задача</h4>
+                <div>
+                    <h4 style="margin: 0;margin-bottom: 4px;">Проект: <?=$project['UF_NAME']?> #<?=$project['UF_EXT_KEY']?></h4>
+                </div>
+                <div><h1>Ход работы</h1></div>
             </div>
             <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="REPORTS" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
         </div>
@@ -90,7 +91,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
         <div class="row row-30">
             <div class="col-md-12">
 
-                <h2>Ход работы</h2>
+
 
                 <div class="panel filter-block">
                     <div class="panel-body">
@@ -109,10 +110,13 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 <?
                 // filter debugg !
                 //print_r($GLOBALS['clientfilter1']);
+
+                /*
                 $query_queue = $request->get('queue');
                 if ($query_queue){
                     $GLOBALS['clientfilter1']['queue_id'] = $query_queue;
                 }
+                */
                 ?>
 
                 <?$APPLICATION->IncludeComponent("exi:reports.list", "", Array(

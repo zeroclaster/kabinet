@@ -48,7 +48,7 @@
                         <template v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
                             <div class="form-group">
                                 <div>Текст:</div>
-                                <div class="richtext-height-200_">
+                                <div class="richtext-height-80">
                                     <?/*
                                     параметр autosave="y" включает автосохранение
                                 */?>

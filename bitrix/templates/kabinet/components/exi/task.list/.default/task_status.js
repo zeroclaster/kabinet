@@ -3,9 +3,17 @@
  * Suharkov Sergey (sexiterra@mail.ru)
  */
 
-var task_status = function (){
+/*
+ * Copyright (c) 24.05.2024
+ * Suharkov Sergey (sexiterra@mail.ru)
+ */
+
+var task_status = function (PHPPARAMS ={}){
     const calendarStore_ = calendarStore();
     const datatask_ = tasklistStore();
+
+    const ALERT_STATUS = PHPPARAMS.ALERT_STATUS;
+
 
     // Общие константы статусов для всех функций (теперь как строки)
     const STATUS = {
@@ -13,7 +21,8 @@ var task_status = function (){
         PLANNED: ['0'],           // Запланированные статусы
         ACTIVE: ['1', '2', '3', '4', '5', '6', '7', '8'], // Активные статусы
         COMPLETED: ['9'],         // Завершенные статусы (часть STOPPED)
-        INACTIVE: ['10']         // Неактивные статусы (часть STOPPED)
+        INACTIVE: ['10'],         // Неактивные статусы (часть STOPPED)
+        ALERT: ALERT_STATUS || [] // Статусы, требующие внимания
     };
 
     // Общие HTML-шаблоны для отображения статусов
@@ -22,10 +31,12 @@ var task_status = function (){
             stopped: '<div class="alert-status iphone-style-2 task-stoped"><i class="fa fa-times"></i></div>',
             wait: '<div class="alert-status iphone-style-2 task-wait"><i class="fa fa-clock-o"></i></div>',
             start: '<div class="alert-status iphone-style-2 task-start"><i class="fa fa-hourglass-start"></i></div>',
+            alert: '<div class="alert-status iphone-style-2 task-alert"><i class="fa fa-exclamation-triangle"></i></div>',
             done: '<div class="alert-only-text alert-done font-bold">Оформите заказ</div>',
             cancel: '<div class="alert-only-text alert-cancel font-bold"><i class="fa fa-times"></i> Остановлена</div>',
             planned: '<div class="alert-only-text alert-planned font-bold"><i class="fa fa-clock-o"></i> Запланирована</div>',
-            worked: '<div class="alert-only-text alert-worked font-bold"><i class="fa fa-hourglass-start"></i> Выполняется</div>'
+            worked: '<div class="alert-only-text alert-worked font-bold"><i class="fa fa-hourglass-start"></i> Выполняется</div>',
+            attention: '<div class="alert-only-text alert-user-attention font-bold"><i class="fa fa-exclamation-triangle"></i> Требует внимания</div>'
         }
     };
 
@@ -33,22 +44,40 @@ var task_status = function (){
     const checkStatus = (taskEvents, task = null) => {
         // Если нет событий, считаем задачу выполненной
         if (!taskEvents.length) {
-            return { type: 'done', isStopped: false, isPlanned: false };
+            return { type: 'done', isStopped: false, isPlanned: false, hasAlert: false };
         }
 
         // Получаем все статусы событий задачи
         const statuses = taskEvents.map(q => q.UF_STATUS);
+
+        // Проверяем, есть ли статусы, требующие внимания
+        const hasAlert = statuses.some(s => STATUS.ALERT.includes(s));
+
         // Проверяем, остановлена ли задача (статус 14 или все события в STOPPED)
         const isStopped = (task && task.UF_STATUS === '14') ||
             statuses.every(s => STATUS.STOPPED.includes(s));
+
         // Проверяем, есть ли запланированные события
         const isPlanned = statuses.some(s => STATUS.PLANNED.includes(s));
 
+        // Определяем основной тип статуса с учетом тревожных статусов
+        let type;
+        if (hasAlert) {
+            type = 'alert';
+        } else if (isStopped) {
+            type = 'stopped';
+        } else if (isPlanned) {
+            type = 'planned';
+        } else {
+            type = 'active';
+        }
+
         // Возвращаем тип статуса и флаги
         return {
-            type: isStopped ? 'stopped' : isPlanned ? 'planned' : 'active',
+            type,
             isStopped,
-            isPlanned
+            isPlanned,
+            hasAlert
         };
     };
 
@@ -57,9 +86,13 @@ var task_status = function (){
         const taskEvents = calendarStore_.getEventsByTaskId(id_task);
         const { type } = checkStatus(taskEvents);
 
-        return type === 'stopped' ? TEMPLATES.BASE.stopped :
-            type === 'planned' ? TEMPLATES.BASE.wait :
-                type === 'done' ? '' : TEMPLATES.BASE.start;
+        switch (type) {
+            case 'alert': return TEMPLATES.BASE.alert;
+            case 'stopped': return TEMPLATES.BASE.stopped;
+            case 'planned': return TEMPLATES.BASE.wait;
+            case 'done': return '';
+            default: return TEMPLATES.BASE.start;
+        }
     }
 
     // Функция для отображения расширенного статуса задачи (текст)
@@ -70,9 +103,13 @@ var task_status = function (){
         const taskEvents = calendarStore_.getEventsByTaskId(id_task);
         const { type } = checkStatus(taskEvents, task);
 
-        return type === 'stopped' ? TEMPLATES.BASE.cancel :
-            type === 'planned' ? TEMPLATES.BASE.planned :
-                type === 'done' ? TEMPLATES.BASE.done : TEMPLATES.BASE.worked;
+        switch (type) {
+            case 'alert': return TEMPLATES.BASE.attention;
+            case 'stopped': return TEMPLATES.BASE.cancel;
+            case 'planned': return TEMPLATES.BASE.planned;
+            case 'done': return TEMPLATES.BASE.done;
+            default: return TEMPLATES.BASE.worked;
+        }
     }
 
     // Функция для получения статистики по статусам событий задачи
@@ -85,6 +122,7 @@ var task_status = function (){
                 stopwark: 0,
                 work: 0,
                 endwork: 0,
+                alert: 0,
                 status: 'inactive'
             };
         }
@@ -104,17 +142,33 @@ var task_status = function (){
                 acc.work += increment;      // Активные события (все кроме INACTIVE)
             }
 
-            return acc;
-        }, { stopwark: 0, work: 0, endwork: 0 });
+            // Считаем события, требующие внимания
+            if (STATUS.ALERT.includes(queue.UF_STATUS)) {
+                acc.alert += increment;
+            }
 
+            return acc;
+        }, { stopwark: 0, work: 0, endwork: 0, alert: 0 });
 
         // Определяем общий статус на основе подсчетов
-        counts.status = counts.endwork > 0 ? 'completed' :
-            counts.stopwark > 0 ? 'planned' :
-                counts.work > 0 ? 'active' : 'inactive';
+        counts.status = counts.alert > 0 ? 'alert' :
+            counts.endwork > 0 ? 'completed' :
+                counts.stopwark > 0 ? 'planned' :
+                    counts.work > 0 ? 'active' : 'inactive';
 
         return counts;
     };
 
-    return {taskStatus_m,taskStatus_v,taskStatus_b};
+    // Дополнительная функция для проверки наличия статусов тревоги
+    const hasAlertStatus = function(task_id) {
+        const counts = taskStatus_v(task_id);
+        return counts.alert > 0;
+    };
+
+    return {
+        taskStatus_m,
+        taskStatus_v,
+        taskStatus_b,
+        hasAlertStatus
+    };
 }

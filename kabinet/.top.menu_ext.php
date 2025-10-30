@@ -41,7 +41,7 @@ foreach($project_list as $item) {
         "/kabinet/projects/planning/?p=" . $projectId,
         Array(),
         Array(
-            "ICON" => "fa fa-calendar",
+            "ICON" => "fa fa-folder-open",
             "DEPTH_LEVEL" => 1,
             "IS_PARENT" => $hasTasks
         ),
@@ -81,7 +81,7 @@ foreach($project_list as $item) {
             "/kabinet/projects/planning/?p=" . $projectId,
             Array(),
             Array(
-                "ICON" => "fa fa-plus",
+                "ICON" => "rd-navbar-icon mdi-plus",
                 "DEPTH_LEVEL" => 2,
                 "CLASS" => "menu-item-add-service",
                 "STYLE" => "color: #2ecc71; font-weight: bold;",

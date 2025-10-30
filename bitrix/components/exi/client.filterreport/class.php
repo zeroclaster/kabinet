@@ -100,7 +100,7 @@ class clientFilterReportComponent extends \CBitrixComponent implements \Bitrix\M
 
         if ($this->request->get('queue') != NULL){
             $SEARCH_RESULT['queue'] = $this->request->get('queue');
-            ${$FILTER_NAME}['queue'] = $this->request->get('queue');
+            ${$FILTER_NAME}['queue'] = preg_replace('/\D/', '', trim($this->request->get('queue')));
         }
 
         $this->includeComponentTemplate($this->template);

@@ -12,8 +12,8 @@ $projects = $projectManager->getData();
 <section class="section-xs">
     <div class="container-fluid">
         <div class="row row-30">
-            <div class="col-md-12">
-                <h1>Добро пожаловать, <?=$user->printName()?></h1>
+            <div class="col-md-12" style="margin-bottom:0px;">
+                <h1>Добро пожаловать, <?=$user->printName()?> ID<?=$user['ID']?></h1>
 
                 <div class="d-flex justify-content-end"><div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DASHBOARD"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div></div>
             </div>
@@ -54,7 +54,7 @@ $GLOBALS['message_filter'] = [];
     )
 );?>
 
-<div class="pl-3"><a href="/kabinet/notifications/" class="h3 text-primary">Написать сообщение</a></div>
+<div class="pl-3"><a href="/kabinet/notifications/" class="h3 text-primary" style="margin-top: 0px;">Написать сообщение</a></div>
 
 <section class="section-xs">
         <div class="container-fluid">

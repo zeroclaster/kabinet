@@ -24,7 +24,7 @@ class NotificationChecker {
         this.interval = options.interval || 60000; // 60 секунд
         this.classes = {
             active: options.activeClass || 'site-red',
-            inactive: options.inactiveClass || 'site-gray'
+            inactive: options.inactiveClass || 'site-white'
         };
 
         this.filter = options.filter;

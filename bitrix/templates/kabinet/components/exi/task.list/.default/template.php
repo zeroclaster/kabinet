@@ -62,10 +62,10 @@ $p = $request->get('p');
                 <div class="col-md-2">
 
                     <template v-if="getRequireFields(project_id).length > 0">
-                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
                     <template v-else>
-                        <a class="btn btn-primary" :href="'/kabinet/projects/breif/?id='+project_id"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
 
                     </div>
@@ -155,12 +155,18 @@ $p = $request->get('p');
 					<div class="d-flex align-items-center task-status-print h4">
                         <div v-html="taskStatus_m(task.ID)"></div>
 
-                        <div class="ml-4" v-if="getEventsByTaskId(task.ID).length > 0"><a class="btn btn-primary" style="padding-left: 0px;padding: 9px 10px;" :href="'/kabinet/projects/reports/?t='+task.ID">Ход работы <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span></a></div>
+                        <div class="ml-4" v-if="getEventsByTaskId(task.ID).length > 0">
+                            <a class="btn btn-primary new-butt-fa-icon" :href="'/kabinet/projects/reports/?t='+task.ID">
+                                <i class="fa fa-line-chart align-middle" aria-hidden="true" style="font-size: 21px;"></i>
+                                <span class="butt-fa-icon-text">Ход работы</span>
+                                <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span>
+                            </a>
+                        </div>
 
                     </div>
 
                     <div class="task-palanning-info d-flex no-d-flex" v-if="task.UF_STATUS>0">
-                        <div>Запланированы: {{anim_counter[task.ID]}}</div><div class="ml-3">Выполняются: {{taskStatus_v(task.ID)['work']}}</div><div class="ml-3">Выполнено: {{taskStatus_v(task.ID)['endwork']}}</div>
+                        <div>Всего: {{taskQueueCount(task.ID)}}</div><div class="ml-3">Запланированы: <span class="task-staus-counter alert-planned">{{anim_counter[task.ID]}}</span></div><div class="ml-3">Выполняются: <span class="task-staus-counter alert-worked">{{taskStatus_v(task.ID)['work']}}</span></div><div class="ml-3">Требуют внимания: <span class="task-staus-counter alert-user-attention">{{taskStatus_v(task.ID)['alert']}}</span></div><div class="ml-3">Выполнено: <span class="task-staus-counter alert-done">{{taskStatus_v(task.ID)['endwork']}}</span></div>
                     </div>
 
                     <timeLineTask :taskindex="taskindex"/>
@@ -191,7 +197,7 @@ $p = $request->get('p');
                                     <div class="numerator-range">
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                         <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
-                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                        <button type="button" class="button-minus" @click="decreaseNumberStarts(taskindex)">-</button>
                                     </div>
                                     <div>{{PRODUCT.MEASURE_NAME}}</div>
                                 </div>
@@ -232,7 +238,7 @@ $p = $request->get('p');
                                                 @input="inpsaveCopy(taskindex)"
                                         >
                                             <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
-                                            <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                            <button type="button" class="button-minus" @click="decreaseNumberStarts(taskindex)">-</button>
                                         </div>
                                     </div>
                                     <div>{{PRODUCT.MEASURE_NAME}}</div>
@@ -253,7 +259,7 @@ $p = $request->get('p');
                                     <div class="numerator-range">
                                         <input :id="'kolichestvo'+task.ID" type="text" class="form-control" style="margin: 0;width: 100px;margin-right: 20px;" size="2"  v-model="datataskCopy[taskindex].UF_NUMBER_STARTS" @input="inpsaveCopy(taskindex)">
                                         <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
-                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                        <button type="button" class="button-minus" @click="decreaseNumberStarts(taskindex)">-</button>
                                     </div>
                                         <div>{{PRODUCT.MEASURE_NAME}}</div>
                                 </div>
@@ -290,7 +296,7 @@ $p = $request->get('p');
                                                 @input="inpsaveCopy(taskindex)"
                                         >
                                         <button type="button" class="button-plus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS++;inpsaveCopy(taskindex)">+</button>
-                                        <button type="button" class="button-minus" @click="datataskCopy[taskindex].UF_NUMBER_STARTS--;inpsaveCopy(taskindex)">-</button>
+                                        <button type="button" class="button-minus" @click="decreaseNumberStarts(taskindex)">-</button>
                                     </div>
                                     <div>{{PRODUCT.MEASURE_NAME}}/в месяц</div>
                                 </div>
@@ -333,7 +339,7 @@ $p = $request->get('p');
                             </div>
                         </div>
                         
-                        <div class="row form-group">
+                        <div class="row form-group" v-if="ButtoncheckBalance(taskindex)">
                             <div class="col-sm-10 offset-sm-2" style="position: relative;">
                                 <div class="d-flex">
                                     <?/* 33 Одно исполнение */?>
@@ -350,6 +356,13 @@ $p = $request->get('p');
                                     <?/* 34 Ежемесячная услуга */?>
                                     <button :id="'taskbutton1'+CopyTask.ID"  v-if="getEventsByTaskId(task.ID).length == 0 && CopyTask.UF_CYCLICALITY==34" class="btn btn-secondary" type="button" @click="starttask(taskindex)"><i class="fa fa-step-forward" aria-hidden="true"></i>&nbsp;Заказать «{{task.UF_NAME}}»</button>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group" v-else>
+                            <div class="col-sm-10 offset-sm-2" style="position: relative;">
+                                <div class="d-flex">
+                                    <button :id="'taskbutton1'+CopyTask.ID" class="btn btn-secondary" type="button" @click="starttask(taskindex)">Пополнить балланс</button>
                                 </div>
                             </div>
                         </div>
@@ -483,6 +496,7 @@ $postAction = $_POST['action'] ?? '';
     task_list.start(<?=CUtil::PhpToJSObject([
             "PROJECT_ID"=>$arParams["PROJECT"],
             "TASK_ALERT"=>$arResult['TASK_ALERT'],
+            "ALERT_STATUS"=>\Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner')->config('ALERT'),
         ], false, true)?>);
     });
 </script>

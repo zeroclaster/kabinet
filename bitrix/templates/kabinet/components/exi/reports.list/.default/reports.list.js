@@ -281,7 +281,7 @@ mounted() {
 
     if (Object.keys(filterclientlist).length > 1) {
         const el = document.querySelector(".report-list-block");
-        if (el) el.scrollIntoView({behavior: 'smooth'});
+        //if (el) el.scrollIntoView({behavior: 'smooth'});
     }
 },
 components: {

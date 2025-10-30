@@ -57,9 +57,9 @@ $SEARCH_RESULT = $arResult['SEARCH_RESULT'];
     </div>
     <div class="col-md-3">
         <div class="d-flex">
-            <div class="d-flex align-items-center mr-3" style="width: 116px;">ID исполнения:</div>
+            <div class="d-flex align-items-center" style="width: 104px;">Исполнение #</div>
             <div class="d-flex align-items-center">
-                <input class="form-control" type="text" name="queue" value="<?=$SEARCH_RESULT['queue']?>" style="width: 76px;">
+                <input class="form-control" type="text" name="queue" value="<?=$SEARCH_RESULT['queue']?>" style="width: 121px;">
             </div>
         </div>
     </div>
