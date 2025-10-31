@@ -18,14 +18,6 @@ function GetCityName()
 	CModule::IncludeModule('highloadblock');
 	CModule::IncludeModule('sale');
 
-    if (!is_object($USER) || !$USER->IsAuthorized())
-    {
-        //CHTTP::SetStatus("403 Forbidden");
-        //require($_SERVER['DOCUMENT_ROOT'].'/404.php');
-        //exit();
-    }
-
-
 	$request = \Bitrix\Main\Context::getCurrent()->getRequest();
 	
 	$basket = Bitrix\Sale\Basket::loadItemsForFUser(Bitrix\Sale\Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
