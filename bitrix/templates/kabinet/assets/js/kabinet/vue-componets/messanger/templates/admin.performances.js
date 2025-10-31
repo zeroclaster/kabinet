@@ -11,7 +11,7 @@ window['messangerTemplate'] =    `
 			<div class="row">
 				<div class="col-2 avatar-block pr-0"><div><img :src="mess_item.UF_AUTHOR_ID_ORIGINAL.PERSONAL_PHOTO_ORIGINAL_300x300.src"></div></div>
 				<div class="col-10 text-block-mess">
-					<div class="d-flex">
+					<div class="d-flex flex-wrap header-message-block">
 						<div class="user-title mr-3">{{mess_item.UF_AUTHOR_ID_ORIGINAL.PRINT_NAME}}</div>
 						<div class="ml-auto datetime-message">{{mess_item.UF_PUBLISH_DATE_ORIGINAL.FORMAT3}}</div>
 					</div>

@@ -216,3 +216,11 @@ h4, .h4 {
 .form-control.link_input{
     width: inherit;
 }
+
+.header-message-block{
+    margin-bottom: 20px;
+}
+
+.messanger-block .mess .user-title {
+    font-size: 18px;
+}
