@@ -1,7 +1,7 @@
 <?
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 ?>
-<section class="section-lg section-one-screen">
+<section class="section-lg section-one-screen section-one-screen-mobile">
         <div class="container">
             <?/*
            <div style="position: absolute;background-color: #FFF;padding: 10px;">
@@ -14,7 +14,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
           <div class="row justify-content-center">
             <div class="col-lg-8">
 
-                <div class="text-center"><a href="/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв" style="width: 300px;"></a></div>
+                <div class="text-center"><a href="/"><img class="logo-default" src="/bitrix/templates/main/images/logo_w.svg" alt="Купи отзыв"></a></div>
 
                 <?if (isMobileDevice()):?>
               <div class="row row-10 align-items-end">

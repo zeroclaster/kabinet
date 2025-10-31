@@ -16,6 +16,8 @@
     $APPLICATION->ShowHead();
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/base/base.css");
 	Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/style.css");
+    Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/adaptive.css");
+    if (isMobileDevice()) Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/mobilse.css");
     ?>
 
   </head>

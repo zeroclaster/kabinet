@@ -1,0 +1,11 @@
+@media (max-width: 900px) {
+    .section-one-screen-mobile{
+        padding: 0!important;
+        justify-content: inherit!important;
+    }
+
+    .logo-default{
+        width: 150px;
+    }
+}
+
