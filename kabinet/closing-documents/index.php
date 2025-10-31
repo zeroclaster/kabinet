@@ -11,14 +11,12 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
         </div>
     </div>
 </section>
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'DOGOVOR',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'DOGOVOR',
+    )
+);?>
+
 <?$APPLICATION->IncludeComponent("exi:form.contract", "", Array(
         "GROUPS" =>[
             0=>"Договор",

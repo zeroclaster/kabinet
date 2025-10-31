@@ -11,14 +11,12 @@ $APPLICATION->SetTitle("Пополнение баланса кабинета «�
     </div>
 </section>
 
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'BALANCE',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'BALANCE',
+    )
+);?>
+
 
 <section class="">
     <div class="container-fluid">

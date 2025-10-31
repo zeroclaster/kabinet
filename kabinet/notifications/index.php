@@ -16,14 +16,12 @@ $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
         </div>
     </div>
 </section>
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'NOTIFICATION',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'NOTIFICATION',
+    )
+);?>
+
 
 <?
 // если нужно показывать только прочитанные

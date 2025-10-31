@@ -13,14 +13,12 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
         </div>
     </section>
 
-    <section class="">
-        <div class="container-fluid">
-            <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                    'CODE' => 'BRIEF',
-                )
-            );?>
-        </div>
-    </section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'BRIEF',
+    )
+);?>
+
 
 <?$APPLICATION->IncludeComponent("exi:form.brief", "", Array(
 		"ID" => $_REQUEST['id'],

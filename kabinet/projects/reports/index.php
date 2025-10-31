@@ -59,14 +59,12 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
     </div>
 </section>
 
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'REPORTS',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'REPORTS',
+    )
+);?>
+
 
 
 <section class="task-info-block">

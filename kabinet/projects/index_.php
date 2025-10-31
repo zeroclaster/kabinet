@@ -29,14 +29,12 @@ if (!$project) LocalRedirect("/404.php", "404 Not Found");
 
 </div>
 
-    <section class="">
-        <div class="container-fluid">
-            <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                    'CODE' => 'PLANNING',
-                )
-            );?>
-        </div>
-    </section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'PLANNING',
+    )
+);?>
+
 
 <section class="section-xs">
     <div class="container-fluid">

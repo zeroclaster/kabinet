@@ -13,14 +13,12 @@ $APPLICATION->SetTitle("Финансы кабинета «Купи-Отзыв»"
     </div>
 </section>
 
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'FINANCE',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'FINANCE',
+    )
+);?>
+
 
 <section class="section-xs">
     <div class="container-fluid">

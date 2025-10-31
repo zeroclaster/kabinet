@@ -36,14 +36,12 @@ $APPLICATION->AddChainItem("Заказ услуг и планирование з
     </div>
 </section>
 
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'PLANNING',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'PLANNING',
+    )
+);?>
+
 
 <section class="">
     <div class="container-fluid">

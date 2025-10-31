@@ -19,14 +19,12 @@ $user_id = $user->get('ID');
         <div class="h3">ID<?=$user_id?></div>
     </div>
 </section>
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'PROFILE',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'PROFILE',
+    )
+);?>
+
 
 <section class="section-md">
     <div class="container-fluid">

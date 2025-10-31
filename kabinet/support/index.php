@@ -11,14 +11,12 @@ $APPLICATION->SetTitle("Поддержка");
 
     </div>
 </section>
-<section class="">
-    <div class="container-fluid">
-        <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
-                'CODE' => 'SUPPORT',
-            )
-        );?>
-    </div>
-</section>
+
+<?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
+        'CODE' => 'SUPPORT',
+    )
+);?>
+
 <?
 // если нужно показывать только прочитанные
 //$GLOBALS['message_filter'] = ['UF_STATUS'=>\Bitrix\Kabinet\messanger\Messanger::NEW_MASSAGE];

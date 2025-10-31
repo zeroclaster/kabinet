@@ -13,7 +13,7 @@ $projects = $projectManager->getData();
     <div class="container-fluid">
         <div class="row row-30">
             <div class="col-md-12" style="margin-bottom:0px;">
-                <h1>Добро пожаловать, <?=$user->printName()?> ID<?=$user['ID']?></h1>
+                <h1>Добро пожаловать, <?=$user->printName()?> <span class="grey-blk-1">ID<?=$user['ID']?></span></h1>
 
                 <div class="d-flex justify-content-end"><div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DASHBOARD"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div></div>
             </div>
@@ -21,14 +21,11 @@ $projects = $projectManager->getData();
     </div>
 </section>
 
-<section class="section-xs">
-    <div class="container-fluid">
+
 <?$APPLICATION->IncludeComponent("exi:page.help", "", Array(
         'CODE' => 'DASHBOARD',
     )
 );?>
-    </div>
-</section>
 
 <?
 /*
@@ -59,24 +56,6 @@ $GLOBALS['message_filter'] = [];
 <section class="section-xs">
         <div class="container-fluid">
           <div class="row row-30">
-
-              <?/*
-				<div class="col-md-12">
-					<div class="panel">
-                        <?if(count($projects)==0):?>
-						<div class="panel-header">
-						  <div class="d-flex justify-content-between align-items-center flex-wrap group-10">
-                              <h4 class="panel-title">Создайте первый проект</h4>
-						  </div>
-						</div>
-                        <?endif;?>
-						<div class="panel-body">
-						<a class="btn btn-primary mdi-plus icon-button" href="/kabinet/projects/breif/">Создать новый проект</a>
-						</div>
-					</div>
-				</div>
-              */?>
-
 				<div class="col-md-12">
                     <?$APPLICATION->IncludeComponent("exi:project.list", "", Array(
                     )
