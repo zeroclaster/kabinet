@@ -1,4 +1,5 @@
 <?php
+use Bitrix\Main\Page\Asset;
 // template.php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
@@ -48,10 +49,12 @@ $editableFields = [
 
 // Подготавливаем данные для JavaScript
 $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
+
+Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.css");
 ?>
 
 <!-- Подключаем CSS Handsontable -->
-<link href="https://cdn.jsdelivr.net/npm/handsontable@14.0.0/dist/handsontable.full.min.css" rel="stylesheet">
+<!--link href="https://cdn.jsdelivr.net/npm/handsontable@14.0.0/dist/handsontable.full.min.css" rel="stylesheet"-->
 
 <div id="kabinetcontent">
     <div class="controls mb-3">
@@ -90,11 +93,49 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 </div>
 
 <!-- Подключаем JavaScript Handsontable -->
-<script src="https://cdn.jsdelivr.net/npm/handsontable@14.0.0/dist/handsontable.full.min.js"></script>
+<!-- script src="https://cdn.jsdelivr.net/npm/handsontable@14.0.0/dist/handsontable.full.min.js"></script-->
+<?php
+Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.js.js");
+?>
+
 
 <script>
+    // Функция для преобразования дат в правильный формат
+    function formatDateForTable(dateString) {
+        if (!dateString) return '';
+
+        // Если дата уже в формате DD.MM.YYYY, оставляем как есть
+        if (typeof dateString === 'string' && dateString.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
+            return dateString;
+        }
+
+        // Пытаемся преобразовать другие форматы
+        try {
+            var date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                var day = String(date.getDate()).padStart(2, '0');
+                var month = String(date.getMonth() + 1).padStart(2, '0');
+                var year = date.getFullYear();
+                return day + '.' + month + '.' + year;
+            }
+        } catch (e) {
+            console.error('Ошибка форматирования даты:', e);
+        }
+
+        return dateString;
+    }
+
     // Создаем JavaScript массив с данными исполнений
     var executionsArray = <?= CUtil::PhpToJSObject($executionsData, false, true) ?>;
+
+    // Примените форматирование к данным перед инициализацией таблицы
+    executionsArray.forEach(function(item) {
+        ['planned_date', 'created_date', 'completion_date', 'publication_date'].forEach(function(field) {
+            if (item[field]) {
+                item[field] = formatDateForTable(item[field]);
+            }
+        });
+    });
 
     // Создаем JavaScript объект с русскими названиями полей
     var fieldLabels = <?= CUtil::PhpToJSObject($fieldLabels, false, true) ?>;
@@ -109,69 +150,6 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 
     // Ключ для хранения настроек в cookies
     var COLUMN_SETTINGS_COOKIE = 'handsontable_columns_visibility';
-
-    // Регистрируем русский язык для Handsontable
-    Handsontable.languages.registerLanguageDictionary({
-        languageCode: 'ru-RU',
-        // Минимальный набор переводов для русского языка
-        labels: {
-            'rowHeaders': 'Строки',
-            'colHeaders': 'Колонки',
-            'filter': 'Фильтр',
-            'clearColumnFilter': 'Очистить фильтр',
-            'sortAscending': 'Сортировать по возрастанию',
-            'sortDescending': 'Сортировать по убыванию',
-            'undo': 'Отменить',
-            'redo': 'Повторить',
-            'copy': 'Копировать',
-            'cut': 'Вырезать',
-            'paste': 'Вставить',
-            'search': 'Поиск',
-            'noResults': 'Результатов не найдено',
-            'alignment': 'Выравнивание',
-            'left': 'По левому краю',
-            'center': 'По центру',
-            'right': 'По правому краю',
-            'justify': 'По ширине',
-            'freezeColumn': 'Закрепить колонку',
-            'unfreezeColumn': 'Открепить колонку',
-            'insertRowAbove': 'Вставить строку выше',
-            'insertRowBelow': 'Вставить строку ниже',
-            'removeRow': 'Удалить строку',
-            'insertColumnBefore': 'Вставить колонку слева',
-            'insertColumnAfter': 'Вставить колонку справа',
-            'removeColumn': 'Удалить колонку',
-            'borders': 'Границы',
-            'allBorders': 'Все границы',
-            'noBorders': 'Без границ'
-        },
-        // Добавляем переводы для календаря
-        date: {
-            // Дни недели
-            m: ['Пн', 'Понедельник'],
-            t: ['Вт', 'Вторник'],
-            w: ['Ср', 'Среда'],
-            th: ['Чт', 'Четверг'],
-            fr: ['Пт', 'Пятница'],
-            s: ['Сб', 'Суббота'],
-            su: ['Вс', 'Воскресенье'],
-            // Месяцы
-            jan: ['Янв', 'Январь'],
-            feb: ['Фев', 'Февраль'],
-            mar: ['Мар', 'Март'],
-            apr: ['Апр', 'Апрель'],
-            may: ['Май', 'Май'],
-            jun: ['Июн', 'Июнь'],
-            jul: ['Июл', 'Июль'],
-            aug: ['Авг', 'Август'],
-            sep: ['Сен', 'Сентябрь'],
-            oct: ['Окт', 'Октябрь'],
-            nov: ['Ноя', 'Ноябрь'],
-            dec: ['Дек', 'Декабрь'],
-            am: 'AM',
-            pm: 'PM'
-        }
-    });
 
     // Функции для работы с cookies
     function setCookie(name, value, days) {
@@ -239,6 +217,70 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 
     // Инициализация Handsontable
     document.addEventListener('DOMContentLoaded', function() {
+
+        // Регистрируем русский язык для Handsontable
+        Handsontable.languages.registerLanguageDictionary({
+            languageCode: 'ru-RU',
+            // Минимальный набор переводов для русского языка
+            labels: {
+                'rowHeaders': 'Строки',
+                'colHeaders': 'Колонки',
+                'filter': 'Фильтр',
+                'clearColumnFilter': 'Очистить фильтр',
+                'sortAscending': 'Сортировать по возрастанию',
+                'sortDescending': 'Сортировать по убыванию',
+                'undo': 'Отменить',
+                'redo': 'Повторить',
+                'copy': 'Копировать',
+                'cut': 'Вырезать',
+                'paste': 'Вставить',
+                'search': 'Поиск',
+                'noResults': 'Результатов не найдено',
+                'alignment': 'Выравнивание',
+                'left': 'По левому краю',
+                'center': 'По центру',
+                'right': 'По правому краю',
+                'justify': 'По ширине',
+                'freezeColumn': 'Закрепить колонку',
+                'unfreezeColumn': 'Открепить колонку',
+                'insertRowAbove': 'Вставить строку выше',
+                'insertRowBelow': 'Вставить строку ниже',
+                'removeRow': 'Удалить строку',
+                'insertColumnBefore': 'Вставить колонку слева',
+                'insertColumnAfter': 'Вставить колонку справа',
+                'removeColumn': 'Удалить колонку',
+                'borders': 'Границы',
+                'allBorders': 'Все границы',
+                'noBorders': 'Без границ'
+            },
+            // Добавляем переводы для календаря
+            date: {
+                // Дни недели
+                m: ['Пн', 'Понедельник'],
+                t: ['Вт', 'Вторник'],
+                w: ['Ср', 'Среда'],
+                th: ['Чт', 'Четверг'],
+                fr: ['Пт', 'Пятница'],
+                s: ['Сб', 'Суббота'],
+                su: ['Вс', 'Воскресенье'],
+                // Месяцы
+                jan: ['Янв', 'Январь'],
+                feb: ['Фев', 'Февраль'],
+                mar: ['Мар', 'Март'],
+                apr: ['Апр', 'Апрель'],
+                may: ['Май', 'Май'],
+                jun: ['Июн', 'Июнь'],
+                jul: ['Июл', 'Июль'],
+                aug: ['Авг', 'Август'],
+                sep: ['Сен', 'Сентябрь'],
+                oct: ['Окт', 'Октябрь'],
+                nov: ['Ноя', 'Ноябрь'],
+                dec: ['Дек', 'Декабрь'],
+                am: 'AM',
+                pm: 'PM'
+            }
+        });
+
         var container = document.getElementById('handsontable-container');
 
         if (executionsArray.length > 0) {
