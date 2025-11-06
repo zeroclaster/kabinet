@@ -144,6 +144,32 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
             'borders': 'Границы',
             'allBorders': 'Все границы',
             'noBorders': 'Без границ'
+        },
+        // Добавляем переводы для календаря
+        date: {
+            // Дни недели
+            m: ['Пн', 'Понедельник'],
+            t: ['Вт', 'Вторник'],
+            w: ['Ср', 'Среда'],
+            th: ['Чт', 'Четверг'],
+            fr: ['Пт', 'Пятница'],
+            s: ['Сб', 'Суббота'],
+            su: ['Вс', 'Воскресенье'],
+            // Месяцы
+            jan: ['Янв', 'Январь'],
+            feb: ['Фев', 'Февраль'],
+            mar: ['Мар', 'Март'],
+            apr: ['Апр', 'Апрель'],
+            may: ['Май', 'Май'],
+            jun: ['Июн', 'Июнь'],
+            jul: ['Июл', 'Июль'],
+            aug: ['Авг', 'Август'],
+            sep: ['Сен', 'Сентябрь'],
+            oct: ['Окт', 'Октябрь'],
+            nov: ['Ноя', 'Ноябрь'],
+            dec: ['Дек', 'Декабрь'],
+            am: 'AM',
+            pm: 'PM'
         }
     });
 
@@ -251,7 +277,10 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
                 case 'completion_date':
                 case 'publication_date':
                     columnConfig.width = 120;
-                    columnConfig.type = 'text';
+                    columnConfig.type = 'date'; // Изменяем тип на 'date'
+                    columnConfig.dateFormat = 'DD.MM.YYYY'; // Формат даты
+                    columnConfig.correctFormat = true;
+                    columnConfig.defaultDate = new Date().toISOString().split('T')[0]; // Сегодняшняя дата по умолчанию
                     // Подсветка редактируемых полей дат
                     if (key === 'planned_date' || key === 'publication_date') {
                         columnConfig.className = 'editable-cell';
@@ -510,7 +539,10 @@ $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
             case 'completion_date':
             case 'publication_date':
                 columnConfig.width = 120;
-                columnConfig.type = 'text';
+                columnConfig.type = 'date'; // Изменяем тип на 'date'
+                columnConfig.dateFormat = 'DD.MM.YYYY'; // Формат даты
+                columnConfig.correctFormat = true;
+                columnConfig.defaultDate = new Date().toISOString().split('T')[0];
                 if (key === 'planned_date' || key === 'publication_date') {
                     columnConfig.className = 'editable-cell';
                 }

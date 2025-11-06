@@ -166,3 +166,26 @@
         margin-bottom: 5px;
     }
 }
+
+/* Стили для календаря Handsontable */
+.handsontable .htDatePicker {
+    z-index: 10000;
+}
+
+.handsontable .htDatePicker .ht_clone_top {
+    z-index: 10001;
+}
+
+.handsontable .htDatePickerHolder {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Подсветка ячеек с датами */
+.handsontable .htDate {
+    background-color: #f0f8ff;
+}
+
+.handsontable .htDate:focus {
+    background-color: #e6f3ff;
+}
