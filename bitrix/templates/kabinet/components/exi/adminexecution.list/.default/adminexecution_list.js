@@ -469,7 +469,7 @@ adminexecution_list = (function (){
                         showloadmore:true,
                         limitpics:5,
                         sort_field: PHPPARAMS['sort_field'] || 'UF_PLANNE_DATE',
-                        sort_order: PHPPARAMS['sort_order'] || 'desc'
+                        sort_order: PHPPARAMS['sort_order'] || 'asc'
                     }
                 },
                 computed: {

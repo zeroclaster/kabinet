@@ -23,19 +23,16 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $usertype = \CUserOptions::GetOption('kabinet','usertype',false,$user->get('ID'));
 
 ?>
-<div class="panel-body" id="kabinetcontent" data-contractform=""></div>
+<div class="panel-body" id="kabinetcontent" data-contractform="" style="padding-top: 0px;"></div>
 
 <script type="text/html" id="kabinet-content">
 
 <div class="panel">
-    <div class="panel-header">
-        <h4 class="panel-title"></h4>
-    </div>
     <div class="panel-body">
 <form action="" method="post" enctype="multipart/form-data">
     <? foreach ($arParams['GROUPS'] as $key => $GROUP_TITLE):?>
         <div class="form-group">
-            <div class="text-center h3 mb-3 mt-5"><?=$GROUP_TITLE?></div>
+            <div class="text-center h3 mb-3 mt-0"><?=$GROUP_TITLE?></div>
         </div>
 
         <?if($key==0):?>

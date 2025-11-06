@@ -1,17 +1,23 @@
 h1, .h1 {
-    font-size: 19px;
+    font-size: 24px;
+    font-weight: 600;
 }
 
 h2, .h2 {
     font-size: 18px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 h3, .h3 {
-    font-size: 18px;
+    font-size: 22px;
+    font-weight: bold;
 }
 
 h4, .h4 {
-    font-size: 15px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 
@@ -183,7 +189,11 @@ h4, .h4 {
 }
 
 @media (max-width: 991.98px) {
-    .btn.mobile-butt-1,.btn.mobile-butt-2 {
+    .btn.mobile-butt-1{
+
+    }
+
+    .btn.mobile-butt-2 {
         padding: 0.3125rem 0.91875rem;
     }
 }
@@ -223,4 +233,24 @@ h4, .h4 {
 
 .messanger-block .mess .user-title {
     font-size: 18px;
+}
+
+.block-edit-brief-butt{
+    margin-top: 20px;
+}
+
+.pagehelp-button{
+    text-align: right;
+}
+
+.task-aciont-list-1{
+    margin-top: 40px;
+}
+
+.mobile-top-margin-1{
+    margin-top: 30px;
+}
+
+.help-butt-block-s{
+    width: 100%;
 }

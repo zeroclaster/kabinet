@@ -124,7 +124,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         if($post['attention']) ${$FILTER_NAME}['attention'] = $SEARCH_RESULT['attention'] = $post['attention'];
 
         // Добавляем обработку ответственного
-        if($post['responsibleidsearch'])
+        if(isset($post['responsibleidsearch']))
             ${$FILTER_NAME}['responsibleidsearch'] = $SEARCH_RESULT['responsibleidsearch'] = $post['responsibleidsearch'];
 
         if($post['responsibletextsearch'] && !$post['responsibleidsearch'])
@@ -320,6 +320,11 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
             'order'=>['NAME'=>'ASC','EMAIL'=>'ASC'],
             'group'=>['ID'],
         ])->fetchAll();
+
+        $output['responsibles'][] = [
+            "value" => "Не задано",
+            "id" => 0
+        ];
 
         foreach ($responsiblesData as $item){
             $userName = current(array_filter([

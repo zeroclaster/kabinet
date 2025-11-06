@@ -59,7 +59,7 @@ $p = $request->get('p');
                         <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 block-edit-brief-butt">
 
                     <template v-if="getRequireFields(project_id).length > 0">
                         <a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
@@ -136,27 +136,42 @@ $p = $request->get('p');
 
         {{(CopyTask = getCopyTask(task),null)}}
     <div :id="'produkt'+task.ID" :data-cyclicality="task.UF_CYCLICALITY" :data-status="task.UF_STATUS" class="panel task-list-block1 mb-5" v-if="task.UF_PROJECT_ID == project_id">
+        {{(PRODUCT=data2[projectOrder(task.UF_PROJECT_ID)][task.UF_PRODUKT_ID],null)}}
+
         <div class="panel-body">
             <div class="row">
+                <?if(isMobileDevice()):?>
+                    <div class="col-md-12">
+                        <div class="d-flex">
+                            <img class="img-thumbnail mt-0" :src="PRODUCT['PREVIEW_PICTURE_SRC']" :alt="PRODUCT['NAME']" style="width: 80px;">
+                            <div
+                                    class="h3 task-title-view ml-3"
+                                    :id="'task'+task.ID"
+                                    :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
+                                    :data-cyclicality="task.UF_CYCLICALITY"
+                            >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
+                        </div>
+                    </div>
+                <?else:?>
                 <div class="col-md-1">
-                    {{(PRODUCT=data2[projectOrder(task.UF_PROJECT_ID)][task.UF_PRODUKT_ID],null)}}
                     <img class="img-thumbnail mt-0" :src="PRODUCT['PREVIEW_PICTURE_SRC']" :alt="PRODUCT['NAME']">
                 </div>
+                <?endif;?>
                 <div class="col-md-9">
-
-                    <div
-                            class="h3 task-title-view"
-                            :id="'task'+task.ID"
-                            :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
-                            :data-cyclicality="task.UF_CYCLICALITY"
-                    >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
-
+                    <?if(!isMobileDevice()):?>
+                        <div
+                                class="h3 task-title-view"
+                                :id="'task'+task.ID"
+                                :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
+                                :data-cyclicality="task.UF_CYCLICALITY"
+                        >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
+                    <?endif;?>
 
 					<div class="d-flex align-items-center task-status-print h4">
                         <div v-html="taskStatus_m(task.ID)"></div>
 
                         <div class="ml-4" v-if="getEventsByTaskId(task.ID).length > 0">
-                            <a class="btn btn-primary new-butt-fa-icon" :href="'/kabinet/projects/reports/?t='+task.ID">
+                            <a class="btn btn-primary new-butt-fa-icon text-nowrap" :href="'/kabinet/projects/reports/?t='+task.ID">
                                 <i class="fa fa-line-chart align-middle" aria-hidden="true" style="font-size: 21px;"></i>
                                 <span class="butt-fa-icon-text">Ход работы</span>
                                 <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span>
@@ -172,7 +187,7 @@ $p = $request->get('p');
                     <timeLineTask :taskindex="taskindex"/>
 
                     <template v-if="CopyTask.UF_STATUS>0">
-                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: 1 {{PRODUCT.MEASURE_NAME}} в {{frequency(taskindex)}}</div>
+                        <div v-if="CopyTask.UF_CYCLICALITY == 1">Примерная частота исполнений: <span class="text-nowrap">1 {{PRODUCT.MEASURE_NAME}} в {{frequency(taskindex)}}</span></div>
                     </template>
 
                     <!-- Только для работающих задач -->

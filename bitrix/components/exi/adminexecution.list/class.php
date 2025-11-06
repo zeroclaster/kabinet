@@ -53,7 +53,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         // Добавляем параметры сортировки
         $params['SORT_FIELD'] = $request->get('sort_field') ?? 'UF_PLANNE_DATE';
-        $params['SORT_ORDER'] = $request->get('sort_order') ?? 'desc';
+        $params['SORT_ORDER'] = $request->get('sort_order') ?? 'asc';
 
         return $params;
     }
@@ -158,7 +158,18 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         }
 
         // Фильтр по ответственному
-        if(!empty($FILTER["responsibleidsearch"])) $Query->addFilter('%UF_RESPONSIBLE',"(ID".$FILTER["responsibleidsearch"].")");
+        //if(!empty($FILTER["responsibleidsearch"])) $Query->addFilter('%UF_RESPONSIBLE',"(ID".$FILTER["responsibleidsearch"].")");
+        // Фильтр по ответственному
+        if(isset($FILTER["responsibleidsearch"])) {
+            if($FILTER["responsibleidsearch"] == 0) {
+                // Ищем все, где ответственный не задан (пустое поле)
+                $Query->addFilter('UF_RESPONSIBLE', false);
+            } elseif(!empty($FILTER["responsibleidsearch"])) {
+                // Ищем по конкретному ответственному
+                $Query->addFilter('%UF_RESPONSIBLE', "(ID".$FILTER["responsibleidsearch"].")");
+            }
+        }
+
 
 
         // Привязываем задачу
@@ -423,7 +434,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
 
         // Добавляем параметры сортировки
         $arParams['SORT_FIELD'] = $post['sort_field'] ?? 'UF_PLANNE_DATE';
-        $arParams['SORT_ORDER'] = $post['sort_order'] ?? 'desc';
+        $arParams['SORT_ORDER'] = $post['sort_order'] ?? 'asc';
 
         // Обрабатываем JSON фильтр
         if (!empty($post['FILTER_JSON'])) {

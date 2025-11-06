@@ -22,7 +22,7 @@ $uid = $arParams["CODE"];
 ?>
 
 <section  id="block<?=$uid?>" class="section-xs help-page-module" style="display: none;">
-
+        <div class="container-fluid">
         <div class="row row-30">
             <div class="col-md-12">
                 <div class="panel">
@@ -41,7 +41,7 @@ $uid = $arParams["CODE"];
 
     <div class="close-button"><a href="#"><i class="fa fa-times" aria-hidden="true"></i>
         </a></div>
-
+        </div>
 </section>
 <?
 $COOKIE_PREFIX = \COption::GetOptionString("main", "cookie_name", "BITRIX_SM");

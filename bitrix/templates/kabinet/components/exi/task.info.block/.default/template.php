@@ -52,11 +52,22 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
         <div class="panel-body">
 
             <div class="row">
+                <?if(isMobileDevice()):?>
+                    <div class="col-md-12">
+                        <div class="d-flex">
+                            <img src="<?=$user_order['PREVIEW_PICTURE_SRC']?>" alt="<?=$taskdata['UF_NAME']?>" style="width: 80px;">
+                            <div class="h3 ml-2" style="margin-top:0px;"><?=$taskdata['UF_NAME']?> #<?=$taskdata['UF_EXT_KEY']?></div>
+                        </div>
+                    </div>
+                <?else:?>
                 <div class="col-md-1">
                     <img src="<?=$user_order['PREVIEW_PICTURE_SRC']?>" alt="<?=$taskdata['UF_NAME']?>">
                 </div>
+                <?endif;?>
                 <div class="col-md-8">
-                    <div class="h3" style="margin-top:0px;"><?=$taskdata['UF_NAME']?> #<?=$taskdata['UF_EXT_KEY']?></div>
+                    <?if(!isMobileDevice()):?>
+                        <div class="h3" style="margin-top:0px;"><?=$taskdata['UF_NAME']?> #<?=$taskdata['UF_EXT_KEY']?></div>
+                    <?endif;?>
 
                     <div class="d-flex task-status-print h4" v-html="taskStatus_m(TASK_ID)"></div>
 
@@ -73,7 +84,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                             <div>Всего: {{taskQueueCount(taskData.ID)}}</div><div class="ml-3">Запланированы: <span class="task-staus-counter alert-planned">{{taskStatus_v(taskData.ID)['stopwark']}}</span></div><div class="ml-3">Выполняются: <span class="task-staus-counter alert-worked">{{taskStatus_v(taskData.ID)['work']}}</span></div><div class="ml-3">Требуют внимания: <span class="task-staus-counter alert-user-attention">{{taskStatus_v(taskData.ID)['alert']}}</span></div><div class="ml-3">Выполнено: <span class="task-staus-counter alert-done">{{taskStatus_v(taskData.ID)['endwork']}}</span></div>
                         </div>
 
-                        <div>Примерная частота исполнений: 1 ед. <?=\PHelp::dimensiontimeConvert($user_order['MINIMUM_INTERVAL']['VALUE'])?></div>
+                        <div>Примерная частота исполнений: <span class="text-nowrap">1 ед. <?=\PHelp::dimensiontimeConvert($user_order['MINIMUM_INTERVAL']['VALUE'])?></span></div>
                         <div>Завершится: <?=$taskdata['UF_DATE_COMPLETION_ORIGINAL']['FORMAT1']?></div>
 
                     </div>
@@ -189,7 +200,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mobile-top-margin-1">
                     <ul class="list-unstyled">
                        <li><a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
                     </ul>

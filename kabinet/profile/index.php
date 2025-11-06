@@ -8,15 +8,15 @@ $APPLICATION->SetTitle("Профиль пользователя «Купи-От�
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 $user_id = $user->get('ID');
 ?>
-
-
-    <section class="section-xs">
+<section class="section-xs">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex flex-wrap  justify-content-between">
             <h1><i class="fa fa-user" aria-hidden="true"></i> Профиль пользователя</h1>
-            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="PROFILE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
-        </div>
-        <div class="h3">ID<?=$user_id?></div>
+            <div class="help-butt-block-s">
+            <div class="pagehelp-button text-primary text-nowrap text-right" data-component="pagehelp" data-code="PROFILE" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+            </div>
+         </div>
+        <div class="h3" style="margin: 0">ID<?=$user_id?></div>
     </div>
 </section>
 
@@ -25,8 +25,7 @@ $user_id = $user->get('ID');
     )
 );?>
 
-
-<section class="section-md">
+<section class="">
     <div class="container-fluid">
         <div class="row row-30">
             <div class="col-md-12">

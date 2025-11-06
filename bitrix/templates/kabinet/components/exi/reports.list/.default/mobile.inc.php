@@ -1,11 +1,12 @@
 <script type="text/html" id="kabinet-content">
     <div class="report-list-block">
-        <div class="panel report-list-block">
+
+        <div class="panel report-list-block" v-if="isViewSoglasovat()">
         <div class="panel-body">
             <div class="ml-auto">
                 <form action="" name="formagreeeverything" method="post">
                     <input type="hidden" name="greeeverything" value="y">
-                    <button type="submit" class="btn btn-primary btn-sm" v-if="isViewSoglasovat()">Согласовать все</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Согласовать все</button>
                 </form>
             </div>
         </div>

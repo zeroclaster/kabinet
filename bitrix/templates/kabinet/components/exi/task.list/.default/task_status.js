@@ -28,15 +28,15 @@ var task_status = function (PHPPARAMS ={}){
     // Общие HTML-шаблоны для отображения статусов
     const TEMPLATES = {
         BASE: {
-            stopped: '<div class="alert-status iphone-style-2 task-stoped"><i class="fa fa-times"></i></div>',
-            wait: '<div class="alert-status iphone-style-2 task-wait"><i class="fa fa-clock-o"></i></div>',
-            start: '<div class="alert-status iphone-style-2 task-start"><i class="fa fa-hourglass-start"></i></div>',
-            alert: '<div class="alert-status iphone-style-2 task-alert"><i class="fa fa-exclamation-triangle"></i></div>',
-            done: '<div class="alert-only-text alert-done font-bold">Оформите заказ</div>',
-            cancel: '<div class="alert-only-text alert-cancel font-bold"><i class="fa fa-times"></i> Остановлена</div>',
-            planned: '<div class="alert-only-text alert-planned font-bold"><i class="fa fa-clock-o"></i> Запланирована</div>',
-            worked: '<div class="alert-only-text alert-worked font-bold"><i class="fa fa-hourglass-start"></i> Выполняется</div>',
-            attention: '<div class="alert-only-text alert-user-attention font-bold"><i class="fa fa-exclamation-triangle"></i> Требует внимания</div>'
+            stopped: '<div class="alert-status iphone-style-2 task-stoped text-nowrap"><i class="fa fa-times"></i></div>',
+            wait: '<div class="alert-status iphone-style-2 task-wait text-nowrap"><i class="fa fa-clock-o"></i></div>',
+            start: '<div class="alert-status iphone-style-2 task-start text-nowrap"><i class="fa fa-hourglass-start"></i></div>',
+            alert: '<div class="alert-status iphone-style-2 task-alert text-nowrap"><i class="fa fa-exclamation-triangle"></i></div>',
+            done: '<div class="alert-only-text alert-done font-bold text-nowrap">Оформите заказ</div>',
+            cancel: '<div class="alert-only-text alert-cancel font-bold text-nowrap"><i class="fa fa-times"></i> Остановлена</div>',
+            planned: '<div class="alert-only-text alert-planned font-bold text-nowrap"><i class="fa fa-clock-o"></i> Запланирована</div>',
+            worked: '<div class="alert-only-text alert-worked font-bold text-nowrap"><i class="fa fa-hourglass-start"></i> Выполняется</div>',
+            attention: '<div class="alert-only-text alert-user-attention font-bold text-nowrap"><i class="fa fa-exclamation-triangle"></i> Требует внимания</div>'
         }
     };
 

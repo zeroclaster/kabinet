@@ -20,10 +20,10 @@ Loc::loadMessages(__FILE__);
 $this->setFrameMode(true);
 ?>
 
-<div id="messangerblock" class="form-group" data-ckeditor="" data-vuerichtext="" data-usermessanger="dashbord"></div>
+<div id="messangerblock" data-ckeditor="" data-vuerichtext="" data-usermessanger="dashbord"></div>
 
 <script type="text/html" id="messangerviewtemolate">
-    <section class="section-xs">
+    <section class="__section-xs__">
         <div class="container-fluid">
             <div class="row row-30">
                 <div class="col-md-12">

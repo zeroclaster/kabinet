@@ -5,9 +5,11 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
 
 <section class="section-xs">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex flex-wrap justify-content-between">
             <h1><i class="fa fa-book" aria-hidden="true"></i> Договор и закрывающие документы</h1>
-            <div class="pagehelp-button text-primary" data-component="pagehelp" data-code="DOGOVOR" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+            <div class="help-butt-block-s">
+            <div class="pagehelp-button text-primary text-nowrap text-right" data-component="pagehelp" data-code="DOGOVOR" style="margin-right: 15px;"><i class="fa fa-info-circle text-warning" aria-hidden="true"></i> Помощь</div>
+            </div>
         </div>
     </div>
 </section>
@@ -48,10 +50,12 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                     <div class="panel">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-4">После заполнения вы можете скачать договор оферты</div><div class="col"> <a class="btn btn-primary" href="/upload/kupi-otziv_publichnaya_oferta_dlya_skachivaniya.pdf" target="_blank">Скачать договор оферты</a></div>
+                                <div class="col-12 col-md-4 mb-2 mb-md-0">После заполнения вы можете скачать договор оферты</div>
+                                <div class="col-12 col-md"> <a class="btn btn-primary" href="/upload/kupi-otziv_publichnaya_oferta_dlya_skachivaniya.pdf" target="_blank">Скачать договор оферты</a></div>
                             </div>
                             <div class="row">
-                                <div class="col-4">либо скачать договор, подписать и выслать в наш адрес.</div><div class="col" id="dogovorcreator-container">
+                                <div class="col-12 col-md-4 mb-2 mb-md-0">либо скачать договор, подписать и выслать в наш адрес.</div>
+                                <div class="col-12 col-mdtext-nowrap" id="dogovorcreator-container">
                                 </div>
                                 <script type="text/html" id="dogovordowload-template">
                                     <form ref="downloadForm" action="/ajax/dowload/" @submit="dowload" method="post" formtarget="_blank">
@@ -74,17 +78,17 @@ $APPLICATION->SetTitle("Договор и закрывающие докумен�
                                         <input type="hidden" name="dowloaddate" v-model="datauser.UF_DOGOVOR_DATE_PRINT">
                                         <div if="err_message" style="color: red;">{{err_message}}</div>
 
-                                        <div class="d-flex align-items-center">
-                                            <div><button class="btn btn-primary" type="button" @click="setdowloadddate">Скачать договор на подпись</button></div>
-                                            <div class="ml-3" v-if="datauser.UF_DOGOVOR_DATE_PRINT">Договор №{{datauser.UF_DOGOVOR_DATE_PRINT}}{{datauser.ID}} от {{ datauser.UF_DOGOVOR_DATE_PRINT2 }}</div>
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <div><button class="btn btn-primary text-nowrap" type="button" @click="setdowloadddate">Скачать договор на подпись</button></div>
+                                            <div class="ml-3 mt-xs-2 ml-xs-0" v-if="datauser.UF_DOGOVOR_DATE_PRINT">Договор №{{datauser.UF_DOGOVOR_DATE_PRINT}}{{datauser.ID}} от {{ datauser.UF_DOGOVOR_DATE_PRINT2 }}</div>
                                         </div>
                                     </form>
                                 </script>
                             </div>
 
                             <div class="row">
-                                <div class="col-4">Закрывающие документы</div>
-                                <div class="col-8">
+                                <div class="col-12 col-md-4 mb-2 mb-md-0">Закрывающие документы</div>
+                                <div class="col-12 col-md">
                                 <?$APPLICATION->IncludeComponent("exi:act.generator", "", Array(
                                     )
                                 );?>

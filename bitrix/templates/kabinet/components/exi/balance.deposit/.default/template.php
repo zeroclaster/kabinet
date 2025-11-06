@@ -58,10 +58,8 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
             <div class="row" v-if="fields.typepay==1">
                 <div class="col-md-12">
                     <div class="to-pay-block">
-
-                        <div>Текущий баланс</div>
-                        <div class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</div>
-                        <div class="form-block mt-5">
+                        <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
+                        <div class="form-block mt-2">
                             <div class="form-group row">
                                 <div class="col-md-2">
                                     <label for="summa-popolneniya">Сумма пополнения, руб.</label>
@@ -115,10 +113,8 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                 <div class="row" v-if="fields.typepay==2">
                     <div class="col-md-12">
                         <div class="to-pay-block">
-
-                            <div>Текущий баланс</div>
-                            <div class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</div>
-                            <div class="form-block mt-5">
+                            <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
+                            <div class="form-block mt-2">
                                 <div class="form-group row">
                                     <div class="col-md-2">
                                         <label for="qrsumm">Сумма пополнения, руб.</label>
@@ -153,7 +149,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                                             </div>
 											*/?>
 
-                                <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
+                                <div class="total-sum mt-3 mb-3">Сумма платежа: <span>{{totalsum}} руб.</span></div>
 
                                 <div class="d-flex justify-content-end"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
                                 <div class="gotopay">
@@ -177,10 +173,8 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
             <div class="row" v-if="fields.typepay==3">
                 <div class="col-md-12">
                     <div class="to-pay-block">
-
-                        <div>Текущий баланс</div>
-                        <div class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</div>
-                        <div class="form-block mt-5">
+                        <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
+                        <div class="form-block mt-2">
                             <div class="form-group row">
                                 <div class="col-md-2">
                                     <label for="summa-popolneniya2">Сумма пополнения, руб.</label>
@@ -211,8 +205,8 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                                             </div>
 											*/?>
 
-                            <div class="total-sum mt-3 mb-5">Сумма платежа: <span>{{totalsum}} руб.</span></div>
-                            <div>Для формирования счета, заполните данные в разделе <a href="/kabinet/closing-documents/">"Договор и документы"</a>.</div>
+                            <div class="total-sum mt-3 mb-3">Сумма платежа: <span class="text-nowrap"><span>{{totalsum}} руб.</span></span></div>
+                            <div class="mb-2">Для формирования счета, заполните данные в разделе <a href="/kabinet/closing-documents/">"Договор и документы"</a>.</div>
 
                             <div class="d-flex justify-content-center"><div v-if="isError" class="error-field">Ошибка при заполнении полей</div></div>
                             <div class="d-flex justify-content-center" v-if="errorField.contractFieldEmpty"><div class="error-field">Вы не заолнили обязательные поля <a href="/kabinet/closing-documents/">"Договор и документы"</a></div></div>

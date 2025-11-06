@@ -125,14 +125,18 @@ $ClientManager = $sL->get('Kabinet.Client');
                                </div>
                            </div>
 
-                           <div class="row form-group" v-if="datauser.UF_TELEGRAM_ID>0">
-                               <div class="col-sm-3 text-sm-right">
-                                   <label class="col-form-label" :for="$id('telegramnotifi')">Получать уведомления в Telegram</label>
+                           <div class="row form-group align-items-center" v-if="datauser.UF_TELEGRAM_ID>0">
+                               <div class="col-sm-5">
+                                   <div class="row align-items-center">
+                                       <div class="col-10 col-sm-8 text-sm-right">
+                                           <label class="col-form-label" :for="$id('telegramnotifi')">Получать уведомления в Telegram</label>
+                                       </div>
+                                       <div class="col-2 col-sm-2">
+                                           <input class="form-control" type="checkbox" :id="$id('telegramnotifi')" v-model="datauser.UF_TELEGRAM_NOTFI"/>
+                                       </div>
+                                   </div>
                                </div>
-                               <div class="col-sm-1">
-                                   <input class="form-control" style="width: 50%;" type="checkbox" :id="$id('telegramnotifi')" v-model="datauser.UF_TELEGRAM_NOTFI"/>
-                               </div>
-                               <div class="col-sm-3">
+                               <div class="col-sm-4 mt-2 mt-sm-0">
                                    <button class="btn btn-primary" type="button" @click="UnlinkTelegram">Отвязать Telegram</button>
                                </div>
                            </div>
