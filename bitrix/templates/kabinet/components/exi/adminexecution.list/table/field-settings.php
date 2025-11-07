@@ -23,7 +23,11 @@ $fieldLabels = [
     'account_name' => 'Имя аккаунта',
     'login' => 'Логин',
     'password' => 'Пароль',
-    'ip_address' => 'IP размещения'
+    'ip_address' => 'IP размещения',
+    'UF_REPORT_LINK' => 'Ссылка отчета',
+    'UF_REPORT_SCREEN' => 'Скриншот отчета',
+    'UF_REPORT_FILE' => 'Файл отчета',
+    'UF_REPORT_TEXT' => 'Текст отчета'
 ];
 
 // Поля, которые можно редактировать
@@ -35,5 +39,9 @@ $editableFields = [
     'account_name',
     'login',
     'password',
-    'ip_address'
+    'ip_address',
+    'UF_REPORT_LINK',
+    'UF_REPORT_SCREEN',
+    'UF_REPORT_FILE',
+    'UF_REPORT_TEXT'
 ];

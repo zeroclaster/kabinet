@@ -66,6 +66,9 @@ window.columnConfigs = {
                 };
                 break;
             case 'link':
+            case 'UF_REPORT_LINK':
+            case 'UF_REPORT_SCREEN':
+            case 'UF_REPORT_FILE':
                 columnConfig.width = 200;
                 columnConfig.renderer = function(instance, td, row, col, prop, value) {
                     if (value) {
@@ -83,7 +86,9 @@ window.columnConfigs = {
             case 'login':
             case 'password':
             case 'ip_address':
+            case 'UF_REPORT_TEXT':
                 columnConfig.className = 'editable-cell';
+                columnConfig.width = 200;
                 break;
         }
 

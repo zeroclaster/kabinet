@@ -87,7 +87,9 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
         $taskData = $arResult["TASK_DATA"][$taskId] ?? [];
 
         // Получаем список доступных статусов для этого исполнения
-        $statusList = $runnerManager->allowStates($runner);
+        //$statusList = $runnerManager->allowStates($runner);
+
+        $statusList = $runnerManager->getStatus($runner['UF_ELEMENT_TYPE']);
 
         $execution = [
             'id' => $runner['ID'],
@@ -111,7 +113,12 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
             'account_name' => '',
             'login' => '',
             'password' => '',
-            'ip_address' => ''
+            'ip_address' => '',
+            // Новые поля для отчетов
+            'UF_REPORT_LINK' => $runner['UF_REPORT_LINK'] ?? '',
+            'UF_REPORT_SCREEN' => $runner['UF_REPORT_SCREEN'] ?? '',
+            'UF_REPORT_FILE' => $runner['UF_REPORT_FILE'] ?? '',
+            'UF_REPORT_TEXT' => $runner['UF_REPORT_TEXT'] ?? ''
         ];
 
         // Парсим данные аккаунта

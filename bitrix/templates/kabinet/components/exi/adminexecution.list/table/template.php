@@ -17,14 +17,18 @@ include __DIR__ . '/field-settings.php';
 // Подготавливаем данные для JavaScript
 $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 
+// Добавьте для отладки:
+//var_dump("Количество исполнений: " . count($executionsData));
+foreach ($executionsData as $index => $execution) {
+    //var_dump("Исполнение {$index}: статус = '" . $execution['status'] . "'");
+}
+
+
 Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.css");
 ?>
 
 <div id="kabinetcontent">
     <div class="controls mb-3">
-        <div class="alert alert-info">
-            <small>Редактируемые поля: Плановая дата выполнения, Текст отзыва, Ответственный, Дата публикации, Имя аккаунта, Логин, Пароль, IP размещения</small>
-        </div>
         <div class="column-controls mt-2">
             <button id="toggleColumnMenu" class="btn btn-outline-primary btn-sm">
                 <i class="fa fa-columns"></i> Управление колонками
@@ -119,6 +123,10 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
         Handsontable.languages.registerLanguageDictionary(window.handsontableRuLocale);
 
         var container = document.getElementById('handsontable-container');
+
+        // template.php - в секции <script>
+        console.log('Данные исполнений:', executionsArray);
+        console.log('Поля статусов:', executionsArray.map(item => ({id: item.id, status: item.status})));
 
         if (executionsArray.length > 0) {
             initializeTable();
