@@ -288,5 +288,97 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
             return ['note' => ''];
         }
     }
+
+    public function edittableAction()
+    {
+        $request = $this->getRequest();
+        $post = $request->getPostList()->toArray();
+
+        $executionId = (int)($post['ID'] ?? 0);
+        if (!$executionId) {
+            $this->addError(new Error("Не указан ID исполнения", 1));
+            return null;
+        }
+
+        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+        $RunnerManager = $sL->get('Kabinet.Runner');
+
+        try {
+            // Получаем текущие данные исполнения
+            $currentData = $RunnerManager->getIDFulfiData($executionId);
+
+            // Подготавливаем данные для обновления
+            $updateData = ['ID' => $executionId];
+
+            // Обрабатываем разные типы полей
+            foreach ($post as $field => $value) {
+                if ($field === 'ID') continue;
+
+                switch ($field) {
+                    case 'UF_PLANNE_DATE':
+                    case 'UF_ACTUAL_DATE':
+                        // Обработка дат
+                        if ($value) {
+                               $timestamp = strtotime($value);
+                            if ($timestamp === false) throw new \Bitrix\Main\SystemException("Ошибка в формате даты");
+                                $updateData[$field] = $timestamp;
+                        }
+                        break;
+
+                    case 'UF_SITE_SETUP_ACCOUNT':
+                    case 'UF_SITE_SETUP_LOGIN':
+                    case 'UF_SITE_SETUP_PASS':
+                    case 'UF_SITE_SETUP_IP':
+                        // Обработка данных аккаунта
+                        $siteSetup = [];
+                        if (!empty($currentData['UF_SITE_SETUP'])) {
+                            try {
+                                $siteSetup = json_decode($currentData['UF_SITE_SETUP'], true) ?: [];
+                            } catch (\Exception $e) {
+                                $siteSetup = [];
+                            }
+                        }
+
+                        // Обновляем соответствующее поле
+                        $fieldMap = [
+                            'UF_SITE_SETUP_ACCOUNT' => 'accaunt',
+                            'UF_SITE_SETUP_LOGIN' => 'login',
+                            'UF_SITE_SETUP_PASS' => 'pass',
+                            'UF_SITE_SETUP_IP' => 'ip'
+                        ];
+
+                        if (isset($fieldMap[$field])) {
+                            $siteSetup[$fieldMap[$field]] = $value;
+                            $updateData['UF_SITE_SETUP'] = json_encode($siteSetup);
+                        }
+                        break;
+
+                    default:
+                        // Простые текстовые поля
+                        $updateData[$field] = $value;
+                        break;
+                }
+            }
+
+            // for debugg
+            //throw new \Bitrix\Main\SystemException(print_R($updateData, true));
+            // Выполняем обновление
+            $upd_id = $RunnerManager->update($updateData);
+
+            // Получаем обновленные данные
+            $updatedData = $RunnerManager->getIDFulfiData($executionId);
+
+            return [
+                'success' => true,
+                'id' => $upd_id,
+                'message' => 'Данные успешно обновлены',
+                'updated_data' => $updatedData
+            ];
+
+        } catch (\Exception $e) {
+            $this->addError(new Error($e->getMessage(), 1));
+            return null;
+        }
+    }
 }
 

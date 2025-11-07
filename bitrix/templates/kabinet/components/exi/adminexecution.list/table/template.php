@@ -63,6 +63,7 @@ Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handson
 <?php
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.js");
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.list/table/handsontable-ru-locale.js");
+Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.list/table/table-save-manager.js");
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.list/table/settings.js");
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.list/table/column-configs.js");
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.list/table/column-controls.js");
@@ -118,13 +119,11 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
 
     // Инициализация Handsontable
     document.addEventListener('DOMContentLoaded', function() {
-
         // Регистрируем русский язык для Handsontable
         Handsontable.languages.registerLanguageDictionary(window.handsontableRuLocale);
 
         var container = document.getElementById('handsontable-container');
 
-        // template.php - в секции <script>
         console.log('Данные исполнений:', executionsArray);
         console.log('Поля статусов:', executionsArray.map(item => ({id: item.id, status: item.status})));
 
@@ -154,6 +153,9 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
 
         // Инициализируем менеджер колонок после создания таблицы
         window.columnManager = new ColumnManager(window.hotTable, fieldLabels, editableFields);
+
+        // Инициализируем менеджер сохранения
+        window.tableSaveManager = new TableSaveManager(window.hotTable, executionsArray, editableFields);
     }
 
     // Функция для обновления данных таблицы

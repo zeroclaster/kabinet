@@ -189,3 +189,25 @@
 .handsontable .htDate:focus {
     background-color: #e6f3ff;
 }
+
+.editable-cell {
+    background-color: #f8f9fa;
+}
+
+.hot-table .htDimmed {
+    background-color: #fff3cd !important;
+}
+
+.saving-indicator {
+    background-color: #fff3cd !important;
+    position: relative;
+}
+
+.saving-indicator::after {
+    content: "⏳";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+}

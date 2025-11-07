@@ -44,6 +44,11 @@ window.handsontableConfig = {
                     newValue: newValue,
                     executionId: window.executionsArray ? window.executionsArray[row].id : 'unknown'
                 });
+
+                // Вызываем функцию сохранения с задержкой
+                if (window.tableSaveManager) {
+                    window.tableSaveManager.handleCellChange(row, field, oldValue, newValue);
+                }
             });
         }
     },
