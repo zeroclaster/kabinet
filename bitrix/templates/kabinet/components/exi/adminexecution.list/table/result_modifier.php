@@ -102,7 +102,9 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
             'process_type' => getFieldValueWithOriginal($taskData, 'UF_CYCLICALITY'),
             'link' => $runner['UF_LINK'] ?? '',
             'photo' => getFirstPhoto($runner['UF_PIC_REVIEW_ORIGINAL'] ?? []),
-            'review_text' => $runner['UF_REVIEW_TEXT'] ?? '',
+            // Обработка review_text: очистка от HTML и обрезка до 100 символов
+            'review_text' => !empty($runner['UF_REVIEW_TEXT']) ?
+                mb_substr(strip_tags($runner['UF_REVIEW_TEXT']), 0, 1000) : '',
             'status' => getStatusTitle($runner, $statusList),
             'responsible' => getResponsibleName($runner['UF_RESPONSIBLE'] ?? '', $arParams["ADMINLIST"]),
             'publication_date' => $runner['UF_ACTUAL_DATE_ORIGINAL']['FORMAT1'] ?? '',
