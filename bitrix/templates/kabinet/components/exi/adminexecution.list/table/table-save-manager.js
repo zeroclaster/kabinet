@@ -4,7 +4,7 @@ class TableSaveManager {
         this.executionsArray = executionsArray;
         this.editableFields = editableFields;
         this.saveTimeouts = {};
-        this.SAVE_DELAY = 3000; // 3 секунды задержки
+        this.SAVE_DELAY = 1000; // 3 секунды задержки
 
         this.init();
     }
@@ -184,11 +184,13 @@ class TableSaveManager {
     // Показать уведомление
     showNotification(message, type = 'info') {
         // Используем существующую систему уведомлений или создаем простую
-        if (window.kabinetStore) {
+        const kabinetStore = usekabinetStore();
+        if (kabinetStore) {
+            kabinetStore.NotifyOk = "";
             if (type === 'success') {
-                window.kabinetStore.NotifyOk = message;
+                kabinetStore.NotifyOk = message;
             } else {
-                window.kabinetStore.Notify = message;
+                kabinetStore.Notify = message;
             }
         } else {
             // Простое уведомление
