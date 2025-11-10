@@ -1558,3 +1558,7 @@ i.fa{
 .grey-blk-1{
 	color: #818181;
 }
+
+.rd-navbar-sidebar-active .page.table-page{
+	padding-left: 0px;
+}

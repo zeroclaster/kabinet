@@ -17,11 +17,11 @@ include __DIR__ . '/field-settings.php';
 // Подготавливаем данные для JavaScript
 $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 
-// Добавьте для отладки:
+//  для отладки:
 //var_dump("Количество исполнений: " . count($executionsData));
-foreach ($executionsData as $index => $execution) {
+//foreach ($executionsData as $index => $execution) {
     //var_dump("Исполнение {$index}: статус = '" . $execution['status'] . "'");
-}
+//}
 
 
 Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.css");
@@ -124,8 +124,7 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
 
         var container = document.getElementById('handsontable-container');
 
-        console.log('Данные исполнений:', executionsArray);
-        console.log('Поля статусов:', executionsArray.map(item => ({id: item.id, status: item.status})));
+        //console.log('Данные исполнений:', executionsArray);
 
         if (executionsArray.length > 0) {
             initializeTable();

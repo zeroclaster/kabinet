@@ -2,6 +2,10 @@
 define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/include/");
 \Bitrix\Main\UI\Extension::load("ui.vue3.pinia");
 \Bitrix\Main\UI\Extension::load("ui.vue3");
+
+// Проверяем, нужно ли скрыть навигацию
+$currentPath = $APPLICATION->GetCurPage();
+$hideNavbar = (strpos($currentPath, '/kabinet/admin/table/') !== false);
 ?>
 <!DOCTYPE html>
 <html class="rd-navbar-sidebar-active page-small-footer" lang="en">
@@ -61,8 +65,9 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
       <!-- /Yandex.Metrika counter -->
   </head>
   <body>
-  <div class="page kabinet-project header-static">
+  <div class="page kabinet-project header-static <?if ($hideNavbar) echo 'table-page';?>">
 
+      <?php if (!$hideNavbar): ?>
       <header class="section page-header">
         <!--RD Navbar-->
         <div class="rd-navbar-wrap">
@@ -155,3 +160,4 @@ define("INCLUDE_TAMPLATE", $_SERVER["DOCUMENT_ROOT"].SITE_TEMPLATE_PATH."/includ
           </nav>
         </div>
       </header>
+<?php endif; ?>

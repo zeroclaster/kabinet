@@ -9,7 +9,7 @@ window.handsontableConfig = {
     manualRowResize: true,
     manualColumnMove: true,
     licenseKey: 'non-commercial-and-evaluation',
-    height: 550,
+    height: 1550,
     width: '100%',
     wordWrap: false,
     autoWrapRow: true,
