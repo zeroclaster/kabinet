@@ -74,7 +74,8 @@
                             </div>
                         </div>
 
-                        <template v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE?>'">
+
+                        <template v-if="PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE ?>' || PRODUCT.COORDINATION.VALUE_XML_ID == '<?=\Bitrix\Kabinet\task\Taskmanager::BES_SOGLACOVANIE ?>'">
                             <div class="form-group">
                                 <div>Текст:</div>
                                 <div class="richtext-height-80">
@@ -85,6 +86,8 @@
                                 </div>
                             </div>
                         </template>
+
+
 
                         </div>
 

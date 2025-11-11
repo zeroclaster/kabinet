@@ -17,6 +17,7 @@ class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
     const LINK_SCREENHOT = 10;
     // из свойств инфоблока поле COORDINATION
     const IS_SOGLACOVANIE = 'cd3e95f3415f08e2ff1d8e9cb16e9d1d'; // да
+    const BES_SOGLACOVANIE = 'e213392eb3479402c94de7d1653a83c4'; // БЕЗ СОГЛАСОВАНИЯ текст пишет сервис по брифу и публикует
 
     // из свойств инфоблока поле PHOTO_AVAILABILITY
     const PHOTO_NO_NEEDED = '07e891d703f65d59109cc89571177b39';
