@@ -252,8 +252,116 @@ abstract class Base{
         return $fields;
     }
 
-
     public function transformField($oldFileds,$fields){
+        $UFields = $this->getUserFields();
+
+        // для полей тип файл
+        // поле НАЗВАНИЕ_ПОЛЯ_DELETE отправляется со значениями а само поле не отправляетмся
+        // потому что оно заполняется только когда отправляется файл
+        foreach ($fields as $name=>$value){
+            if (strpos($name,'_DELETE') !== false){
+                $findFieldName = str_replace(['_DELETE','_DOUBLE'],'',$name);
+                if (!isset($fields[$findFieldName])) $fields[$findFieldName] = [];
+            }
+            if (strpos($name,'_DOUBLE') !== false){
+                $findFieldName = str_replace(['_DELETE','_DOUBLE'],'',$name);
+                if (!isset($fields[$findFieldName])) $fields[$findFieldName] = [];
+            }
+        }
+
+        foreach ($fields as $name=>&$value){
+            if (!isset($UFields[$name])) continue;
+
+            $HL_FIELD_DATA = $UFields[$name];
+
+            if ($HL_FIELD_DATA["USER_TYPE_ID"] == 'datetime' && $value) {
+                $value = \Bitrix\Main\Type\DateTime::createFromTimestamp($value);
+            }
+
+            if ($HL_FIELD_DATA["USER_TYPE_ID"] == 'file') {
+                if (is_array($value) && $value[0]===0) $value = [];
+
+                // Обработка удаления файлов для множественных полей
+                if(!empty($fields[$name.'_DELETE'])){
+                    $deleteIds = $fields[$name.'_DELETE'];
+                    if (!is_array($deleteIds)) {
+                        $deleteIds = [$deleteIds];
+                    }
+
+                    if ($oldFileds && isset($oldFileds[$name]) && is_array($oldFileds[$name])) {
+                        // Помечаем удаляемые файлы как ['old_id' => id]
+                        foreach ($oldFileds[$name] as &$fileId) {
+                            if (in_array($fileId, $deleteIds)) {
+                                $fileId = ['old_id' => $fileId];
+                            }
+                        }
+                        unset($fileId); // сбрасываем ссылку
+                    }
+                }
+                // распаковываем мульти значение поля файла
+                /*
+                 * Ex:
+                 * UF_PHOTO = [
+                 *              'url' = [
+                 *                      0 => /tmp/sdfsdfs.jpg,
+                 *                      1 => /tmp/sdfsdfs.jpg
+                 *              ]
+                 * ..................
+                 * ]
+                 */
+                // если поле не мульти, то оно сразу отправляется в базу без какой либо трпнсформации
+                // распаковываем мульти значение поля файла
+                if($HL_FIELD_DATA["MULTIPLE"] == 'Y'){
+                    $newField = [];
+                    foreach($value as $key=>$v){
+                        if (is_array($v)){
+                            foreach($v as $k2 => $one){
+                                $newField[$k2][$key] = $one;
+                            }
+                        }else{
+                            $newField[0][$key] = $v;
+                        }
+                    }
+
+                    // если это уже существует update
+                    if ($oldFileds && isset($oldFileds[$name])) {
+                        // объединяем старые файлы (с пометками удаления) с новыми
+                        $value = array_merge($oldFileds[$name], $newField);
+                    } else {
+                        // если это новый add
+                        $value = $newField;
+                    }
+                }
+
+                // Обработка дублирования файлов
+                if(!empty($fields[$name.'_DOUBLE'])) {
+                    $L = [];
+                    foreach($fields[$name.'_DOUBLE'] as $id_double) {
+                        $fileInfo = \CFile::GetFileArray($id_double);
+                        if ($fileInfo) {
+                            $L[] = \CFile::MakeFileArray($fileInfo['SRC']);
+                        }
+                    }
+
+                    if ($oldFileds && isset($oldFileds[$name])) {
+                        $value = array_merge($oldFileds[$name], $L);
+                    } else {
+                        $value = $L;
+                    }
+                }
+
+                if (!$value) unset($fields[$name]);
+            }
+
+            if (isset($fields[$name.'_DELETE'])) unset($fields[$name.'_DELETE']);
+            if (isset($fields[$name.'_DOUBLE'])) unset($fields[$name.'_DOUBLE']);
+        }
+
+        return $fields;
+    }
+
+
+    public function transformField__($oldFileds,$fields){
         $UFields = $this->getUserFields();
 
         // для полей тип файл
