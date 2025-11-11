@@ -4,7 +4,8 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
 // Массив с русскими названиями полей для отображения
 $fieldLabels = [
-    'id' => 'ID',
+    'id' => 'id',
+    'UF_EXT_KEY' => '#id',
     'planned_date' => 'Плановая дата выполнения',
     'client' => 'Клиент',
     'project' => 'Проект',

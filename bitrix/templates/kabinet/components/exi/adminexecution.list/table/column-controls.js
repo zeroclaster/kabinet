@@ -66,12 +66,19 @@ class ColumnManager {
     // Функция для применения сохраненных настроек
     applySavedColumnSettings() {
         var savedSettings = this.loadColumnSettings();
+        console.log(savedSettings);
         if (savedSettings) {
             document.querySelectorAll('.column-toggle').forEach((checkbox) => {
                 var columnKey = checkbox.getAttribute('data-column');
                 if (savedSettings.hasOwnProperty(columnKey)) {
                     checkbox.checked = savedSettings[columnKey];
                 }
+            });
+            this.applyColumnVisibility();
+        } else {
+            // Все колонки видны по умолчанию (кроме id, который мы исключим на уровне создания колонок)
+            document.querySelectorAll('.column-toggle').forEach((checkbox) => {
+                checkbox.checked = true;
             });
             this.applyColumnVisibility();
         }
@@ -192,10 +199,10 @@ class ColumnManager {
 
         const columnsToShow = [];
 
-        // Собираем колонки для отображения
+        // Собираем колонки для отображения (исключаем поле id)
         document.querySelectorAll('.column-toggle').forEach((checkbox) => {
             const columnKey = checkbox.getAttribute('data-column');
-            if (checkbox.checked) {
+            if (checkbox.checked && columnKey !== 'id') { // Всегда исключаем поле id
                 columnsToShow.push(columnKey);
             }
         });

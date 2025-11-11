@@ -93,6 +93,7 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
 
         $execution = [
             'id' => $runner['ID'],
+            'UF_EXT_KEY' => $runner['UF_EXT_KEY'],
             'planned_date' => $runner['UF_PLANNE_DATE_ORIGINAL']['FORMAT1'] ?? '',
             'client' => $arResult["CLIENT_DATA"][$authorId]['PRINT_NAME'] ?? '',
             'project' => $arResult["PROJECT_DATA"][$projectId]['UF_NAME'] ?? '',

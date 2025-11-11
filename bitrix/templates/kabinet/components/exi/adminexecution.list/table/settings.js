@@ -9,7 +9,7 @@ window.handsontableConfig = {
     manualRowResize: true,
     manualColumnMove: true,
     licenseKey: 'non-commercial-and-evaluation',
-    height: 1550,
+    // height: 1550, // Убираем фиксированную высоту, теперь рассчитывается динамически
     width: '100%',
     wordWrap: false,
     autoWrapRow: true,

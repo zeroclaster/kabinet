@@ -1,20 +1,47 @@
+/* Основные стили для таблицы */
+body.handsontable-no-scroll {
+    overflow: hidden !important;
+}
+
+#kabinetcontent {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#handsontable-container {
+    flex: 1;
+    min-height: 0;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.main-wrapper, .workarea {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Стили для контролов */
 .controls {
-    padding: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 15px;
     background: #f8f9fa;
     border-radius: 5px;
     margin-bottom: 15px;
-    position: relative;
 }
 
-.controls .btn {
-    margin-right: 10px;
-}
-
-/* Меню управления колонками */
 .column-controls {
-    position: relative;
+    flex-shrink: 0;
 }
 
+/* Стили для меню колонок */
 .column-menu {
     position: absolute;
     top: 100%;
@@ -24,51 +51,50 @@
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     z-index: 1000;
-    min-width: 250px;
+    min-width: 280px;
     max-height: 400px;
     overflow-y: auto;
 }
 
 .column-menu-header {
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid #eee;
     background: #f8f9fa;
 }
 
-.column-menu-header h6 {
-    margin: 0;
-    flex: 1;
-}
-
 .column-menu-body {
     padding: 10px 15px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .column-menu-footer {
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-top: 1px solid #eee;
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .form-check {
-    margin-bottom: 5px;
-    padding: 5px 0;
+    margin-bottom: 8px;
+    padding: 4px 0;
 }
 
 .form-check-label {
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
+    color: #495057;
 }
 
 .form-check-input {
     margin-right: 8px;
 }
 
-/* Excel-подобный стиль */
+/* Стили для таблицы Handsontable */
 .handsontable {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 12px;
@@ -104,7 +130,6 @@
     color: #666;
 }
 
-/* Стиль для редактируемых ячеек */
 .handsontable .editable-cell {
     background-color: #fffacd !important;
 }
@@ -113,46 +138,103 @@
     background-color: #fff380 !important;
 }
 
-/* Стиль для заголовков строк */
 .handsontable .htRowHeaders th {
     background-color: #f0f0f0;
     border: 1px solid #d4d4d4;
     color: #666;
 }
 
-/* Стиль для скроллбара */
-.handsontable .wtHolder::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-
-.handsontable .wtHolder::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.handsontable .wtHolder::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 6px;
-}
-
-.handsontable .wtHolder::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-.alert {
-    margin: 20px;
-    padding: 20px;
+/* Стили для блока фильтров в строку */
+.filters-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
     border-radius: 4px;
+    padding: 8px 12px;
+    margin-left: 15px;
+    flex: 1;
+    display: flex;
+    align-items: center;
 }
 
-.alert-info {
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-    color: #0c5460;
+.filters-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+}
+
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ced4da;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.filter-badge-label {
+    font-weight: 600;
+    color: #495057;
+    margin-right: 4px;
+}
+
+.filter-badge-value {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.total-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #007bff;
+    color: white;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.no-filters-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #e9ecef;
+    color: #6c757d;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+
+    .filters-info {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .filters-line {
+        justify-content: flex-start;
+    }
+
+    .total-badge {
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
     .column-menu {
         position: fixed;
         top: 50%;
@@ -161,53 +243,34 @@
         width: 90%;
         max-width: 300px;
     }
+}
 
-    .controls .btn {
-        margin-bottom: 5px;
+@media (max-width: 1200px) {
+    .filters-line {
+        gap: 6px;
+    }
+
+    .filter-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .total-badge {
+        font-size: 10px;
+        padding: 3px 6px;
     }
 }
 
-/* Стили для календаря Handsontable */
-.handsontable .htDatePicker {
-    z-index: 10000;
-}
-
-.handsontable .htDatePicker .ht_clone_top {
-    z-index: 10001;
-}
-
-.handsontable .htDatePickerHolder {
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* Подсветка ячеек с датами */
-.handsontable .htDate {
-    background-color: #f0f8ff;
-}
-
-.handsontable .htDate:focus {
-    background-color: #e6f3ff;
-}
-
-.editable-cell {
-    background-color: #f8f9fa;
-}
-
-.hot-table .htDimmed {
-    background-color: #fff3cd !important;
-}
-
-.saving-indicator {
-    background-color: #fff3cd !important;
+.go-back-page{
+    width: 50px;
     position: relative;
 }
 
-.saving-indicator::after {
-    content: "⏳";
+.go-back-page a{
     position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
+    left: 16px;
+}
+
+.go-back-page i{
+    font-size: 24px;
 }

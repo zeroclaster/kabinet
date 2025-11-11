@@ -7,25 +7,8 @@ $APPLICATION->SetTitle("Таблица исполнений");
 $siteuser = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('siteuser');
 $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
 ?>
-<section class="section-xs">
-    <div class="container-fluid">
-        <div class="row row-30">
-            <div class="col-md-12 d-xxl-flex">
-                <h1>Таблица исполнений</h1>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="section-xs">
-    <div class="container-fluid">
-        <div class="row row-30">
-            <div class="col-md-12">
-                <div class="panel">
-                    <div class="panel-header">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap group-10">
-                        </div>
-                    </div>
-                    <div class="panel-body">
+
+                    <div class="panel-body" style="display: none;">
                         <?$APPLICATION->IncludeComponent("exi:admin.filterexecution", "", Array(
                                 'FILTER_NAME' => 'clientfilter1',
                             )
@@ -35,7 +18,7 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                         //\Dbg::var_dump($clientfilter1);
                         ?>
                     </div>
-                </div>
+
                 <?if($clientfilter1):?>
                 <?$APPLICATION->IncludeComponent("exi:adminexecution.list", "table", Array(
                         'FILTER_NAME' => 'clientfilter1',
@@ -44,11 +27,8 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                     )
                 );?>
                 <?endif;?>
-            </div>
-        </div>
-    </div>
-</section>
 
+<div id="admincontent">1234</div>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
 
 

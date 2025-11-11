@@ -13,21 +13,18 @@ $runnerManager = $sL->get('Kabinet.Runner');
 
 // Подключаем настройки полей
 include __DIR__ . '/field-settings.php';
+// Подключаем обработчик фильтров
+include __DIR__ . '/filter-processor.php';
 
 // Подготавливаем данные для JavaScript
 $executionsData = prepareExecutionsData($arResult, $arParams, $runnerManager);
 
-//  для отладки:
-//var_dump("Количество исполнений: " . count($executionsData));
-//foreach ($executionsData as $index => $execution) {
-    //var_dump("Исполнение {$index}: статус = '" . $execution['status'] . "'");
-//}
-
+// Получаем информацию о примененных фильтрах
+$appliedFilters = processAppliedFilters($arParams, $arResult, $runnerManager);
 
 Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handsontable.full.min.css");
 ?>
-
-<div id="kabinetcontent">
+<div id="kabinetcontent" class="workarea">
     <div class="controls mb-3">
         <div class="column-controls mt-2">
             <button id="toggleColumnMenu" class="btn btn-outline-primary btn-sm">
@@ -40,13 +37,15 @@ Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handson
                 </div>
                 <div class="column-menu-body">
                     <?php foreach ($fieldLabels as $key => $label): ?>
-                        <div class="form-check">
-                            <input class="form-check-input column-toggle" type="checkbox"
-                                   id="column-<?= $key ?>" data-column="<?= $key ?>" checked>
-                            <label class="form-check-label" for="column-<?= $key ?>">
-                                <?= $label ?>
-                            </label>
-                        </div>
+                        <?php if ($key !== 'id'): ?>
+                            <div class="form-check">
+                                <input class="form-check-input column-toggle" type="checkbox"
+                                       id="column-<?= $key ?>" data-column="<?= $key ?>" checked>
+                                <label class="form-check-label" for="column-<?= $key ?>">
+                                    <?= $label ?>
+                                </label>
+                            </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
                 <div class="column-menu-footer">
@@ -56,8 +55,36 @@ Asset::getInstance()->addCss(SITE_TEMPLATE_PATH."/assets/js/handsontable/handson
                 </div>
             </div>
         </div>
+
+        <!-- Блок с информацией о фильтрах -->
+        <div class="filters-info">
+            <?php if (!empty($appliedFilters)): ?>
+                <div class="filters-line">
+                    <?php foreach ($appliedFilters as $filter): ?>
+                        <span class="filter-badge">
+                            <span class="filter-badge-label"><?= htmlspecialchars($filter['label']) ?>:</span>
+                            <span class="filter-badge-value"><?= htmlspecialchars($filter['value']) ?></span>
+                        </span>
+                    <?php endforeach; ?>
+                    <span class="total-badge">
+                        Всего: <?= $arResult['TOTAL'] ?>
+                    </span>
+                </div>
+            <?php else: ?>
+                <div class="filters-line">
+                    <span class="no-filters-badge">Фильтры не применены</span>
+                    <span class="total-badge">
+                        Всего: <?= $arResult['TOTAL'] ?>
+                    </span>
+                </div>
+            <?php endif; ?>
+
+            <div class="filters-line go-back-page" style="width: 50px;">
+                <a href="/kabinet/admin/performances/"><i class="fa fa-reply" aria-hidden="true"></i></a>
+            </div>
+        </div>
     </div>
-    <div id="handsontable-container" style="height: 600px; overflow: hidden;"></div>
+    <div id="handsontable-container"></div>
 </div>
 
 <?php
@@ -93,6 +120,19 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
         return dateString;
     }
 
+    // Функция для расчета высоты таблицы
+    function calculateTableHeight() {
+        const container = document.getElementById('kabinetcontent');
+        const controls = document.querySelector('.controls');
+        const headerHeight = 60;
+        const margins = 40;
+
+        const windowHeight = window.innerHeight;
+        const controlsHeight = controls ? controls.offsetHeight : 0;
+
+        return windowHeight - controlsHeight - headerHeight - margins;
+    }
+
     // Создаем JavaScript массив с данными исполнений
     var executionsArray = <?= CUtil::PhpToJSObject($executionsData, false, true) ?>;
 
@@ -115,16 +155,14 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
     window.executionsData = executionsArray;
     window.executionsFieldLabels = fieldLabels;
     window.hotTable = null;
-    window.executionsArray = executionsArray; // Для доступа в конфиге
+    window.executionsArray = executionsArray;
 
     // Инициализация Handsontable
     document.addEventListener('DOMContentLoaded', function() {
-        // Регистрируем русский язык для Handsontable
+        document.body.classList.add('handsontable-no-scroll');
         Handsontable.languages.registerLanguageDictionary(window.handsontableRuLocale);
 
         var container = document.getElementById('handsontable-container');
-
-        //console.log('Данные исполнений:', executionsArray);
 
         if (executionsArray.length > 0) {
             initializeTable();
@@ -133,43 +171,44 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
         }
     });
 
+    // Обработка изменения размера окна
+    window.addEventListener('resize', function() {
+        if (window.hotTable) {
+            const newHeight = calculateTableHeight();
+            window.hotTable.updateSettings({
+                height: newHeight
+            });
+        }
+    });
+
     // Функция инициализации таблицы
     function initializeTable() {
         var container = document.getElementById('handsontable-container');
 
-        // Подготавливаем колонки для Handsontable используя общую функцию
-        var columns = Object.keys(fieldLabels).map(function(key) {
-            return window.columnConfigs.getColumnConfig(key, fieldLabels, editableFields);
-        });
+        // Подготавливаем колонки для Handsontable, исключая поле id
+        var columns = Object.keys(fieldLabels)
+            .filter(function(key) {
+                return key !== 'id';
+            })
+            .map(function(key) {
+                return window.columnConfigs.getColumnConfig(key, fieldLabels, editableFields);
+            });
 
-        // Создаем Handsontable с настройками из конфига
+        const tableHeight = calculateTableHeight();
+
         var config = Object.assign({}, window.handsontableConfig, {
             data: executionsArray,
-            columns: columns
+            columns: columns,
+            height: tableHeight
         });
 
         window.hotTable = new Handsontable(container, config);
-
-        // Инициализируем менеджер колонок после создания таблицы
         window.columnManager = new ColumnManager(window.hotTable, fieldLabels, editableFields);
-
-        // Инициализируем менеджер сохранения
         window.tableSaveManager = new TableSaveManager(window.hotTable, executionsArray, editableFields);
     }
 
-    // Функция для обновления данных таблицы
-    function updateTableData(newData) {
-        if (window.hotTable && newData) {
-            window.hotTable.updateData(newData);
-        }
-    }
-
-    // Функция для добавления новых данных
-    function addTableData(newData) {
-        if (window.hotTable && newData) {
-            var currentData = window.hotTable.getData();
-            var updatedData = currentData.concat(newData);
-            window.hotTable.updateData(updatedData);
-        }
-    }
+    // Восстанавливаем скролл при размонтировании
+    window.addEventListener('beforeunload', function() {
+        document.body.classList.remove('handsontable-no-scroll');
+    });
 </script>

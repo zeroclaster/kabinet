@@ -9,6 +9,7 @@ window.columnConfigs = {
 
         // Настройки для specific полей
         switch(key) {
+            case 'UF_EXT_KEY':
             case 'id':
                 columnConfig.width = 80;
                 columnConfig.type = 'numeric';
