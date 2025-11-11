@@ -396,6 +396,31 @@ const filter1 = {
         }
     },
 
+    showTable() {
+        const form = document.forms.filterform1;
+
+        // Сохраняем оригинальные значения action и target
+        const originalAction = form.action;
+        const originalTarget = form.target;
+
+        // Автоматически сбрасываем hidden поля если текстовые поля пустые
+        if (form.elements.clienttextsearch.value == '') form.elements.clientidsearch.value = '0';
+        if (form.elements.projecttextsearch.value == '') form.elements.projectidsearch.value = '0';
+        if (form.elements.tasktextsearch.value == '') form.elements.taskidsearch.value = '0';
+        if (form.elements.executiontextsearch.value == '') form.elements.executionidsearch.value = '0';
+
+        // Временно меняем action формы и отправляем
+        form.action = '/kabinet/admin/table/';
+        form.target = '_blank';
+        form.submit();
+
+        // НЕМЕДЛЕННО возвращаем оригинальные значения
+        setTimeout(() => {
+            form.action = originalAction;
+            form.target = originalTarget;
+        }, 0);
+    },
+
     init(phpparams) {
         const this_ = this;
         this_.seach_result = phpparams.SEARCH_RESULT;
@@ -520,6 +545,15 @@ const filter1 = {
                     event.stopPropagation()
                     return false;
                 }
+            });
+
+
+            // Обработчик для кнопки "Показать таблицу"
+            BX.bind(BX("showtablemode"), 'click', function (e) {
+                this_.showTable();
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             });
 
             // Обработчики изменения текстовых полей

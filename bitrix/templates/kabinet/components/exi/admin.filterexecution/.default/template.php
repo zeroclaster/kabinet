@@ -222,6 +222,7 @@ $this->setFrameMode(true);
     <div class="row justify-content-md-center">
         <div class="col-md-8 text-center">
             <button type="submit" class="btn btn-primary mr-5">Показать</button>
+            <button type="button" id="showtablemode" class="btn btn-primary mr-5">Показать таблицу</button>
             <button type="button" id="clearfilter" class="btn btn-outline-secondary">Сбросить фильтр</button>
         </div>
     </div>
