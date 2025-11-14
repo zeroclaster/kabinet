@@ -1,6 +1,7 @@
 <?php
 namespace Bitrix\Kabinet\taskrunner\states\type\reviews;
 
+use Bitrix\Kabinet\exceptions\FulfiException;
 use Bitrix\Main\SystemException,
     Bitrix\Main\Entity,
     Bitrix\Main\Event;
@@ -46,9 +47,9 @@ class Stage11 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9];
+            return [0];
         }else{
-            return [];
+            return [0];
         }
     }
 
@@ -64,6 +65,18 @@ class Stage11 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
     // уходят со статуса
     public function leaveStage($object){
         $object->set('UF_HITCH',0);
+
+        $runnerFields = $this->runnerFields;
+        //$messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
+        $billing = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Billing');
+
+        // если возвращаемся обратно на запланировано
+        if($object['UF_STATUS'] === 0){
+            $task = $this->getTask();
+            $isError = $billing->getMoney($runnerFields['UF_MONEY_RESERVE'],$task['UF_AUTHOR_ID'],$this);
+            if ($isError === false) throw new SystemException("Недостаточно средств для смены статуса.");
+        }
+
     }
 
     // когда пришли на статус

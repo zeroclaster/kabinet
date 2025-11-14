@@ -64,7 +64,11 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            return [
+                2, //Пишется текст
+                4, //В работе у специалиста
+                6, //Публикация
+            ];
         }else{
             return [4,6];
         }
@@ -110,7 +114,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $event->send();
 
         //Фиксация просрочки — через 96 часов.
-        $this->isFixHitch(96);
+        $this->isFixHitch(72);
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
     }

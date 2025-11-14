@@ -52,7 +52,11 @@ class Stage4 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            return [
+                4,  //В работе у специалиста
+                2,  //Пишется текст
+                6   //Публикация
+            ];
         }else{
             return [6];
         }

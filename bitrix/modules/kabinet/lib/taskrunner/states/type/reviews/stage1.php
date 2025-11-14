@@ -58,9 +58,14 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            return [
+                1,  // Взят в работу
+                10  // Отменена
+            ];
         }else{
-            return [10];
+            return [
+                10  // Отменена
+            ];
         }
     }
 
@@ -103,6 +108,9 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
         $event = new Event("kabinet", "OnBeforeStartStage", ['id'=>$this->id,'name'=>$this->getName(),'title'=>$this->getTitle()]);
         $event->send();
+
+        //Фиксация просрочки — через 72 часа.
+        $this->isFixHitch(72);
 
 		// TODO AKULA перенести в начало выполнения, если будет ошибка в выпонлении то задача сдвинется в конец а не подвиснит в начале списка
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();

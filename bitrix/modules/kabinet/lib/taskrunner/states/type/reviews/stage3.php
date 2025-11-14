@@ -51,7 +51,19 @@ class Stage3 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            $states = [1];
+            $PRODUCT = $this->getProduct();
+            $TASK = $this->getTask();
+            if (
+                $PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE ||
+                $TASK['UF_COORDINATION'] == 13 // 13 согласование есть
+            ){
+                $states[] = 5; // 5-На согласовании у клиента
+            }
+
+            $states[] = 6; // 6-Публикация;
+
+            return $states;
         }else{
             return [];
         }

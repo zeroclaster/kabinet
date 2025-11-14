@@ -58,11 +58,16 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     public function getRoutes(){
         $runnerFields = $this->runnerFields;
         if(\PHelp::isAdmin()) {
+            $states = [2]; // Пишется текст
+            $states[] = 4; // В работе у специалиста
+
             $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($runnerFields['UF_TASK_ID'])->fetch();
             if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
-                return [1,2,3,4,5,6,7,8,9,10];
+                $states[] = 7; // Готовится отчет
             else
-                return [9];
+                $states[] = 9; //Выполнено
+
+            return $states;
         }else{
             return [];
         }
@@ -106,7 +111,7 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $event->send();
 
         //Фиксация просрочки — через 72 часа.
-        $this->isFixHitch(72);
+        $this->isFixHitch2();
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
     }

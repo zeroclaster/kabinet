@@ -54,9 +54,6 @@ class Stage4 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         if(\PHelp::isAdmin()) {
             return [
                 4,  //В работе у специалиста
-                8,  //Отчет на проверке у клиента
-                9,  //Выполнена
-                10 //Отменена
             ];
         }else{
             return [

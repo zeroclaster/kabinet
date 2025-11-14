@@ -54,7 +54,13 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            return [
+                2,  //Пишется текст
+                4,  //В работе у специалиста
+                6,  //Публикация
+                7,  //Готовится отчет
+                9,  //Выполнено
+            ];
         }else{
             return [
                 4,      // Stage5 В работе у специалиста
@@ -115,7 +121,7 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 			$this->goToState(9);		// Выполнена
 		}else{			   
 			$d = (new DateTime())->add("-72 hours");		
-			if ($d > $runnerFields['UF_CREATE_DATE']){
+			if ($d->getTimestamp() > $runnerFields['UF_CREATE_DATE']->getTimestamp()){
 				$this->goToState(9);		// Выполнена
 			}
 		}

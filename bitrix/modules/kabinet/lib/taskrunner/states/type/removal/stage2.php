@@ -53,7 +53,37 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
-            return [1,2,3,4,5,6,7,8,9,10];
+            $states = [0];
+            $PRODUCT = $this->getProduct();
+            $TASK = $this->getTask();
+            if (
+                ($PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE ||
+                    $PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::BES_SOGLACOVANIE) &&
+                $TASK['UF_COORDINATION'] == 12 // 12 нет, материал готовим сервис по брифу и публикует без согласования
+
+            ){
+                $states[] = 2; // Пишется текст
+            }
+
+            if (
+                $TASK['UF_COORDINATION'] == 13 // 13 согласование есть
+            ){
+                $states[] = 3; // Ожидается текст от клиента
+            }
+
+            $states[] = 4; //В работе у специалиста
+
+            if (
+                $PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE ||
+                $TASK['UF_COORDINATION'] == 13 // 13 согласование есть
+            ){
+                $states[] = 5; // На согласовании у клиента
+            }
+
+            $states[] = 6; //Публикация
+            $states[] = 10; //Отменено
+
+            return $states;
         }else{
             return [];
         }
