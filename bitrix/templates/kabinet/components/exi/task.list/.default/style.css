@@ -57,3 +57,16 @@
 	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 	border-left: 4px solid #1fa2cd;
 }
+
+.task-actions-dropdown .dropdown-toggle::after {
+	display: none;
+}
+
+.task-actions-dropdown .btn-link:hover {
+	color: #007bff !important;
+	background-color: transparent;
+}
+
+.task-actions-dropdown .dropdown-menu {
+	min-width: 200px;
+}

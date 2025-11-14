@@ -138,6 +138,16 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         ...BX.Vue3.Pinia.mapState(calendarStore, ['datacalendarQueue']),
         ...BX.Vue3.Pinia.mapState(billingStore, ['databilling']),
 
+        isRunTasksExists() {
+            // Ищем все задачи текущего проекта со статусом 15 (работающие)
+            const runningTasks = this.datatask.filter(task =>
+                task.UF_PROJECT_ID == this.project_id &&
+                task.UF_STATUS == 15
+            );
+
+            return runningTasks.length > 0;
+        },
+
         // Добавляем вычисляемое свойство для общей стоимости
         totalProjectCost() {
             let total = 0;
@@ -805,6 +815,73 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
                 }, 100);
             });
         }
+
+        this.$nextTick(() => {
+            // Создаем Map для хранения экземпляров dropdown
+            const dropdownInstances = new Map();
+
+            document.querySelectorAll('.task-actions-dropdown [data-bs-toggle="dropdown"]').forEach(toggle => {
+                const dropdown = new bootstrap.Dropdown(toggle);
+                const dropdownMenu = toggle.closest('.task-actions-dropdown');
+
+                // Сохраняем экземпляр в Map
+                dropdownInstances.set(toggle, dropdown);
+
+                toggle.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // Переключаем класс manually-open для отслеживания состояния
+                    if (dropdownMenu.classList.contains('manually-open')) {
+                        dropdown.hide();
+                        dropdownMenu.classList.remove('manually-open');
+                    } else {
+                        // Закрываем все другие dropdown
+                        document.querySelectorAll('.task-actions-dropdown.manually-open').forEach(openDropdown => {
+                            const openToggle = openDropdown.querySelector('[data-bs-toggle="dropdown"]');
+                            if (openToggle && openDropdown !== dropdownMenu) {
+                                const openDropdownInstance = dropdownInstances.get(openToggle);
+                                if (openDropdownInstance) {
+                                    openDropdownInstance.hide();
+                                }
+                                openDropdown.classList.remove('manually-open');
+                            }
+                        });
+
+                        dropdown.show();
+                        dropdownMenu.classList.add('manually-open');
+                    }
+                });
+
+                // Сбрасываем состояние при скрытии
+                dropdownMenu.addEventListener('hidden.bs.dropdown', () => {
+                    dropdownMenu.classList.remove('manually-open');
+                });
+            });
+
+            // Остальная логика закрытия
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.task-actions-dropdown')) {
+                    dropdownInstances.forEach((dropdownInstance) => {
+                        dropdownInstance.hide();
+                    });
+                    document.querySelectorAll('.task-actions-dropdown.manually-open').forEach(dropdown => {
+                        dropdown.classList.remove('manually-open');
+                    });
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    dropdownInstances.forEach((dropdownInstance) => {
+                        dropdownInstance.hide();
+                    });
+                    document.querySelectorAll('.task-actions-dropdown.manually-open').forEach(dropdown => {
+                        dropdown.classList.remove('manually-open');
+                    });
+                }
+            });
+        });
 
     },
 	components: {

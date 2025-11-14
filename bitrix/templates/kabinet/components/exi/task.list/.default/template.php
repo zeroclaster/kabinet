@@ -41,21 +41,25 @@ $p = $request->get('p');
     <div class="panel project-item-block mb-5">
         <div class="panel-body">
             <div class="row align-items-center">
+
+
                 <div class="col-md-10">
                     <div class="d-flex flex-wrap">
                         <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
                     </div>
                 </div>
-                <div class="col-md-2 block-edit-brief-butt">
 
-                    <template v-if="getRequireFields(project_id).length > 0">
+
+                <div class="col-md-2 block-edit-brief-butt">
+                    <template v-if="isRunTasksExists && getRequireFields(project_id).length > 0">
                         <a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
                     <template v-else>
                         <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
+                </div>
 
-                    </div>
+
             </div>
 
 
@@ -145,14 +149,51 @@ $p = $request->get('p');
                 </div>
                 <?endif;?>
                 <div class="col-md-9">
-                    <?if(!isMobileDevice()):?>
-                        <div
-                                class="h3 task-title-view"
-                                :id="'task'+task.ID"
-                                :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
-                                :data-cyclicality="task.UF_CYCLICALITY"
-                        >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
-                    <?endif;?>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div
+                                    class="h3 task-title-view mb-0"
+                                    :id="'task'+task.ID"
+                                    :data-element-type="getProductByIndexTask(taskindex).ELEMENT_TYPE.VALUE"
+                                    :data-cyclicality="task.UF_CYCLICALITY"
+                            >{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</div>
+
+                            <!-- Меню "три точки" -->
+                            <div class="dropdown task-actions-dropdown">
+                                <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: none;">
+                                    <i class="fa fa-ellipsis-v" aria-hidden="true" style="font-size: 1.2rem;"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <!-- Действия для работающих задач -->
+                                    <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
+                                        <?/* 1 Однократное выполнение */?>
+                                        <template v-if="task.UF_CYCLICALITY == 1">
+                                            <li><button class="dropdown-item" type="button" @click="stoptask_cyclicality_1(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                        </template>
+
+                                        <?/* 2 Повторяется ежемесячно */?>
+                                        <template v-if="task.UF_CYCLICALITY == 2">
+                                            <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="dropdown-item" type="button" @click="stoptask_cyclicality_2_planned(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                            <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="dropdown-item" type="button" @click="stoptask_cyclicality_2_worked(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                        </template>
+
+                                        <?/* 33 Одно исполнение */?>
+                                        <template v-if="task.UF_CYCLICALITY == 33">
+                                            <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="dropdown-item" type="button" @click="stoptask_cyclicality_33_planned(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                        </template>
+
+                                        <?/* 34 Ежемесячная услуга */?>
+                                        <template v-if="task.UF_CYCLICALITY == 34">
+                                            <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="dropdown-item" type="button" @click="stoptask_cyclicality_34_planned(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                            <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="dropdown-item" type="button" @click="stoptask_cyclicality_34_worked(taskindex)"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
+                                        </template>
+                                    </template>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item text-danger" type="button" @click="removetask(taskindex)"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить задачу</button></li>
+                                </ul>
+                            </div>
+                        </div>
+
 
 					<div class="d-flex align-items-center task-status-print h4">
                         <div v-html="taskStatus_m(task.ID)"></div>
@@ -189,6 +230,9 @@ $p = $request->get('p');
 
 
 					<div class="">
+
+                        <div class="h4">Дополнить заказ</div>
+
                         <textInfoTask :task="datatask" :copyTask="datataskCopy" :taskindex="taskindex"/>
 
                         <template v-if="CopyTask.UF_STATUS==0">
@@ -373,35 +417,6 @@ $p = $request->get('p');
 					
                 </div>
                 <div class="col">
-					<ul class="list-unstyled task-aciont-list-1">
-                        <template v-if="task.UF_STATUS==<?=\Bitrix\Kabinet\task\Taskmanager::WORKED?>">
-
-                                <?/* 1 Однократное выполнение */?>
-                                <template v-if="task.UF_CYCLICALITY == 1">
-                                    <li><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_1(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                </template>
-
-                                <?/* 2 Повторяется ежемесячно */?>
-                                <template v-if="task.UF_CYCLICALITY == 2">
-                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                    <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_2_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                </template>
-
-                                <?/* 33 Одно исполнение */?>
-                                <template v-if="task.UF_CYCLICALITY == 33">
-                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_33_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-
-                                </template>
-
-                                <?/* 34 Ежемесячная услуга */?>
-                                <template v-if="task.UF_CYCLICALITY == 34">
-                                    <li v-if="taskStatus_v(task.ID)['work'] == 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_planned(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                    <li v-if="taskStatus_v(task.ID)['work'] > 0"><button class="btn btn-link btn-link-site" type="button" @click="stoptask_cyclicality_34_worked(taskindex)" style="padding: 0;"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Остановить</button></li>
-                                </template>
-                        </template>
-
-                        <li><button class="btn btn-link btn-link-site" type="button" @click="removetask(taskindex)" style="padding: 0;"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Удалить задачу</button></li>
-                    </ul>
 				</div>
             </div>
         </div>
