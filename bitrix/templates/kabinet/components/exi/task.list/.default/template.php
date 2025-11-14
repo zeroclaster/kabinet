@@ -43,19 +43,6 @@ $p = $request->get('p');
             <div class="row align-items-center">
                 <div class="col-md-10">
                     <div class="d-flex flex-wrap">
-                        <div v-for="task in projectTask(project_id)" class="order-item-block">
-                            {{(order = data2[projectOrder(project_id)][task['UF_PRODUKT_ID']],null)}}
-
-                            <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']" @click="viewTask(task.ID)">
-
-                            <?/*
-                    <img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']" @click="viewTask(data2[projectOrder(project_id)][task['UF_PRODUKT_ID']].ID)">
-                    */?>
-
-                            <?/*<div class="block-remove-butt"><button class="order-remove-button" type="button" @click="removeProductModal(PRODUKT)"><i class="fa fa-times" aria-hidden="true"></i></button></div>
-                    */?>
-                        </div>
-
                         <button type="button" class="add-butt-order" @click="addbuttorder(project)"></button>
                     </div>
                 </div>
