@@ -10,6 +10,16 @@ window.columnConfigs = {
         // Настройки для specific полей
         switch(key) {
             case 'UF_EXT_KEY':
+                columnConfig.width = 80;
+                columnConfig.renderer = function(instance, td, row, col, prop, value) {
+                    if (value) {
+                        td.innerHTML = '<a href="/kabinet/admin/performances/?executionidsearch=' + value + '" target="_blank" title="' + value + '">' + value +'</a>';
+                    } else {
+                        td.textContent = '';
+                    }
+                    return td;
+                };
+                break;
             case 'id':
                 columnConfig.width = 80;
                 columnConfig.type = 'numeric';
@@ -58,8 +68,9 @@ window.columnConfigs = {
                 columnConfig.width = 200;
                 columnConfig.renderer = function(instance, td, row, col, prop, value) {
                     if (value) {
-                        td.textContent = value;
-                        td.title = value;
+                        td.innerHTML = '<a href="' + value + '" target="_blank" title="' + value + '">' +
+                            (value.length > 30 ? value.substring(0, 30) + '...' : value) +
+                            '</a>';
                     } else {
                         td.textContent = '-';
                     }
@@ -67,6 +78,30 @@ window.columnConfigs = {
                 };
                 break;
             case 'link':
+                columnConfig.width = 200;
+                columnConfig.renderer = function(instance, td, row, col, prop, value) {
+                    if (value) {
+                        const displayText = value.length > 30 ? value.substring(0, 30) + '...' : value;
+                        td.innerHTML = '<button type="button" class="copy-link-btn" data-url="' +
+                            value + '" title="Копировать ссылку: ' + value + '">' +
+                            displayText + '</button>';
+
+                        setTimeout(() => {
+                            const btn = td.querySelector('.copy-link-btn');
+                            if (btn) {
+                                btn.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    copyToClipboard(this.getAttribute('data-url'));
+                                });
+                            }
+                        }, 0);
+                    } else {
+                        td.textContent = '-';
+                    }
+                    return td;
+                };
+                break;
             case 'UF_REPORT_LINK':
             case 'UF_REPORT_SCREEN':
             case 'UF_REPORT_FILE':

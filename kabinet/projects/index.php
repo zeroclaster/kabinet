@@ -16,6 +16,7 @@ $order = $projectManager->orderData();
 $project = \PHelp::getElementByField($projectData,$request->get('id'));
 if (!$project) LocalRedirect("/404.php", "404 Not Found");
 
+LocalRedirect("/404.php", "404 Not Found");
 ?>
 
 <div class="d-flex justify-content-between">

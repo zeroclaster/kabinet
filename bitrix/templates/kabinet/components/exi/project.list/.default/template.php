@@ -94,7 +94,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                       </div>
                   </div>
                   <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                      <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/?id='+value.ID">проверить</a>
+                      <a class="btn btn-danger mdi-alert-outline icon-button" href="#">проверить</a>
                   </div>
               </div>
 

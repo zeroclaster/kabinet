@@ -274,3 +274,29 @@ html, body {
 .go-back-page i{
     font-size: 24px;
 }
+
+
+.copy-link-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.copy-link-btn:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.copy-link-btn:focus {
+    outline: none;
+    background-color: #f8f9fa;
+}

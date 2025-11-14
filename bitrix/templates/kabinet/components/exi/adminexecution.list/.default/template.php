@@ -72,11 +72,7 @@ $this->setFrameMode(true);
 
 <script type="text/html" id="kabinet-content">
     <div class="panel admin-execution-list">
-        <div class="panel-header">
-            <div class="d-flex justify-content-between align-items-center flex-wrap group-10">
-            </div>
-        </div>
-
+        <div class="panel-header text-center" style="padding: 0 0 20px 0;">Найдено {{total}}, показано {{viewedcount}}</div>
         <div class="panel-body">
 <table class="table">
     <thead>
@@ -209,13 +205,16 @@ $this->setFrameMode(true);
                 <div class="history-change-block mt-4" v-if="runner.UF_HISTORYCHANGE_ORIGINAL.length>0">
                     <input :id="'historystatus'+runner.ID+'history'" type="checkbox" @change="showhidehistory">
                     <label class="btn btn-primary" :for="'historystatus'+runner.ID+'history'">История статусов</label>
+                    <!-- Дополнительный вывод последнего элемента -->
+                    <div class="mb-2 last-history-item" v-if="runner.UF_HISTORYCHANGE_ORIGINAL.length > 0">
+                        <b>{{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].DATE_CHANGE}}</b>
+                        {{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].USER_CHANGE}}:
+                        <u>{{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].OLD_STATUS_TITLE}} id({{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].OLD_STATUS_ID}})</u> ►
+                        <u>{{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].NEW_STATUS_TITLE}} id({{runner.UF_HISTORYCHANGE_ORIGINAL[runner.UF_HISTORYCHANGE_ORIGINAL.length - 1].NEW_STATUS_ID}})</u>
+                    </div>
                     <div class="history-list mt-3 p-3">
                         <div class="mb-2" v-for="status_history in runner.UF_HISTORYCHANGE_ORIGINAL">
-                                <b>{{status_history.DATE_CHANGE}}</b>
-                                пользователь {{status_history.USER_CHANGE}} сменил статус с
-                                <u>{{status_history.OLD_STATUS_TITLE}} id({{status_history.OLD_STATUS_ID}})</u>
-                                на
-                                <u>{{status_history.NEW_STATUS_TITLE}} id({{status_history.NEW_STATUS_ID}})</u>
+                                <b>{{status_history.DATE_CHANGE}}</b> {{status_history.USER_CHANGE}}: <u>{{status_history.OLD_STATUS_TITLE}} id({{status_history.OLD_STATUS_ID}})</u> ► <u>{{status_history.NEW_STATUS_TITLE}} id({{status_history.NEW_STATUS_ID}})</u>
                         </div>
                     </div>
                 </div>

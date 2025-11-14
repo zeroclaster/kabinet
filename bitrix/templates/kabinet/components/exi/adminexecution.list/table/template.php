@@ -133,6 +133,65 @@ Asset::getInstance()->addJs(SITE_TEMPLATE_PATH."/components/exi/adminexecution.l
         return windowHeight - controlsHeight - headerHeight - margins;
     }
 
+    // Функция для копирования текста в буфер обмена
+    function copyToClipboard(text) {
+        // Создаем временный textarea элемент
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+
+        // Выделяем и копируем текст
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // Для мобильных устройств
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                // Показываем уведомление об успешном копировании
+                showCopyNotification('Ссылка скопирована в буфер обмена');
+            } else {
+                console.error('Не удалось скопировать текст');
+            }
+        } catch (err) {
+            console.error('Ошибка при копировании: ', err);
+        }
+
+        // Удаляем временный элемент
+        document.body.removeChild(textarea);
+    }
+
+    // Функция для показа уведомления о копировании
+    function showCopyNotification(message) {
+        // Используем существующую систему уведомлений или создаем простую
+        const kabinetStore = usekabinetStore();
+        if (kabinetStore) {
+            kabinetStore.NotifyOk = "";
+            kabinetStore.NotifyOk = message;
+        } else {
+            // Создаем простое временное уведомление
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            z-index: 10000;
+            font-size: 14px;
+        `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 2000);
+        }
+    }
+
     // Создаем JavaScript массив с данными исполнений
     var executionsArray = <?= CUtil::PhpToJSObject($executionsData, false, true) ?>;
 

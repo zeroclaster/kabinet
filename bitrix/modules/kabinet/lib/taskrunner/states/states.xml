@@ -5,7 +5,7 @@
             <state id="0" name="state1" icon="fa-clock-o">
                 <title>Запланирован</title>
                 <user>
-                    <button>Запланирован</button>
+                    <button>Вернуть в работу ► Запланировано</button>
                 </user>
                 <admin>
                     <button>Запланирован</button>

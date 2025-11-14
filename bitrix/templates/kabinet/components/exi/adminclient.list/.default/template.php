@@ -51,9 +51,9 @@ $this->setFrameMode(true);
                 <tr v-for="(client,clientindex) in dataclient">
                     <td style="border-right: 1px solid #dde3e8;width: 10%;padding: 0;">
                         <div>
-                            <div class="h4">{{client.NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
+                            <div class="h4">{{client.PRINT_NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
                             <div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
-                            <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank">Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
+                            <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank"><i class="fa fa-telegram" aria-hidden="true" v-if="client.UF_TELEGRAM_ID !=''"></i> Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
                         </div>
                         <div class="mt-4">
                             <div class="font-weight-bold">Кабинет клиента:</div>
@@ -70,7 +70,7 @@ $this->setFrameMode(true);
                             <tr v-for="project in dataproject[client.ID]" style="">
                                 <td style="border-right: 1px solid #dde3e8;border-bottom: 1px solid #dde3e8;width: 32%;padding: 0;">
                                     <div style="padding: 10px;">
-                                        <div :id="'project-title-id-'+project.ID" class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}}</div>
+                                        <div :id="'project-title-id-'+project.ID" class="font-weight-bold h4" style="margin-top: 0;">{{project.UF_NAME}} #{{project.UF_EXT_KEY}}</div>
                                         <div class="font-weight-bold">Кабинет клиента:</div>
                                         <ul class="list-unstyled">
                                             <li><a :href="'/kabinet/projects/breif/?id='+project.ID+'&usr='+client.ID" target="_blank">Бриф <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
@@ -78,7 +78,7 @@ $this->setFrameMode(true);
                                         </ul>
                                         <div v-for="task in datatask[client.ID]">
                                             <div v-if="project.ID == task.UF_PROJECT_ID">
-                                                <a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID" target="_blank">Согласование и отчеты {{task.UF_NAME}} <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                                <a :href="'/kabinet/projects/reports/?t='+task.ID+'&usr='+client.ID" target="_blank">Ход работы {{task.UF_NAME}} <i class="fa fa-angle-right" aria-hidden="true"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -105,7 +105,7 @@ $this->setFrameMode(true);
                                                                     <input type="hidden" name="clientidsearch" :value="client.ID">
                                                                     <input type="hidden" name="projectidsearch" :value="project.ID">
                                                                     <input type="hidden" name="taskidsearch" :value="task.ID">
-                                                                    <button :id="'task'+task.ID" class="project-go-1" type="submit">{{task.UF_NAME}}</button>
+                                                                    <button :id="'task'+task.ID" class="project-go-1" type="submit">{{task.UF_NAME}} #{{task.UF_EXT_KEY}}</button>
                                                                 </form>
 
 

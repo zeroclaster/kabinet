@@ -1,7 +1,9 @@
 <?php
 namespace Bitrix\Kabinet\taskrunner\states;
 
+// Для отладки, можно установить свою дату задав константу TESTDATE
 use Bitrix\Kabinet\DateTime;
+//use \Bitrix\Main\Type\DateTime;
 
 class Basestate{
 	
@@ -79,12 +81,27 @@ class Basestate{
 
         $runnerFields = $this->runnerFields;
         $d = (new DateTime())->add("-".$hour." hours");
-        if ($d->getTimestamp() > $runnerFields['UF_CREATE_DATE']){
+        if ($d->getTimestamp() > $runnerFields['UF_CREATE_DATE']->getTimestamp()){
             $this->runnerFields['UF_HITCH'] = 1;
 
             $convertdata = $RunnerManager->remakeFulfiData([$this->runnerFields]);
             $updateFileds = $convertdata[0];
             
+            $RunnerManager->update($updateFileds);
+        }
+    }
+
+    public function isFixHitch2($hour=0){
+        $RunnerManager = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Runner');
+
+        $runnerFields = $this->runnerFields;
+        $d = (new DateTime())->add("-".$hour." hours");
+        if ($d->getTimestamp() > $runnerFields['UF_PLANNE_DATE']->getTimestamp()){
+            $this->runnerFields['UF_HITCH'] = 1;
+
+            $convertdata = $RunnerManager->remakeFulfiData([$this->runnerFields]);
+            $updateFileds = $convertdata[0];
+
             $RunnerManager->update($updateFileds);
         }
     }

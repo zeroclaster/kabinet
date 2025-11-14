@@ -159,7 +159,9 @@ class Taskmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $PRODUCT = $orders[$isExistsProject['UF_ORDER_ID']][$fields["UF_PRODUKT_ID"]];
 
         if($PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::IS_SOGLACOVANIE)
-            $object->set('UF_COORDINATION', 13);
+            $object->set('UF_COORDINATION', 13);    // согласовывает с заказчиком
+        elseif($PRODUCT['COORDINATION']['VALUE_XML_ID'] == \Bitrix\Kabinet\task\Taskmanager::BES_SOGLACOVANIE)
+            $object->set('UF_COORDINATION', 12);    // публикует без согласования
         else
             $object->set('UF_COORDINATION', 0);
 

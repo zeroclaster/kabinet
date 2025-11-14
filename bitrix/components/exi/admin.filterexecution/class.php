@@ -93,8 +93,8 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         if($post['tasktextsearch'] && !$post['taskidsearch'])
             ${$FILTER_NAME}['tasktextsearch'] = $SEARCH_RESULT['tasktextsearch'] = $post['tasktextsearch'];
 
-        if($post['executionidsearch'])
-            ${$FILTER_NAME}['executionidsearch'] = $SEARCH_RESULT['executionidsearch'] = $post['executionidsearch'];
+        if($_REQUEST['executionidsearch'])
+            ${$FILTER_NAME}['executionidsearch'] = $SEARCH_RESULT['executionidsearch'] = $_REQUEST['executionidsearch'];
 
         if(isset($post['statusexecutionsearch']))
             ${$FILTER_NAME}['statusexecutionsearch'] = $SEARCH_RESULT['statusexecutionsearch'] =  $post['statusexecutionsearch'];
@@ -322,7 +322,7 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         ])->fetchAll();
 
         $output['responsibles'][] = [
-            "value" => "Не задано",
+            "value" => "Вывести все где не задано",
             "id" => 0
         ];
 
