@@ -288,7 +288,7 @@
                     Сущность ожидает дату автоматического перехода в статус 1-Взят в работу.
                     Вычисляется дата/время перехода в статус «Взят в работу» = планируемая дата публикации – задержка исполнения.
                 </description>
-                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage1</class>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\removal\Stage1</class>
             </state>
             <state id="1" name="state2" icon="fa-hourglass-start">
                 <title>Взят в работу</title>

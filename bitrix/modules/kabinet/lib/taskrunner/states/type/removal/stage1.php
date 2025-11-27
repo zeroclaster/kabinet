@@ -1,5 +1,5 @@
 <?php
-namespace Bitrix\Kabinet\taskrunner\states\type\multiple;
+namespace Bitrix\Kabinet\taskrunner\states\type\removal;
 
 use Bitrix\Main\SystemException,
     Bitrix\Main\Entity,
@@ -60,7 +60,6 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         if(\PHelp::isAdmin()) {
             return [
                 1,  // Взят в работу
-                6,   //Публикация
                 10  // Отменена
             ];
         }else{
@@ -69,7 +68,6 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             ];
         }
     }
-
 
     public function conditionsTransition($oldData){
         if (\PHelp::isAdmin()) {
@@ -118,29 +116,30 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
 
-        $now = new DateTime();
-        if ($runnerFields['UF_PLANNE_DATE'] < $now) {
-            $task = $this->getTask();
-            $user_id = $task['UF_AUTHOR_ID'];
 
-            $value = $task['FINALE_PRICE'];
+        $now = new DateTime();		
+        if ($runnerFields['UF_PLANNE_DATE'] < $now){
+			$task = $this->getTask();
+			$user_id = $task['UF_AUTHOR_ID'];		
 
-            //throw new SystemException("STOP TEST");
-            if ($BillingManager->teorygetMoney($value, $user_id)) {
+			$value = $task['FINALE_PRICE'] / $task['UF_NUMBER_STARTS'];		
+		
+			//throw new SystemException("STOP TEST");
+			if ($BillingManager->teorygetMoney($value,$user_id)){
 
-                /*
-                $HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get(FULF_HL);
-                $obResult = $HLBClass::update($runnerFields['ID'], ['UF_MONEY_RESERVE' => $value]);
-                if (!$obResult->isSuccess()) {
-                    $err = $obResult->getErrors();
-                    $mess = $err[0]->getMessage();
-                    throw new SystemException($mess);
-                }
-                $this->runnerFields['UF_MONEY_RESERVE'] = $value;
-                */
-                $this->goToState(1);
-            }
-        }
+			    /*
+				$HLBClass = \Bitrix\Main\DI\ServiceLocator::getInstance()->get(FULF_HL);
+				$obResult = $HLBClass::update($runnerFields['ID'],['UF_MONEY_RESERVE'=>$value]);
+				 if (!$obResult->isSuccess()){
+					$err = $obResult->getErrors();
+					$mess = $err[0]->getMessage();
+					throw new SystemException($mess);
+				}
+				$this->runnerFields['UF_MONEY_RESERVE'] = $value;
+			    */
+				$this->goToState(1);
+			}
+		}
 
     }
 
