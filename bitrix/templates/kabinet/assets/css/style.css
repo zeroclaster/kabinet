@@ -628,6 +628,13 @@ h6, .h6 {
 
 .project-item-block .order-item-block{
 	position: relative;
+	-webkit-box-shadow: 2px 2px 5px 2px rgba(34, 60, 80, 0.36);
+	-moz-box-shadow: 2px 2px 5px 2px rgba(34, 60, 80, 0.36);
+	box-shadow: 2px 2px 5px 2px rgba(34, 60, 80, 0.36);
+}
+
+.project-item-block .order-item-block:not(:empty):not(:first-child){
+	margin-left: 10px;
 }
 
 .project-item-block .block-remove-butt{
@@ -1182,6 +1189,10 @@ i.fa{
 	color: #00946f;
 }
 
+.alert-only-text.alert-done.alert-done2{
+	color: #ff4c56;
+}
+
 .form-control.it-required_field{
 	border: 1px solid red;
 }
@@ -1561,4 +1572,12 @@ i.fa{
 
 .rd-navbar-sidebar-active .page.table-page{
 	padding-left: 0px;
+}
+
+.overlinkprodukt{
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
 }

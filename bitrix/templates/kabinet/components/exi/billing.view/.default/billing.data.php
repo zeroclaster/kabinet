@@ -41,6 +41,7 @@ $billing_state = CUtil::PhpToJSObject($data, false, true);
     actions: {
     // Добавляем action для установки недостающей суммы
     setMissingAmount(amount) {
+    if (amount < 1000) amount = 1000;
     this.missingAmount = amount;
     },
     // Очищаем недостающую сумму после пополнения

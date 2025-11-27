@@ -217,6 +217,13 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
          * @returns {boolean} true если средств достаточно для всех задач
          */
         checkBalance(index) {
+            const task = this.datataskCopy[index];
+
+            // Если количество пустое - не проверяем баланс
+            if (!task.UF_NUMBER_STARTS && task.UF_NUMBER_STARTS !== 0) {
+                return true;
+            }
+
             const billing = billingStore();
             const balance = billing.databilling?.UF_VALUE || 0;
             let totalTaskPrice = 0;
@@ -299,8 +306,61 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             }
             return true;
         },
-
         starttask(index){
+            // Проверяем баланс
+            if (!this.checkBalance(index)) {
+                return;
+            }
+
+            var cur = this;
+            var taskId = this.datataskCopy[index].ID; // Сохраняем ID задачи
+
+            var form_data = this.dataToFormData(this.datataskCopy[index]);
+            this.saveData('bitrix:kabinet.evn.taskevents.starttaskcopy',form_data,function(data){
+                // Находим задачу по ID в ответе
+                if (data.task) {
+                    for (let taskIndex in data.task) {
+                        if (data.task[taskIndex].ID === taskId) {
+                            // Обновляем только нужную задачу
+                            cur.datataskCopy[index] = data.task[taskIndex];
+                            break;
+                        }
+                    }
+                }
+
+                // Обновляем календарь
+                const QueueStore = calendarStore()
+                QueueStore.datacalendarQueue = data.queue;
+
+                // Обновляем основное хранилище задач
+                const taskStory = tasklistStore();
+                if (data.task) {
+                    const updatedTasks = taskStory.datatask.map(task => {
+                        // Находим обновленную задачу в ответе
+                        for (let taskIndex in data.task) {
+                            if (data.task[taskIndex].ID === task.ID) {
+                                return data.task[taskIndex];
+                            }
+                        }
+                        return task; // Возвращаем исходную задачу если не нашли обновлений
+                    });
+                    taskStory.datatask = updatedTasks;
+                }
+
+                if (typeof data.data2 != "undefined") {
+                    const orderStore = orderlistStore();
+                    orderStore.data2 = data.data2;
+                }
+
+                if (typeof data.billing != "undefined") {
+                    const billing = billingStore();
+                    billing.databilling = data.billing;
+                }
+
+                cur.animatedCounter(taskId);
+            });
+        },
+        starttask___(index){
             // Проверяем баланс
             if (!this.checkBalance(index)) {
                 return;
@@ -495,7 +555,10 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             const task = this.datataskCopy[taskIndex];
             const product = this.getProductByIndexTask(taskIndex);
 
-            if (!task || !product) return;
+            if (!task || !product || (!task.UF_NUMBER_STARTS && task.UF_NUMBER_STARTS !== 0)) {
+                return; // Не делаем расчеты если количество пустое
+            }
+
 
             const recalculatedTask = this.taskCalculator.recalculateTask(task, product);
 
@@ -511,7 +574,10 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         // Обновленный метод remakeTaskData
         remakeTaskData(taskIndex) {
             const task = this.datataskCopy[taskIndex];
-            if (!task) return;
+            if (!task || (!task.UF_NUMBER_STARTS && task.UF_NUMBER_STARTS !== 0)) {
+                return; // Не делаем преобразования если количество пустое
+            }
+
 
             // 1. Инициализация UF_DATE_COMPLETION_ORIGINAL (аналог первого цикла в remakeData)
             if (!task.UF_DATE_COMPLETION_ORIGINAL) {
@@ -530,9 +596,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             if (!product) return;
 
             // 3. Устанавливаем количество по умолчанию если пустое
-            if (!task.UF_NUMBER_STARTS) {
-                task.UF_NUMBER_STARTS = product.QUANTITY || 1;
-            }
+            //if (!task.UF_NUMBER_STARTS) {
+             //   task.UF_NUMBER_STARTS = product.QUANTITY || 1;
+            //}
 
             // 4. FINALE_PRICE уже пересчитан в recalculateTask
 
@@ -595,6 +661,13 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
 
         // Обновленный метод inpsaveCopy
         inpsaveCopy(taskIndex) {
+            const task = this.datataskCopy[taskIndex];
+
+            // Если поле пустое - не делаем расчеты и не сохраняем
+            if (!task.UF_NUMBER_STARTS && task.UF_NUMBER_STARTS !== 0) {
+                return; // Прерываем выполнение
+            }
+
             // Сначала пересчитываем локально
             this.recalculateTask(taskIndex);
 
@@ -738,10 +811,17 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
         },
 
         decreaseNumberStarts(taskIndex) {
-            if (this.datataskCopy[taskIndex].UF_NUMBER_STARTS > 1) {
+            const currentValue = this.datataskCopy[taskIndex].UF_NUMBER_STARTS;
+
+            // Если значение пустое, устанавливаем 0 вместо уменьшения
+            if (!currentValue && currentValue !== 0) {
+                this.datataskCopy[taskIndex].UF_NUMBER_STARTS = 0;
+            } else if (currentValue > 1) {
                 this.datataskCopy[taskIndex].UF_NUMBER_STARTS--;
-                this.inpsaveCopy(taskIndex);
+            } else {
+                this.datataskCopy[taskIndex].UF_NUMBER_STARTS = ''; // Или 0, в зависимости от ваших предпочтений
             }
+            this.inpsaveCopy(taskIndex);
         },
     },
     mounted() {

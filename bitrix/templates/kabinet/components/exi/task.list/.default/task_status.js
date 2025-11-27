@@ -32,7 +32,7 @@ var task_status = function (PHPPARAMS ={}){
             wait: '<div class="alert-status iphone-style-2 task-wait text-nowrap"><i class="fa fa-clock-o"></i></div>',
             start: '<div class="alert-status iphone-style-2 task-start text-nowrap"><i class="fa fa-hourglass-start"></i></div>',
             alert: '<div class="alert-status iphone-style-2 task-alert text-nowrap"><i class="fa fa-exclamation-triangle"></i></div>',
-            done: '<div class="alert-only-text alert-done font-bold text-nowrap">Оформите заказ</div>',
+            done: '<div class="alert-only-text alert-done alert-done2 font-bold text-nowrap">Оформите заказ</div>',
             cancel: '<div class="alert-only-text alert-cancel font-bold text-nowrap"><i class="fa fa-times"></i> Остановлена</div>',
             planned: '<div class="alert-only-text alert-planned font-bold text-nowrap"><i class="fa fa-clock-o"></i> Запланирована</div>',
             worked: '<div class="alert-only-text alert-worked font-bold text-nowrap"><i class="fa fa-hourglass-start"></i> Выполняется</div>',

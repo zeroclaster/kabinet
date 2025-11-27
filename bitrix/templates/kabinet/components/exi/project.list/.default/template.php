@@ -71,14 +71,17 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                         <div class="h4">Ход работы</div>
                         <div v-if="hasTasksInProject(value.ID)">Выберите, чтобы посмотреть ход выполнения, согласования и отчет:</div>
                         <div class="d-flex flex-wrap ord-block1-1" v-if="value.UF_ORDER_ID">
-                            <div v-for="task in datatask" class="order-item-block">
+                            <template v-for="task in datatask" >
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
                                 <template v-if="task.UF_PROJECT_ID == value.ID && task.UF_PRODUKT_ID == order.ID">
-                                <a :href="'/kabinet/projects/reports/?t='+task.ID"><img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']"></a>
-                                <div v-html="taskStatus_b(task.ID)"></div>
-                                <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(task.ID)}}</div>
+                                    <div class="order-item-block">
+                                        <a :href="'/kabinet/projects/reports/?t='+task.ID"><img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']"></a>
+                                        <div v-html="taskStatus_b(task.ID)"></div>
+                                        <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(task.ID)}}</div>
+                                        <a class="overlinkprodukt" :href="'/kabinet/projects/reports/?t='+task.ID"></a>
+                                    </div>
                                 </template>
-                            </div>
+                            </template>
                         </div>
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">

@@ -53,7 +53,7 @@ $this->setFrameMode(true);
                         <div>
                             <div class="h4">{{client.PRINT_NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
                             <div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
-                            <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank"><i class="fa fa-telegram" aria-hidden="true" v-if="client.UF_TELEGRAM_ID !=''"></i> Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
+                            <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank"><i class="fa fa-telegram" aria-hidden="true" v-if="client.UF_TELEGRAM_ID >0"></i> Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
                         </div>
                         <div class="mt-4">
                             <div class="font-weight-bold">Кабинет клиента:</div>

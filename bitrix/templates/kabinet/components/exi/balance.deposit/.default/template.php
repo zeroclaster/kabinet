@@ -61,7 +61,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                         <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
                         <div class="form-block mt-2">
                             <div class="form-group row">
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <label for="summa-popolneniya">Сумма пополнения, руб.</label>
                                     <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
                                     <div v-if="showError('summapopolneniya2')" class="error-field">Сумма платежа не должна быть меньше 1000</div>
@@ -69,7 +69,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                                             id="summa-popolneniya"
                                             name="summapopolneniya"
                                             class="form-control"
-                                            style="text-align: right" type="text"
+                                            style="text-align: right;width: 200px;" type="text"
                                             v-model="fields.summapopolneniya"
                                             @input="formatCurrency($event, 'summapopolneniya')"
                                             placeholder="0.00"
@@ -116,7 +116,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                             <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
                             <div class="form-block mt-2">
                                 <div class="form-group row">
-                                    <div class="col-md-2">
+                                    <div class="col-md-4">
                                         <label for="qrsumm">Сумма пополнения, руб.</label>
                                         <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
 
@@ -176,7 +176,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                         <div>Текущий баланс: <span class="usr-balanse">{{databilling.UF_VALUE_ORIGINAL}} руб.</span></div>
                         <div class="form-block mt-2">
                             <div class="form-group row">
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <label for="summa-popolneniya2">Сумма пополнения, руб.</label>
                                     <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
                                     <div v-if="showError('summapopolneniya2')" class="error-field">Сумма платежа не должна быть меньше 1000</div>
@@ -184,7 +184,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                                             id="summa-popolneniya2"
                                             name="summapopolneniya"
                                             class="form-control"
-                                            style="text-align: right"
+                                            style="text-align: right;width: 200px;"
                                             type="text"
                                             v-model="fields.summapopolneniya"
                                             @input="formatCurrency($event, 'summapopolneniya')"
@@ -256,7 +256,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                                     <div v-if="showError('summapopolneniya')" class="error-field">Вы не ввели сумму пополнения</div>
                                     <div class="d-flex align-items-center mb-3">
                                         <div>
-                                            <input id="summa-popolneniya" name="summapopolneniya" class="form-control" style="text-align: right" type="text" v-model="fields.summapopolneniya" @input="onInput2">
+                                            <input id="summa-popolneniya" name="summapopolneniya" class="form-control" style="text-align: right;width: 200px;" type="text" v-model="fields.summapopolneniya" @input="onInput2">
                                         </div>
                                         <div class="ml-3">
                                             сумма удержания: {{sumpopolnenia}} руб.
