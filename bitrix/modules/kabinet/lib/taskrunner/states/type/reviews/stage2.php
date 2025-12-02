@@ -66,7 +66,7 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             }
 
             if (
-                $TASK['UF_COORDINATION'] == 13 // 13 согласование есть
+                $TASK['UF_COORDINATION'] == 11 // текст предоставляет заказчик
             ){
                 $states[] = 3; // Ожидается текст от клиента
             }

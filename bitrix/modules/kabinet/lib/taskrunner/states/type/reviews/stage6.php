@@ -13,7 +13,7 @@ use \Bitrix\Main\Type\DateTime;
 
 
 /*
- *5-На согласовании (у клиента);
+ *5-На согласовании у клиента;
 
  *
  * Фиксация просрочки — через 72 часа.
@@ -70,7 +70,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
                 6, //Публикация
             ];
         }else{
-            return [4,6];
+            return [2,4,6];
         }
     }
 

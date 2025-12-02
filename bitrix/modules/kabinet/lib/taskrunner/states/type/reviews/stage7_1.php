@@ -10,10 +10,8 @@ use Bitrix\Main\SystemException,
 use \Bitrix\Main\Type\DateTime;
 
 /*
-6-Публикация;
+6.1 -Публикуется;
 
-
-Фиксация просрочки — через 24 часов.
 Администратор может вручную сменить статус на:
 
 2-Пишется текст
@@ -36,12 +34,13 @@ use \Bitrix\Main\Type\DateTime;
 
 Нет кнопок
 
+Фиксация просрочки — если прошла плановая дата публикации.
  *
  *
  */
 
 
-class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
+class Stage7_1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
     protected $title = '';
     public $runnerFields = [];
     public $id = 0;
@@ -71,7 +70,6 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             $states = [2]; // Пишется текст
             $states[] = 4; // В работе у специалиста
 
-            $states[] = 61; // Публикуется
 
             $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($runnerFields['UF_TASK_ID'])->fetch();
             if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
@@ -134,7 +132,7 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $event->send();
 
         //Фиксация просрочки — через 72 часа.
-        $this->isFixHitch(24);
+        $this->isFixHitch2();
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
     }

@@ -783,7 +783,7 @@ adminexecution_list = (function (){
                     alertStyle(status){
                         if ([0].indexOf(parseInt(status)) != -1) return 'alert-planned';
                         if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-user-attention';
-                        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
+                        if ([1,2,4,6,61,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
                         if ([9].indexOf(parseInt(status)) != -1) return 'alert-done';
                         if ([10].indexOf(parseInt(status)) != -1) return 'alert-cancel';
                     },

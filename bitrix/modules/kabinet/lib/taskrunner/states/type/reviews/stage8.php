@@ -77,6 +77,17 @@ class Stage8 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     public function leaveStage($object){
         $object->set('UF_COMMENT','');
         $object->set('UF_HITCH',0);
+
+        $UF_STATUS = $object->get('UF_STATUS');
+        $UF_RESPONSIBLE = $object->get('UF_RESPONSIBLE');
+
+        // Статусы, которые требуют добавления ответственного
+        $STATUSES_FOR_RESPONSIBLE_ADDITION = [8,9];
+
+        if (in_array($UF_STATUS, $STATUSES_FOR_RESPONSIBLE_ADDITION)) {
+            $updatedResponsible = $this->addResponsibleEntry($UF_RESPONSIBLE, $UF_STATUS);
+            $object->set('UF_RESPONSIBLE', $updatedResponsible);
+        }
     }
 
     public function execute(){

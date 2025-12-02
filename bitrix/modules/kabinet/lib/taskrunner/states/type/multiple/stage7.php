@@ -1,5 +1,5 @@
 <?php
-namespace Bitrix\Kabinet\taskrunner\states\type\reviews;
+namespace Bitrix\Kabinet\taskrunner\states\type\multiple;
 
 use Bitrix\Main\SystemException,
     Bitrix\Main\Entity,
@@ -13,26 +13,16 @@ use \Bitrix\Main\Type\DateTime;
 6-Публикация;
 
 
-Фиксация просрочки — через 24 часов.
+Фиксация просрочки — через 96 часов.
 Администратор может вручную сменить статус на:
 
-2-Пишется текст
-4-В работе у специалиста
+Если «Отчетность» = «есть», то возможен переход:
+7-Готовится отчет;
+9-Выполнена;
 
-6-1 Публикуется
-+ копируется ответственный за стадию, если он не был задан
 
-Если «Отчетность» = «есть», то возможен переход на:
-7-Готовится отчет
-+ копируется ответственный за стадию, если он не был задан
-
-Если «Отчетность» = «нет», то возможен переход на
-9-Выполнено
-+ копируется ответственный за стадию, если он не был задан
-
-Для типа «Множественные»
-добавить кнопку «Запланировано»
-
+Если «Отчетность» = «нет», то возможен переход:
+9-Выполнена;
 
 Нет кнопок
 
@@ -68,10 +58,9 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     public function getRoutes(){
         $runnerFields = $this->runnerFields;
         if(\PHelp::isAdmin()) {
+            $states = [0]; // Запланирован
             $states = [2]; // Пишется текст
             $states[] = 4; // В работе у специалиста
-
-            $states[] = 61; // Публикуется
 
             $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($runnerFields['UF_TASK_ID'])->fetch();
             if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
@@ -116,17 +105,6 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
         $object->set('UF_COMMENT','');
         $object->set('UF_HITCH',0);
-
-        $UF_STATUS = $object->get('UF_STATUS');
-        $UF_RESPONSIBLE = $object->get('UF_RESPONSIBLE');
-
-        // Статусы, которые требуют добавления ответственного
-        $STATUSES_FOR_RESPONSIBLE_ADDITION = [61,7,9];
-
-        if (in_array($UF_STATUS, $STATUSES_FOR_RESPONSIBLE_ADDITION)) {
-            $updatedResponsible = $this->addResponsibleEntry($UF_RESPONSIBLE, $UF_STATUS);
-            $object->set('UF_RESPONSIBLE', $updatedResponsible);
-        }
     }
 
     public function execute(){

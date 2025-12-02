@@ -105,4 +105,40 @@ class Basestate{
             $RunnerManager->update($updateFileds);
         }
     }
+
+    /**
+     * Добавляет новую запись ответственного с указанным статусом
+     *
+     * @param string|null $currentResponsibleJson Текущее значение UF_RESPONSIBLE в JSON
+     * @param string|int $newStatus Новый статус для добавления
+     * @return string JSON-строка с обновленным массивом ответственных
+     */
+    public function addResponsibleEntry($currentResponsibleJson, $newStatus)
+    {
+        $responsibleArray = [];
+
+        if ($currentResponsibleJson) {
+            $responsibleArray = json_decode($currentResponsibleJson, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $responsibleArray = [];
+            }
+        }
+
+        // Если есть существующие данные, создаем новую запись
+        if (!empty($responsibleArray)) {
+            // Получаем последний элемент
+            $lastElement = end($responsibleArray);
+            $responsibleArray = array_values($responsibleArray); // сбрасываем указатель
+
+            // Создаем новую запись на основе последней
+            $newEntry = $lastElement;
+            $newEntry['status'] = (string)$newStatus;
+            //$newEntry['date'] = date('c');
+
+            // Добавляем новую запись в массив
+            $responsibleArray[] = $newEntry;
+        }
+
+        return json_encode($responsibleArray);
+    }
 }

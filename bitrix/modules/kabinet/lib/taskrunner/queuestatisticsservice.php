@@ -24,7 +24,7 @@ class Queuestatisticsservice {
         }
         $ret[] = $st;
 
-        $status = [1,2,3,4,5,6,7,8];
+        $status = [1,2,3,4,5,6,61,7,8];
         $Queue = [];
         foreach ($dbArray as $item)  if (in_array($item['UF_STATUS'],$status)) $Queue[]=$item;
 

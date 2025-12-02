@@ -232,7 +232,7 @@ methods: {
         if ([0].indexOf(parseInt(status)) != -1) return 'alert-planned';
 
         //все стадии, когда ведутся работы на стороне сервиса
-        if ([1,2,4,6,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
+        if ([1,2,4,6,61,7].indexOf(parseInt(status)) != -1) return 'alert-worked';
 
         //все стадии, когда требуется внимание клиента – желтые+серый текст.
         if ([3,5,8].indexOf(parseInt(status)) != -1) return 'alert-user-attention';
