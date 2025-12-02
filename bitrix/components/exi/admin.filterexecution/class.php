@@ -123,12 +123,17 @@ class adminFilterclientComponent extends \CBitrixComponent implements \Bitrix\Ma
         // Требует внимания
         if($post['attention']) ${$FILTER_NAME}['attention'] = $SEARCH_RESULT['attention'] = $post['attention'];
 
-        // Добавляем обработку ответственного
-        if(isset($post['responsibleidsearch']))
+// Добавляем обработку ответственного
+        if(isset($post['responsibleidsearch']) && $post['responsibleidsearch'] !== '') {
             ${$FILTER_NAME}['responsibleidsearch'] = $SEARCH_RESULT['responsibleidsearch'] = $post['responsibleidsearch'];
+        } else {
+            // Если не задано, устанавливаем 0
+            ${$FILTER_NAME}['responsibleidsearch'] = $SEARCH_RESULT['responsibleidsearch'] = '0';
+        }
 
-        if($post['responsibletextsearch'] && !$post['responsibleidsearch'])
+        if($post['responsibletextsearch'] && (!$post['responsibleidsearch'] || $post['responsibleidsearch'] === '0')) {
             ${$FILTER_NAME}['responsibletextsearch'] = $SEARCH_RESULT['responsibletextsearch'] = $post['responsibletextsearch'];
+        }
 
         $this->includeComponentTemplate($this->template);
         return true;

@@ -37,6 +37,17 @@ window.columnConfigs = {
                     columnConfig.className = 'editable-cell';
                 }
                 break;
+			case 'UF_HITCH':	
+			columnConfig.width = 100;
+                columnConfig.renderer = function(instance, td, row, col, prop, value) {
+                    if (value && value=='1') {
+                        td.innerHTML = 'Да';
+                    } else {
+                        td.textContent = '';
+                    }
+                    return td;
+                };	
+				break;
             case 'client':
             case 'project':
                 columnConfig.width = 200;

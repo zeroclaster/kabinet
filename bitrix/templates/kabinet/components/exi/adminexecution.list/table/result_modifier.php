@@ -100,6 +100,7 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
             'task' => $arResult["TASK_DATA"][$taskId]['UF_NAME'] ?? '',
             'created_date' => $arResult["TASK_DATA"][$taskId]['UF_PUBLISH_DATE_ORIGINAL']['FORMAT1'] ?? '',
             'completion_date' => $arResult["TASK_DATA"][$taskId]['UF_DATE_COMPLETION_ORIGINAL']['FORMAT1'] ?? '',
+			'UF_HITCH' => $runner['UF_HITCH'] ?? '',
             'coordination' => getFieldValueWithOriginal($taskData, 'UF_COORDINATION'),
             'reporting' => getFieldValueWithOriginal($taskData, 'UF_REPORTING'),
             'process_type' => getFieldValueWithOriginal($taskData, 'UF_CYCLICALITY'),

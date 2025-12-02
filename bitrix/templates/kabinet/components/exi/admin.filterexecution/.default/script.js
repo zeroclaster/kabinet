@@ -116,6 +116,13 @@ const filter1 = {
                 $('#responsibleidsearch').val('0');
             }
         });
+
+// Обработчик для очистки
+        input.bind('typeahead:autocomplete', function (ev, suggestion) {
+            if (suggestion.id === 0) {
+                $('#responsibleidsearch').val('0');
+            }
+        });
     },
 
     // Инициализация поля клиента
@@ -322,7 +329,7 @@ const filter1 = {
     setInitialValues() {
 
         // Устанавливаем значение ответственного
-        if (typeof this.seach_result.responsibleidsearch !== 'undefined' && this.seach_result.responsibleidsearch != '0') {
+        if (typeof this.seach_result.responsibleidsearch !== 'undefined' && this.seach_result.responsibleidsearch != '0' && this.seach_result.responsibleidsearch != '') {
             for (let element of this.allData.responsibles) {
                 if (element.id == this.seach_result.responsibleidsearch) {
                     $('#search-responsible').typeahead('val', element.value);
@@ -330,9 +337,12 @@ const filter1 = {
                     break;
                 }
             }
+        } else {
+            // Если ответственный не выбран, устанавливаем значение 0
+            $('#responsibleidsearch').val('0');
         }
 
-        // Устанавливаем текстовое значение если есть
+// Устанавливаем текстовое значение если есть
         if (this.seach_result.responsibletextsearch && !this.seach_result.responsibleidsearch) {
             $('#search-responsible').val(this.seach_result.responsibletextsearch);
         }
@@ -587,13 +597,16 @@ const filter1 = {
                     if (input.type === 'text') {
                         input.value = '';
                     } else if (input.type === 'hidden') {
-                        input.value = '0';
+                        input.value = '0'; // Все hidden поля сбрасываем в 0
                     } else if (input.type === 'checkbox') {
                         input.checked = false;
                     } else if (input.type === 'radio') {
                         input.checked = false;
                     }
                 }
+
+                // Особо сбрасываем поле ответственного
+                $('#responsibleidsearch').val('0');
 
                 if (typeof $('#search-client').typeahead !== "undefined") {
                     $('#search-client').typeahead('val', '');

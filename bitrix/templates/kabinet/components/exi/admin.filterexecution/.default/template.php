@@ -154,15 +154,15 @@ $this->setFrameMode(true);
             </div>
 
 
-                    <div class="row form-group">
-                        <div class="col-sm-3 text-sm-right">
-                            <label class="col-form-label col-form-label-sm" for="search-responsible">Ответственный</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input id="responsibleidsearch" name="responsibleidsearch" type="hidden">
-                            <input value="<?=$SEARCH_RESULT['responsibletextsearch']?>" name="responsibletextsearch" id="search-responsible" class="form-control form-control-sm" type="text" placeholder="начните вводить или выберите из списка" data-typehead=''>
-                        </div>
-                    </div>
+            <div class="row form-group">
+                <div class="col-sm-3 text-sm-right">
+                    <label class="col-form-label col-form-label-sm" for="search-responsible">Ответственный</label>
+                </div>
+                <div class="col-sm-9">
+                    <input id="responsibleidsearch" name="responsibleidsearch" type="hidden" value="0">
+                    <input value="<?=$SEARCH_RESULT['responsibletextsearch']?>" name="responsibletextsearch" id="search-responsible" class="form-control form-control-sm" type="text" placeholder="начните вводить или выберите из списка" data-typehead=''>
+                </div>
+            </div>
 
 
 

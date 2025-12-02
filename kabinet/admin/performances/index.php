@@ -36,7 +36,13 @@ $user = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('user');
                         ?>
                     </div>
                 </div>
-                <?if($clientfilter1):?>
+				<?
+				// Создаем копию фильтра и очищаем ее от "пустых" условий
+				$cleanFilter = array_filter($clientfilter1, function($value) {
+					return $value !== '' && $value !== null && $value !== '0' && $value !== false;
+				});
+				?>
+                <?if($cleanFilter):?>
                 <?$APPLICATION->IncludeComponent("exi:adminexecution.list", "", Array(
                         'FILTER_NAME' => 'clientfilter1',
                         'COUNT' => $_REQUEST['viewcount'],

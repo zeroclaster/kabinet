@@ -161,7 +161,7 @@ class AdminclientListComponent extends \CBitrixComponent implements \Bitrix\Main
         //if(!empty($FILTER["responsibleidsearch"])) $Query->addFilter('%UF_RESPONSIBLE',"(ID".$FILTER["responsibleidsearch"].")");
         // Фильтр по ответственному
         if(isset($FILTER["responsibleidsearch"])) {
-            if($FILTER["responsibleidsearch"] == 0) {
+            if($FILTER["responsibletextsearch"]) {
                 // Ищем все, где ответственный не задан (пустое поле)
                 $Query->addFilter('UF_RESPONSIBLE', false);
             } elseif(!empty($FILTER["responsibleidsearch"])) {

@@ -43,17 +43,17 @@ html, body {
 
 /* Стили для меню колонок */
 .column-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
-    min-width: 280px;
-    max-height: 400px;
-    overflow-y: auto;
+	position: fixed;
+	top: 63px;
+	left: 0;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	z-index: 1000;
+	min-width: 280px;
+	max-height: 489px;
+	overflow-y: auto;
 }
 
 .column-menu-header {
