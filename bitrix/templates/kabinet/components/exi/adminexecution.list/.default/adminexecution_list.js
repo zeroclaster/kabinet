@@ -3,8 +3,8 @@ adminexecution_list = (function (){
     return {
         start(PHPPARAMS, messageStoreInstance){
 
-            const changenotes = BX.Vue3.BitrixVue.mutableComponent('change-notes', {
-                template: `
+const changenotes = BX.Vue3.BitrixVue.mutableComponent('change-notes', {
+    template: `
         <div class="mb-3 form-group">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="mb-0" :for="'notes-execution'+id_input">Заметки</label>
@@ -23,7 +23,6 @@ adminexecution_list = (function (){
                 <div 
                     v-if="notesFulfiList.length > 0" 
                     class="note-sticker"
-                    @click="startEditing"
                 >
                     <div class="note-content">
                         <div class="note-history">
@@ -31,6 +30,19 @@ adminexecution_list = (function (){
                                 <div class="note-meta">
                                     <span class="note-date">{{ formatDate(note.date) }}</span>
                                     <span class="note-user">{{ note.username }}</span>
+                                    <!-- Кнопка редактирования для каждой заметки -->
+                                    <button 
+                                        v-if="!isEditingNote || editingNoteIndex !== index"
+                                        class="btn btn-link btn-sm p-0 ml-2" 
+                                        @click.stop="editSpecificNote(note, index)"
+                                        title="Редактировать эту заметку"
+                                    >
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                    <!-- Индикатор редактируемой заметки -->
+                                    <span v-if="editingNoteIndex === index" class="badge bg-warning ml-2">
+                                        Редактируется
+                                    </span>
                                 </div>
                                 <div class="note-text">{{ note.text }}</div>
                             </div>
@@ -56,11 +68,14 @@ adminexecution_list = (function (){
             <div v-else class="notes-edit">
                 <div class="note-sticker editing">
                     <div class="note-content">
+                        <div v-if="editingNoteIndex !== null" class="mb-2 text-muted small">
+                            Редактирование заметки от {{ formatDate(notesFulfiList[editingNoteIndex].date) }}
+                        </div>
                         <textarea 
                             class="form-control note-textarea" 
                             :id="'notes-execution'+id_input" 
                             v-model="noteText" 
-                            :placeholder="'Введите текст заметки...'"
+                            :placeholder="editingNoteIndex !== null ? 'Редактировать заметку...' : 'Введите текст заметки...'"
                             rows="4"
                             ref="textareaRef"
                         ></textarea>
@@ -72,7 +87,16 @@ adminexecution_list = (function (){
                         @click="saveNote" 
                         :disabled="!noteText.trim()"
                     >
-                        <i class="fa fa-check"></i> Сохранить
+                        <i class="fa fa-check"></i> 
+                        {{ editingNoteIndex !== null ? 'Обновить' : 'Сохранить' }}
+                    </button>
+                    <button 
+                        v-if="editingNoteIndex !== null"
+                        class="btn btn-danger btn-sm" 
+                        @click="deleteNote"
+                        title="Удалить заметку"
+                    >
+                        <i class="fa fa-trash"></i> Удалить
                     </button>
                     <button 
                         class="btn btn-outline-secondary btn-sm" 
@@ -84,128 +108,176 @@ adminexecution_list = (function (){
             </div>
         </div>
     `,
-                data(){
-                    return{
-                        id_input: 'inpid'+kabinet.uniqueId(),
-                        noteText: '',
-                        isEditing: false,
-                        notesFulfiList: []
-                    }
-                },
-                props: ['fulfillmentId'],
-                computed: {
-                    ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
-                },
-                mounted() {
-                    this.loadCurrentNote();
-                },
-                methods: {
-                    loadCurrentNote() {
-                        if (!this.fulfillmentId) return;
+    data(){
+        return{
+            id_input: 'inpid'+kabinet.uniqueId(),
+            noteText: '',
+            isEditing: false,
+            editingNoteIndex: null, // Индекс редактируемой заметки
+            notesFulfiList: []
+        }
+    },
+    props: ['fulfillmentId'],
+    computed: {
+        ...BX.Vue3.Pinia.mapState(userStore, ['datauser']),
+    },
+    mounted() {
+        this.loadCurrentNote();
+    },
+    methods: {
+        loadCurrentNote() {
+            if (!this.fulfillmentId) return;
 
-                        const this_ = this;
-                        BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.getcurrentnote', {
-                            data: {
-                                fulfillment_id: this.fulfillmentId
-                            }
-                        }).then(function(response) {
-                            if (response.data && response.data.note) {
-                                try {
-                                    // Парсим JSON строку из сервера
-                                    const parsedData = parseJSON(response.data.note);
+            const this_ = this;
+            BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.getcurrentnote', {
+                data: {
+                    fulfillment_id: this.fulfillmentId
+                }
+            }).then(function(response) {
+                if (response.data && response.data.note) {
+                    try {
+                        // Парсим JSON строку из сервера
+                        const parsedData = parseJSON(response.data.note);
 
-                                    if (Array.isArray(parsedData)) {
-                                        this_.notesFulfiList = parsedData;
-                                    } else if (parsedData && typeof parsedData === 'object') {
-                                        // Если пришел объект, преобразуем в массив
-                                        this_.notesFulfiList = [parsedData];
-                                    } else {
-                                        this_.notesFulfiList = [];
-                                    }
-                                } catch (e) {
-                                    console.error('Error parsing notes data:', e);
-                                    this_.notesFulfiList = [];
-                                }
-                            } else {
-                                this_.notesFulfiList = [];
-                            }
-                        }).catch(function(error) {
-                            console.error('Error loading notes:', error);
+                        if (Array.isArray(parsedData)) {
+                            this_.notesFulfiList = parsedData;
+                        } else if (parsedData && typeof parsedData === 'object') {
+                            // Если пришел объект, преобразуем в массив
+                            this_.notesFulfiList = [parsedData];
+                        } else {
                             this_.notesFulfiList = [];
-                        });
-                    },
-
-                    startEditing() {
-                        this.isEditing = true;
-                        this.noteText = '';
-
-                        this.$nextTick(() => {
-                            if (this.$refs.textareaRef) {
-                                this.$refs.textareaRef.focus();
-                                this.$refs.textareaRef.style.height = 'auto';
-                                this.$refs.textareaRef.style.height = this.$refs.textareaRef.scrollHeight + 'px';
-                            }
-                        });
-                    },
-
-                    cancelEditing() {
-                        this.isEditing = false;
-                        this.noteText = '';
-                    },
-
-                    saveNote() {
-                        if (!this.noteText.trim()) return;
-
-                        const this_ = this;
-                        const kabinetStore = usekabinetStore();
-
-                        // Создаем новую заметку
-                        const newNote = {
-                            username: this.datauser.PRINT_NAME || 'ADMIN',
-                            date: new Date().toISOString(),
-                            text: this.noteText.trim()
-                        };
-
-                        // Добавляем новую заметку к существующему списку
-                        const updatedNotesList = [...this.notesFulfiList, newNote];
-
-                        // Преобразуем в JSON строку для отправки на сервер
-                        const notesJsonString = JSON.stringify(updatedNotesList);
-
-                        BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.savenote', {
-                            data: {
-                                fulfillment_id: this.fulfillmentId,
-                                note_text: notesJsonString
-                            }
-                        }).then(function(response) {
-                            if (response.data.success) {
-                                kabinetStore.NotifyOk = '';
-                                kabinetStore.NotifyOk = 'Заметка сохранена';
-                                this_.notesFulfiList = updatedNotesList; // Обновляем локальный список
-                                this_.noteText = '';
-                                this_.isEditing = false;
-                            } else {
-                                kabinetStore.Notify = response.data.message || 'Ошибка при сохранении заметки';
-                            }
-                        }).catch(function(response) {
-                            kabinetStore.Notify = '';
-                            kabinetStore.Notify = 'Ошибка при сохранении заметки';
-                            console.error('Save note error:', response);
-                        });
-                    },
-
-                    formatDate(dateString) {
-                        const date = new Date(dateString);
-                        return date.toLocaleDateString('ru-RU', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
+                        }
+                    } catch (e) {
+                        console.error('Error parsing notes data:', e);
+                        this_.notesFulfiList = [];
                     }
+                } else {
+                    this_.notesFulfiList = [];
+                }
+            }).catch(function(error) {
+                console.error('Error loading notes:', error);
+                this_.notesFulfiList = [];
+            });
+        },
+
+        // Редактирование конкретной заметки
+        editSpecificNote(note, index) {
+            this.editingNoteIndex = index;
+            this.isEditing = true;
+            this.noteText = note.text;
+
+            this.$nextTick(() => {
+                if (this.$refs.textareaRef) {
+                    this.$refs.textareaRef.focus();
+                    this.$refs.textareaRef.style.height = 'auto';
+                    this.$refs.textareaRef.style.height = this.$refs.textareaRef.scrollHeight + 'px';
                 }
             });
+        },
+
+        startEditing() {
+            this.isEditing = true;
+            this.editingNoteIndex = null; // Сбрасываем индекс при добавлении новой заметки
+            this.noteText = '';
+
+            this.$nextTick(() => {
+                if (this.$refs.textareaRef) {
+                    this.$refs.textareaRef.focus();
+                    this.$refs.textareaRef.style.height = 'auto';
+                    this.$refs.textareaRef.style.height = this.$refs.textareaRef.scrollHeight + 'px';
+                }
+            });
+        },
+
+        cancelEditing() {
+            this.isEditing = false;
+            this.noteText = '';
+            this.editingNoteIndex = null;
+        },
+
+        // Удаление заметки
+        deleteNote() {
+            if (this.editingNoteIndex === null) return;
+            
+            if (!confirm('Вы уверены, что хотите удалить эту заметку?')) return;
+
+            // Удаляем заметку из списка
+            const updatedNotesList = this.notesFulfiList.filter((_, index) => index !== this.editingNoteIndex);
+            
+            this.saveNotesToServer(updatedNotesList);
+        },
+
+        saveNote() {
+            if (!this.noteText.trim()) return;
+
+            let updatedNotesList;
+
+            if (this.editingNoteIndex !== null) {
+                // Редактирование существующей заметки
+                updatedNotesList = [...this.notesFulfiList];
+                updatedNotesList[this.editingNoteIndex] = {
+                    ...updatedNotesList[this.editingNoteIndex],
+                    text: this.noteText.trim(),
+                    edited_date: new Date().toISOString(), // Добавляем дату редактирования
+                    edited_by: this.datauser.PRINT_NAME || 'ADMIN'
+                };
+            } else {
+                // Создаем новую заметку
+                const newNote = {
+                    username: this.datauser.PRINT_NAME || 'ADMIN',
+                    date: new Date().toISOString(),
+                    text: this.noteText.trim()
+                };
+                // Добавляем новую заметку к существующему списку
+                updatedNotesList = [...this.notesFulfiList, newNote];
+            }
+
+            this.saveNotesToServer(updatedNotesList);
+        },
+
+        // Общий метод для сохранения заметок на сервер
+        saveNotesToServer(updatedNotesList) {
+            const this_ = this;
+            const kabinetStore = usekabinetStore();
+
+            // Преобразуем в JSON строку для отправки на сервер
+            const notesJsonString = JSON.stringify(updatedNotesList);
+
+            BX.ajax.runAction('bitrix:kabinet.evn.runnerevents.savenote', {
+                data: {
+                    fulfillment_id: this.fulfillmentId,
+                    note_text: notesJsonString
+                }
+            }).then(function(response) {
+                if (response.data.success) {
+                    kabinetStore.NotifyOk = '';
+                    kabinetStore.NotifyOk = this_.editingNoteIndex !== null ? 'Заметка обновлена' : 'Заметка сохранена';
+                    this_.notesFulfiList = updatedNotesList; // Обновляем локальный список
+                    this_.noteText = '';
+                    this_.isEditing = false;
+                    this_.editingNoteIndex = null;
+                } else {
+                    kabinetStore.Notify = response.data.message || 'Ошибка при сохранении заметки';
+                }
+            }).catch(function(response) {
+                kabinetStore.Notify = '';
+                kabinetStore.Notify = 'Ошибка при сохранении заметки';
+                console.error('Save note error:', response);
+            });
+        },
+
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    }
+});
 
             // Добавляем компонент для заголовка с сортировкой
             const SortableHeader = BX.Vue3.BitrixVue.mutableComponent('sortable-header', {
@@ -247,28 +319,45 @@ adminexecution_list = (function (){
 
             const changestatus = BX.Vue3.BitrixVue.mutableComponent('change status', {
                 template: `
-                          <div class="mt-3" v-if="catalog.length>0">
-                    <div class="h4">Сменить статус:</div>
-                    <div class="form-group select-status" v-for="Status in catalog">
-                        <div class="form-check">
-                          <input @change="saveStatus" :name="$id('name')" class="form-check-input" :id="'status-'+Status.ID+'-'+tindex" v-model="localModelValue" type="radio" :value="Status.ID">
-                          <label class="form-check-label text-primary" :for="'status-'+Status.ID+'-'+tindex">{{Status.TITLE}}</label>
-                        </div>
-                    </div>
+        <div class="mt-3" v-if="catalog.length>0">
+            <div class="h4">Сменить статус:</div>
+            <div class="form-group select-status" v-for="Status in catalog">
+                <div class="form-check">
+                    <input 
+                        @change="saveStatus(Status.ID)" 
+                        :name="$id('name')" 
+                        class="form-check-input" 
+                        :id="'status-'+Status.ID+'-'+tindex" 
+                        :checked="localModelValue == Status.ID" 
+                        type="radio" 
+                        :value="Status.ID"
+                    >
+                    <label class="form-check-label text-primary" :for="'status-'+Status.ID+'-'+tindex">{{Status.TITLE}}</label>
                 </div>
-                `,
+            </div>
+        </div>
+    `,
                 data(){
                     return{
                         id_input:'inpid'+kabinet.uniqueId(),
-                        localModelValue : 0
+                        localModelValue: 0
                     }
                 },
-                props: ['modelValue','tindex','catalog'],
+                props: ['modelValue', 'tindex', 'catalog'],
                 computed: {
                 },
-                mounted () {
-                    // Add event handler
+                watch: {
+                    // Следим за изменением modelValue извне
+                    modelValue: {
+                        immediate: true,
+                        handler(newVal) {
+                            this.localModelValue = newVal || 0;
+                        }
+                    }
+                },
+                mounted() {
                     const this_ = this;
+                    this.localModelValue = this.modelValue || 0;
 
                     this.$.iid = function() {
                         return "uid-" + kabinet.uniqueId();
@@ -278,13 +367,27 @@ adminexecution_list = (function (){
                     makeUniqeId(){
                         return 'inpid'+kabinet.uniqueId();
                     },
-                    saveStatus(){
+                    saveStatus(statusId){
+                        // Устанавливаем новое значение
+                        this.localModelValue = statusId;
+
+                        // Сохраняем в родительский компонент
+                        this.$emit('update:modelValue', statusId);
+
+                        // Запускаем сохранение с задержкой
                         if (typeof this.$.inpSaveTimer != 'undefined') clearTimeout(this.$.inpSaveTimer);
-                        this.$.inpSaveTimer = setTimeout(()=>{
-                            this.$root.datarunner[this.tindex].UF_STATUS = this.localModelValue;
+                        this.$.inpSaveTimer = setTimeout(() => {
+                            this.$root.datarunner[this.tindex].UF_STATUS = statusId;
                             this.$root.savetask(this.tindex);
-                            this.localModelValue = 0;
-                            },1000);
+
+                            // Если выбрали статус 0 (Запланирован), очищаем локальное значение
+                            // чтобы можно было снова выбрать тот же статус
+                            if (statusId === 0) {
+                                setTimeout(() => {
+                                    this.localModelValue = -1; // Устанавливаем в -1 чтобы сбросить выбор
+                                }, 100);
+                            }
+                        }, 1000);
                     }
                 }
             });
