@@ -48,10 +48,13 @@ window['messangerTemplateAdmin'] = `
 						<div>
 						    <form :ref="'formfilter1-'+mess_item.ID" action="/kabinet/admin/performances/" method="post">				
 						    Проект <span class="">«{{project.UF_NAME}}» #{{project.UF_EXT_KEY}}</span>				
-                            <span v-if="mess_item.UF_TASK_ID>0">
-                                {{(task = tasklist[mess_item.UF_TASK_ID],null)}}                            
-                                , Задача <a href="#" @click.prevent="$refs['formfilter1-' + mess_item.ID][0].submit()">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>                 
-                            </span>                    
+                            <span v-if="mess_item.UF_TASK_ID>0 && tasklist[mess_item.UF_TASK_ID]">
+                                {{(task = tasklist[mess_item.UF_TASK_ID],null)}}														
+                                , Задача <a href="#" @click.prevent="$refs['formfilter1-' + mess_item.ID][0].submit()">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a> 														
+                            </span>
+<span v-else-if="mess_item.UF_TASK_ID>0 && !tasklist[mess_item.UF_TASK_ID]">
+                                , Задача #{{mess_item.UF_TASK_ID}} (не найдена)
+                            </span>							
                                     <template v-if="fulfi">
                                     <input name="executionidsearch" type="hidden" :value="fulfi.UF_EXT_KEY">
                                     </template>
@@ -83,9 +86,12 @@ window['messangerTemplateAdmin'] = `
 						<div>
 						    <form :ref="'formfilter2-'+mess_item.ID" action="/kabinet/admin/performances/" method="post">
                             Проект «{{project.UF_NAME}}»	#{{project.UF_EXT_KEY}}			
-                            <span v-if="mess_item.UF_TASK_ID>0">
-                                {{(task = tasklist[mess_item.UF_TASK_ID],null)}}
-                                , Задача <a href="#" @click.prevent="$refs['formfilter2-' + mess_item.ID][0].submit()">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>
+                            <span v-if="mess_item.UF_TASK_ID>0 && tasklist[mess_item.UF_TASK_ID]">
+                                {{(task = tasklist[mess_item.UF_TASK_ID],null)}}															
+                                , Задача <a href="#" @click.prevent="$refs['formfilter2-' + mess_item.ID][0].submit()">«{{task.UF_NAME}}» #{{task.UF_EXT_KEY}}</a>							
+                            </span>
+							<span v-else-if="mess_item.UF_TASK_ID>0 && !tasklist[mess_item.UF_TASK_ID]">
+                                , Задача #{{mess_item.UF_TASK_ID}} (не найдена)
                             </span>
                                 <template v-if="fulfi">
                                     <input name="executionidsearch" type="hidden" :value="fulfi.UF_EXT_KEY">
