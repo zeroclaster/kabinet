@@ -11,7 +11,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
         <input type="hidden" name="totalsum" v-model="totalsum">
         Выберите способ пополнения баланса:
         <div class="radio-list">
-            <?if(!\PHelp::isAdmin()):?>
+            <?if(!\PHelp::isAdmin()):?><?endif;?>
                 <div class="radio-item">
 
                     <input id="typepay-1" type="radio" name="typepay" value="1" v-model="fields.typepay" @change="onChange">
@@ -19,9 +19,9 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                         <i class="fa fa-credit-card-alt" aria-hidden="true"></i> <span style="font-size: 22px;">Карта</span> <span style="font-weight: normal;color: #8a8a8a;">Мгновенное пополнение. Мир, СБП, Сбер Pay, Т-pay, Я-Пэй. Комиссия 0%</span>
                     </label>
                 </div>
-            <?endif;?>
+            
 
-            <?if(!\PHelp::isAdmin()):?>
+            <?if(!\PHelp::isAdmin()):?><?endif;?>
                 <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
                 <?if(0):?>
                     <div class="radio-item">
@@ -31,18 +31,19 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                         </label>
                     </div>
                 <?endif;?>
-            <?endif;?>
+            
 
-            <?if(!\PHelp::isAdmin()):?>
+            <?if(!\PHelp::isAdmin()):?><?endif;?>
                 <div class="radio-item">
                     <input id="typepay-3" type="radio" name="typepay" value="3" v-model="fields.typepay" @change="onChange">
                     <label for="typepay-3" class="radio-label no-d-flex-to-block">
                         <i class="fa fa-university" aria-hidden="true"></i> <span style="font-size: 22px;">Банковский перевод</span> <span style="font-weight: normal;color: #8a8a8a;">Оплата по счету, для юрлиц и ИП. Комиссия 0%</span>
                     </label>
                 </div>
-            <?endif;?>
+            
 
-            <?if(\PHelp::isAdmin()):?>
+            <?if(\PHelp::isAdmin()):?><?endif;?>
+			<?if(0):?>
                 <div class="radio-item">
                     <input id="typepay-4" type="radio" name="typepay" value="4" v-model="fields.typepay" @change="onChange">
                     <label for="typepay-4" class="radio-label no-d-flex-to-block">
@@ -54,7 +55,7 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
 
         <?/* $typepay = $request->getPost('typepay'); */?>
         <!-- Онлайн-платеж -->
-        <?if(!\PHelp::isAdmin()):?>
+        <?if(!\PHelp::isAdmin()):?><?endif;?>
             <div class="row" v-if="fields.typepay==1">
                 <div class="col-md-12">
                     <div class="to-pay-block">
@@ -103,12 +104,12 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                     </div>
                 </div>
             </div>
-        <?endif;?>
+        
 
         <?/* $typepay = $request->getPost('typepay'); */?>
         <?/*2025-03-03 Скрыть оплату qr-кодом*/?>
         <?if(0):?>
-            <?if(!\PHelp::isAdmin()):?>
+            <?if(!\PHelp::isAdmin()):?><?endif;?>
                 <!-- QR-код -->
                 <div class="row" v-if="fields.typepay==2">
                     <div class="col-md-12">
@@ -163,13 +164,12 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
 
                         </div>
                     </div>
-                </div>
-            <?endif;?>
+                </div>            
         <?endif;?>
 
         <?/* $typepay = $request->getPost('typepay'); */?>
         <!-- Банковский перевод -->
-        <?if(!\PHelp::isAdmin()):?>
+        <?if(!\PHelp::isAdmin()):?><?endif;?>
             <div class="row" v-if="fields.typepay==3">
                 <div class="col-md-12">
                     <div class="to-pay-block">
@@ -239,10 +239,11 @@ $_SESSION['return_url'] = $_SERVER['REQUEST_URI'];
                     </div>
                 </div>
             </div>
-        <?endif;?>
+        
 
         <?/* $typepay = $request->getPost('typepay'); */?>
-        <?if(\PHelp::isAdmin()):?>
+        <?if(\PHelp::isAdmin()):?><?endif;?>
+		<?if(0):?>
             <div class="row typepay-4" v-if="fields.typepay==4">
                 <div class="col-md-12">
                     <div class="to-pay-block">

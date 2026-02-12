@@ -2,7 +2,6 @@ class BillingViewApp extends BaseListApp {
     constructor(params = {}) {
         params.stores = {
             ...params.stores,
-
         };
 
         super(params);
@@ -17,7 +16,9 @@ class BillingViewApp extends BaseListApp {
             ...baseConfig,
             data: () => ({
                 ...baseConfig.data(),
-                usr_id_const: '?usr=' + usr_id_const
+                usr_id_const: '?usr=' + usr_id_const,
+                // Добавляем offset в данные компонента
+                offset: 0
             }),
             computed: {
                 ...baseConfig.computed,
@@ -51,7 +52,8 @@ class BillingViewApp extends BaseListApp {
                 }
             },
             mounted() {
-                this.$root.offset = 0;
+                // Правильный способ установки offset
+                this.offset = 0;
                 if (parseInt(this.total) <= parseInt(this.countview)) this.showloadmore = false;
             }
         };
@@ -69,7 +71,10 @@ class BillingViewApp extends BaseListApp {
             }
         }
 
-        if (this.app._instance.proxy.historybillingdata.length === this.app._instance.proxy.total) {
+        // Обновляем offset после успешной загрузки
+        this.app._instance.proxy.offset += data.HISTORY_DATA?.length || 0;
+
+        if (this.app._instance.proxy.historybillingdata.length >= this.app._instance.proxy.total) {
             this.app._instance.proxy.showloadmore = false;
         }
     }
@@ -77,6 +82,8 @@ class BillingViewApp extends BaseListApp {
     prepareFormData() {
         const formData = super.prepareFormData();
         formData.append("countview", this.app._instance.proxy.countview);
+        // Используем текущее значение offset
+        formData.append("OFFSET", this.app._instance.proxy.offset);
         return formData;
     }
 }

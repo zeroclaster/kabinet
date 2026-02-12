@@ -138,24 +138,24 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
     }
 
     window.addEventListener("components:ready", function(event) {
-
-                new BillingViewApp(
+        /*
+                        new BillingViewApp(
 <?=CUtil::PhpToJSObject([
                 'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
                 'FILTER' => $arParams["FILTER"],
                 'CONTAINER' => '#billing-detalie',
                 'TEMPLATE' => '#kabinet-content',
-                "viewcount"=>$arParams["COUNT"],
+                "viewcount"=>$arParams["COUNT"] ?: 20,
                 "total"=>$arResult["TOTAL"],
-                "signedParameters"=>"",
+                "signedParameters"=>$this->getComponent()->getSignedParameters(),
                 "componentName"=>"exi:billing.view",
                 "actionName"=>"loadmore",
                 "container"=>"#billing-detalie"
             ], false, true)?>
         );
 
+*/
 
-/*
         billing_view.start(<?=CUtil::PhpToJSObject([
             'EXPENSES_NEXT_MONTH' => $arResult['EXPENSES_NEXT_MONTH'],
             'FILTER' => $arParams["FILTER"],
@@ -164,6 +164,6 @@ $nextmouth= (new \Bitrix\Main\Type\DateTime)->add("+1 months");
             "viewcount"=>$arParams["COUNT"],
             "total"=>$arResult["TOTAL"],
         ], false, true)?>);
-*/
+
     });
 </script>

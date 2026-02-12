@@ -315,6 +315,25 @@ class MyClass
 		if ($arFields['IBLOCK_ID'] == 6) {
 		}
 	}
+
+    static function getDateISO8601($date = "")
+    {
+        if (empty($date)) {
+            $timestamp = time(); // текущее время, если дата не передана
+        } else {
+            $timestamp = MakeTimeStamp($date, \CSite::GetDateFormat());
+        }
+
+        // Формируем дату в формате ISO 8601 с часовым поясом
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp($timestamp);
+
+        // Устанавливаем часовой пояс сайта или UTC
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $dateTime->setTimezone($timezone);
+
+        return $dateTime->format('Y-m-d\TH:i:sP');
+    }
 }
 
 

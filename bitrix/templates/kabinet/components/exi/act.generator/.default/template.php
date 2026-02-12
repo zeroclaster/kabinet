@@ -114,8 +114,16 @@ $this->setFrameMode(true);
                     formData.append('regdateclient', this.datauser.DATE_REGISTER);
                     formData.append('act', this.fields.UF_ACTS);
                     formData.append('nazvanie_organizacii', this.fields.UF_NAME);
-                    formData.append('dogovordate', moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY'));
-                    formData.append('dogovorid', moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY')+this.datauser.ID);
+
+                    if (this.datauser.UF_DOGOVOR_DATE) {
+                        formData.append('dogovordate', moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY'));
+                        formData.append('dogovorid', moment(this.datauser.UF_DOGOVOR_DATE, 'DD.MM.YYYY HH:mm:ss').format('DDMM-YY') + this.datauser.ID);
+                    }else {
+                        formData.append('dogovordate', "");
+                        formData.append('dogovorid', "");
+                    }
+
+
                     formData.append('month', month);
                     formData.append('sessid', BX.bitrix_sessid());
 
