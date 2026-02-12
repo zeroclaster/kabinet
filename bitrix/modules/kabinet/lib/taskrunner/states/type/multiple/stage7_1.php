@@ -10,28 +10,37 @@ use Bitrix\Main\SystemException,
 use \Bitrix\Main\Type\DateTime;
 
 /*
-6-Публикация;
+6.1 -Публикуется;
 
-
-Фиксация просрочки — через 96 часов.
 Администратор может вручную сменить статус на:
 
-Если «Отчетность» = «есть», то возможен переход:
-7-Готовится отчет;
-9-Выполнена;
+2-Пишется текст
+4-В работе у специалиста
 
+6-1 Публикуется
++ копируется ответственный за стадию, если он не был задан
 
-Если «Отчетность» = «нет», то возможен переход:
-9-Выполнена;
+Если «Отчетность» = «есть», то возможен переход на:
+7-Готовится отчет
++ копируется ответственный за стадию, если он не был задан
+
+Если «Отчетность» = «нет», то возможен переход на
+9-Выполнено
++ копируется ответственный за стадию, если он не был задан
+
+Для типа «Множественные»
+добавить кнопку «Запланировано»
+
 
 Нет кнопок
 
+Фиксация просрочки — если прошла плановая дата публикации.
  *
  *
  */
 
 
-class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
+class Stage7_1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
     protected $title = '';
     public $runnerFields = [];
     public $id = 0;
@@ -55,31 +64,11 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         return implode('',array_slice(explode('\\',__CLASS__),-2,2));
     }
 
-    public function getRoutes_(){
-        $runnerFields = $this->runnerFields;
-        if(\PHelp::isAdmin()) {
-            $states = [0]; // Запланирован
-            $states = [2]; // Пишется текст
-            $states[] = 4; // В работе у специалиста
-
-            $TaskData = \Bitrix\Kabinet\task\datamanager\TaskTable::getById($runnerFields['UF_TASK_ID'])->fetch();
-            if ($TaskData['UF_REPORTING'] == \Bitrix\Kabinet\task\Taskmanager::LINK_SCREENHOT)
-                $states[] = 7; // Готовится отчет
-            else
-                $states[] = 9; //Выполнено
-
-            return $states;
-        }else{
-            return [];
-        }
-    }
-
     public function getRoutes(){
         $runnerFields = $this->runnerFields;
         if(\PHelp::isAdmin()) {
-            $states = [0];
-            $states[] = 61; // В работе у специалиста
-
+            $states = [6]; // Пишется текст
+            $states[] = 7; // В работе у специалиста
             return $states;
         }else{
             return [];
@@ -117,6 +106,17 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
         $object->set('UF_COMMENT','');
         $object->set('UF_HITCH',0);
+
+        $UF_STATUS = $object->get('UF_STATUS');
+        $UF_RESPONSIBLE = $object->get('UF_RESPONSIBLE');
+
+        // Статусы, которые требуют добавления ответственного
+        $STATUSES_FOR_RESPONSIBLE_ADDITION = [61,7,9];
+
+        if (in_array($UF_STATUS, $STATUSES_FOR_RESPONSIBLE_ADDITION)) {
+            $updatedResponsible = $this->addResponsibleEntry($UF_RESPONSIBLE, $UF_STATUS);
+            $object->set('UF_RESPONSIBLE', $updatedResponsible);
+        }
     }
 
     public function execute(){
@@ -124,7 +124,7 @@ class Stage7 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         $event->send();
 
         //Фиксация просрочки — через 72 часа.
-        $this->isFixHitch(24);
+        $this->isFixHitch2();
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
     }

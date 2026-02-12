@@ -237,7 +237,7 @@
                 <description>
                     Фиксация просрочки — если прошла плановая дата публикации..
                 </description>
-                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage7_1</class>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage7_1</class>
             </state>
             <state id="7" name="state8" icon="fa-hourglass-end">
                 <title>Готовится отчет</title>
@@ -251,7 +251,7 @@
                 <description>
                     Фиксация просрочки — через 72 часа.
                 </description>
-                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage8</class>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage8</class>
             </state>
             <state id="8" name="state9" icon="fa-eye">
                 <title>Отчет на проверке у клиента</title>
@@ -281,7 +281,7 @@
                 <description>
                     Списание зарезервированных средств со счета клиента
                 </description>
-                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage10</class>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage10</class>
             </state>
             <state id="10" name="state11" icon="fa-times">
                 <title>Отменена</title>

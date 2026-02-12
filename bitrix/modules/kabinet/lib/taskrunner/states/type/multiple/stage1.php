@@ -59,7 +59,7 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
             return [
-                1,  // Взят в работу
+               // 1,  // Взят в работу
                 6,   //Публикация
                 10  // Отменена
             ];

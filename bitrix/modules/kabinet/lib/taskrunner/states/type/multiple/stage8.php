@@ -10,23 +10,22 @@ use Bitrix\Main\SystemException,
 use \Bitrix\Main\Type\DateTime;
 
 /*
- *4-В работе у специалиста;
+ * Готовится отчет
 
 Фиксация просрочки — через 72 часа.
 
 Администратор может вручную сменить статус на:
-2-Пишется текст;
-3-Ожидается текст от клиента.
-5-На согласовании (у клиента);
-6-Публикация;
 
+8-Отчет на проверке у клиента;
+9-Выполнена;
 
- *
+Нет кнопок
+
  *
  *
  */
 
-class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
+class Stage8 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bitrix\Kabinet\taskrunner\states\contracts\Istage{
     protected $title = '';
     public $runnerFields = [];
     public $id = 0;
@@ -53,66 +52,50 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
     public function getRoutes(){
         if(\PHelp::isAdmin()) {
             return [
-                0,
-               //   1, //Взято в работу
-             //   2, //Пишется текст
-             //   3, //Ожидается текст от клиента
-             //   5, //На согласовании у клиента
-                6, //Публикация
-                61, //Публикация
-              //  7, //Готовится отчет
-             //   9, //Выполнено
-           //     10, //Отменено
+                6,   //Пишется текст
+                61,   //В работе у специалиста
+                8,   //Отчет на проверке у клиента
             ];
         }else{
             return [];
         }
     }
 
+    // условия что бы включить этот статус
     public function conditionsTransition($oldData){
-        $runnerFields = $this->runnerFields;
-
         if (\PHelp::isAdmin()) {
             // Для админа
         }else{
-            if (
-                !$runnerFields['UF_COMMENT'] &&
-                $oldData['UF_STATUS'] != 3
-            )
-                throw new SystemException("EmptyUF_COMMENT", \Bitrix\kabinet\Controller\Runnerevents::END_WITH_SCRIPT);
-
         }
 
         return true;
     }
 
+    // уходят со статуса
     public function leaveStage($object){
         $object->set('UF_COMMENT','');
-
-        /*
-        $messanger = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Messanger');
-
-        $QUEUE_ID=$object->get('ID');
-        $TASK_ID=$object->get('UF_TASK_ID');
-        $upd_id = $messanger->sendSystemMessage(
-            $messanger->config('ispolnitel_ozhidaet_tekst'),
-            $QUEUE_ID,
-            $TASK_ID
-        );
-        */
-    }
-
-    // когда пришли на статус
-    public function cameTo($object){
         $object->set('UF_HITCH',0);
+
+        $UF_STATUS = $object->get('UF_STATUS');
+        $UF_RESPONSIBLE = $object->get('UF_RESPONSIBLE');
+
+        // Статусы, которые требуют добавления ответственного
+        $STATUSES_FOR_RESPONSIBLE_ADDITION = [8,9];
+
+        if (in_array($UF_STATUS, $STATUSES_FOR_RESPONSIBLE_ADDITION)) {
+            $updatedResponsible = $this->addResponsibleEntry($UF_RESPONSIBLE, $UF_STATUS);
+            $object->set('UF_RESPONSIBLE', $updatedResponsible);
+        }
     }
 
     public function execute(){
         $event = new Event("kabinet", "OnBeforeStartStage", ['id'=>$this->id,'name'=>$this->getName(),'title'=>$this->getTitle()]);
         $event->send();
 
+
         //Фиксация просрочки — через 72 часа.
         $this->isFixHitch(72);
+
         $Queue = \Bitrix\Kabinet\taskrunner\states\Queue::getInstance();
         $Queue->goToEndLine($this->id);
     }
