@@ -6,9 +6,7 @@ class BaseListApp {
         this.signedParameters = params.signedParameters || "";
         this.container = params.container || params.CONTAINER || '#kabinetcontent';
 
-        this.stores = params.stores || {
-
-        };
+        this.stores = params.stores || {};
 
         this.initConfiguration(params);
         this.initApplication();
@@ -45,7 +43,9 @@ class BaseListApp {
                 countview: this.PHPPARAMS.viewcount,
                 total: this.PHPPARAMS.total,
                 showloadmore: true,
-                limitpics: 5
+                limitpics: 5,
+                // Добавляем offset в базовые данные
+                offset: 0
             }),
             methods: {
                 moreload: (e) => this.handleMoreLoad(e),
@@ -58,7 +58,7 @@ class BaseListApp {
                 ...this.getDefaultComputed(),
                 ...this.getAdditionalComputed()
             },
-            template: this.template // Добавляем template в базовую конфигурацию
+            template: this.template
         };
     }
 
@@ -78,7 +78,8 @@ class BaseListApp {
 
     prepareFormData() {
         const formData = new FormData();
-        formData.append("OFFSET", this.offset);
+        // Используем текущий offset из данных компонента
+        formData.append("OFFSET", this.app._instance.proxy.offset);
         Object.entries(this.filterclientlist).forEach(([key, value]) => {
             formData.append(key, value);
         });
@@ -110,6 +111,11 @@ class BaseListApp {
 
     processResponse(data) {
         // Базовая реализация, переопределяется в дочерних классах
+        // Обновляем offset после загрузки
+        const newItemsCount = data.HISTORY_DATA?.length || 0;
+        if (newItemsCount > 0) {
+            this.app._instance.proxy.offset += newItemsCount;
+        }
     }
 
     handleError(error) {
