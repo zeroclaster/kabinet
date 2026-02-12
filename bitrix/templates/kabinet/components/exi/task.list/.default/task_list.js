@@ -38,7 +38,9 @@ const taskApplication = BX.Vue3.BitrixVue.createApp({
             myModal:{},
             myModal2:{},
             listprd: [],
-            anim_counter: []
+            anim_counter: [],
+			usr_id_const: usr_id_const ? '&usr=' + usr_id_const : '',
+			usr_id_const2: usr_id_const ? '?usr=' + usr_id_const : '',			
         }
     },
     setup(){

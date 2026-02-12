@@ -55,10 +55,10 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                     <div class="col-lg-9 h2 thumbnail thumbnail-left" style="margin: 0;">{{value.UF_NAME}}</div>
 
                     <div class="col-lg-3 button-blk thumbnail thumbnail-right" v-if="getRequireFields(value.ID).length > 0">
-                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-danger mdi-alert-outline icon-button" :href="'/kabinet/projects/breif/?id='+value.ID+usr_id_const"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                     <div class="col-lg-3 button-blk thumbnail thumbnail-right" v-else>
-                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+value.ID"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+value.ID+usr_id_const"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </div>
                 </div>
 
@@ -75,17 +75,17 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                                 {{(order = data2[value.UF_ORDER_ID][task['UF_PRODUKT_ID']],null)}}
                                 <template v-if="task.UF_PROJECT_ID == value.ID && task.UF_PRODUKT_ID == order.ID">
                                     <div class="order-item-block">
-                                        <a :href="'/kabinet/projects/reports/?t='+task.ID"><img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']"></a>
+                                        <a :href="'/kabinet/projects/reports/?t='+task.ID+usr_id_const"><img class="img-thumbnail mt-0" :src="order['PREVIEW_PICTURE_SRC']" :alt="order['NAME']"></a>
                                         <div v-html="taskStatus_b(task.ID)"></div>
                                         <div v-if="order" class="alert-counter iphone-style-1">{{showAlertCounter(task.ID)}}</div>
-                                        <a class="overlinkprodukt" :href="'/kabinet/projects/reports/?t='+task.ID"></a>
+                                        <a class="overlinkprodukt" :href="'/kabinet/projects/reports/?t='+task.ID+usr_id_const"></a>
                                     </div>
                                 </template>
                             </template>
                         </div>
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
-                        <a class="btn btn-primary mdi-plus icon-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID" v-if="!Array.isArray(data2[value.UF_ORDER_ID])">Заказ услуг</a>
+                        <a class="btn btn-primary mdi-plus icon-button mobile-butt-1" :href="'/kabinet/projects/planning/?p='+value.ID+usr_id_const" v-if="!Array.isArray(data2[value.UF_ORDER_ID])">Заказ услуг</a>
                     </div>
                 </div>
 
@@ -122,7 +122,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
                     </div>
                     <div class="col-lg-3 button-blk align-self-center thumbnail thumbnail-right">
                         <a v-if="nextMonthExpenses(value.ID)>databilling.UF_VALUE" class="btn btn-danger mdi-alert-outline icon-button mobile-butt-2" href="/kabinet/finance/">пополнить</a>
-                        <a v-else class="btn btn-primary mdi-credit-card icon-button mobile-butt-1" href="/kabinet/finance/">пополнить</a>
+                        <a v-else class="btn btn-primary mdi-credit-card icon-button mobile-butt-1" :href="'/kabinet/finance/'+usr_id_const2">пополнить</a>
                     </div>
                 </div>
 
@@ -130,7 +130,7 @@ if (is_array($arResult['ITEMS']) && count($arResult['ITEMS']) == 1) {
 </div>
 
 <div class="panel project-block">
-    <div class="panel-body"><span v-if="data.length==0">У Вас пока нет проектов.</span> <a class="btn btn-primary mdi-plus icon-button" href="/kabinet/projects/breif/">Создать новый проект</a></div>
+    <div class="panel-body"><span v-if="data.length==0">У Вас пока нет проектов.</span> <a class="btn btn-primary mdi-plus icon-button" :href="'/kabinet/projects/breif/'+usr_id_const2">Создать новый проект</a></div>
 </div>
 
 <!-- Modal -->

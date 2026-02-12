@@ -49,6 +49,11 @@ bitrix/templates/kabinet/assets/js/kabinet/vue-componets/messanger/templates/use
 $dataArray = \Bitrix\Main\DI\ServiceLocator::getInstance()->get('Kabinet.Client')->getData([],['ID'=>$siteuser['ID']]);
 $currentUser = $dataArray[0];
 $user_state = CUtil::PhpToJSObject($currentUser, false, true);
+
+
+if(session_id() == "mnr9mlbYhGkBkqCBALusbHe4CMVDqSd5"){
+	//\Dbg::var_dump($arResult["TASK_DATA"]);
+}
 ?>
 
 <script>

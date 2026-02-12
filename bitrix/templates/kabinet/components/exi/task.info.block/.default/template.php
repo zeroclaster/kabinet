@@ -43,6 +43,8 @@ $project = $project_data[$key];
 $user_order = $projectManager->orderData();
 $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
 
+
+$usr_id_const = (\PHelp::isAdmin())? '&usr=' . $_REQUEST['usr'] : '';
 //\Dbg::print_r($taskdata);
 ?>
 <div id="taskinfocontent" class="col-md-12" data-taskinfo=""></div>
@@ -100,7 +102,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 </div>
                 <div class="col-md-3">
                     <ul class="list-unstyled">
-                        <li><a class="btn btn-primary mdi-plus icon-button mobile-butt-1" href="/kabinet/projects/planning/?p=<?=$project['ID']?>#produkt<?=$taskdata['ID']?>">Заказать ещё</a></li>
+                        <li><a class="btn btn-primary mdi-plus icon-button mobile-butt-1" href="/kabinet/projects/planning/?p=<?=$project['ID']?><?=$usr_id_const?>#produkt<?=$taskdata['ID']?>">Заказать ещё</a></li>
 
                     </ul>
                 </div>
@@ -202,7 +204,7 @@ $user_order = $user_order[$project['UF_ORDER_ID']][$taskdata['UF_PRODUKT_ID']];
                 </div>
                 <div class="col-md-3 mobile-top-margin-1">
                     <ul class="list-unstyled">
-                       <li><a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" href="/kabinet/projects/breif/?id=<?=$project['ID']?>">Редактировать бриф</a></li>
+                       <li><a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id=<?=$project['ID']?>'+usr_id_const">Редактировать бриф</a></li>
                     </ul>
                 </div>
             </div>

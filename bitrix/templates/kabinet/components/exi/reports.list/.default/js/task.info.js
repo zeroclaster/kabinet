@@ -6,7 +6,9 @@ const taskinfoApplicationConfig = {
             'productData': {},
             'showAllPhotos': false,
             'photoLimit': 5,
-            'originalTaskData': {}
+            'originalTaskData': {},
+			usr_id_const: usr_id_const ? '&usr=' + usr_id_const : '',
+			usr_id_const2: usr_id_const ? '?usr=' + usr_id_const : '',	
         }
     },
     setup(){

@@ -12,7 +12,9 @@ project_list = (function (){
                         modaldata: {title:'Добавить услугу',order:0,project:0},
                         modal2data: {title:'Удалить услугу',message:'',question:'Вы действительно хотите удалить?',basketitem:0,order_id:0},
                         myModal:{},
-                        myModal2:{}
+                        myModal2:{},
+						usr_id_const: usr_id_const ? '&usr=' + usr_id_const : '',
+						usr_id_const2: usr_id_const ? '?usr=' + usr_id_const : '',
                     }
                 },
                 setup(){

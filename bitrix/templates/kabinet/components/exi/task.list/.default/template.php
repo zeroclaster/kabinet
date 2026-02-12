@@ -52,10 +52,10 @@ $p = $request->get('p');
 
                 <div class="col-md-2 block-edit-brief-butt">
                     <template v-if="isRunTasksExists && getRequireFields(project_id).length > 0">
-                        <a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-danger mdi-alert-outline icon-button text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id+usr_id_const"><?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
                     <template v-else>
-                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
+                        <a class="btn btn-primary text-nowrap" :href="'/kabinet/projects/breif/?id='+project_id+usr_id_const"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;<?=Loc::getMessage('PROJECT_FILL_ALL')?></a>
                     </template>
                 </div>
 
@@ -199,7 +199,7 @@ $p = $request->get('p');
                         <div v-html="taskStatus_m(task.ID)"></div>
 
                         <div class="ml-4" v-if="getEventsByTaskId(task.ID).length > 0">
-                            <a class="btn btn-primary new-butt-fa-icon text-nowrap" :href="'/kabinet/projects/reports/?t='+task.ID">
+                            <a class="btn btn-primary new-butt-fa-icon text-nowrap" :href="'/kabinet/projects/reports/?t='+task.ID+usr_id_const">
                                 <i class="fa fa-line-chart align-middle" aria-hidden="true" style="font-size: 21px;"></i>
                                 <span class="butt-fa-icon-text">Ход работы</span>
                                 <span class="badge badge-iphone-style badge-pill">{{ $root.PHPPARAMS.TASK_ALERT[task.ID] || '' }}</span>
