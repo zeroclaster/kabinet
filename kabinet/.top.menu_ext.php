@@ -10,6 +10,10 @@ $taskList = $taskManager->getData();
 
 $aMenuLinksExt = [];
 
+$usr_id_const = (\PHelp::isAdmin())? '&usr=' . $_REQUEST['usr'] : '';
+
+
+if (!\PHelp::isAdmin()) {
 $aMenuLinksExt[] = Array(
     "Проекты",
     "/kabinet/",
@@ -20,6 +24,7 @@ $aMenuLinksExt[] = Array(
     ),
     ""
 );
+}
 
 // Группируем задачи по проектам
 $tasksByProject = [];
@@ -38,7 +43,7 @@ foreach($project_list as $item) {
     // Проект
     $aMenuLinksExt[] = Array(
         $item['UF_NAME'],
-        "/kabinet/projects/planning/?p=" . $projectId,
+        "/kabinet/projects/planning/?p=" . $projectId . $usr_id_const,
         Array(),
         Array(
             "ICON" => "fa fa-folder-open",
@@ -63,7 +68,7 @@ foreach($project_list as $item) {
 
             $aMenuLinksExt[] = Array(
                 $task['UF_NAME'],
-                "/kabinet/projects/reports/?t=" . $task['ID'],
+                "/kabinet/projects/reports/?t=" . $task['ID'] . $usr_id_const,
                 Array(),
                 Array(
                     "IMAGE" => $productImage,
@@ -78,7 +83,7 @@ foreach($project_list as $item) {
         // Добавляем "+ Заказать услугу" в КОНЦЕ списка задач
         $aMenuLinksExt[] = Array(
             "Заказать услугу",
-            "/kabinet/projects/planning/?p=" . $projectId,
+            "/kabinet/projects/planning/?p=" . $projectId . $usr_id_const,
             Array(),
             Array(
                 "ICON" => "rd-navbar-icon mdi-plus",
@@ -92,6 +97,7 @@ foreach($project_list as $item) {
     }
 }
 
+if (!\PHelp::isAdmin()) {
 $aMenuLinksExt[] = Array(
     "Новый проект",
     "/kabinet/projects/breif/",
@@ -102,6 +108,7 @@ $aMenuLinksExt[] = Array(
     ),
     ""
 );
+}
 
 $aMenuLinks = array_merge($aMenuLinks, $aMenuLinksExt);
 ?>
