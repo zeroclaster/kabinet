@@ -87,6 +87,11 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
                   <div id="telegram-login-btn" style="margin: 20px;margin-bottom: 0px;"></div>
 
+					<?if(CSite::InDir('/login/')):?>	
+					<div style="padding: 0 1.375rem;">Если Вы хотите войти в кабинет через Телеграм, то воспользуйтесь <a href="/login2/">ссылкой</a></div>
+					<?endif;?>
+
+				 <?if(CSite::InDir('/login2/')):?>	
                   <script>
                       BX.ready(function() {
                           var script = document.createElement('script');
@@ -100,6 +105,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
                           document.getElementById('telegram-login-btn').appendChild(script);
                       });
                   </script>
+				  <?endif;?>
 
                   <?include_once(__DIR__.'/form_auth.inc.php');?>
 

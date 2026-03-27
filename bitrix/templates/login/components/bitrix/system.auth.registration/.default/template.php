@@ -73,7 +73,14 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
                     </div>
                     <div class="panel-body">
 
-                        <?if(!isset($telegramData)):?>
+
+					<?if(CSite::InDir('/login/')):?>	
+					<div style="padding: 0 1.375rem;">Если Вы хотите войти в кабинет через Телеграм, то воспользуйтесь <a href="/login2/">ссылкой</a></div>
+					<?endif;?>
+
+
+                        <?if(CSite::InDir('/login2/')):?>
+						<?if(!isset($telegramData)):?>
                         <div class="row">
                             <div class="col-sm-3"></div>
                             <div class="col-sm-9">
@@ -94,6 +101,7 @@ if ($_GET['from'] == 'telegram' && !empty($_SESSION['TELEGRAM_REGISTER_DATA'])) 
                             </div>
                         </div>
                         <?endif;?>
+						<?endif;?>
 
                         <?
                         if (!empty($arParams["~AUTH_RESULT"]))

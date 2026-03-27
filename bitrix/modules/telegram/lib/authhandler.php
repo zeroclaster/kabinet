@@ -169,7 +169,7 @@ class Authhandler
             'UF_TELEGRAM_ID' => $this->authData['id']
         ];
 
-        LocalRedirect('/login/?register=yes&from=telegram');
+        LocalRedirect('/login2/?register=yes&from=telegram');
     }
 
     /**
