@@ -47,6 +47,7 @@ class Stage10 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
             return [
                 4,   //В работе у специалиста
                 7,   //Готовится отчет
+                11
             ];
         }else{
             return [];

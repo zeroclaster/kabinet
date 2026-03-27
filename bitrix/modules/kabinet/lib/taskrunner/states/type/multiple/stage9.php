@@ -62,6 +62,7 @@ class Stage9 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             return [
                 1,      // Stage5 В работе у специалиста
                 9,      // Stage10 Выполнена
+                11
             ];
         }
     }

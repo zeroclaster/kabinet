@@ -46,6 +46,7 @@ class Stage10 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bi
         if(\PHelp::isAdmin()) {
             return [
                 8,   //Готовится отчет
+                11
             ];
         }else{
             return [];

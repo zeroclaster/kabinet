@@ -60,7 +60,8 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
         if(\PHelp::isAdmin()) {
             return [
                 1,  // Взят в работу
-                10  // Отменена
+                10,  // Отменена
+                11
             ];
         }else{
             return [

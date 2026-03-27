@@ -69,6 +69,8 @@ class Stage7_1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \B
         if(\PHelp::isAdmin()) {
             $states = [6]; // Пишется текст
             $states[] = 7; // В работе у специалиста
+
+            $states[] = 11;
             return $states;
         }else{
             return [];

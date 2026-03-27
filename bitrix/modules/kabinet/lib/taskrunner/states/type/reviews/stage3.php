@@ -63,6 +63,8 @@ class Stage3 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
             $states[] = 6; // 6-Публикация;
 
+            $states[] = 11;
+
             return $states;
         }else{
             return [];

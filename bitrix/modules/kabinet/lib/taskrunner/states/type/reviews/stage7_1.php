@@ -77,6 +77,8 @@ class Stage7_1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \B
             else
                 $states[] = 9; //Выполнено
 
+            $states[] = 11;
+
             return $states;
         }else{
             return [];

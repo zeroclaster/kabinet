@@ -177,6 +177,22 @@
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
             </state>
+            <state id="11" name="state12" icon="fa-times">
+                <title>Требуется информация</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Требуется информация</span>]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Требуется информация</span>]]></button>
+                </admin>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    В кабинете администратора статус “Требуется информация” выводить на всех стадиях. У администратора на стадии “Требуется информация” выводить все кнопки для переключения в любую стадию. У клиента выводить кнопку “Отправить на публикацию”.
+                    Статус будет проставляться, например когда исполнитель по заданию пришлёт комментарий, что ссылка на карточку клиента в авито, на которой нужно разместить отзыв не работает или объявление снято с публикации.
+                    При проставлении статуса клиенту автоматически приходит сообщение (почта-телеграм, что настроено)):
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage12</class>
+            </state>
         </states>
     </product>
     <product type="multiple" title="множественное исполнение">
@@ -296,6 +312,22 @@
                     Если в статус перешли со стадий «1-9» и по инициативе клиента, то списание 50% зарезервированных средств клиента.
                 </description>
                 <class>\Bitrix\Kabinet\taskrunner\states\type\reviews\Stage11</class>
+            </state>
+            <state id="11" name="state12" icon="fa-times">
+                <title>Требуется информация</title>
+                <user>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Требуется информация</span>]]></button>
+                </user>
+                <admin>
+                    <button><![CDATA[<i class="fa fa-times align-middle" aria-hidden="true"></i> <span class="align-middle">Требуется информация</span>]]></button>
+                </admin>
+                <stylecss>fc-event-danger</stylecss>
+                <description>
+                    В кабинете администратора статус “Требуется информация” выводить на всех стадиях. У администратора на стадии “Требуется информация” выводить все кнопки для переключения в любую стадию. У клиента выводить кнопку “Отправить на публикацию”.
+                    Статус будет проставляться, например когда исполнитель по заданию пришлёт комментарий, что ссылка на карточку клиента в авито, на которой нужно разместить отзыв не работает или объявление снято с публикации.
+                    При проставлении статуса клиенту автоматически приходит сообщение (почта-телеграм, что настроено)):
+                </description>
+                <class>\Bitrix\Kabinet\taskrunner\states\type\multiple\Stage12</class>
             </state>
         </states>
     </product>

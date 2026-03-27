@@ -82,6 +82,7 @@ class Stage2 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
 
             $states[] = 6; //Публикация
             $states[] = 10; //Отменено
+            $states[] = 11;
 
             return $states;
         }else{

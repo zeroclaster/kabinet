@@ -61,7 +61,8 @@ class Stage1 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
             return [
                // 1,  // Взят в работу
                 6,   //Публикация
-                10  // Отменена
+                10,  // Отменена
+                11
             ];
         }else{
             return [

@@ -68,6 +68,7 @@ class Stage6 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
                 2, //Пишется текст
                 4, //В работе у специалиста
                 6, //Публикация
+                11
             ];
         }else{
             return [2,4,6];

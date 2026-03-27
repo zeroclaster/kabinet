@@ -61,6 +61,7 @@ class Stage5 extends \Bitrix\Kabinet\taskrunner\states\Basestate implements \Bit
                 7, //Готовится отчет
                 9, //Выполнено
                 10, //Отменено
+                11
             ];
         }else{
             return [];
