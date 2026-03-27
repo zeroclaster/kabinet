@@ -75,6 +75,8 @@ const adminclient_list = {
             }
         }
     },
-
+    components: {
+        changenotes
+    },
     template: '#kabinet-content'
 };

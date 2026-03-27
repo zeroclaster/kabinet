@@ -5,7 +5,8 @@ use Bitrix\Main\Loader,
     Bitrix\Messanger,
     Bitrix\Main\DI,
     Bitrix\Main\SystemException,
-    Bitrix\Main\Error;
+    Bitrix\Main\Error,
+    Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable;
 
 class Runnerevents extends \Bitrix\Main\Engine\Controller
 {
@@ -207,66 +208,66 @@ class Runnerevents extends \Bitrix\Main\Engine\Controller
         ];
     }
 
-public function savenoteAction()
-{
-    $post = $this->request->getPostList()->toArray();
-    $fulfillmentId = $post['fulfillment_id'] ?? 0;
-    $noteText = $post['note_text'] ?? '';
+    public function savenoteAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $fulfillmentId = $post['fulfillment_id'] ?? 0;
+        $noteText = $post['note_text'] ?? '';
 
-    if (!$fulfillmentId) {
-        return ['success' => false, 'message' => 'Неверные параметры'];
-    }
-
-    try {
-        $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
-        $siteuser = $sL->get('siteuser');
-
-        // Проверяем, существует ли уже заметка
-        $existingNote = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::getList([
-            'select' => ['ID', 'UF_NOTE_TEXT'],
-            'filter' => [
-                'UF_FULFILLMENT_ID' => $fulfillmentId,
-                'UF_ACTIVE' => 1
-            ],
-            'order' => ['UF_CREATED_DATE' => 'DESC'],
-            'limit' => 1
-        ])->fetch();
-
-        if ($existingNote) {
-            // Обновляем существующую заметку
-            $result = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::update($existingNote['ID'], [
-                'UF_NOTE_TEXT' => $noteText,
-                'UF_MODIFIED_DATE' => new \Bitrix\Main\Type\DateTime(),
-                'UF_MODIFIED_BY' => $siteuser->get('ID')
-            ]);
-
-            $message = 'Заметка обновлена';
-        } else {
-            // Создаем новую заметку
-            $result = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::add([
-                'UF_FULFILLMENT_ID' => $fulfillmentId,
-                'UF_NOTE_TEXT' => $noteText,
-                'UF_CREATED_BY' => $siteuser->get('ID'),
-                'UF_CREATED_DATE' => new \Bitrix\Main\Type\DateTime(),
-                'UF_NOTE_TYPE' => 1,
-                'UF_ACTIVE' => 1,
-                'UF_IS_PRIVATE' => 0,
-                'UF_PRIORITY' => 1
-            ]);
-
-            $message = 'Заметка сохранена';
+        if (!$fulfillmentId) {
+            return ['success' => false, 'message' => 'Неверные параметры'];
         }
 
-        if ($result->isSuccess()) {
-            return ['success' => true, 'message' => $message];
-        } else {
-            return ['success' => false, 'message' => 'Ошибка сохранения: ' . implode(', ', $result->getErrorMessages())];
-        }
+        try {
+            $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+            $siteuser = $sL->get('siteuser');
 
-    } catch (\Exception $e) {
-        return ['success' => false, 'message' => $e->getMessage()];
+            // Проверяем, существует ли уже заметка
+            $existingNote = FulfillmentNotesTable::getList([
+                'select' => ['ID', 'UF_NOTE_TEXT'],
+                'filter' => [
+                    'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_ACTIVE' => 1
+                ],
+                'order' => ['UF_CREATED_DATE' => 'DESC'],
+                'limit' => 1
+            ])->fetch();
+
+            if ($existingNote) {
+                // Обновляем существующую заметку
+                $result = FulfillmentNotesTable::update($existingNote['ID'], [
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_MODIFIED_DATE' => new \Bitrix\Main\Type\DateTime(),
+                    'UF_MODIFIED_BY' => $siteuser->get('ID')
+                ]);
+
+                $message = 'Заметка обновлена';
+            } else {
+                // Создаем новую заметку
+                $result = FulfillmentNotesTable::add([
+                    'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_CREATED_BY' => $siteuser->get('ID'),
+                    'UF_CREATED_DATE' => new \Bitrix\Main\Type\DateTime(),
+                    'UF_NOTE_TYPE' => 1,
+                    'UF_ACTIVE' => 1,
+                    'UF_IS_PRIVATE' => 0,
+                    'UF_PRIORITY' => 1
+                ]);
+
+                $message = 'Заметка сохранена';
+            }
+
+            if ($result->isSuccess()) {
+                return ['success' => true, 'message' => $message];
+            } else {
+                return ['success' => false, 'message' => 'Ошибка сохранения: ' . implode(', ', $result->getErrorMessages())];
+            }
+
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
-}
 
     public function getcurrentnoteAction()
     {
@@ -278,10 +279,104 @@ public function savenoteAction()
         }
 
         try {
-            $note = \Bitrix\Kabinet\taskrunner\datamanager\FulfillmentNotesTable::getList([
+            $note = FulfillmentNotesTable::getList([
                 'select' => ['UF_NOTE_TEXT'],
                 'filter' => [
                     'UF_FULFILLMENT_ID' => $fulfillmentId,
+                    'UF_ACTIVE' => 1
+                ],
+                'order' => ['UF_CREATED_DATE' => 'DESC'],
+                'limit' => 1
+            ])->fetch();
+
+            return ['note' => $note['UF_NOTE_TEXT'] ?? ''];
+
+        } catch (\Exception $e) {
+            return ['note' => ''];
+        }
+    }
+
+    /**
+     * Сохранение заметки клиента
+     */
+    public function saveclientnoteAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $clientId = $post['client_id'] ?? 0;
+        $noteText = $post['note_text'] ?? '';
+
+        if (!$clientId) {
+            return ['success' => false, 'message' => 'Неверные параметры'];
+        }
+
+        try {
+            $sL = \Bitrix\Main\DI\ServiceLocator::getInstance();
+            $siteuser = $sL->get('siteuser');
+
+            // Проверяем, существует ли уже заметка для клиента
+            $existingNote = FulfillmentNotesTable::getList([
+                'select' => ['ID', 'UF_NOTE_TEXT'],
+                'filter' => [
+                    'UF_USER_ID' => $clientId,
+                    'UF_ACTIVE' => 1
+                ],
+                'order' => ['UF_CREATED_DATE' => 'DESC'],
+                'limit' => 1
+            ])->fetch();
+
+            if ($existingNote) {
+                // Обновляем существующую заметку
+                $result = FulfillmentNotesTable::update($existingNote['ID'], [
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_MODIFIED_DATE' => new \Bitrix\Main\Type\DateTime(),
+                    'UF_MODIFIED_BY' => $siteuser->get('ID')
+                ]);
+
+                $message = 'Заметка клиента обновлена';
+            } else {
+                // Создаем новую заметку для клиента
+                $result = FulfillmentNotesTable::add([
+                    'UF_USER_ID' => $clientId,
+                    'UF_NOTE_TEXT' => $noteText,
+                    'UF_CREATED_BY' => $siteuser->get('ID'),
+                    'UF_CREATED_DATE' => new \Bitrix\Main\Type\DateTime(),
+                    'UF_NOTE_TYPE' => 1,
+                    'UF_ACTIVE' => 1,
+                    'UF_IS_PRIVATE' => 0,
+                    'UF_PRIORITY' => 1
+                ]);
+
+                $message = 'Заметка клиента сохранена';
+            }
+
+            if ($result->isSuccess()) {
+                return ['success' => true, 'message' => $message];
+            } else {
+                return ['success' => false, 'message' => 'Ошибка сохранения: ' . implode(', ', $result->getErrorMessages())];
+            }
+
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Получение заметки клиента
+     */
+    public function getclientnoteAction()
+    {
+        $post = $this->request->getPostList()->toArray();
+        $clientId = $post['client_id'] ?? 0;
+
+        if (!$clientId) {
+            return ['note' => ''];
+        }
+
+        try {
+            $note = FulfillmentNotesTable::getList([
+                'select' => ['UF_NOTE_TEXT'],
+                'filter' => [
+                    'UF_USER_ID' => $clientId,
                     'UF_ACTIVE' => 1
                 ],
                 'order' => ['UF_CREATED_DATE' => 'DESC'],

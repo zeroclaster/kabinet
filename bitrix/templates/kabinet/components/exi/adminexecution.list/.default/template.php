@@ -120,6 +120,11 @@ $this->setFrameMode(true);
                     <div>Клиент:</div>
                     <div class="text-primary">{{dataclient[UF_AUTHOR_ID].PRINT_NAME}} (ID{{dataclient[UF_AUTHOR_ID].ID}})</div>
                     <div><a href="mailto:{{dataclient[UF_AUTHOR_ID].EMAIL}}"></a></div>
+
+                    <!-- ЗАМЕТКИ -->
+                    <div class="stick-node-green">
+                    <changenotes :objectclient-id="UF_AUTHOR_ID"/>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <div>Проект:</div>
@@ -288,7 +293,6 @@ $this->setFrameMode(true);
 
 
     const filterclientlist = <?=json_encode($arParams["FILTER"])?>;
-	console.log(filterclientlist);
 
     const  clientlistStore = BX.Vue3.Pinia.defineStore('clientlist', {
         state: () => ({dataclient:clientListStoreData}),
@@ -315,13 +319,14 @@ $this->setFrameMode(true);
         components.userreports = {
             selector: '[data-adminexecution]',
             script: [
+                '../../kabinet/components/exi/profile.user/admin/user.data.php',
                 './js/kabinet/vue-componets/datepicker.js',
                 './js/kabinet/vue-componets/typeahead.js',
                 './js/kabinet/vue-componets/sharephoto.js',
+                './js/kabinet/vue-componets/notes.js',
                 './js/kabinet/vue-componets/messanger/uploadfile.js',
                 './js/kabinet/vue-componets/messanger/templates/admin.performances.js',
                 './js/kabinet/vue-componets/messanger/messanger.factory.js',
-                '../../kabinet/components/exi/profile.user/admin/user.data.php',
                 '../../kabinet/components/exi/adminexecution.list/.default/adminexecution_list.js',
             ],
             styles: './css/messanger.css',

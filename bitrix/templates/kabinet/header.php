@@ -24,6 +24,7 @@ $hideNavbar = (strpos($currentPath, '/kabinet/admin/table/') !== false);
     $APPLICATION->ShowHead();
 
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/button/button.css");
+    Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/sticker_note.css");
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/dropdown/dropdown.css");
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/datetimepicker/bootstrap-datetimepicker.css");
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/components/base/base.css");

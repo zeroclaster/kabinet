@@ -19,6 +19,7 @@ use Bitrix\Main\ORM\Fields\Relations\OneToMany;
  * <ul>
  * <li> ID int mandatory
  * <li> UF_FULFILLMENT_ID int mandatory
+ * <li> UF_USER_ID int mandatory
  * <li> UF_NOTE_TEXT text mandatory
  * <li> UF_CREATED_BY int mandatory
  * <li> UF_CREATED_DATE datetime optional default current datetime
@@ -63,8 +64,13 @@ class FulfillmentNotesTable extends DataManager
             new IntegerField(
                 'UF_FULFILLMENT_ID',
                 [
-                    'required' => true,
                     'title' => Loc::getMessage('FULFILLMENT_NOTES_ENTITY_UF_FULFILLMENT_ID_FIELD'),
+                ]
+            ),
+            new IntegerField(
+                'UF_USER_ID',
+                [
+                    'title' => Loc::getMessage('FULFILLMENT_NOTES_ENTITY_UF_USER_ID_FIELD'),
                 ]
             ),
             new TextField(

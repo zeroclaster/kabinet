@@ -1,0 +1,403 @@
+/* Базовые стили для всех стикеров */
+.notes-container {
+    position: relative;
+}
+
+.note-sticker {
+    background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+    border: 1px solid #ffd54f;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 100px;
+    transform: rotate(-0.5deg);
+}
+
+.note-sticker:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.note-sticker.editing {
+    transform: rotate(0deg);
+    cursor: default;
+}
+
+.note-content {
+    position: relative;
+    height: 100%;
+}
+
+.note-history {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.note-item {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #ffd54f;
+}
+
+.note-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.note-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.note-date {
+    font-weight: bold;
+}
+
+.note-user {
+    font-style: italic;
+}
+
+.note-text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.note-textarea {
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 0;
+    box-shadow: none;
+}
+
+.note-textarea:focus {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.note-corner {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    opacity: 0.7;
+}
+
+.note-placeholder {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #999;
+}
+
+.note-placeholder:hover {
+    border-color: #999;
+    color: #666;
+}
+
+.placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.placeholder-content i {
+    font-size: 24px;
+}
+
+/* Линии как на настоящей бумаге */
+.note-sticker::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(transparent 0%, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px);
+    background-size: 100% 40px;
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+/* ============= ЖЕЛТЫЙ СТИКЕР (по умолчанию) ============= */
+.stick-node-yellow .note-sticker,
+.note-sticker.stick-yellow {
+    background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+    border-color: #ffd54f;
+}
+
+.stick-node-yellow .note-item,
+.note-sticker.stick-yellow .note-item {
+    border-bottom-color: #ffd54f;
+}
+
+.stick-node-yellow .note-meta,
+.note-sticker.stick-yellow .note-meta {
+    color: #795548;
+}
+
+.stick-node-yellow .note-text,
+.stick-node-yellow .note-textarea,
+.note-sticker.stick-yellow .note-text,
+.note-sticker.stick-yellow .note-textarea {
+    color: #5d4037;
+}
+
+.stick-node-yellow .note-corner,
+.note-sticker.stick-yellow .note-corner {
+    color: #ffb300;
+}
+
+.stick-node-yellow .note-placeholder,
+.note-sticker.stick-yellow .note-placeholder {
+    background: #fff9c4;
+    border-color: #ffd54f;
+    color: #795548;
+}
+
+.stick-node-yellow .note-placeholder:hover,
+.note-sticker.stick-yellow .note-placeholder:hover {
+    background: #fff59d;
+    border-color: #ffb300;
+}
+
+/* ============= ФИОЛЕТОВЫЙ СТИКЕР ============= */
+.stick-node-purple .note-sticker,
+.note-sticker.stick-purple {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+    border-color: #ba68c8;
+}
+
+.stick-node-purple .note-item,
+.note-sticker.stick-purple .note-item {
+    border-bottom-color: #ba68c8;
+}
+
+.stick-node-purple .note-meta,
+.note-sticker.stick-purple .note-meta {
+    color: #4a148c;
+}
+
+.stick-node-purple .note-text,
+.stick-node-purple .note-textarea,
+.note-sticker.stick-purple .note-text,
+.note-sticker.stick-purple .note-textarea {
+    color: #4a148c;
+}
+
+.stick-node-purple .note-corner,
+.note-sticker.stick-purple .note-corner {
+    color: #8e24aa;
+}
+
+.stick-node-purple .note-placeholder,
+.note-sticker.stick-purple .note-placeholder {
+    background: #f3e5f5;
+    border-color: #ba68c8;
+    color: #4a148c;
+}
+
+.stick-node-purple .note-placeholder:hover,
+.note-sticker.stick-purple .note-placeholder:hover {
+    background: #e1bee7;
+    border-color: #8e24aa;
+}
+
+/* ============= ЗЕЛЕНЫЙ СТИКЕР ============= */
+.stick-node-green .note-sticker,
+.note-sticker.stick-green {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #66bb6a;
+}
+
+.stick-node-green .note-item,
+.note-sticker.stick-green .note-item {
+    border-bottom-color: #66bb6a;
+}
+
+.stick-node-green .note-meta,
+.note-sticker.stick-green .note-meta {
+    color: #1b5e20;
+}
+
+.stick-node-green .note-text,
+.stick-node-green .note-textarea,
+.note-sticker.stick-green .note-text,
+.note-sticker.stick-green .note-textarea {
+    color: #1b5e20;
+}
+
+.stick-node-green .note-corner,
+.note-sticker.stick-green .note-corner {
+    color: #43a047;
+}
+
+.stick-node-green .note-placeholder,
+.note-sticker.stick-green .note-placeholder {
+    background: #e8f5e9;
+    border-color: #66bb6a;
+    color: #1b5e20;
+}
+
+.stick-node-green .note-placeholder:hover,
+.note-sticker.stick-green .note-placeholder:hover {
+    background: #c8e6c9;
+    border-color: #43a047;
+}
+
+/* ============= СВЕТЛО-КРАСНЫЙ СТИКЕР ============= */
+.stick-node-lightred .note-sticker,
+.note-sticker.stick-lightred {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: #ef5350;
+}
+
+.stick-node-lightred .note-item,
+.note-sticker.stick-lightred .note-item {
+    border-bottom-color: #ef5350;
+}
+
+.stick-node-lightred .note-meta,
+.note-sticker.stick-lightred .note-meta {
+    color: #b71c1c;
+}
+
+.stick-node-lightred .note-text,
+.stick-node-lightred .note-textarea,
+.note-sticker.stick-lightred .note-text,
+.note-sticker.stick-lightred .note-textarea {
+    color: #b71c1c;
+}
+
+.stick-node-lightred .note-corner,
+.note-sticker.stick-lightred .note-corner {
+    color: #e53935;
+}
+
+.stick-node-lightred .note-placeholder,
+.note-sticker.stick-lightred .note-placeholder {
+    background: #ffebee;
+    border-color: #ef5350;
+    color: #b71c1c;
+}
+
+.stick-node-lightred .note-placeholder:hover,
+.note-sticker.stick-lightred .note-placeholder:hover {
+    background: #ffcdd2;
+    border-color: #e53935;
+}
+
+/* ============= СИНИЙ СТИКЕР (дополнительно) ============= */
+.stick-node-blue .note-sticker,
+.note-sticker.stick-blue {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-color: #42a5f5;
+}
+
+.stick-node-blue .note-item,
+.note-sticker.stick-blue .note-item {
+    border-bottom-color: #42a5f5;
+}
+
+.stick-node-blue .note-meta,
+.note-sticker.stick-blue .note-meta {
+    color: #0d47a1;
+}
+
+.stick-node-blue .note-text,
+.stick-node-blue .note-textarea,
+.note-sticker.stick-blue .note-text,
+.note-sticker.stick-blue .note-textarea {
+    color: #0d47a1;
+}
+
+.stick-node-blue .note-corner,
+.note-sticker.stick-blue .note-corner {
+    color: #1e88e5;
+}
+
+.stick-node-blue .note-placeholder,
+.note-sticker.stick-blue .note-placeholder {
+    background: #e3f2fd;
+    border-color: #42a5f5;
+    color: #0d47a1;
+}
+
+.stick-node-blue .note-placeholder:hover,
+.note-sticker.stick-blue .note-placeholder:hover {
+    background: #bbdefb;
+    border-color: #1e88e5;
+}
+
+/* ============= ОРАНЖЕВЫЙ СТИКЕР (дополнительно) ============= */
+.stick-node-orange .note-sticker,
+.note-sticker.stick-orange {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-color: #ffa726;
+}
+
+.stick-node-orange .note-item,
+.note-sticker.stick-orange .note-item {
+    border-bottom-color: #ffa726;
+}
+
+.stick-node-orange .note-meta,
+.note-sticker.stick-orange .note-meta {
+    color: #bf360c;
+}
+
+.stick-node-orange .note-text,
+.stick-node-orange .note-textarea,
+.note-sticker.stick-orange .note-text,
+.note-sticker.stick-orange .note-textarea {
+    color: #bf360c;
+}
+
+.stick-node-orange .note-corner,
+.note-sticker.stick-orange .note-corner {
+    color: #fb8c00;
+}
+
+.stick-node-orange .note-placeholder,
+.note-sticker.stick-orange .note-placeholder {
+    background: #fff3e0;
+    border-color: #ffa726;
+    color: #bf360c;
+}
+
+.stick-node-orange .note-placeholder:hover,
+.note-sticker.stick-orange .note-placeholder:hover {
+    background: #ffe0b2;
+    border-color: #fb8c00;
+}
+
+/* Адаптация линий для цветных стикеров */
+.stick-node-purple .note-sticker::before,
+.stick-node-green .note-sticker::before,
+.stick-node-lightred .note-sticker::before,
+.stick-node-blue .note-sticker::before,
+.stick-node-orange .note-sticker::before,
+.note-sticker.stick-purple::before,
+.note-sticker.stick-green::before,
+.note-sticker.stick-lightred::before,
+.note-sticker.stick-blue::before,
+.note-sticker.stick-orange::before {
+    background: linear-gradient(transparent 0%, transparent 39px, rgba(0,0,0,0.05) 39px, rgba(0,0,0,0.05) 40px);
+    background-size: 100% 40px;
+}
