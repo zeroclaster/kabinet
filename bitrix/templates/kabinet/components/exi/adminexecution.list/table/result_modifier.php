@@ -104,7 +104,7 @@ function prepareExecutionsData($arResult, $arParams, $runnerManager) {
             'coordination' => getFieldValueWithOriginal($taskData, 'UF_COORDINATION'),
             'reporting' => getFieldValueWithOriginal($taskData, 'UF_REPORTING'),
             'process_type' => getFieldValueWithOriginal($taskData, 'UF_CYCLICALITY'),
-            'link' => $runner['UF_LINK'] ?? '',
+            'UF_LINK' => $runner['UF_LINK'] ?? '',
             'photo' => getFirstPhoto($runner['UF_PIC_REVIEW_ORIGINAL'] ?? []),
             // Обработка review_text: очистка от HTML и обрезка до 100 символов
             'review_text' => !empty($runner['UF_REVIEW_TEXT']) ?

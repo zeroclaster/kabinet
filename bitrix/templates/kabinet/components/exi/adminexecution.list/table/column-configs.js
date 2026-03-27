@@ -88,7 +88,7 @@ window.columnConfigs = {
                     return td;
                 };
                 break;
-            case 'link':
+            case 'UF_LINK':
                 columnConfig.width = 200;
                 columnConfig.renderer = function(instance, td, row, col, prop, value) {
                     if (value) {

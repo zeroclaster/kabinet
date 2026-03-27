@@ -16,7 +16,7 @@ $fieldLabels = [
     'coordination' => 'Согласование',
     'reporting' => 'Отчетность',
     'process_type' => 'Тип процесса',
-    'link' => 'Ссылка',
+    'UF_LINK' => 'Ссылка',
     'photo' => 'Фото',
     'review_text' => 'Текст отзыва',
     'status' => 'Статус',
@@ -45,5 +45,6 @@ $editableFields = [
     'UF_REPORT_LINK',
     'UF_REPORT_SCREEN',
     'UF_REPORT_FILE',
-    'UF_REPORT_TEXT'
+    'UF_REPORT_TEXT',
+    'UF_LINK'
 ];
