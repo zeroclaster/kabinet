@@ -23,7 +23,7 @@ $this->setFrameMode(true);
 ?>
 
 
-<div id="kabinetcontent" data-datetimepicker="" data-loadtable="" data-modalload=""></div>
+<div id="kabinetcontent" data-datetimepicker="" data-loadtable="" data-modalload="" data-adminclientlist=""></div>
 
 <script type="text/html" id="kabinet-content">
     <div class="panel">
@@ -52,6 +52,12 @@ $this->setFrameMode(true);
                     <td style="border-right: 1px solid #dde3e8;width: 10%;padding: 0;">
                         <div>
                             <div class="h4">{{client.PRINT_NAME}} <span class="badge badge-warning"># {{client.ID}}</span></div>
+
+                            <!-- ЗАМЕТКИ -->
+                            <div class="stick-node-green">
+                                <changenotes :objectclient-id="client.ID"/>
+                            </div>
+
                             <div class="">E-mail: <a :href="'mailto:'+client.EMAIL">{{client.EMAIL}}</a></div>
                             <div class=""><a :href="'/kabinet/admin/notifications/?clientid=' + client.ID" target="_blank"><i class="fa fa-telegram" aria-hidden="true" v-if="client.UF_TELEGRAM_ID >0"></i> Сообщения <i class="fa fa-angle-right" aria-hidden="true"></i></a></div>
                         </div>
@@ -174,7 +180,7 @@ $this->setFrameMode(true);
 </script>
 
 
-<script type="text/javascript" src="<?=$templateFolder?>/adminclient_list.js"></script>
+
 <script>
 	const filterclientlist = <?=CUtil::PhpToJSObject($arParams["FILTER"], false, true)?>;
     const PHPPARAMS = <?=CUtil::PhpToJSObject([
@@ -182,6 +188,20 @@ $this->setFrameMode(true);
         "total"=>$arResult["TOTAL"],
         "statuslistdata" => $runnerManager->getStatusList(),
     ], false, true)?>;
+
+
+    components.userreports = {
+        selector: '[data-adminclientlist]',
+        script: [
+            '../../kabinet/components/exi/profile.user/admin/user.data.php',
+            './js/kabinet/vue-componets/notes.js',
+            '../../kabinet/components/exi/adminclient.list/.default/adminclient_list.js',
+        ],
+        styles: '',
+        dependencies:'',
+        init:null
+    }
+
     window.addEventListener("components:ready", function(event) {
         const adminClientListApplication = BX.Vue3.BitrixVue.createApp(adminclient_list);
 

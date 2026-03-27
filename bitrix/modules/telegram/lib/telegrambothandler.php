@@ -45,6 +45,8 @@ class Telegrambothandler
 
         if (isset($data['message']['text'])) {
             $this->processMessage($data['message']);
+        }else{
+            throw new TelegramException('No message');
         }
     }
 

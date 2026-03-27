@@ -44,4 +44,31 @@ Reactive clone of a ref. By default, it use JSON.parse(JSON.stringify()) to do t
 --------------------------------------------------------------------------------------
     $cache = new \CPHPCache();
     $cache->CleanDir('portal/bannerblock');
+------------------------------------------------------------------------
+для JS
+usr_id_const: usr_id_const ? '&usr=' + usr_id_const : '',
+usr_id_const2: usr_id_const ? '?usr=' + usr_id_const : '',	
 
+для PHP
+$usr_id_const = (\PHelp::isAdmin())? '&usr=' . $_REQUEST['usr'] : '';
+------------------------------------------------------------------------------
+посмотреть все исполнения у которых нет задач
+SELECT f.*
+FROM b_kabinet_fulfillment f
+LEFT JOIN b_kabinet_task t ON f.UF_TASK_ID = t.ID
+WHERE t.ID IS NULL;
+
+Если хочешь увидеть только количество таких записей:
+
+sql
+SELECT COUNT(*) as orphaned_count
+FROM b_kabinet_fulfillment f
+LEFT JOIN b_kabinet_task t ON f.UF_TASK_ID = t.ID
+WHERE t.ID IS NULL;
+
+SELECT f.*
+FROM b_kabinet_fulfillment f
+LEFT JOIN b_kabinet_task t ON f.UF_TASK_ID = t.ID
+WHERE t.ID IS NULL
+  AND f.UF_CREATE_DATE >= '2026-02-06 00:00:00';
+-----------------------------------------------------------------------------

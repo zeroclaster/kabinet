@@ -307,6 +307,10 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
                     foreach ($item2 as $key3 => $item3) {
                         if (!in_array($key3, ['NAME', 'ID', 'CODE', 'VALUE','MULTIPLE','~VALUE','PROPERTY_TYPE','VALUE_XML_ID']))
                             unset($product[$key][$key2][$key3]);
+                        if ($key3 == '~VALUE'){
+                            $product[$key][$key2]['VALUEH'] = $product[$key][$key2][$key3];
+                            //unset($product[$key][$key2][$key3]);
+                        }
                     }
                 }
             }
@@ -339,8 +343,7 @@ class Projectmanager extends \Bitrix\Kabinet\container\Abstracthighloadmanager {
         $cache->AbortDataCache();
         return false;
     }
-
-
+    
     public function orderData($user_id = 0, $clear=false){
         global $CACHE_MANAGER;
 

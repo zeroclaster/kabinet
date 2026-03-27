@@ -116,6 +116,10 @@ $usr_id_const = (\PHelp::isAdmin())? '&usr=' . $_REQUEST['usr'] : '';
                     <div class="mt-4">
                         <div class="h4"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Дополните задачу данными:</div>
 
+                        <div v-if="productData.ADDITIONAL_INFO?.VALUEH?.TEXT"
+                             v-html="productData.ADDITIONAL_INFO.VALUEH.TEXT">
+                        </div>
+
                         <div class="form-group d-flex align-items-center mobile-view">
                             <label class="col-form-label col-form-label-custom lable-link-list-style-1" :for="'linkInputLink'+TASK_ID">Ссылка:</label>
                             <div class="target-list-link-block">
@@ -143,6 +147,8 @@ $usr_id_const = (\PHelp::isAdmin())? '&usr=' . $_REQUEST['usr'] : '';
                                 </div>
                             </div>
                         </div>
+
+
 
                         <div class="form-group d-flex align-items-center mobile-view" style="margin-top: 7px;" v-if="productData.JUST_FILED && productData.JUST_FILED.VALUE">
                             <label class="col-form-label col-form-label-custom" :for="'justfieldInput'+TASK_ID">{{productData.JUST_FILED.VALUE}}:</label>
